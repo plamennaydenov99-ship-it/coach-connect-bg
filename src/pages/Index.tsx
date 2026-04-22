@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CoachCard } from '@/components/marketplace/CoachCard';
+import { EventsSlider } from '@/components/marketplace/EventsSlider';
 import { COACHES, SPORTS } from '@/lib/mockData';
 
 const Index = () => {
@@ -102,6 +103,9 @@ const Index = () => {
             </form>
           </div>
         </section>
+
+        {/* Events slider */}
+        <EventsSlider />
 
         {/* Sport categories */}
         <section className="container py-16 md:py-20">
