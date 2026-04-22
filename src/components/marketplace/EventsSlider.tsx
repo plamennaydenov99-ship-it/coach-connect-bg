@@ -1,74 +1,9 @@
 import { useEffect, useState, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, Calendar, MapPin } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ChevronLeft, ChevronRight, Calendar, MapPin, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-
-type EventItem = {
-  id: number;
-  name: string;
-  sport: string;
-  date: string;
-  city: string;
-  description: string;
-  image: string;
-};
-
-const EVENTS: EventItem[] = [
-  {
-    id: 1,
-    name: 'City 10K Marathon',
-    sport: 'Running',
-    date: '15 June',
-    city: 'Sofia',
-    description: 'Race through the heart of the city in this iconic 10K road run.',
-    image: 'https://picsum.photos/900/400?random=1',
-  },
-  {
-    id: 2,
-    name: 'Summer Padel Open',
-    sport: 'Padel',
-    date: '22 June',
-    city: 'Sofia',
-    description: 'Open singles and doubles tournament with prizes for every level.',
-    image: 'https://picsum.photos/900/400?random=2',
-  },
-  {
-    id: 3,
-    name: '5-a-Side Football Cup',
-    sport: 'Football',
-    date: '29 June',
-    city: 'Sofia',
-    description: 'Grab your squad and battle it out in this fast-paced summer cup.',
-    image: 'https://picsum.photos/900/400?random=3',
-  },
-  {
-    id: 4,
-    name: 'Boxing White Collar Night',
-    sport: 'Boxing',
-    date: '6 July',
-    city: 'Sofia',
-    description: 'An electric evening of amateur bouts and live ringside entertainment.',
-    image: 'https://picsum.photos/900/400?random=4',
-  },
-  {
-    id: 5,
-    name: 'Tennis Club Championship',
-    sport: 'Tennis',
-    date: '13 July',
-    city: 'Sofia',
-    description: 'Compete across multiple draws on premium clay courts.',
-    image: 'https://picsum.photos/900/400?random=5',
-  },
-  {
-    id: 6,
-    name: 'CrossFit Open Challenge',
-    sport: 'CrossFit',
-    date: '20 July',
-    city: 'Sofia',
-    description: 'Test your limits across three workouts in a single high-energy day.',
-    image: 'https://picsum.photos/900/400?random=6',
-  },
-];
+import { EVENTS } from '@/lib/events';
 
 export function EventsSlider() {
   const [index, setIndex] = useState(0);
@@ -83,11 +18,18 @@ export function EventsSlider() {
 
   return (
     <section className="container py-16 md:py-20">
-      <div className="mb-8">
-        <h2 className="font-display">Upcoming events</h2>
-        <p className="text-muted-foreground mt-2">
-          Tournaments, races and meet-ups happening near you.
-        </p>
+      <div className="mb-8 flex items-end justify-between gap-4">
+        <div>
+          <h2 className="font-display">Upcoming events</h2>
+          <p className="text-muted-foreground mt-2">
+            Tournaments, races and meet-ups happening near you.
+          </p>
+        </div>
+        <Link to="/events" className="hidden md:block">
+          <Button variant="ghost">
+            View all events <ArrowRight className="h-4 w-4 ml-2" />
+          </Button>
+        </Link>
       </div>
 
       {/* Slider */}
@@ -166,43 +108,12 @@ export function EventsSlider() {
         ))}
       </div>
 
-      {/* Grid */}
-      <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {EVENTS.map(ev => (
-          <div
-            key={ev.id}
-            className="surface overflow-hidden transition hover:border-primary/50"
-          >
-            <div className="relative aspect-[16/9] overflow-hidden">
-              <img
-                src={ev.image}
-                alt={ev.name}
-                className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
-                loading="lazy"
-              />
-              <span className="absolute right-2 top-2 rounded-md bg-background/70 px-2 py-0.5 text-[10px] text-muted-foreground backdrop-blur">
-                Sponsored
-              </span>
-            </div>
-            <div className="p-5">
-              <Badge className="bg-primary text-primary-foreground hover:bg-primary">
-                {ev.sport}
-              </Badge>
-              <h3 className="mt-3 font-display text-xl">{ev.name}</h3>
-              <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                <span className="inline-flex items-center gap-1.5">
-                  <Calendar className="h-4 w-4" /> {ev.date}
-                </span>
-                <span className="inline-flex items-center gap-1.5">
-                  <MapPin className="h-4 w-4" /> {ev.city}
-                </span>
-              </div>
-              <Button variant="outline" size="sm" className="mt-4 w-full">
-                View event
-              </Button>
-            </div>
-          </div>
-        ))}
+      <div className="mt-6 flex justify-center md:hidden">
+        <Link to="/events">
+          <Button variant="outline">
+            View all events <ArrowRight className="h-4 w-4 ml-2" />
+          </Button>
+        </Link>
       </div>
     </section>
   );

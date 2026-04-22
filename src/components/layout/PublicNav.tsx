@@ -8,6 +8,7 @@ export function PublicNav() {
 
   const links = [
     { to: '/search', label: 'Find a Coach' },
+    { to: '/events', label: 'Events' },
     { to: '/for-coaches', label: 'For Coaches' },
   ];
 
