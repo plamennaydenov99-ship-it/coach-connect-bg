@@ -2,6 +2,7 @@ import { Link, NavLink } from 'react-router-dom';
 import { useState } from 'react';
 import { Menu, X, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { CartDrawer } from '@/components/marketplace/CartDrawer';
 
 export function PublicNav() {
   const [open, setOpen] = useState(false);
@@ -9,6 +10,7 @@ export function PublicNav() {
   const links = [
     { to: '/search', label: 'Find a Coach' },
     { to: '/events', label: 'Events' },
+    { to: '/marketplace', label: 'Shop' },
     { to: '/for-coaches', label: 'For Coaches' },
   ];
 
@@ -39,12 +41,17 @@ export function PublicNav() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
+          <CartDrawer />
           <Link to="/login">
             <Button variant="ghost" size="sm">Login</Button>
           </Link>
           <Link to="/register">
             <Button size="sm">Sign Up</Button>
           </Link>
+        </div>
+
+        <div className="flex items-center gap-1 md:hidden">
+          <CartDrawer />
         </div>
 
         <Button
