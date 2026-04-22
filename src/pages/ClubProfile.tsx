@@ -6,7 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { findClub, findCoach } from '@/lib/mockData';
+import { PRODUCTS } from '@/lib/products';
+import { ProductCard } from '@/components/marketplace/ProductCard';
 import { BadgeCheck, MapPin, Star } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -29,6 +32,7 @@ const ClubProfile = () => {
   }
 
   const coaches = club.coachSlugs.map(s => findCoach(s)!).filter(Boolean);
+  const clubProducts = PRODUCTS.filter(p => p.clubSlug === club.slug).slice(0, 4);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -60,65 +64,93 @@ const ClubProfile = () => {
             </div>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-2">
-            <div className="surface p-6">
-              <h2 className="font-display text-2xl mb-3">About</h2>
-              <p className="text-muted-foreground leading-relaxed">{club.about}</p>
-            </div>
+          <Tabs defaultValue="about" className="w-full">
+            <TabsList className="flex flex-wrap h-auto">
+              <TabsTrigger value="about">About</TabsTrigger>
+              <TabsTrigger value="coaches">Coaches</TabsTrigger>
+              <TabsTrigger value="programs">Programs</TabsTrigger>
+              <TabsTrigger value="shop">Shop</TabsTrigger>
+            </TabsList>
 
-            <div className="surface overflow-hidden">
-              <div className="aspect-video bg-secondary flex items-center justify-center text-muted-foreground text-sm">
-                <div className="text-center">
-                  <MapPin className="h-6 w-6 mx-auto mb-2 text-primary" />
-                  Location map
+            <TabsContent value="about" className="mt-6">
+              <div className="grid gap-8 md:grid-cols-2">
+                <div className="surface p-6">
+                  <h2 className="font-display text-2xl mb-3">About</h2>
+                  <p className="text-muted-foreground leading-relaxed">{club.about}</p>
                 </div>
-              </div>
-              <div className="p-5">
-                <h3 className="font-display text-lg">Opening hours</h3>
-                <table className="mt-3 w-full text-sm">
-                  <tbody>
-                    {club.hours.map(h => (
-                      <tr key={h.day} className="border-b border-border last:border-0">
-                        <td className="py-2 text-muted-foreground">{h.day}</td>
-                        <td className="py-2 text-right font-medium">{h.open}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
 
-          <div>
-            <h2 className="font-display text-2xl mb-4">Coaches at this club</h2>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {coaches.map(c => (
-                <Link key={c.slug} to={`/coach/${c.slug}`} className="surface p-4 flex items-center gap-3 hover:border-primary/50 transition-colors">
-                  <img src={c.avatar} alt={c.name} className="h-12 w-12 rounded-full object-cover" />
-                  <div>
-                    <p className="font-medium">{c.name}</p>
-                    <p className="text-xs text-muted-foreground capitalize">{c.sport} · {c.city}</p>
+                <div className="surface overflow-hidden">
+                  <div className="aspect-video bg-secondary flex items-center justify-center text-muted-foreground text-sm">
+                    <div className="text-center">
+                      <MapPin className="h-6 w-6 mx-auto mb-2 text-primary" />
+                      Location map
+                    </div>
                   </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <h2 className="font-display text-2xl mb-4">Programs & sessions</h2>
-            <div className="grid gap-3 md:grid-cols-3">
-              {club.programs.map(p => (
-                <div key={p.name} className="surface p-5 flex flex-col">
-                  <p className="font-display text-lg">{p.name}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{p.duration}</p>
-                  <p className="font-display text-2xl text-primary mt-3">€{p.price}</p>
-                  <Button className="mt-4 w-full" onClick={() => toast.success('Enquiry sent for this program.')}>
-                    Book
-                  </Button>
+                  <div className="p-5">
+                    <h3 className="font-display text-lg">Opening hours</h3>
+                    <table className="mt-3 w-full text-sm">
+                      <tbody>
+                        {club.hours.map(h => (
+                          <tr key={h.day} className="border-b border-border last:border-0">
+                            <td className="py-2 text-muted-foreground">{h.day}</td>
+                            <td className="py-2 text-right font-medium">{h.open}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="coaches" className="mt-6">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {coaches.map(c => (
+                  <Link key={c.slug} to={`/coach/${c.slug}`} className="surface p-4 flex items-center gap-3 hover:border-primary/50 transition-colors">
+                    <img src={c.avatar} alt={c.name} className="h-12 w-12 rounded-full object-cover" />
+                    <div>
+                      <p className="font-medium">{c.name}</p>
+                      <p className="text-xs text-muted-foreground capitalize">{c.sport} · {c.city}</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="programs" className="mt-6">
+              <div className="grid gap-3 md:grid-cols-3">
+                {club.programs.map(p => (
+                  <div key={p.name} className="surface p-5 flex flex-col">
+                    <p className="font-display text-lg">{p.name}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{p.duration}</p>
+                    <p className="font-display text-2xl text-primary mt-3">€{p.price}</p>
+                    <Button className="mt-4 w-full" onClick={() => toast.success('Enquiry sent for this program.')}>
+                      Book
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="shop" className="mt-6">
+              {clubProducts.length === 0 ? (
+                <p className="text-muted-foreground">This club hasn't added any products yet.</p>
+              ) : (
+                <>
+                  <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                    {clubProducts.map(p => (
+                      <ProductCard key={p.id} product={p} />
+                    ))}
+                  </div>
+                  <div className="mt-6 text-center">
+                    <Link to="/marketplace" className="text-sm text-primary hover:underline">
+                      Visit full shop →
+                    </Link>
+                  </div>
+                </>
+              )}
+            </TabsContent>
+          </Tabs>
 
           <div className="surface p-6 max-w-2xl">
             <h2 className="font-display text-2xl">Membership enquiry</h2>
