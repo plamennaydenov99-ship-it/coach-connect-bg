@@ -34,6 +34,10 @@ export default {
           foreground: "hsl(var(--primary-foreground))",
           hover: "hsl(var(--primary-hover))",
         },
+        "accent-electric": {
+          DEFAULT: "hsl(var(--accent-electric))",
+          dim: "hsl(var(--accent-electric-dim))",
+        },
         coach: {
           DEFAULT: "hsl(var(--coach))",
           foreground: "hsl(var(--coach-foreground))",

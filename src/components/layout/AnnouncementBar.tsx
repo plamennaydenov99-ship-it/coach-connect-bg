@@ -1,25 +1,24 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
-
-const MESSAGE = 'EARLY ACCESS — Free listing for coaches through Q3 2025';
-const CTA_LABEL = 'Apply now';
+import { useLanguage } from '@/context/LanguageContext';
 
 export function AnnouncementBar() {
   const [open, setOpen] = useState(true);
+  const { t } = useLanguage();
   if (!open) return null;
 
   return (
-    <div className="relative bg-background-secondary border-l-2 border-primary">
+    <div className="relative bg-background-secondary border-l-2 border-accent-electric">
       <div className="container flex items-center justify-center gap-3 py-2.5 text-center">
         <span className="font-display uppercase tracking-[0.15em] text-[12px] md:text-[13px] text-foreground-muted">
-          <span className="text-primary mr-2">◆</span>
-          <span className="text-secondary">{MESSAGE}</span>
+          <span className="text-accent-electric mr-2">◆</span>
+          <span className="text-secondary">{t.announcement}</span>
         </span>
         <a
           href="/register"
-          className="hidden md:inline font-display uppercase tracking-[0.15em] text-[12px] text-foreground hover:text-secondary transition-colors"
+          className="hidden md:inline font-display uppercase tracking-[0.15em] text-[12px] text-foreground hover:text-accent-electric transition-colors"
         >
-          → {CTA_LABEL}
+          → {t.announcement_cta}
         </a>
       </div>
       <button

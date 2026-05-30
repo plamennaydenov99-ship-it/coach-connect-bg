@@ -15,7 +15,7 @@ const SLOTS = ['Morning', 'Midday', 'Evening'];
 const ProfileEditor = () => {
   const [form, setForm] = useState({
     name: 'Rui Marques',
-    city: 'Lisbon',
+    city: 'Sofia',
     bio: 'Former semi-pro footballer turned coach. I work with youth and adult players on technique, tactical awareness and match readiness.',
     price: 65,
   });

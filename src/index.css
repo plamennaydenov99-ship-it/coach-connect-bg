@@ -23,10 +23,17 @@
     --popover: 240 4% 9%;
     --popover-foreground: 60 6% 94%;
 
-    /* PRIMARY — Nardo Gray #8E8E93 */
-    --primary: 240 3% 57%;
+    /* ELECTRIC ACCENT — primary CTA color */
+    --accent-electric: 173 100% 45%;     /* #00E5CC */
+    --accent-electric-dim: 173 100% 36%; /* #00B8A3 */
+
+    /* PRIMARY — Electric Teal (replaces Nardo Gray) */
+    --primary: 173 100% 45%;
     --primary-foreground: 240 4% 6%;
-    --primary-hover: 240 5% 69%;         /* #AEAEB2 */
+    --primary-hover: 173 100% 36%;
+
+    /* Nardo Gray kept as neutral accent */
+    --nardo: 240 3% 57%;
 
     /* SECONDARY — Arctic Silver #C8C8CC */
     --secondary: 240 6% 79%;
