@@ -1,27 +1,5 @@
-import { AnnouncementBar } from '@/components/layout/AnnouncementBar';
-import { PublicNav } from '@/components/layout/PublicNav';
-import { PublicFooter } from '@/components/layout/PublicFooter';
-import { SplitHero } from '@/components/home/SplitHero';
-import { FeatureTicker } from '@/components/home/FeatureTicker';
-import { MatchingSection } from '@/components/home/MatchingSection';
-import { EventsSlider } from '@/components/marketplace/EventsSlider';
+import { Navigate } from 'react-router-dom';
 
-const Index = () => {
-  return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <AnnouncementBar />
-      <PublicNav />
-
-      <main className="flex-1">
-        <SplitHero />
-        <FeatureTicker />
-        <MatchingSection />
-        <EventsSlider />
-      </main>
-
-      <PublicFooter />
-    </div>
-  );
-};
-
+// Legacy route — root is now SplitEntry. This redirects any stale links to athlete view.
+const Index = () => <Navigate to="/athlete" replace />;
 export default Index;
