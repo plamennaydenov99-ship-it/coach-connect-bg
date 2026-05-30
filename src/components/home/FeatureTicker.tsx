@@ -1,28 +1,28 @@
 const ITEMS = [
-  { icon: '🏃', title: 'Find Your Coach', body: 'Match with certified professionals' },
-  { icon: '🏟️', title: 'Find Your Club', body: 'Discover clubs near you' },
-  { icon: '📍', title: 'Events Near You', body: 'Marathons, tournaments, camps' },
-  { icon: '🤝', title: 'Connect With Athletes', body: 'Build your sports network' },
-  { icon: '🏷️', title: 'Exclusive Discounts', body: 'Members-only deals on gear' },
-  { icon: '⚡', title: 'Elevate Your Game', body: 'Track progress, level up' },
+  { title: 'Find Your Coach', body: 'Match with certified professionals' },
+  { title: 'Find Your Club', body: 'Discover clubs near you' },
+  { title: 'Events Near You', body: 'Marathons, tournaments, camps' },
+  { title: 'Connect With Athletes', body: 'Build your sports network' },
+  { title: 'Exclusive Discounts', body: 'Members-only deals on gear' },
+  { title: 'Elevate Your Game', body: 'Track progress, level up' },
 ];
 
 export function FeatureTicker() {
   const loop = [...ITEMS, ...ITEMS];
   return (
-    <section className="border-y border-border bg-card py-6 overflow-hidden pause-on-hover">
-      <div className="flex w-max gap-4 animate-marquee">
+    <section className="border-y border-border bg-background py-6 overflow-hidden pause-on-hover">
+      <div className="flex w-max gap-0 animate-marquee">
         {loop.map((it, i) => (
           <div
             key={i}
-            className="flex items-center gap-4 border border-border bg-background px-6 py-4 min-w-[320px]"
+            className="group flex items-center gap-3 px-8 py-3 min-w-[300px] border-r border-border-hover/40"
           >
-            <span className="text-3xl">{it.icon}</span>
+            <span className="text-primary text-sm">◆</span>
             <div>
-              <div className="font-condensed font-bold uppercase tracking-wider text-foreground text-sm">
+              <div className="font-display uppercase tracking-[0.12em] text-foreground-subtle group-hover:text-foreground-muted transition-colors text-sm">
                 {it.title}
               </div>
-              <div className="text-muted-foreground text-xs mt-0.5">{it.body}</div>
+              <div className="text-foreground-subtle text-xs mt-0.5 font-body">{it.body}</div>
             </div>
           </div>
         ))}

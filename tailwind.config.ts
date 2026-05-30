@@ -12,23 +12,41 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['DM Sans', 'Outfit', 'system-ui', 'sans-serif'],
-        display: ['Bebas Neue', 'Barlow Condensed', 'Impact', 'sans-serif'],
+        sans: ['Barlow', 'system-ui', 'sans-serif'],
+        body: ['Barlow', 'system-ui', 'sans-serif'],
+        display: ['Barlow Condensed', 'Impact', 'sans-serif'],
         condensed: ['Barlow Condensed', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
       },
       colors: {
         border: "hsl(var(--border))",
+        "border-hover": "hsl(var(--border-hover))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
+        "background-secondary": "hsl(var(--background-secondary))",
+        "background-tertiary": "hsl(var(--background-tertiary))",
         foreground: "hsl(var(--foreground))",
+        "foreground-muted": "hsl(var(--foreground-muted))",
+        "foreground-subtle": "hsl(var(--foreground-subtle))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          hover: "hsl(var(--primary-hover))",
         },
         coach: {
           DEFAULT: "hsl(var(--coach))",
           foreground: "hsl(var(--coach-foreground))",
+        },
+        athlete: {
+          DEFAULT: "hsl(var(--athlete-accent))",
+          bright: "hsl(var(--athlete-accent-bright))",
+          glow: "hsl(var(--athlete-accent-glow))",
+        },
+        "coach-accent": {
+          DEFAULT: "hsl(var(--coach-accent))",
+          bright: "hsl(var(--coach-accent-bright))",
+          glow: "hsl(var(--coach-accent-glow))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -77,7 +95,8 @@ export default {
         lg: "6px",
         md: "4px",
         sm: "2px",
-        xl: "8px",
+        xl: "6px",
+        "2xl": "6px",
       },
       keyframes: {
         "accordion-down": { from: { height: "0" }, to: { height: "var(--radix-accordion-content-height)" } },
