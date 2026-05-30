@@ -72,7 +72,7 @@ const DashboardHome = () => {
           <div className="space-y-2">
             {[
               { label: 'Edit profile', to: '/dashboard/profile' },
-              { label: 'View public profile', to: '/coach/rui-marques' },
+              { label: 'View public profile', to: '/coach/dimitar-petrov' },
               { label: 'Upgrade plan', to: '/dashboard/billing' },
               { label: 'Open analytics', to: '/dashboard/analytics' },
             ].map(a => (

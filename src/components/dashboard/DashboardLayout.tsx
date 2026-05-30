@@ -52,7 +52,7 @@ export function DashboardLayout() {
         ))}
       </nav>
       <div className="p-3 border-t border-sidebar-border space-y-2">
-        <Link to="/coach/rui-marques">
+        <Link to="/coach/dimitar-petrov">
           <Button variant="outline" size="sm" className="w-full">
             <ExternalLink className="h-3.5 w-3.5 mr-2" /> View public profile
           </Button>
