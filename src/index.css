@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=DM+Serif+Display&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,62 +6,77 @@
 
 @layer base {
   :root {
-    /* Atleta sport-magazine dark theme */
-    --background: 0 0% 4%;            /* #0A0A0A */
-    --foreground: 0 0% 100%;
+    /* ATLETA — Premium Dark Palette (TAG Heuer / Porsche / Formula E) */
+    /* All values are HSL (h s l) for tailwind hsl(var(--token)) consumption */
 
-    --card: 0 0% 7%;                  /* #111111 */
-    --card-foreground: 0 0% 100%;
+    --background: 240 4% 6%;             /* #0E0E0F */
+    --background-secondary: 240 4% 9%;   /* #161618 */
+    --background-tertiary: 240 5% 11%;   /* #1C1C1F */
 
-    --surface-2: 0 0% 9%;
+    --foreground: 60 6% 94%;             /* #F0F0EE */
+    --foreground-muted: 240 3% 55%;      /* #8A8A8E */
+    --foreground-subtle: 240 4% 30%;     /* #4A4A50 */
 
-    --popover: 0 0% 7%;
-    --popover-foreground: 0 0% 100%;
+    --card: 240 4% 9%;                   /* #161618 */
+    --card-foreground: 60 6% 94%;
 
-    /* Athlete accent — electric yellow-green #E8FF00 */
-    --primary: 67 100% 50%;
-    --primary-foreground: 0 0% 4%;
+    --popover: 240 4% 9%;
+    --popover-foreground: 60 6% 94%;
 
-    /* Coach accent — electric blue #00C2FF */
-    --coach: 194 100% 50%;
-    --coach-foreground: 0 0% 4%;
+    /* PRIMARY — Nardo Gray #8E8E93 */
+    --primary: 240 3% 57%;
+    --primary-foreground: 240 4% 6%;
+    --primary-hover: 240 5% 69%;         /* #AEAEB2 */
 
-    --secondary: 0 0% 12%;
-    --secondary-foreground: 0 0% 100%;
+    /* SECONDARY — Arctic Silver #C8C8CC */
+    --secondary: 240 6% 79%;
+    --secondary-foreground: 240 4% 6%;
 
-    --muted: 0 0% 12%;
-    --muted-foreground: 0 0% 53%;     /* #888 */
+    --muted: 240 4% 11%;
+    --muted-foreground: 240 3% 55%;
 
-    --accent: 67 100% 50%;
-    --accent-foreground: 0 0% 4%;
+    --accent: 240 3% 57%;
+    --accent-foreground: 240 4% 6%;
 
-    --destructive: 0 72% 55%;
-    --destructive-foreground: 0 0% 100%;
+    /* ATHLETE — Deep Navy */
+    --athlete-accent: 211 55% 23%;       /* #1B3A5C */
+    --athlete-accent-bright: 209 51% 36%;/* #2D5F8A */
+    --athlete-accent-glow: 209 50% 47%;  /* #3D7AB5 */
 
-    --success: 150 65% 49%;
-    --success-foreground: 0 0% 4%;
+    /* COACH — Deep Forest */
+    --coach-accent: 144 38% 17%;         /* #1A3A2A */
+    --coach-accent-bright: 144 36% 26%;  /* #2A5A3F */
+    --coach-accent-glow: 144 34% 35%;    /* #3A7A55 */
 
-    --warning: 38 92% 55%;
-    --warning-foreground: 0 0% 4%;
+    /* Legacy aliases used across components — remapped to new palette */
+    --coach: 209 51% 36%;                /* athlete deep-navy bright (was electric blue) */
+    --coach-foreground: 60 6% 94%;
 
-    --border: 0 0% 12%;               /* #1E1E1E-ish */
-    --input: 0 0% 10%;
-    --ring: 67 100% 50%;
+    --success: 144 36% 35%;              /* #3A7A55 */
+    --success-foreground: 60 6% 94%;
+    --warning: 40 53% 35%;               /* #8A6A2A */
+    --warning-foreground: 60 6% 94%;
+    --destructive: 0 49% 32%;            /* #7A2A2A */
+    --destructive-foreground: 60 6% 94%;
 
-    --radius: 0.25rem;                /* sharp 4px */
+    --border: 240 6% 17%;                /* #2A2A2E */
+    --border-hover: 240 5% 23%;          /* #3A3A3E */
+    --input: 240 4% 9%;
+    --ring: 240 3% 57%;
 
-    --sidebar-background: 0 0% 6%;
-    --sidebar-foreground: 0 0% 92%;
-    --sidebar-primary: 67 100% 50%;
-    --sidebar-primary-foreground: 0 0% 4%;
-    --sidebar-accent: 0 0% 10%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 0 0% 12%;
-    --sidebar-ring: 67 100% 50%;
+    --radius: 0.25rem;                   /* sharp 4px */
+
+    --sidebar-background: 240 4% 6%;
+    --sidebar-foreground: 240 3% 55%;
+    --sidebar-primary: 240 3% 57%;
+    --sidebar-primary-foreground: 60 6% 94%;
+    --sidebar-accent: 240 4% 9%;
+    --sidebar-accent-foreground: 60 6% 94%;
+    --sidebar-border: 240 6% 17%;
+    --sidebar-ring: 240 3% 57%;
   }
 
   .dark { color-scheme: dark; }
-
   html { @apply dark; color-scheme: dark; }
 }
 
@@ -70,15 +85,17 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'DM Sans', 'Outfit', system-ui, sans-serif;
+    font-family: 'Barlow', system-ui, sans-serif;
+    font-weight: 400;
   }
 
-  h1, h2, h3, h4, .font-display {
-    font-family: 'Bebas Neue', 'Barlow Condensed', Impact, sans-serif;
-    font-weight: 400;
-    letter-spacing: 0.01em;
+  h1, h2, h3, h4, h5, h6, .font-display {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.005em;
     text-transform: uppercase;
     line-height: 0.95;
+    color: hsl(var(--foreground));
   }
 
   h1 { @apply text-5xl md:text-7xl lg:text-8xl; }
@@ -93,18 +110,33 @@
 
 @layer components {
   .surface {
-    @apply bg-card border border-border;
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
     border-radius: 4px;
   }
   .surface-2 {
-    background: hsl(var(--surface-2));
-    @apply border border-border;
+    background: hsl(var(--background-tertiary));
+    border: 1px solid hsl(var(--border));
     border-radius: 4px;
   }
-  .grain {
-    background-image:
-      linear-gradient(135deg, transparent 0, transparent 49%, hsl(0 0% 100% / 0.015) 49%, hsl(0 0% 100% / 0.015) 51%, transparent 51%);
-    background-size: 8px 8px;
+  .texture-diagonal {
+    background-image: repeating-linear-gradient(
+      45deg,
+      hsl(0 0% 100% / 0.03) 0 1px,
+      transparent 1px 8px
+    );
+  }
+  .badge-verified {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    border-radius: 2px;
+  }
+  .badge-discount {
+    @apply inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider;
+    background: hsl(var(--coach-accent));
+    color: hsl(var(--coach-accent-glow));
+    border-radius: 2px;
   }
 }
 

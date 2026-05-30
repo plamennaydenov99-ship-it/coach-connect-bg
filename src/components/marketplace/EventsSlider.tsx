@@ -35,7 +35,7 @@ export function EventsSlider() {
       {/* Slider */}
       <div
         aria-label="Featured events"
-        className="relative overflow-hidden rounded-xl border border-border bg-card"
+        className="relative overflow-hidden border border-border bg-card rounded-sm"
       >
         <div
           className="flex transition-transform duration-500 ease-out"
@@ -47,20 +47,20 @@ export function EventsSlider() {
                 <img
                   src={ev.image}
                   alt={ev.name}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-cover grayscale"
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
-                <span className="absolute right-4 top-4 rounded-md bg-background/60 px-2 py-0.5 text-xs text-muted-foreground backdrop-blur">
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
+                <span className="absolute right-4 top-4 bg-background-tertiary px-2 py-0.5 text-[10px] uppercase tracking-[0.15em] font-display text-foreground-muted rounded-sm">
                   Sponsored
                 </span>
 
                 <div className="absolute inset-x-0 bottom-0 p-6 md:p-10">
-                  <Badge className="bg-primary text-primary-foreground hover:bg-primary">
+                  <Badge className="bg-coach-accent text-coach-accent-glow hover:bg-coach-accent uppercase tracking-[0.12em] font-display rounded-sm">
                     {ev.sport}
                   </Badge>
-                  <h3 className="mt-3 font-display text-2xl md:text-4xl">{ev.name}</h3>
-                  <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                  <h3 className="mt-3 font-display text-2xl md:text-4xl text-foreground">{ev.name}</h3>
+                  <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-foreground-muted font-body">
                     <span className="inline-flex items-center gap-1.5">
                       <Calendar className="h-4 w-4" /> {ev.date}
                     </span>
@@ -68,7 +68,7 @@ export function EventsSlider() {
                       <MapPin className="h-4 w-4" /> {ev.city}
                     </span>
                   </div>
-                  <p className="mt-3 max-w-2xl text-sm md:text-base text-foreground/80">
+                  <p className="mt-3 max-w-2xl text-sm md:text-base text-foreground-muted font-body">
                     {ev.description}
                   </p>
                   <Button className="mt-5">View event</Button>
@@ -81,28 +81,28 @@ export function EventsSlider() {
         <button
           onClick={prev}
           aria-label="Previous slide"
-          className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border border-border bg-background/70 p-2 text-foreground backdrop-blur transition hover:bg-background"
+          className="absolute left-3 top-1/2 -translate-y-1/2 border border-border-hover bg-background/80 p-2 text-foreground hover:bg-background rounded-sm"
         >
           <ChevronLeft className="h-5 w-5" />
         </button>
         <button
           onClick={next}
           aria-label="Next slide"
-          className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-border bg-background/70 p-2 text-foreground backdrop-blur transition hover:bg-background"
+          className="absolute right-3 top-1/2 -translate-y-1/2 border border-border-hover bg-background/80 p-2 text-foreground hover:bg-background rounded-sm"
         >
           <ChevronRight className="h-5 w-5" />
         </button>
       </div>
 
       {/* Dots */}
-      <div className="mt-4 flex justify-center gap-2">
+      <div className="mt-4 flex justify-center gap-1.5">
         {EVENTS.map((_, i) => (
           <button
             key={i}
             onClick={() => setIndex(i)}
             aria-label={`Go to slide ${i + 1}`}
-            className={`h-2 rounded-full transition-all ${
-              i === index ? 'w-6 bg-primary' : 'w-2 bg-muted-foreground/40 hover:bg-muted-foreground'
+            className={`h-0.5 transition-all ${
+              i === index ? 'w-8 bg-primary' : 'w-4 bg-border-hover hover:bg-foreground-muted'
             }`}
           />
         ))}

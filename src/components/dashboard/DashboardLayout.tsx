@@ -21,12 +21,12 @@ export function DashboardLayout() {
   const SidebarContent = () => (
     <>
       <Link to="/" className="flex items-center gap-2 px-5 h-16 border-b border-sidebar-border">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+        <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-foreground text-background">
           <Zap className="h-4 w-4" strokeWidth={2.5} />
         </div>
-        <span className="font-display text-lg">Atleta</span>
+        <span className="font-display text-xl tracking-[0.08em] text-foreground">ATLETA</span>
       </Link>
-      <nav className="flex-1 p-3 space-y-1">
+      <nav className="flex-1 p-2 space-y-0.5">
         {NAV.map(item => (
           <NavLink
             key={item.to}
@@ -34,10 +34,10 @@ export function DashboardLayout() {
             end={item.end}
             onClick={() => setOpen(false)}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
+              `flex items-center gap-3 px-4 py-3 text-sm font-display uppercase tracking-[0.1em] transition-colors border-l-2 ${
                 isActive
-                  ? 'bg-primary/15 text-primary'
-                  : 'text-sidebar-foreground hover:bg-sidebar-accent'
+                  ? 'border-primary bg-background-secondary text-foreground'
+                  : 'border-transparent text-foreground-subtle hover:text-foreground-muted'
               }`
             }
           >
