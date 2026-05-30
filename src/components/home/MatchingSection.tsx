@@ -3,9 +3,7 @@ import { ArrowRight, ArrowLeft, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { SPORTS, CITIES } from '@/lib/mockData';
-
-const LEVELS = ['Beginner', 'Intermediate', 'Advanced', 'Elite'];
-const GOALS = ['Get fit', 'Compete', 'Learn basics', 'Train consistently', 'Recover from injury'];
+import { useLanguage } from '@/context/LanguageContext';
 
 export interface MatchAnswers {
   sport?: string;

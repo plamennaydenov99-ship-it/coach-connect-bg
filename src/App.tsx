@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 import Index from "./pages/Index";
 import SplitEntry from "./pages/SplitEntry";
@@ -29,38 +30,38 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          {/* Public */}
-          <Route path="/" element={<SplitEntry />} />
-          <Route path="/athlete" element={<AthleteHome />} />
-          <Route path="/home" element={<Index />} />
-          <Route path="/search" element={<Search />} />
-          <Route path="/coach/:slug" element={<CoachProfile />} />
-          <Route path="/club/:slug" element={<ClubProfile />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/for-coaches" element={<ForCoaches />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/marketplace" element={<Marketplace />} />
+    <LanguageProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<SplitEntry />} />
+            <Route path="/athlete" element={<AthleteHome />} />
+            <Route path="/home" element={<Index />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/coach/:slug" element={<CoachProfile />} />
+            <Route path="/club/:slug" element={<ClubProfile />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/for-coaches" element={<ForCoaches />} />
+            <Route path="/events" element={<Events />} />
+            <Route path="/marketplace" element={<Marketplace />} />
 
-          {/* Dashboard */}
-          <Route path="/dashboard" element={<DashboardLayout />}>
-            <Route index element={<DashboardHome />} />
-            <Route path="profile" element={<ProfileEditor />} />
-            <Route path="analytics" element={<Analytics />} />
-            <Route path="messages" element={<Messages />} />
-            <Route path="billing" element={<Billing />} />
-            <Route path="settings" element={<DashSettings />} />
-          </Route>
+            <Route path="/dashboard" element={<DashboardLayout />}>
+              <Route index element={<DashboardHome />} />
+              <Route path="profile" element={<ProfileEditor />} />
+              <Route path="analytics" element={<Analytics />} />
+              <Route path="messages" element={<Messages />} />
+              <Route path="billing" element={<Billing />} />
+              <Route path="settings" element={<DashSettings />} />
+            </Route>
 
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </LanguageProvider>
   </QueryClientProvider>
 );
 
