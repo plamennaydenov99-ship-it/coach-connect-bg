@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { NavLink, Link, Outlet } from 'react-router-dom';
+import { NavLink, Link, Outlet, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, UserCog, BarChart3, MessageSquare,
-  CreditCard, Settings, Zap, Menu, X, ExternalLink
+  CreditCard, Settings, Zap, Menu, X, ExternalLink, RefreshCw
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -17,6 +17,12 @@ const NAV = [
 
 export function DashboardLayout() {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const switchRole = () => {
+    localStorage.removeItem('atleta_role');
+    navigate('/');
+  };
 
   const SidebarContent = () => (
     <>
@@ -45,12 +51,18 @@ export function DashboardLayout() {
           </NavLink>
         ))}
       </nav>
-      <div className="p-3 border-t border-sidebar-border">
+      <div className="p-3 border-t border-sidebar-border space-y-2">
         <Link to="/coach/rui-marques">
           <Button variant="outline" size="sm" className="w-full">
             <ExternalLink className="h-3.5 w-3.5 mr-2" /> View public profile
           </Button>
         </Link>
+        <button
+          onClick={switchRole}
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-display uppercase tracking-[0.12em] text-foreground-subtle hover:text-foreground transition-colors"
+        >
+          <RefreshCw className="h-3 w-3" /> Switch to athlete view
+        </button>
       </div>
     </>
   );
