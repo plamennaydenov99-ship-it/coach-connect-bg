@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { ProductCard } from '@/components/marketplace/ProductCard';
+import { FloatingCartButton } from '@/components/marketplace/FloatingCartButton';
 import { PRODUCTS, PRODUCT_CATEGORIES, type ProductCategory } from '@/lib/products';
 import { cn } from '@/lib/utils';
 
