@@ -6,7 +6,7 @@ export type Lang = 'en' | 'bg';
 interface LanguageContextValue {
   lang: Lang;
   setLang: (l: Lang) => void;
-  t: typeof translations['en'];
+  t: (typeof translations)['en'] | (typeof translations)['bg'];
 }
 
 const LanguageContext = createContext<LanguageContextValue | undefined>(undefined);
