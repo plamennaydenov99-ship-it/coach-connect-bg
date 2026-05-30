@@ -55,6 +55,7 @@ export default function Marketplace() {
       </main>
 
       <PublicFooter />
+      <FloatingCartButton />
     </div>
   );
 }
