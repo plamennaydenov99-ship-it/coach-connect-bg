@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=DM+Serif+Display&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,127 +6,121 @@
 
 @layer base {
   :root {
-    /* Dark sport-tech theme — #0e1117 bg, #2dcc7a accent */
-    --background: 220 16% 7%;
-    --foreground: 0 0% 98%;
+    /* Atleta sport-magazine dark theme */
+    --background: 0 0% 4%;            /* #0A0A0A */
+    --foreground: 0 0% 100%;
 
-    --card: 222 11% 10%;
-    --card-foreground: 0 0% 98%;
+    --card: 0 0% 7%;                  /* #111111 */
+    --card-foreground: 0 0% 100%;
 
-    --surface-2: 222 8% 13%;
+    --surface-2: 0 0% 9%;
 
-    --popover: 222 11% 10%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 150 65% 49%;
-    --primary-foreground: 220 16% 7%;
+    /* Athlete accent — electric yellow-green #E8FF00 */
+    --primary: 67 100% 50%;
+    --primary-foreground: 0 0% 4%;
 
-    --secondary: 222 8% 14%;
-    --secondary-foreground: 0 0% 98%;
+    /* Coach accent — electric blue #00C2FF */
+    --coach: 194 100% 50%;
+    --coach-foreground: 0 0% 4%;
 
-    --muted: 222 8% 14%;
-    --muted-foreground: 220 8% 60%;
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 100%;
 
-    --accent: 150 65% 49%;
-    --accent-foreground: 220 16% 7%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 53%;     /* #888 */
+
+    --accent: 67 100% 50%;
+    --accent-foreground: 0 0% 4%;
 
     --destructive: 0 72% 55%;
     --destructive-foreground: 0 0% 100%;
 
     --success: 150 65% 49%;
-    --success-foreground: 220 16% 7%;
+    --success-foreground: 0 0% 4%;
 
     --warning: 38 92% 55%;
-    --warning-foreground: 220 16% 7%;
+    --warning-foreground: 0 0% 4%;
 
-    --border: 222 8% 18%;
-    --input: 222 8% 16%;
-    --ring: 150 65% 49%;
+    --border: 0 0% 12%;               /* #1E1E1E-ish */
+    --input: 0 0% 10%;
+    --ring: 67 100% 50%;
 
-    --radius: 0.75rem;
+    --radius: 0.25rem;                /* sharp 4px */
 
-    --sidebar-background: 222 11% 9%;
-    --sidebar-foreground: 0 0% 90%;
-    --sidebar-primary: 150 65% 49%;
-    --sidebar-primary-foreground: 220 16% 7%;
-    --sidebar-accent: 222 8% 14%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 222 8% 16%;
-    --sidebar-ring: 150 65% 49%;
+    --sidebar-background: 0 0% 6%;
+    --sidebar-foreground: 0 0% 92%;
+    --sidebar-primary: 67 100% 50%;
+    --sidebar-primary-foreground: 0 0% 4%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 12%;
+    --sidebar-ring: 67 100% 50%;
   }
 
-  .dark {
-    /* same — app is dark by default */
-    --background: 220 16% 7%;
-    --foreground: 0 0% 98%;
-    --card: 222 11% 10%;
-    --card-foreground: 0 0% 98%;
-    --popover: 222 11% 10%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 150 65% 49%;
-    --primary-foreground: 220 16% 7%;
-    --secondary: 222 8% 14%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 222 8% 14%;
-    --muted-foreground: 220 8% 60%;
-    --accent: 150 65% 49%;
-    --accent-foreground: 220 16% 7%;
-    --destructive: 0 72% 55%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 222 8% 18%;
-    --input: 222 8% 16%;
-    --ring: 150 65% 49%;
-  }
+  .dark { color-scheme: dark; }
 
-  html {
-    @apply dark;
-    color-scheme: dark;
-  }
+  html { @apply dark; color-scheme: dark; }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
+  * { @apply border-border; }
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: 'DM Sans', 'Outfit', system-ui, sans-serif;
   }
 
-  h1, h2, h3, .font-display {
-    font-family: 'DM Serif Display', Georgia, serif;
+  h1, h2, h3, h4, .font-display {
+    font-family: 'Bebas Neue', 'Barlow Condensed', Impact, sans-serif;
     font-weight: 400;
-    letter-spacing: -0.01em;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    line-height: 0.95;
   }
 
-  h1 { @apply text-4xl md:text-5xl lg:text-6xl; }
-  h2 { @apply text-3xl md:text-4xl; }
-  h3 { @apply text-2xl; }
+  h1 { @apply text-5xl md:text-7xl lg:text-8xl; }
+  h2 { @apply text-4xl md:text-6xl; }
+  h3 { @apply text-2xl md:text-3xl; }
+
+  .label-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    @apply uppercase tracking-[0.2em] text-xs font-semibold;
+  }
 }
 
 @layer components {
   .surface {
-    @apply bg-card border border-border rounded-xl;
+    @apply bg-card border border-border;
+    border-radius: 4px;
   }
   .surface-2 {
     background: hsl(var(--surface-2));
-    @apply border border-border rounded-xl;
+    @apply border border-border;
+    border-radius: 4px;
   }
-  .badge-verified {
-    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary/15 text-primary text-xs font-semibold;
-  }
-  .badge-discount {
-    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary text-primary-foreground text-xs font-semibold;
+  .grain {
+    background-image:
+      linear-gradient(135deg, transparent 0, transparent 49%, hsl(0 0% 100% / 0.015) 49%, hsl(0 0% 100% / 0.015) 51%, transparent 51%);
+    background-size: 8px 8px;
   }
 }
 
 @layer utilities {
-  .animate-fade-in { animation: fadeIn 0.3s ease-out; }
-  .animate-slide-up { animation: slideUp 0.4s ease-out; }
+  .animate-fade-in { animation: fadeIn 0.5s ease-out both; }
+  .animate-slide-up { animation: slideUp 0.6s ease-out both; }
+  .animate-marquee { animation: marquee 40s linear infinite; }
+  .pause-on-hover:hover .animate-marquee { animation-play-state: paused; }
+
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes slideUp {
-    from { opacity: 0; transform: translateY(12px); }
+    from { opacity: 0; transform: translateY(16px); }
     to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
   }
 }
