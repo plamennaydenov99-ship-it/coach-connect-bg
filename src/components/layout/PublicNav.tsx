@@ -43,7 +43,7 @@ export function PublicNav() {
           ))}
         </nav>
 
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-3">
           {/* Language toggle */}
           <div className="flex items-center gap-2 font-body text-xs">
             <button
@@ -60,8 +60,16 @@ export function PublicNav() {
               БГ
             </button>
           </div>
+          <Link to="/login">
+            <Button variant="ghost" className="h-10">{t.nav_login}</Button>
+          </Link>
           <Link to="/dashboard">
-            <Button variant="outline" className="h-10">{t.nav_coach_cta}</Button>
+            <Button
+              variant="outline"
+              className="h-10 border-foreground-subtle text-foreground-muted hover:border-accent-electric hover:text-foreground"
+            >
+              {t.nav_coach_cta}
+            </Button>
           </Link>
           <Link to="/search">
             <Button className="h-10">{t.nav_find_match}</Button>
@@ -89,6 +97,9 @@ export function PublicNav() {
               </Link>
             ))}
             <div className="my-2 h-px bg-border" />
+            <Link to="/login" onClick={() => setOpen(false)} className="block">
+              <Button variant="ghost" className="w-full">{t.nav_login}</Button>
+            </Link>
             <Link to="/dashboard" onClick={() => setOpen(false)} className="block">
               <Button variant="outline" className="w-full">{t.nav_coach_cta}</Button>
             </Link>
