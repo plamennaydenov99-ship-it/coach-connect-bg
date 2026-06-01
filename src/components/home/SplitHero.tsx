@@ -3,8 +3,8 @@ import { ArrowRight, Zap } from 'lucide-react';
 
 export function SplitHero() {
   return (
-    <section className="relative w-full" style={{ minHeight: 'calc(100vh - 64px - 40px)' }}>
-      <div className="flex h-full min-h-[calc(100vh-104px)] flex-col md:flex-row">
+    <section className="relative w-full">
+      <div className="flex flex-col md:flex-row md:h-[80vh]">
         {/* Athlete panel */}
         <Link
           to="/search"

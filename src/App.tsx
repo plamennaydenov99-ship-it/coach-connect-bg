@@ -39,8 +39,9 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<SplitEntry />} />
+            <Route path="/" element={<Index />} />
             <Route path="/athlete" element={<AthleteHome />} />
+            <Route path="/entry" element={<SplitEntry />} />
             <Route path="/home" element={<Index />} />
             <Route path="/search" element={<Search />} />
             <Route path="/coach/:slug" element={<CoachProfile />} />

@@ -13,10 +13,10 @@ export interface MatchAnswers {
 }
 
 interface Props {
-  onMatch: (answers: MatchAnswers) => void;
+  onMatch?: (answers: MatchAnswers) => void;
 }
 
-export function MatchingSection({ onMatch }: Props) {
+export function MatchingSection({ onMatch }: Props = {}) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<MatchAnswers>({});
   const [matching, setMatching] = useState(false);
@@ -52,7 +52,7 @@ export function MatchingSection({ onMatch }: Props) {
     setMatching(true);
     setTimeout(() => {
       setMatching(false);
-      onMatch(answers);
+      onMatch?.(answers);
       setTimeout(() => {
         document.getElementById('coach-preview')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
