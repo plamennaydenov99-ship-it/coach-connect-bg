@@ -6,81 +6,80 @@
 
 @layer base {
   :root {
-    /* ATLETA — Premium Dark Palette (TAG Heuer / Porsche / Formula E) */
-    /* All values are HSL (h s l) for tailwind hsl(var(--token)) consumption */
+    /* ATLETA — Carbon + Ice & Ember */
 
-    --background: 240 4% 6%;             /* #0E0E0F */
-    --background-secondary: 240 4% 9%;   /* #161618 */
-    --background-tertiary: 240 5% 11%;   /* #1C1C1F */
+    /* BASE — Carbon */
+    --background: 240 5% 7%;              /* #111112 */
+    --background-secondary: 240 4% 11%;   /* #1C1C1E */
+    --background-tertiary: 240 4% 15%;    /* #28282C */
 
-    --foreground: 60 6% 94%;             /* #F0F0EE */
-    --foreground-muted: 240 3% 55%;      /* #8A8A8E */
-    --foreground-subtle: 240 4% 30%;     /* #4A4A50 */
+    --foreground: 40 6% 94%;              /* #F0EFED */
+    --foreground-muted: 240 2% 61%;       /* #98989E */
+    --foreground-subtle: 240 3% 36%;      /* #5A5A60 */
 
-    --card: 240 4% 9%;                   /* #161618 */
-    --card-foreground: 60 6% 94%;
+    --card: 240 4% 11%;
+    --card-foreground: 40 6% 94%;
 
-    --popover: 240 4% 9%;
-    --popover-foreground: 60 6% 94%;
+    --popover: 240 4% 11%;
+    --popover-foreground: 40 6% 94%;
 
-    /* ELECTRIC ACCENT — primary CTA color */
-    --accent-electric: 173 100% 45%;     /* #00E5CC */
-    --accent-electric-dim: 173 100% 36%; /* #00B8A3 */
+    /* ICE BLUE — primary */
+    --primary: 199 46% 52%;               /* #4A9EBF */
+    --primary-foreground: 240 5% 7%;
+    --primary-hover: 199 46% 62%;
 
-    /* PRIMARY — Electric Teal (replaces Nardo Gray) */
-    --primary: 173 100% 45%;
-    --primary-foreground: 240 4% 6%;
-    --primary-hover: 173 100% 36%;
+    /* EMBER */
+    --ember: 27 58% 50%;                  /* #C97A3A */
+    --ember-hover: 27 58% 60%;
 
-    /* Nardo Gray kept as neutral accent */
-    --nardo: 240 3% 57%;
+    /* IVORY */
+    --ivory: 36 24% 93%;                  /* #F2EDE4 */
 
-    /* SECONDARY — Arctic Silver #C8C8CC */
-    --secondary: 240 6% 79%;
-    --secondary-foreground: 240 4% 6%;
+    /* Backwards-compat aliases (mapped to new palette so legacy classes keep working) */
+    --accent-electric: 199 46% 52%;       /* → ice */
+    --accent-electric-dim: 199 46% 42%;
+    --athlete-accent: 199 46% 52%;
+    --athlete-accent-bright: 199 46% 62%;
+    --athlete-accent-glow: 199 46% 72%;
+    --coach-accent: 27 58% 50%;           /* → ember */
+    --coach-accent-bright: 27 58% 60%;
+    --coach-accent-glow: 27 58% 70%;
+    --coach: 199 46% 52%;
+    --coach-foreground: 40 6% 94%;
+    --nardo: 240 2% 61%;
 
-    --muted: 240 4% 11%;
-    --muted-foreground: 240 3% 55%;
+    /* NEUTRAL */
+    --secondary: 240 3% 36%;
+    --secondary-foreground: 40 6% 94%;
+    --muted: 240 4% 15%;
+    --muted-foreground: 240 2% 61%;
+    --accent: 240 4% 15%;
+    --accent-foreground: 40 6% 94%;
 
-    --accent: 240 3% 57%;
-    --accent-foreground: 240 4% 6%;
+    /* BORDERS */
+    --border: 240 4% 24%;                 /* #3E3E42 */
+    --border-hover: 240 4% 30%;
+    --input: 240 4% 11%;
+    --ring: 199 46% 52%;
 
-    /* ATHLETE — Deep Navy */
-    --athlete-accent: 211 55% 23%;       /* #1B3A5C */
-    --athlete-accent-bright: 209 51% 36%;/* #2D5F8A */
-    --athlete-accent-glow: 209 50% 47%;  /* #3D7AB5 */
+    /* FUNCTIONAL */
+    --success: 199 46% 52%;
+    --success-foreground: 240 5% 7%;
+    --warning: 27 58% 50%;
+    --warning-foreground: 40 6% 94%;
+    --destructive: 0 55% 45%;
+    --destructive-foreground: 40 6% 94%;
 
-    /* COACH — Deep Forest */
-    --coach-accent: 144 38% 17%;         /* #1A3A2A */
-    --coach-accent-bright: 144 36% 26%;  /* #2A5A3F */
-    --coach-accent-glow: 144 34% 35%;    /* #3A7A55 */
+    --radius: 0.25rem;
 
-    /* Legacy aliases used across components — remapped to new palette */
-    --coach: 209 51% 36%;                /* athlete deep-navy bright (was electric blue) */
-    --coach-foreground: 60 6% 94%;
-
-    --success: 144 36% 35%;              /* #3A7A55 */
-    --success-foreground: 60 6% 94%;
-    --warning: 40 53% 35%;               /* #8A6A2A */
-    --warning-foreground: 60 6% 94%;
-    --destructive: 0 49% 32%;            /* #7A2A2A */
-    --destructive-foreground: 60 6% 94%;
-
-    --border: 240 6% 17%;                /* #2A2A2E */
-    --border-hover: 240 5% 23%;          /* #3A3A3E */
-    --input: 240 4% 9%;
-    --ring: 240 3% 57%;
-
-    --radius: 0.25rem;                   /* sharp 4px */
-
-    --sidebar-background: 240 4% 6%;
-    --sidebar-foreground: 240 3% 55%;
-    --sidebar-primary: 240 3% 57%;
-    --sidebar-primary-foreground: 60 6% 94%;
-    --sidebar-accent: 240 4% 9%;
-    --sidebar-accent-foreground: 60 6% 94%;
-    --sidebar-border: 240 6% 17%;
-    --sidebar-ring: 240 3% 57%;
+    --sidebar-background: 240 5% 7%;
+    --sidebar-foreground: 240 2% 61%;
+    --sidebar-primary: 199 46% 52%;
+    --sidebar-primary-foreground: 240 5% 7%;
+    --sidebar-accent: 240 4% 11%;
+    --sidebar-accent-foreground: 40 6% 94%;
+    --sidebar-border: 240 4% 24%;
+    --sidebar-ring: 199 46% 52%;
   }
 
   .dark { color-scheme: dark; }
@@ -135,19 +134,34 @@
   }
   .badge-verified {
     @apply inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider;
-    background: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
+    background: rgba(74, 158, 191, 0.12);
+    color: #4A9EBF;
+    border: 0.5px solid #4A9EBF;
     border-radius: 2px;
   }
   .badge-discount {
     @apply inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider;
-    background: hsl(var(--coach-accent));
-    color: hsl(var(--coach-accent-glow));
+    background: rgba(201, 122, 58, 0.12);
+    color: #C97A3A;
+    border: 0.5px solid #C97A3A;
     border-radius: 2px;
   }
 }
 
 @layer utilities {
+  .text-ember { color: #C97A3A; }
+  .text-ice { color: #4A9EBF; }
+  .text-ivory { color: #F2EDE4; }
+  .bg-ember { background-color: #C97A3A; }
+  .bg-ice { background-color: #4A9EBF; }
+  .bg-ember-subtle { background-color: rgba(201, 122, 58, 0.12); }
+  .bg-ice-subtle { background-color: rgba(74, 158, 191, 0.12); }
+  .border-ember { border-color: #C97A3A; }
+  .border-ice { border-color: #4A9EBF; }
+  .hover\:border-ice:hover { border-color: #4A9EBF; }
+  .hover\:text-ice:hover { color: #4A9EBF; }
+  .hover\:bg-ice:hover { background-color: #4A9EBF; }
+
   .animate-fade-in { animation: fadeIn 0.5s ease-out both; }
   .animate-slide-up { animation: slideUp 0.6s ease-out both; }
   .animate-marquee { animation: marquee 40s linear infinite; }
