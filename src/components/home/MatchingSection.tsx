@@ -52,7 +52,7 @@ export function MatchingSection({ onMatch }: Props = {}) {
     setMatching(true);
     setTimeout(() => {
       setMatching(false);
-      onMatch(answers);
+      onMatch?.(answers);
       setTimeout(() => {
         document.getElementById('coach-preview')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
