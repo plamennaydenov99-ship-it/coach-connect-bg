@@ -34,6 +34,25 @@ export default {
           foreground: "hsl(var(--primary-foreground))",
           hover: "hsl(var(--primary-hover))",
         },
+        ice: {
+          DEFAULT: '#4A9EBF',
+          hover: '#5BB4D6',
+          subtle: 'rgba(74, 158, 191, 0.12)',
+        },
+        ember: {
+          DEFAULT: '#C97A3A',
+          hover: '#D98E50',
+          subtle: 'rgba(201, 122, 58, 0.12)',
+        },
+        ivory: '#F2EDE4',
+        carbon: {
+          900: '#111112',
+          800: '#1C1C1E',
+          700: '#28282C',
+          600: '#3E3E42',
+          500: '#5A5A60',
+        },
+        // Legacy aliases — mapped to new palette tokens via CSS vars
         "accent-electric": {
           DEFAULT: "hsl(var(--accent-electric))",
           dim: "hsl(var(--accent-electric-dim))",
