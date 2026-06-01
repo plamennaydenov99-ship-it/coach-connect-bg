@@ -21,11 +21,12 @@ export function PublicNav() {
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
       <div className="container flex h-16 md:h-20 items-center justify-between gap-6">
         <Link to="/" className="flex items-center gap-2 shrink-0">
-          <div className="flex h-9 w-9 items-center justify-center bg-accent-electric text-primary-foreground rounded-sm">
+          <div className="flex h-9 w-9 items-center justify-center bg-ice text-primary-foreground rounded-sm">
             <Zap className="h-4 w-4" strokeWidth={2.5} />
           </div>
-          <span className="font-display text-2xl md:text-3xl tracking-[0.08em] font-semibold text-foreground">ATLETA</span>
+          <span className="font-display text-2xl md:text-3xl tracking-[0.08em] font-semibold text-ivory">ATLETA</span>
         </Link>
+
 
         <nav className="hidden lg:flex items-center gap-8">
           {links.map(l => (
