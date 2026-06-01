@@ -101,9 +101,6 @@ export function PublicNav() {
             <Link to="/dashboard" onClick={() => setOpen(false)} className="block">
               <Button variant="outline" className="w-full">{t.nav_coach_cta}</Button>
             </Link>
-            <Link to="/search" onClick={() => setOpen(false)} className="block">
-              <Button className="w-full">{t.nav_find_match}</Button>
-            </Link>
           </div>
         </div>
       )}
