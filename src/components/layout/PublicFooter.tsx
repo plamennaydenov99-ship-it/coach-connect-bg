@@ -37,7 +37,7 @@ export function PublicFooter() {
       </div>
       <div className="border-t border-border">
         <div className="container py-5 text-xs text-muted-foreground flex flex-wrap justify-between gap-2">
-          <span>© {new Date().getFullYear()} Atleta. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} Zenit. All rights reserved.</span>
           <span>Made for athletes, by athletes.</span>
         </div>
       </div>
