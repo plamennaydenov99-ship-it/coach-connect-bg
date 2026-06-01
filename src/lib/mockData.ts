@@ -26,7 +26,10 @@ export const SPORTS: Sport[] = [
   { slug: 'crossfit', label: 'CrossFit', labelBg: 'КросФит', icon: 'Dumbbell' },
 ];
 
-export const CITIES = ['Sofia', 'Plovdiv', 'Varna', 'Burgas', 'Stara Zagora', 'Pleven'];
+export const CITIES_EN = ['Sofia', 'Plovdiv', 'Varna', 'Burgas', 'Stara Zagora', 'Pleven'];
+export const CITIES_BG = ['София', 'Пловдив', 'Варна', 'Бургас', 'Стара Загора', 'Плевен'];
+// Keep CITIES = CITIES_EN for filter compatibility with coach city strings
+export const CITIES = CITIES_EN;
 
 export interface Review {
   id: string;
@@ -69,7 +72,7 @@ const mkReviews = (seed: number, count: number): Review[] => {
     'Sessions are fun, structured, and challenging. Best decision I made this year.',
     'Professional, punctual, and genuinely cares about your goals.',
   ];
-  const names = ['Stefan D.', 'Maria K.', 'Ivan P.', 'Elena T.', 'Georgi N.', 'Vesela S.'];
+  const names = ['Стефан Д.', 'Мария К.', 'Иван П.', 'Елена Т.', 'Георги Н.', 'Весела С.'];
   return Array.from({ length: count }, (_, i) => ({
     id: `r${seed}-${i}`,
     author: names[(seed + i) % names.length],

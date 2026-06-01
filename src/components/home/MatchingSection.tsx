@@ -64,7 +64,8 @@ export function MatchingSection({ onMatch }: Props = {}) {
 
   return (
     <section
-      className="relative border-b border-border bg-background-secondary overflow-hidden"
+      id="matching-section"
+      className="relative border-b border-border bg-background-secondary overflow-hidden scroll-mt-20"
       style={{ backgroundImage: 'repeating-linear-gradient(45deg, hsl(0 0% 100% / 0.02) 0 1px, transparent 1px 14px)' }}
     >
       <div className="container py-20 md:py-28 max-w-5xl">
