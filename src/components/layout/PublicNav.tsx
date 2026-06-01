@@ -72,9 +72,6 @@ export function PublicNav() {
               {t.nav_coach_cta}
             </Button>
           </Link>
-          <Link to="/search">
-            <Button className="h-10">{t.nav_find_match}</Button>
-          </Link>
         </div>
 
         <div className="flex items-center gap-2 md:hidden">
