@@ -10,11 +10,11 @@ export function PublicNav() {
   const { lang, setLang, t } = useLanguage();
 
   const links = [
-    { to: '/search', label: t.nav_search },
+    { to: '/search', label: 'Find a Coach' },
+    { to: '/match', label: 'AI Match' },
     { to: '/events', label: t.nav_events },
     { to: '/camps', label: t.nav_camps },
     { to: '/community', label: t.nav_community },
-    { to: '/marketplace', label: t.nav_marketplace },
   ];
 
   return (
@@ -24,7 +24,7 @@ export function PublicNav() {
           <div className="flex h-9 w-9 items-center justify-center bg-ice text-primary-foreground rounded-sm">
             <Zap className="h-4 w-4" strokeWidth={2.5} />
           </div>
-          <span className="font-display text-2xl md:text-3xl tracking-[0.08em] font-semibold text-ivory">ATLETA</span>
+          <span className="font-display text-2xl md:text-3xl tracking-[0.08em] font-semibold text-ivory">ZENIT</span>
         </Link>
 
 
@@ -72,9 +72,6 @@ export function PublicNav() {
               {t.nav_coach_cta}
             </Button>
           </Link>
-          <Link to="/search">
-            <Button className="h-10">{t.nav_find_match}</Button>
-          </Link>
         </div>
 
         <div className="flex items-center gap-2 md:hidden">
@@ -103,9 +100,6 @@ export function PublicNav() {
             </Link>
             <Link to="/dashboard" onClick={() => setOpen(false)} className="block">
               <Button variant="outline" className="w-full">{t.nav_coach_cta}</Button>
-            </Link>
-            <Link to="/search" onClick={() => setOpen(false)} className="block">
-              <Button className="w-full">{t.nav_find_match}</Button>
             </Link>
           </div>
         </div>

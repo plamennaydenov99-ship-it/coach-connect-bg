@@ -17,6 +17,7 @@ import Marketplace from "./pages/Marketplace";
 import Camps from "./pages/Camps";
 import CampDetail from "./pages/CampDetail";
 import Community from "./pages/Community";
+import Match from "./pages/Match";
 import NotFound from "./pages/NotFound";
 
 import { DashboardLayout } from "./components/dashboard/DashboardLayout";
@@ -50,6 +51,7 @@ const App = () => (
             <Route path="/camps" element={<Camps />} />
             <Route path="/camps/:id" element={<CampDetail />} />
             <Route path="/community" element={<Community />} />
+            <Route path="/match" element={<Match />} />
 
             <Route path="/dashboard" element={<DashboardLayout />}>
               <Route index element={<DashboardHome />} />
