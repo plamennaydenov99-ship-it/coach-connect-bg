@@ -12,6 +12,8 @@ export function PublicNav() {
   const links = [
     { to: '/search', label: t.nav_search },
     { to: '/events', label: t.nav_events },
+    { to: '/camps', label: t.nav_camps },
+    { to: '/community', label: t.nav_community },
     { to: '/marketplace', label: t.nav_marketplace },
   ];
 

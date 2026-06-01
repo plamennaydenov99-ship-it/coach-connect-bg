@@ -16,6 +16,9 @@ import Register from "./pages/Register";
 import ForCoaches from "./pages/ForCoaches";
 import Events from "./pages/Events";
 import Marketplace from "./pages/Marketplace";
+import Camps from "./pages/Camps";
+import CampDetail from "./pages/CampDetail";
+import Community from "./pages/Community";
 import NotFound from "./pages/NotFound";
 
 import { DashboardLayout } from "./components/dashboard/DashboardLayout";
@@ -47,6 +50,9 @@ const App = () => (
             <Route path="/for-coaches" element={<ForCoaches />} />
             <Route path="/events" element={<Events />} />
             <Route path="/marketplace" element={<Marketplace />} />
+            <Route path="/camps" element={<Camps />} />
+            <Route path="/camps/:id" element={<CampDetail />} />
+            <Route path="/community" element={<Community />} />
 
             <Route path="/dashboard" element={<DashboardLayout />}>
               <Route index element={<DashboardHome />} />
