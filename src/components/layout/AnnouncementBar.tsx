@@ -8,16 +8,17 @@ export function AnnouncementBar() {
   if (!open) return null;
 
   return (
-    <div className="relative bg-background-secondary border-l-2 border-accent-electric">
+    <div className="relative bg-background-secondary border-l-2 border-ember">
       <div className="container flex items-center justify-center gap-3 py-2.5 text-center">
         <span className="font-display uppercase tracking-[0.15em] text-[12px] md:text-[13px] text-foreground-muted">
-          <span className="text-accent-electric mr-2">◆</span>
-          <span className="text-secondary">{t.announcement}</span>
+          <span className="text-ember mr-2">◆</span>
+          <span className="text-ivory">{t.announcement}</span>
         </span>
         <a
           href="/register"
-          className="hidden md:inline font-display uppercase tracking-[0.15em] text-[12px] text-foreground hover:text-accent-electric transition-colors"
+          className="hidden md:inline font-display uppercase tracking-[0.15em] text-[12px] text-ice hover:text-ivory transition-colors"
         >
+
           → {t.announcement_cta}
         </a>
       </div>
