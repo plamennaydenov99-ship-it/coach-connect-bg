@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
@@ -7,16 +7,61 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { findCoach, findSport, discountedPrice } from '@/lib/mockData';
-import { BadgeCheck, Star, MapPin, Trophy, Calendar, CheckCircle2, MessageSquare } from 'lucide-react';
+import { findSport } from '@/lib/mockData';
+import { BadgeCheck, MapPin, Trophy, Calendar, CheckCircle2, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+
+interface CoachData {
+  id: string;
+  bio: string | null;
+  sport: string | null;
+  specialisms: string[];
+  price_per_session: number | null;
+  discount_pct: number;
+  years_experience: number | null;
+  gallery: string[];
+  verified: boolean;
+  level: string | null;
+  profiles: {
+    full_name: string | null;
+    avatar_url: string | null;
+    city: string | null;
+  } | null;
+}
 
 const CoachProfile = () => {
-  const { slug } = useParams<{ slug: string }>();
-  const coach = slug ? findCoach(slug) : undefined;
+  const { id } = useParams<{ id: string }>();
+  const [coach, setCoach] = useState<CoachData | null>(null);
+  const [loading, setLoading] = useState(true);
   const [enquiryOpen, setEnquiryOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', message: '', date: '' });
+
+  useEffect(() => {
+    if (!id) return;
+    (async () => {
+      setLoading(true);
+      const { data } = await supabase
+        .from('coach_profiles')
+        .select('id, bio, sport, specialisms, price_per_session, discount_pct, years_experience, gallery, verified, level, profiles!coach_profiles_id_fkey(full_name, avatar_url, city)')
+        .eq('id', id)
+        .eq('verified', true)
+        .maybeSingle();
+      setCoach(data as any);
+      setLoading(false);
+    })();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <PublicNav />
+        <main className="flex-1 container py-20 text-center text-muted-foreground">Loading…</main>
+        <PublicFooter />
+      </div>
+    );
+  }
 
   if (!coach) {
     return (
@@ -31,8 +76,12 @@ const CoachProfile = () => {
     );
   }
 
-  const sport = findSport(coach.sport);
-  const final = discountedPrice(coach.pricePerSession, coach.discountPct);
+  const sport = coach.sport ? findSport(coach.sport as any) : null;
+  const name = coach.profiles?.full_name || 'Coach';
+  const avatar = coach.profiles?.avatar_url || `https://i.pravatar.cc/300?u=${coach.id}`;
+  const city = coach.profiles?.city ?? '';
+  const price = coach.price_per_session ?? 0;
+  const finalPrice = coach.discount_pct ? Math.round(price * (1 - coach.discount_pct / 100)) : price;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,141 +108,72 @@ const CoachProfile = () => {
       <main className="flex-1">
         <section className="border-b border-border bg-card/40">
           <div className="container py-10 grid gap-8 md:grid-cols-[auto_1fr] items-center">
-            <img
-              src={coach.avatar}
-              alt={coach.name}
-              className="h-28 w-28 md:h-36 md:w-36 rounded-2xl object-cover border border-border"
-            />
+            <img src={avatar} alt={name} className="h-28 w-28 md:h-36 md:w-36 rounded-2xl object-cover border border-border" />
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-3">
-                <span className="px-2 py-0.5 text-xs font-semibold rounded-md bg-primary/15 text-primary capitalize">
-                  {sport?.label}
-                </span>
-                {coach.verified && (
-                  <span className="badge-verified"><BadgeCheck className="h-3 w-3" /> Verified</span>
+                {sport && (
+                  <span className="px-2 py-0.5 text-xs font-semibold rounded-md bg-primary/15 text-primary capitalize">
+                    {sport.label}
+                  </span>
                 )}
-                {coach.discountPct ? (
-                  <span className="badge-discount">-{coach.discountPct}% Platform rate</span>
+                <span className="badge-verified"><BadgeCheck className="h-3 w-3" /> Verified</span>
+                {coach.discount_pct ? (
+                  <span className="badge-discount">-{coach.discount_pct}% Platform rate</span>
                 ) : null}
               </div>
-              <h1 className="font-display">{coach.name}</h1>
+              <h1 className="font-display">{name}</h1>
               <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
-                <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {coach.city}</span>
-                <span className="flex items-center gap-1.5"><Star className="h-4 w-4 fill-primary text-primary" /> {coach.rating.toFixed(2)} ({coach.reviewCount} reviews)</span>
-                <span className="flex items-center gap-1.5"><Trophy className="h-4 w-4" /> {coach.yearsExperience} yrs experience</span>
+                {city && <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {city}</span>}
+                {coach.years_experience != null && (
+                  <span className="flex items-center gap-1.5"><Trophy className="h-4 w-4" /> {coach.years_experience} yrs experience</span>
+                )}
               </div>
             </div>
           </div>
         </section>
 
-        <section className="container py-6">
-          <div className="grid grid-cols-3 gap-3">
-            {[
-              { label: 'Years experience', value: coach.yearsExperience },
-              { label: 'Sessions completed', value: coach.sessionsCompleted.toLocaleString() },
-              { label: 'Sports covered', value: 1 },
-            ].map(s => (
-              <div key={s.label} className="surface p-5 text-center">
-                <p className="font-display text-2xl md:text-3xl text-primary">{s.value}</p>
-                <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wide">{s.label}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="container pb-20 grid gap-8 md:grid-cols-[1fr_340px]">
+        <section className="container pb-20 pt-8 grid gap-8 md:grid-cols-[1fr_340px]">
           <div className="space-y-8">
-            <div className="surface p-6">
-              <h2 className="font-display text-2xl mb-3">About</h2>
-              <p className="text-muted-foreground leading-relaxed">{coach.bio}</p>
-              <div className="mt-5 flex flex-wrap gap-2">
-                {coach.specialisms.map(s => (
-                  <span key={s} className="px-3 py-1 rounded-md bg-secondary text-sm">{s}</span>
-                ))}
+            {coach.bio && (
+              <div className="surface p-6">
+                <h2 className="font-display text-2xl mb-3">About</h2>
+                <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{coach.bio}</p>
+                {coach.specialisms?.length ? (
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {coach.specialisms.map(s => (
+                      <span key={s} className="px-3 py-1 rounded-md bg-secondary text-sm">{s}</span>
+                    ))}
+                  </div>
+                ) : null}
               </div>
-            </div>
+            )}
 
-            <div>
-              <h2 className="font-display text-2xl mb-4">Gallery</h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {coach.gallery.map((g, i) => (
-                  <img
-                    key={i}
-                    src={g}
-                    alt={`${coach.name} session ${i + 1}`}
-                    loading="lazy"
-                    className="aspect-[4/3] rounded-xl object-cover border border-border"
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <div className="flex items-end justify-between mb-4">
-                <h2 className="font-display text-2xl">Reviews</h2>
-                <div className="text-right">
-                  <p className="font-display text-3xl text-primary">{coach.rating.toFixed(2)}</p>
-                  <p className="text-xs text-muted-foreground">{coach.reviewCount} ratings</p>
+            {coach.gallery?.length ? (
+              <div>
+                <h2 className="font-display text-2xl mb-4">Gallery</h2>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {coach.gallery.map((g, i) => (
+                    <img key={i} src={g} alt={`${name} session ${i + 1}`} loading="lazy"
+                      className="aspect-[4/3] rounded-xl object-cover border border-border" />
+                  ))}
                 </div>
               </div>
-
-              <div className="surface p-5 mb-4">
-                {[5, 4, 3, 2, 1].map(stars => {
-                  const pct = stars === 5 ? 70 : stars === 4 ? 22 : stars === 3 ? 5 : stars === 2 ? 2 : 1;
-                  return (
-                    <div key={stars} className="flex items-center gap-3 text-sm py-1">
-                      <span className="w-6 text-muted-foreground">{stars}★</span>
-                      <div className="flex-1 h-2 rounded-full bg-secondary overflow-hidden">
-                        <div className="h-full bg-primary" style={{ width: `${pct}%` }} />
-                      </div>
-                      <span className="w-10 text-right text-muted-foreground">{pct}%</span>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="space-y-3">
-                {coach.reviews.map(r => (
-                  <div key={r.id} className="surface p-5">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <img src={r.avatar} alt={r.author} className="h-9 w-9 rounded-full object-cover" />
-                        <div>
-                          <p className="font-medium text-sm">{r.author}</p>
-                          <p className="text-xs text-muted-foreground">{r.date}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-0.5">
-                        {Array.from({ length: r.rating }).map((_, i) => (
-                          <Star key={i} className="h-3.5 w-3.5 fill-primary text-primary" />
-                        ))}
-                      </div>
-                    </div>
-                    <p className="mt-3 text-sm text-muted-foreground">{r.text}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+            ) : null}
           </div>
 
           <aside className="md:sticky md:top-20 h-fit">
             <div className="surface p-6">
               <p className="text-sm text-muted-foreground">Per session</p>
               <div className="mt-1 flex items-baseline gap-3">
-                {coach.discountPct ? (
+                {coach.discount_pct ? (
                   <>
-                    <span className="font-display text-3xl">€{final}</span>
-                    <span className="text-muted-foreground line-through">€{coach.pricePerSession}</span>
+                    <span className="font-display text-3xl">€{finalPrice}</span>
+                    <span className="text-muted-foreground line-through">€{price}</span>
                   </>
                 ) : (
-                  <span className="font-display text-3xl">€{coach.pricePerSession}</span>
+                  <span className="font-display text-3xl">€{price}</span>
                 )}
               </div>
-              {coach.discountPct ? (
-                <p className="mt-2 text-xs text-primary font-semibold">
-                  You save €{coach.pricePerSession - final} with the platform rate.
-                </p>
-              ) : null}
 
               <Dialog open={enquiryOpen} onOpenChange={setEnquiryOpen}>
                 <DialogTrigger asChild>
@@ -203,7 +183,7 @@ const CoachProfile = () => {
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Request a session with {coach.name}</DialogTitle>
+                    <DialogTitle>Request a session with {name}</DialogTitle>
                     <DialogDescription>
                       Send a quick enquiry. The coach typically replies within 24h.
                     </DialogDescription>
@@ -215,9 +195,6 @@ const CoachProfile = () => {
                         <CheckCircle2 className="h-7 w-7" />
                       </div>
                       <p className="font-display text-xl">Enquiry sent</p>
-                      <p className="text-sm text-muted-foreground mt-2">
-                        We'll notify you in-app the moment the coach replies.
-                      </p>
                       <Button className="mt-5" onClick={closeAndReset}>Done</Button>
                     </div>
                   ) : (
@@ -236,12 +213,9 @@ const CoachProfile = () => {
                       </div>
                       <div className="grid gap-2">
                         <Label htmlFor="message">Message</Label>
-                        <Textarea id="message" rows={4} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} required placeholder="Tell the coach about your goals and experience." />
+                        <Textarea id="message" rows={4} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} required />
                       </div>
                       <Button type="submit" className="w-full" size="lg">Send enquiry</Button>
-                      <p className="text-xs text-muted-foreground text-center">
-                        All contact happens through Atleta — no personal contact details exchanged.
-                      </p>
                     </form>
                   )}
                 </DialogContent>
