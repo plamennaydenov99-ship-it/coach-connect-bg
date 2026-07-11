@@ -17,6 +17,7 @@ interface CoachData {
   bio: string | null;
   sport: string | null;
   specialisms: string[];
+  certifications: string[];
   price_per_session: number | null;
   discount_pct: number;
   years_experience: number | null;
@@ -44,7 +45,7 @@ const CoachProfile = () => {
       setLoading(true);
       const { data } = await supabase
         .from('coach_profiles')
-        .select('id, bio, sport, specialisms, price_per_session, discount_pct, years_experience, gallery, verified, level, profiles!coach_profiles_id_fkey(full_name, avatar_url, city)')
+        .select('id, bio, sport, specialisms, certifications, price_per_session, discount_pct, years_experience, gallery, verified, level, profiles!coach_profiles_id_fkey(full_name, avatar_url, city)')
         .eq('id', id)
         .eq('verified', true)
         .maybeSingle();
@@ -139,10 +140,25 @@ const CoachProfile = () => {
                 <h2 className="font-display text-2xl mb-3">About</h2>
                 <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{coach.bio}</p>
                 {coach.specialisms?.length ? (
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    {coach.specialisms.map(s => (
-                      <span key={s} className="px-3 py-1 rounded-md bg-secondary text-sm">{s}</span>
-                    ))}
+                  <div className="mt-5">
+                    <p className="text-xs uppercase tracking-[0.1em] text-muted-foreground mb-2">Specialisms</p>
+                    <div className="flex flex-wrap gap-2">
+                      {coach.specialisms.map(s => (
+                        <span key={s} className="px-3 py-1 rounded-md bg-secondary text-sm">{s}</span>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+                {coach.certifications?.length ? (
+                  <div className="mt-5">
+                    <p className="text-xs uppercase tracking-[0.1em] text-muted-foreground mb-2">Certifications</p>
+                    <div className="flex flex-wrap gap-2">
+                      {coach.certifications.map(c => (
+                        <span key={c} className="px-3 py-1 rounded-md border border-primary/40 text-primary text-sm flex items-center gap-1.5">
+                          <BadgeCheck className="h-3.5 w-3.5" /> {c}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 ) : null}
               </div>

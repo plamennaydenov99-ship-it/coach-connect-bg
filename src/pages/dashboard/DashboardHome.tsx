@@ -1,40 +1,78 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Eye, MessageSquare, BadgeCheck, CheckCircle2, Crown, ChevronRight } from 'lucide-react';
-
-const ENQUIRIES = [
-  { name: 'Sofia M.', preview: 'Hi! Would you have any availability next Tuesday evening for a 1-hour session?', date: '2h ago' },
-  { name: 'Diogo R.', preview: 'Looking to start training my serve. I\'m an intermediate player.', date: '1d ago' },
-  { name: 'Mariana C.', preview: 'Are you taking new clients in October? Goal is to prep for an amateur league.', date: '2d ago' },
-];
-
-const CHECKLIST = [
-  { label: 'Add a profile photo', done: true },
-  { label: 'Write your bio', done: true },
-  { label: 'List your specialisms', done: true },
-  { label: 'Upload at least 4 gallery photos', done: true },
-  { label: 'Set your pricing', done: true },
-  { label: 'Add weekly availability', done: false },
-  { label: 'Verify your ID', done: false },
-];
+import { Eye, MessageSquare, BadgeCheck, Crown, ChevronRight, Inbox, CheckCircle2 } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 const DashboardHome = () => {
-  const completion = Math.round((CHECKLIST.filter(c => c.done).length / CHECKLIST.length) * 100);
+  const { user, profile } = useAuth();
+  const firstName = (profile?.full_name || '').trim().split(' ')[0] || 'there';
+
+  const [checklist, setChecklist] = useState([
+    { label: 'Add your full name', done: false },
+    { label: 'Set your city', done: false },
+    { label: 'Add a profile photo', done: false },
+    { label: 'Write your bio', done: false },
+    { label: 'List your specialisms', done: false },
+    { label: 'Add at least one certification', done: false },
+    { label: 'Set your pricing', done: false },
+  ]);
+
+  useEffect(() => {
+    if (!user || !profile) return;
+    (async () => {
+      const base = [
+        { label: 'Add your full name', done: !!profile.full_name },
+        { label: 'Set your city', done: !!profile.city },
+        { label: 'Add a profile photo', done: !!profile.avatar_url },
+      ];
+      if (profile.role === 'coach') {
+        const { data } = await supabase
+          .from('coach_profiles')
+          .select('bio, specialisms, certifications, price_per_session')
+          .eq('id', user.id)
+          .maybeSingle();
+        setChecklist([
+          ...base,
+          { label: 'Write your bio', done: !!data?.bio },
+          { label: 'List your specialisms', done: !!(data?.specialisms?.length) },
+          { label: 'Add at least one certification', done: !!(data?.certifications?.length) },
+          { label: 'Set your pricing', done: !!data?.price_per_session },
+        ]);
+      } else if (profile.role === 'club') {
+        const { data } = await supabase
+          .from('club_profiles')
+          .select('about, sport')
+          .eq('id', user.id)
+          .maybeSingle();
+        setChecklist([
+          ...base,
+          { label: 'Write an about section', done: !!data?.about },
+          { label: 'Set your primary sport', done: !!data?.sport },
+        ]);
+      } else {
+        setChecklist(base);
+      }
+    })();
+  }, [user, profile]);
+
+  const completion = Math.round((checklist.filter(c => c.done).length / Math.max(checklist.length, 1)) * 100);
 
   return (
     <div className="space-y-6 max-w-6xl">
       <div>
-        <h1 className="font-display text-3xl">Welcome back, Rui</h1>
-        <p className="text-muted-foreground mt-1">Here's what's happening with your profile this week.</p>
+        <h1 className="font-display text-3xl">Welcome back, {firstName}</h1>
+        <p className="text-muted-foreground mt-1">Here's a snapshot of your account.</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
-          { label: 'Profile views', value: '1,284', delta: '+12%', icon: Eye },
-          { label: 'Enquiries received', value: '23', delta: '+5', icon: MessageSquare },
-          { label: 'Subscription', value: 'Pro Coach', delta: 'Renews 12 May', icon: Crown },
-          { label: 'Completion', value: `${completion}%`, delta: 'Almost there', icon: BadgeCheck },
+          { label: 'Profile views', value: '0', delta: 'This week', icon: Eye },
+          { label: 'Enquiries received', value: '0', delta: 'All time', icon: MessageSquare },
+          { label: 'Subscription', value: 'Free trial', delta: 'No card on file', icon: Crown },
+          { label: 'Completion', value: `${completion}%`, delta: completion === 100 ? 'Complete' : 'Keep going', icon: BadgeCheck },
         ].map(s => (
           <div key={s.label} className="surface p-5">
             <div className="flex items-center justify-between">
@@ -55,7 +93,7 @@ const DashboardHome = () => {
           </div>
           <Progress value={completion} className="h-2" />
           <ul className="mt-5 space-y-2">
-            {CHECKLIST.map(item => (
+            {checklist.map(item => (
               <li key={item.label} className="flex items-center gap-3 text-sm">
                 <CheckCircle2 className={`h-4 w-4 ${item.done ? 'text-primary' : 'text-muted-foreground/40'}`} />
                 <span className={item.done ? 'text-muted-foreground line-through' : ''}>{item.label}</span>
@@ -72,9 +110,9 @@ const DashboardHome = () => {
           <div className="space-y-2">
             {[
               { label: 'Edit profile', to: '/dashboard/profile' },
-              { label: 'View public profile', to: '/coach/dimitar-petrov' },
               { label: 'Upgrade plan', to: '/dashboard/billing' },
               { label: 'Open analytics', to: '/dashboard/analytics' },
+              { label: 'Account settings', to: '/dashboard/settings' },
             ].map(a => (
               <Link key={a.to} to={a.to}>
                 <Button variant="outline" className="w-full justify-between">
@@ -89,25 +127,10 @@ const DashboardHome = () => {
       <div className="surface p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-display text-xl">Recent enquiries</h2>
-          <Link to="/dashboard/messages">
-            <Button variant="ghost" size="sm">View all <ChevronRight className="h-4 w-4 ml-1" /></Button>
-          </Link>
         </div>
-        <div className="divide-y divide-border">
-          {ENQUIRIES.map(e => (
-            <div key={e.name} className="py-3 flex items-start gap-3">
-              <div className="h-9 w-9 rounded-full bg-primary/15 text-primary flex items-center justify-center text-sm font-semibold">
-                {e.name[0]}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm font-medium">{e.name}</p>
-                  <span className="text-xs text-muted-foreground">{e.date}</span>
-                </div>
-                <p className="text-sm text-muted-foreground truncate">{e.preview}</p>
-              </div>
-            </div>
-          ))}
+        <div className="py-10 flex flex-col items-center text-center text-muted-foreground">
+          <Inbox className="h-8 w-8 mb-3 text-muted-foreground/50" />
+          <p className="text-sm">No enquiries yet — they'll show up here once athletes reach out.</p>
         </div>
       </div>
     </div>

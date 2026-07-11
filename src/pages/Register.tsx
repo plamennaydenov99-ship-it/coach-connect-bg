@@ -5,10 +5,11 @@ import { PublicFooter } from '@/components/layout/PublicFooter';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Zap } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { Zap, Plus, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { CITIES } from '@/lib/mockData';
+import { CITIES, SPORTS } from '@/lib/mockData';
 
 type Role = 'athlete' | 'coach' | 'club';
 
@@ -17,6 +18,24 @@ const Register = () => {
   const [form, setForm] = useState({ name: '', email: '', password: '', city: '' });
   const [role, setRole] = useState<Role>('athlete');
   const [loading, setLoading] = useState(false);
+
+  // Coach-specific
+  const [coachSport, setCoachSport] = useState('');
+  const [coachBio, setCoachBio] = useState('');
+  const [coachPrice, setCoachPrice] = useState<string>('');
+  const [certs, setCerts] = useState<string[]>([]);
+  const [newCert, setNewCert] = useState('');
+
+  // Club-specific
+  const [clubSport, setClubSport] = useState('');
+  const [clubAbout, setClubAbout] = useState('');
+
+  const addCert = () => {
+    if (newCert.trim()) {
+      setCerts([...certs, newCert.trim()]);
+      setNewCert('');
+    }
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,21 +49,32 @@ const Register = () => {
     }
 
     setLoading(true);
+    const metadata: Record<string, unknown> = {
+      role,
+      full_name: form.name,
+      city: form.city || null,
+      language: 'en',
+    };
+    if (role === 'coach') {
+      metadata.sport = coachSport || null;
+      metadata.bio = coachBio || null;
+      metadata.price_per_session = coachPrice || null;
+      metadata.certifications = certs;
+    } else if (role === 'club') {
+      metadata.sport = clubSport || null;
+      metadata.about = clubAbout || null;
+    }
+
     const { error } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
       options: {
         emailRedirectTo: `${window.location.origin}/`,
-        data: {
-          role,
-          full_name: form.name,
-          city: form.city || null,
-          language: 'en',
-        },
+        data: metadata,
       },
     });
-    setLoading(false);
 
+    setLoading(false);
     if (error) {
       toast.error(error.message);
       return;
@@ -114,6 +144,73 @@ const Register = () => {
                 {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
+
+            {role === 'coach' && (
+              <div className="space-y-4 pt-2 border-t border-border">
+                <p className="font-display text-sm uppercase tracking-[0.1em] text-muted-foreground">Coach details</p>
+                <div className="grid gap-2">
+                  <Label>Primary sport</Label>
+                  <select
+                    className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+                    value={coachSport}
+                    onChange={e => setCoachSport(e.target.value)}
+                  >
+                    <option value="">Select a sport</option>
+                    {SPORTS.map(s => <option key={s.slug} value={s.slug}>{s.label}</option>)}
+                  </select>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="cbio">Background</Label>
+                  <Textarea id="cbio" rows={4} value={coachBio} onChange={e => setCoachBio(e.target.value)}
+                    placeholder="A short intro — your experience, coaching philosophy, who you work with." />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="cprice">Starting price per session (€)</Label>
+                  <Input id="cprice" type="number" min={0} value={coachPrice}
+                    onChange={e => setCoachPrice(e.target.value)} placeholder="e.g. 40" />
+                </div>
+                <div className="grid gap-2">
+                  <Label>Certifications</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {certs.map((c, i) => (
+                      <span key={i} className="px-3 py-1.5 rounded-md bg-secondary text-sm flex items-center gap-2">
+                        {c}
+                        <button type="button" onClick={() => setCerts(certs.filter((_, idx) => idx !== i))}
+                          className="text-muted-foreground hover:text-foreground"><X className="h-3 w-3" /></button>
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <Input value={newCert} onChange={e => setNewCert(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCert(); } }}
+                      placeholder='e.g. "UEFA B License"' />
+                    <Button type="button" variant="outline" onClick={addCert}><Plus className="h-4 w-4" /></Button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {role === 'club' && (
+              <div className="space-y-4 pt-2 border-t border-border">
+                <p className="font-display text-sm uppercase tracking-[0.1em] text-muted-foreground">Club details</p>
+                <div className="grid gap-2">
+                  <Label>Primary sport</Label>
+                  <select
+                    className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+                    value={clubSport}
+                    onChange={e => setClubSport(e.target.value)}
+                  >
+                    <option value="">Select a sport</option>
+                    {SPORTS.map(s => <option key={s.slug} value={s.slug}>{s.label}</option>)}
+                  </select>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="clababout">About</Label>
+                  <Textarea id="clababout" rows={4} value={clubAbout} onChange={e => setClubAbout(e.target.value)}
+                    placeholder="Facilities, programs offered, what makes your club stand out." />
+                </div>
+              </div>
+            )}
 
             <Button type="submit" className="w-full" size="lg" disabled={loading}>
               {loading ? 'Creating…' : 'Create account'}

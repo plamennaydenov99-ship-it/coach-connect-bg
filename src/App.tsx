@@ -22,6 +22,7 @@ import Match from "./pages/Match";
 import NotFound from "./pages/NotFound";
 
 import { DashboardLayout } from "./components/dashboard/DashboardLayout";
+import { RequireAuth } from "./components/dashboard/RequireAuth";
 import DashboardHome from "./pages/dashboard/DashboardHome";
 import ProfileEditor from "./pages/dashboard/ProfileEditor";
 import Analytics from "./pages/dashboard/Analytics";
@@ -55,7 +56,7 @@ const App = () => (
               <Route path="/community" element={<Community />} />
               <Route path="/match" element={<Match />} />
 
-              <Route path="/dashboard" element={<DashboardLayout />}>
+              <Route path="/dashboard" element={<RequireAuth><DashboardLayout /></RequireAuth>}>
                 <Route index element={<DashboardHome />} />
                 <Route path="profile" element={<ProfileEditor />} />
                 <Route path="analytics" element={<Analytics />} />
