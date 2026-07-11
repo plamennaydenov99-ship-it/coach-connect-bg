@@ -1,102 +1,66 @@
-# Atleta — Camps + Community + Nav Update
+## Status
 
-Two new standalone pages (Sports Camps and Community Feed), nav entries for both, homepage preview sections, and translation keys. All mock data, Bulgarian context, follows existing dark + electric-teal design system.
+The database migration is **already applied** (I ran it while planning — approved on the previous turn):
 
-## 1. Navigation (`src/components/layout/PublicNav.tsx`)
+- `app_role` enum (`athlete` / `coach` / `club`)
+- `profiles`, `coach_profiles`, `club_profiles` tables with GRANTs, RLS, and updated_at triggers
+- `handle_new_user` trigger on `auth.users` — auto-creates the correct rows from signup metadata
+- RLS: public reads coach/club rows only when `verified = true`; owners read/edit their own; athlete profiles never public
 
-Insert two new items into the `links` array, in order:
-`Find a Coach | Events | Camps | Community | Shop`
+**Temporary stopgap:** `verified` starts `false`. Until an admin UI exists, a new coach/club is flipped live by editing their row in the Cloud backend table editor. I'll surface this clearly in the register success toast and dashboard.
 
-- `{ to: '/camps', label: t.nav_camps }`
-- `{ to: '/community', label: t.nav_community }`
+## Assumptions (flagging so you can correct)
 
-Mobile hamburger inherits same array — no extra work. Styling already matches spec (muted → foreground, electric underline on active/hover).
+1. **No auto-confirm email** — following defaults, users must confirm via email. If you want frictionless demo signups, say the word and I'll enable auto-confirm.
+2. **No athlete_profiles table** — the plan you approved didn't ask for one. Athlete-specific data lives on `profiles` only.
+3. **URLs are UUIDs, not slugs** — `/coach/:id` and `/club/:id` will accept the profile UUID. The old mock `slug` field is gone; existing routes still work via the id param.
+4. **Coach and club data not in schema** (rating, reviews, `coachSlugs` for clubs, gallery for clubs, `sessionsCompleted`, `hours` structure, opening `hours[]`) will render as empty/hidden sections on public pages — no rating bar, no reviews list, no linked coaches on the club page — until we design those tables in a follow-up.
+5. **Search filters** on `verified = true` coaches only. Clubs are not yet in the search results grid (Search page currently only shows coaches — I'll keep that scope).
+6. **`mockData.ts` stays** for camps/events/community/marketplace, as you asked.
 
-## 2. Routes (`src/App.tsx`)
+## File-by-file changes
 
-Add:
-```
-<Route path="/camps" element={<Camps />} />
-<Route path="/camps/:id" element={<CampDetail />} />
-<Route path="/community" element={<Community />} />
-```
+### New files
 
-## 3. Mock data
+- **`src/hooks/useAuth.tsx`** — `AuthProvider` + `useAuth`. Registers `onAuthStateChange` first, then hydrates via `getSession`, loads `profiles` row for current user. Exposes `{ user, session, profile, loading, signOut, refreshProfile }`.
 
-**`src/lib/camps.ts`** — 8 camps exactly as specified (Sofia / Plovdiv / Varna / Burgas, Bulgarian names, Cyrillic dates, picsum images via `https://picsum.photos/seed/camp{N}/800/400`).
+### Edited
 
-**`src/lib/communityData.ts`** — 12 posts as specified (`thread | tip | activity`, Bulgarian authors, pravatar avatars, verified/isPro flags, sport tags).
+- **`src/App.tsx`** — wrap `<TooltipProvider>` subtree in `<AuthProvider>`.
 
-## 4. Shared components
+- **`src/pages/Register.tsx`** — call `supabase.auth.signUp` with `emailRedirectTo: window.location.origin` and `options.data = { role, full_name, city, language }`. Role selector expands to `athlete | coach | club`. On success, navigate: coach/club → `/dashboard`, athlete → `/search`. Toast tells coach/club users their profile is pending verification.
 
-**`src/components/camps/CampCard.tsx`** — reusable card used in Camps grid, CampDetail related, and AthleteHome preview. Cover image with sport tag (top-left) + duration badge (top-right) overlays, name, host, city w/ MapPin icon, dates w/ Calendar icon, age group, level pill, price, spots-left in `--accent-electric` when `<10` else muted, "View Camp" outline button that fills electric on hover. Card bg `bg-card`, 4px corners, no shadows, hover border electric.
+- **`src/pages/Login.tsx`** — call `supabase.auth.signInWithPassword`. On success, redirect based on profile role (coach/club → `/dashboard`, athlete → `/search`). Google button remains UI-only for now (no provider configured — clearly noted in toast).
 
-**`src/components/community/PostCard.tsx`** — renders three variants by `type`:
-- `thread`: avatar, name + city + timeAgo, verified tick (electric) if true, PRO pill if true, sport tag pill (athlete-tint bg, forest-tint text), title `font-display 16px`, body 14px muted 3-line clamp + "read more", footer row with Heart / MessageCircle / Bookmark counts.
-- `tip`: same as thread + left 2px electric border + small "COACH TIP" eyebrow above title.
-- `activity`: lighter bg `bg-background`, Zap/logo icon instead of avatar, italic body, electric inline link, no like/comment row.
+- **`src/pages/dashboard/ProfileEditor.tsx`** — replace static state with real read/write:
+  - On mount, load `profiles` + `coach_profiles` (or `club_profiles`) for `auth.uid()`.
+  - Renders coach or club editor based on role; unified profile fields (name, city, avatar URL) go to `profiles`; sport/bio/price/discount/specialisms/level/years/gallery URLs go to `coach_profiles`; club fields to `club_profiles`.
+  - Save uses `supabase.from(...).update({...}).eq('id', user.id)`.
+  - Banner at top when `verified = false`: *"Your profile is pending verification and isn't yet visible on Atleta."*
+  - Availability grid stays UI-only (out of schema scope, matches your existing prototype).
 
-## 5. `/camps` — `src/pages/Camps.tsx`
+- **`src/pages/Search.tsx`** — replace `COACHES` import with a `useEffect` query joining `coach_profiles` + `profiles` where `verified = true`. Filters (sport, city, price range, verified toggle becomes redundant, sort) applied client-side over the fetched set. Empty state on 0 results. Removes rating filter (no rating column yet — hidden).
 
-Layout: `AnnouncementBar` → `PublicNav` → Hero → Filter Bar → Grid → `PublicFooter`.
+- **`src/components/marketplace/CoachCard.tsx`** — accepts a normalised shape from either mock or DB; rating/discount blocks hide when absent.
 
-- **Hero**: dark section, 56px display heading "SPORTS CAMPS", muted subhead, two stat pills ("12 Active camps", "6 Cities") with surface bg + electric text + 4px corners.
-- **Filter Bar**: sport pills (All, Football, Tennis, Padel, Basketball, Running, Swimming, Cycling) + duration pills (Any / Weekend 2-3 days / Week 5-7 days / 2 Weeks+) + city select (All / Sofia / Plovdiv / Varna / Burgas). Local `useState` filter logic against `CAMPS`.
-- **Grid**: `grid-cols-1 md:grid-cols-2 lg:grid-cols-3`, gap-5, renders `CampCard` for each filtered camp.
+- **`src/pages/CoachProfile.tsx`** — `useParams()` id → fetch `coach_profiles` + `profiles` where `id = param AND (verified = true OR id = auth.uid())`. Missing/unverified → "not found" state. Reviews, rating breakdown, and sessions-completed sections hide when no data. Bio, gallery, specialisms, pricing block, enquiry modal all remain and drive off DB fields.
 
-## 6. `/camps/:id` — `src/pages/CampDetail.tsx`
+- **`src/pages/ClubProfile.tsx`** — same treatment: fetch `club_profiles` + `profiles`. Hide `Coaches`, `Programs` (programs stored as JSONB — render if array is non-empty), and gallery when absent. Membership enquiry form stays UI-only.
 
-- Full-width 400px cover with darkened gradient overlay, camp name + sport tag overlaid, back arrow to `/camps`.
-- Two-col layout `lg:grid-cols-[2fr_1fr]`:
-  - Left: 2-3 sentence description, daily schedule accordion (use existing `@/components/ui/accordion`), coach/club section with avatar + bio snippet.
-  - Right: sticky sidebar with price, dates, location, spots left, age group, level, "Apply for Camp" solid electric button (with `// Booking integration to be added in Phase 2`), "Ask a question" outline button.
-- Lookup camp by `id` from `CAMPS`; 404 fallback.
+### Untouched
+- Everything under `/dashboard` except ProfileEditor (Analytics, Messages, Billing, Settings stay mock).
+- Camps, Community, Events, Marketplace, Match, home components — all still mock, as requested.
+- `mockData.ts` — retained for other modules; only coach/club/athlete imports removed from the four rewritten pages.
 
-## 7. `/community` — `src/pages/Community.tsx`
+## Verification flow
 
-Layout: `AnnouncementBar` → `PublicNav` → Hero → Sport tabs → 2-col (Feed 65% / Sidebar 35%) → `PublicFooter`.
+1. Register as coach → email confirmation → login → land on `/dashboard`, see "pending verification" banner.
+2. In Cloud backend table editor: `coach_profiles` → set `verified = true` for that row.
+3. Public `/search` and `/coach/<uuid>` now show the coach.
 
-- **Hero**: 48px display heading, muted Bulgarian subhead, two CTAs — "Start a Thread" solid electric (disabled, tooltip "Sign in to post" via existing `Tooltip`), "Browse by Sport" outline (scrolls to tabs).
-- **Tabs**: horizontal scrollable (`overflow-x-auto`): All, Football, Tennis, Padel, Basketball, Running, Swimming, Boxing, BJJ, Yoga, Cycling, CrossFit, Golf. Active = electric bottom border + text; inactive = `text-foreground-subtle`. Filter posts by `sport`.
-- **Feed**: stack of `PostCard` components from filtered `COMMUNITY_POSTS`.
-- **Sidebar**: four boxes (4px corners, surface bg, border):
-  1. Join community (Sign In outline + Register solid electric).
-  2. Trending sports — 5 rows with thin electric progress bar.
-  3. Active coaches — 3 mini-cards from `COACHES` (avatar, name, sport, city, "View profile" link).
-  4. Upcoming camps — 2 camp mini-cards linking to `/camps/:id`.
+## Open decisions to confirm before I switch to build mode
 
-## 8. AthleteHome additions (`src/pages/AthleteHome.tsx`)
+- **Enable auto-confirm email?** Prototype-friendly = yes. Say yes/no.
+- **Anything else in the assumptions list you want to change** (esp. #3 UUID-as-URL and #4 hidden legacy fields)?
 
-Between `MatchingSection` and the coach preview section (the spec says before the Shop/Marketplace section — placing right after coach preview, before `EventsSlider`):
-
-- **Camps preview**: container section, eyebrow + display heading ("СПОРТНИ ЛАГЕРИ" / "SPORTS CAMPS") + muted subhead, 3-col row of `CampCard` (first 3 from `CAMPS`), "View all camps →" button to `/camps`.
-- **Community teaser**: full-width dark band (`bg-background-secondary`), heading "JOIN THE CONVERSATION", Bulgarian subhead, 3-col grid of `PostCard` filtered to `type === 'thread'` (first 3), "Go to Community →" button to `/community`.
-
-## 9. Translations (`src/lib/translations.ts`)
-
-Add all new keys listed in the prompt to both `en` and `bg` blocks (`nav_camps`, `nav_community`, `camps_hero_title`, `camps_hero_sub`, `community_hero_title`, `community_cta_post`, `community_cta_browse`, `coach_tip_label`, `spots_left`, `view_camp`, `apply_camp`, `ask_question`). Used by PublicNav, Camps page, Community page, CampCard, PostCard, CampDetail.
-
-## Design conformance
-
-- All colors via semantic tokens (`bg-card`, `bg-background-secondary`, `border-border`, `text-foreground-muted`, `text-accent-electric`).
-- 4px max corner radius; no shadows; borders for separation.
-- `font-display` (Barlow Condensed) for headings/labels, `font-body` for prose.
-- Mobile: grids collapse to single column; nav items in existing hamburger.
-- No changes to existing colors, fonts, components, or routing outside the additions above.
-
-## Files
-
-**Created**
-- `src/pages/Camps.tsx`
-- `src/pages/CampDetail.tsx`
-- `src/pages/Community.tsx`
-- `src/lib/camps.ts`
-- `src/lib/communityData.ts`
-- `src/components/camps/CampCard.tsx`
-- `src/components/community/PostCard.tsx`
-
-**Edited**
-- `src/App.tsx` (3 new routes)
-- `src/components/layout/PublicNav.tsx` (2 nav items)
-- `src/pages/AthleteHome.tsx` (Camps + Community preview sections)
-- `src/lib/translations.ts` (new keys, EN + BG)
+Ready to implement as soon as you switch to build mode.
