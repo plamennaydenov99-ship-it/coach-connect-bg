@@ -1,0 +1,1 @@
+ALTER TABLE public.coach_profiles ADD COLUMN IF NOT EXISTS certifications text[] NOT NULL DEFAULT '{}';

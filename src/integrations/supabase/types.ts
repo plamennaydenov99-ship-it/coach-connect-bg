@@ -64,6 +64,7 @@ export type Database = {
       coach_profiles: {
         Row: {
           bio: string | null
+          certifications: string[]
           created_at: string
           discount_pct: number
           gallery: string[]
@@ -78,6 +79,7 @@ export type Database = {
         }
         Insert: {
           bio?: string | null
+          certifications?: string[]
           created_at?: string
           discount_pct?: number
           gallery?: string[]
@@ -92,6 +94,7 @@ export type Database = {
         }
         Update: {
           bio?: string | null
+          certifications?: string[]
           created_at?: string
           discount_pct?: number
           gallery?: string[]
