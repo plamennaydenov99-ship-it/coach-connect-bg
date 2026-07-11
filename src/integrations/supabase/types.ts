@@ -14,16 +14,148 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      club_profiles: {
+        Row: {
+          about: string | null
+          city: string | null
+          created_at: string
+          hours: string | null
+          id: string
+          name: string
+          programs: Json
+          sport: string | null
+          updated_at: string
+          verified: boolean
+        }
+        Insert: {
+          about?: string | null
+          city?: string | null
+          created_at?: string
+          hours?: string | null
+          id: string
+          name?: string
+          programs?: Json
+          sport?: string | null
+          updated_at?: string
+          verified?: boolean
+        }
+        Update: {
+          about?: string | null
+          city?: string | null
+          created_at?: string
+          hours?: string | null
+          id?: string
+          name?: string
+          programs?: Json
+          sport?: string | null
+          updated_at?: string
+          verified?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_profiles_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coach_profiles: {
+        Row: {
+          bio: string | null
+          created_at: string
+          discount_pct: number
+          gallery: string[]
+          id: string
+          level: string | null
+          price_per_session: number | null
+          specialisms: string[]
+          sport: string | null
+          updated_at: string
+          verified: boolean
+          years_experience: number | null
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          discount_pct?: number
+          gallery?: string[]
+          id: string
+          level?: string | null
+          price_per_session?: number | null
+          specialisms?: string[]
+          sport?: string | null
+          updated_at?: string
+          verified?: boolean
+          years_experience?: number | null
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          discount_pct?: number
+          gallery?: string[]
+          id?: string
+          level?: string | null
+          price_per_session?: number | null
+          specialisms?: string[]
+          sport?: string | null
+          updated_at?: string
+          verified?: boolean
+          years_experience?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coach_profiles_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          city: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          language: string
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          city?: string | null
+          created_at?: string
+          full_name?: string | null
+          id: string
+          language?: string
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          city?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          language?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_public_profile: { Args: { _id: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "athlete" | "coach" | "club"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +282,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["athlete", "coach", "club"],
+    },
   },
 } as const
