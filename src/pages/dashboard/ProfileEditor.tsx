@@ -30,6 +30,8 @@ const ProfileEditor = () => {
   const [yearsExperience, setYearsExperience] = useState<number>(0);
   const [specialisms, setSpecialisms] = useState<string[]>([]);
   const [newSpec, setNewSpec] = useState('');
+  const [certifications, setCertifications] = useState<string[]>([]);
+  const [newCert, setNewCert] = useState('');
   const [verified, setVerified] = useState(false);
 
   // Club-specific
@@ -58,6 +60,7 @@ const ProfileEditor = () => {
           setDiscountOn((data.discount_pct ?? 0) > 0);
           setYearsExperience(data.years_experience ?? 0);
           setSpecialisms(data.specialisms ?? []);
+          setCertifications(data.certifications ?? []);
           setVerified(data.verified);
         }
       } else if (profile.role === 'club') {
@@ -96,6 +99,7 @@ const ProfileEditor = () => {
         discount_pct: discountOn ? discount[0] : 0,
         years_experience: yearsExperience,
         specialisms,
+        certifications,
       }).eq('id', user.id);
       if (error) { toast.error(error.message); setSaving(false); return; }
     } else if (profile.role === 'club') {
@@ -121,6 +125,13 @@ const ProfileEditor = () => {
     if (newSpec.trim()) {
       setSpecialisms([...specialisms, newSpec.trim()]);
       setNewSpec('');
+    }
+  };
+
+  const addCert = () => {
+    if (newCert.trim()) {
+      setCertifications([...certifications, newCert.trim()]);
+      setNewCert('');
     }
   };
 
@@ -215,6 +226,25 @@ const ProfileEditor = () => {
               <div className="flex gap-2">
                 <Input value={newSpec} onChange={e => setNewSpec(e.target.value)} placeholder="Add a specialism" />
                 <Button type="button" variant="outline" onClick={addSpec}><Plus className="h-4 w-4" /></Button>
+              </div>
+            </div>
+
+            <div>
+              <Label className="mb-2 block">Certifications</Label>
+              <div className="flex flex-wrap gap-2 mb-3">
+                {certifications.map((c, i) => (
+                  <span key={i} className="px-3 py-1.5 rounded-md bg-secondary text-sm flex items-center gap-2">
+                    {c}
+                    <button type="button" onClick={() => setCertifications(certifications.filter((_, idx) => idx !== i))}
+                      className="text-muted-foreground hover:text-foreground">×</button>
+                  </span>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <Input value={newCert} onChange={e => setNewCert(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCert(); } }}
+                  placeholder='e.g. "UEFA B License"' />
+                <Button type="button" variant="outline" onClick={addCert}><Plus className="h-4 w-4" /></Button>
               </div>
             </div>
           </section>

@@ -49,44 +49,37 @@ const Register = () => {
     }
 
     setLoading(true);
-    const { data: signUpData, error } = await supabase.auth.signUp({
+    const metadata: Record<string, unknown> = {
+      role,
+      full_name: form.name,
+      city: form.city || null,
+      language: 'en',
+    };
+    if (role === 'coach') {
+      metadata.sport = coachSport || null;
+      metadata.bio = coachBio || null;
+      metadata.price_per_session = coachPrice || null;
+      metadata.certifications = certs;
+    } else if (role === 'club') {
+      metadata.sport = clubSport || null;
+      metadata.about = clubAbout || null;
+    }
+
+    const { error } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
       options: {
         emailRedirectTo: `${window.location.origin}/`,
-        data: {
-          role,
-          full_name: form.name,
-          city: form.city || null,
-          language: 'en',
-        },
+        data: metadata,
       },
     });
 
+    setLoading(false);
     if (error) {
-      setLoading(false);
       toast.error(error.message);
       return;
     }
 
-    const uid = signUpData.user?.id;
-    if (uid) {
-      if (role === 'coach') {
-        await supabase.from('coach_profiles').update({
-          sport: coachSport || null,
-          bio: coachBio || null,
-          price_per_session: coachPrice ? Number(coachPrice) : null,
-          certifications: certs,
-        }).eq('id', uid);
-      } else if (role === 'club') {
-        await supabase.from('club_profiles').update({
-          sport: clubSport || null,
-          about: clubAbout || null,
-        }).eq('id', uid);
-      }
-    }
-
-    setLoading(false);
     toast.success('Account created. Check your email to confirm before logging in.');
     navigate('/login');
   };
