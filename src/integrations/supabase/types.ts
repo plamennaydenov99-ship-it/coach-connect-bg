@@ -152,7 +152,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      is_public_profile: { Args: { _id: string }; Returns: boolean }
+      [_ in never]: never
     }
     Enums: {
       app_role: "athlete" | "coach" | "club"
