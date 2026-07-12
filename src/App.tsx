@@ -62,6 +62,9 @@ const App = () => (
               <Route path="/dashboard" element={<RequireAuth><DashboardLayout /></RequireAuth>}>
                 <Route index element={<DashboardHome />} />
                 <Route path="profile" element={<ProfileEditor />} />
+                <Route path="availability" element={<Availability />} />
+                <Route path="requests" element={<BookingRequests />} />
+                <Route path="bookings" element={<MyBookings />} />
                 <Route path="analytics" element={<Analytics />} />
                 <Route path="messages" element={<Messages />} />
                 <Route path="billing" element={<Billing />} />
