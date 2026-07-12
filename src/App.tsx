@@ -29,6 +29,9 @@ import Analytics from "./pages/dashboard/Analytics";
 import Messages from "./pages/dashboard/Messages";
 import Billing from "./pages/dashboard/Billing";
 import DashSettings from "./pages/dashboard/Settings";
+import Availability from "./pages/dashboard/Availability";
+import BookingRequests from "./pages/dashboard/BookingRequests";
+import MyBookings from "./pages/dashboard/MyBookings";
 
 const queryClient = new QueryClient();
 
