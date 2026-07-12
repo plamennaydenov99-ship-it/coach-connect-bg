@@ -14,6 +14,83 @@ export type Database = {
   }
   public: {
     Tables: {
+      availability_slots: {
+        Row: {
+          coach_id: string
+          created_at: string
+          date: string
+          end_time: string
+          id: string
+          start_time: string
+          status: Database["public"]["Enums"]["slot_status"]
+          updated_at: string
+        }
+        Insert: {
+          coach_id: string
+          created_at?: string
+          date: string
+          end_time: string
+          id?: string
+          start_time: string
+          status?: Database["public"]["Enums"]["slot_status"]
+          updated_at?: string
+        }
+        Update: {
+          coach_id?: string
+          created_at?: string
+          date?: string
+          end_time?: string
+          id?: string
+          start_time?: string
+          status?: Database["public"]["Enums"]["slot_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      bookings: {
+        Row: {
+          athlete_id: string
+          coach_id: string
+          created_at: string
+          id: string
+          note: string | null
+          price: number | null
+          slot_id: string
+          status: Database["public"]["Enums"]["booking_status"]
+          updated_at: string
+        }
+        Insert: {
+          athlete_id: string
+          coach_id: string
+          created_at?: string
+          id?: string
+          note?: string | null
+          price?: number | null
+          slot_id: string
+          status?: Database["public"]["Enums"]["booking_status"]
+          updated_at?: string
+        }
+        Update: {
+          athlete_id?: string
+          coach_id?: string
+          created_at?: string
+          id?: string
+          note?: string | null
+          price?: number | null
+          slot_id?: string
+          status?: Database["public"]["Enums"]["booking_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_slot_id_fkey"
+            columns: ["slot_id"]
+            isOneToOne: false
+            referencedRelation: "availability_slots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       club_profiles: {
         Row: {
           about: string | null
@@ -117,6 +194,65 @@ export type Database = {
           },
         ]
       }
+      conversations: {
+        Row: {
+          athlete_id: string
+          coach_id: string
+          created_at: string
+          id: string
+          last_message_at: string
+        }
+        Insert: {
+          athlete_id: string
+          coach_id: string
+          created_at?: string
+          id?: string
+          last_message_at?: string
+        }
+        Update: {
+          athlete_id?: string
+          coach_id?: string
+          created_at?: string
+          id?: string
+          last_message_at?: string
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          read_at: string | null
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -159,6 +295,8 @@ export type Database = {
     }
     Enums: {
       app_role: "athlete" | "coach" | "club"
+      booking_status: "pending" | "confirmed" | "declined" | "cancelled"
+      slot_status: "open" | "pending" | "booked"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -287,6 +425,8 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["athlete", "coach", "club"],
+      booking_status: ["pending", "confirmed", "declined", "cancelled"],
+      slot_status: ["open", "pending", "booked"],
     },
   },
 } as const

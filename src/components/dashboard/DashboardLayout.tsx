@@ -2,22 +2,38 @@ import { useState } from 'react';
 import { NavLink, Link, Outlet } from 'react-router-dom';
 import {
   LayoutDashboard, UserCog, BarChart3, MessageSquare,
-  CreditCard, Settings, Zap, Menu, X, ExternalLink
+  CreditCard, Settings, Zap, Menu, X, ExternalLink,
+  CalendarCheck, CalendarClock, ListChecks
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
-const NAV = [
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, end: true },
-  { to: '/dashboard/profile', label: 'My Profile', icon: UserCog },
-  { to: '/dashboard/analytics', label: 'Analytics', icon: BarChart3 },
-  { to: '/dashboard/messages', label: 'Messages', icon: MessageSquare },
-  { to: '/dashboard/billing', label: 'Subscription', icon: CreditCard },
-  { to: '/dashboard/settings', label: 'Settings', icon: Settings },
-];
+import { useAuth } from '@/hooks/useAuth';
 
 export function DashboardLayout() {
   const [open, setOpen] = useState(false);
+  const { profile } = useAuth();
+  const role = profile?.role;
 
+  const NAV = (() => {
+    const base = [
+      { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, end: true },
+      { to: '/dashboard/profile', label: 'My Profile', icon: UserCog },
+    ];
+    if (role === 'coach' || role === 'club') {
+      base.push(
+        { to: '/dashboard/availability', label: 'Availability', icon: CalendarClock } as any,
+        { to: '/dashboard/requests', label: 'Booking requests', icon: ListChecks } as any,
+        { to: '/dashboard/analytics', label: 'Analytics', icon: BarChart3 } as any,
+      );
+    } else {
+      base.push({ to: '/dashboard/bookings', label: 'My Bookings', icon: CalendarCheck } as any);
+    }
+    base.push(
+      { to: '/dashboard/messages', label: 'Messages', icon: MessageSquare } as any,
+      { to: '/dashboard/billing', label: 'Subscription', icon: CreditCard } as any,
+      { to: '/dashboard/settings', label: 'Settings', icon: Settings } as any,
+    );
+    return base;
+  })();
 
   const SidebarContent = () => (
     <>
@@ -28,7 +44,7 @@ export function DashboardLayout() {
         <span className="font-display text-xl tracking-[0.08em] text-foreground">ATLETA</span>
       </Link>
       <nav className="flex-1 p-2 space-y-0.5">
-        {NAV.map(item => (
+        {NAV.map((item: any) => (
           <NavLink
             key={item.to}
             to={item.to}
@@ -46,25 +62,24 @@ export function DashboardLayout() {
           </NavLink>
         ))}
       </nav>
-      <div className="p-3 border-t border-sidebar-border">
-        <Link to="/coach/dimitar-petrov">
-          <Button variant="outline" size="sm" className="w-full">
-            <ExternalLink className="h-3.5 w-3.5 mr-2" /> View public profile
-          </Button>
-        </Link>
-      </div>
-
+      {(role === 'coach' || role === 'club') && (
+        <div className="p-3 border-t border-sidebar-border">
+          <Link to={role === 'coach' ? `/coach/${profile?.id}` : `/club/${profile?.id}`}>
+            <Button variant="outline" size="sm" className="w-full">
+              <ExternalLink className="h-3.5 w-3.5 mr-2" /> View public profile
+            </Button>
+          </Link>
+        </div>
+      )}
     </>
   );
 
   return (
     <div className="min-h-screen flex w-full bg-background">
-      {/* Desktop sidebar */}
       <aside className="hidden md:flex w-64 shrink-0 flex-col bg-sidebar border-r border-sidebar-border sticky top-0 h-screen">
         <SidebarContent />
       </aside>
 
-      {/* Mobile sidebar */}
       {open && (
         <div className="fixed inset-0 z-50 md:hidden">
           <div className="absolute inset-0 bg-background/70" onClick={() => setOpen(false)} />

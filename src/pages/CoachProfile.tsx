@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { findSport } from '@/lib/mockData';
-import { BadgeCheck, MapPin, Trophy, Calendar, CheckCircle2, MessageSquare } from 'lucide-react';
+import { BadgeCheck, MapPin, Trophy, Calendar, MessageSquare, Clock, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { getOrCreateConversation } from '@/lib/messaging';
 
 interface CoachData {
   id: string;
@@ -31,13 +32,18 @@ interface CoachData {
   } | null;
 }
 
+interface Slot { id: string; date: string; start_time: string; end_time: string; }
+
 const CoachProfile = () => {
   const { id } = useParams<{ id: string }>();
+  const { user, profile } = useAuth();
+  const navigate = useNavigate();
   const [coach, setCoach] = useState<CoachData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [enquiryOpen, setEnquiryOpen] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [form, setForm] = useState({ name: '', email: '', message: '', date: '' });
+  const [slots, setSlots] = useState<Slot[]>([]);
+  const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
+  const [note, setNote] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -53,6 +59,22 @@ const CoachProfile = () => {
       setLoading(false);
     })();
   }, [id]);
+
+  const loadSlots = async () => {
+    if (!id) return;
+    const today = new Date().toISOString().slice(0, 10);
+    const { data } = await supabase
+      .from('availability_slots')
+      .select('id, date, start_time, end_time')
+      .eq('coach_id', id)
+      .eq('status', 'open')
+      .gte('date', today)
+      .order('date', { ascending: true })
+      .order('start_time', { ascending: true });
+    setSlots((data as Slot[]) ?? []);
+  };
+
+  useEffect(() => { loadSlots(); }, [id]);
 
   if (loading) {
     return (
@@ -84,22 +106,63 @@ const CoachProfile = () => {
   const price = coach.price_per_session ?? 0;
   const finalPrice = coach.discount_pct ? Math.round(price * (1 - coach.discount_pct / 100)) : price;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.name || !form.email || !form.message) {
-      toast.error('Please complete all required fields.');
-      return;
+  const requireAthlete = (): boolean => {
+    if (!user) {
+      toast.error('Sign in to continue.');
+      navigate('/login');
+      return false;
     }
-    setSubmitted(true);
-    toast.success('Enquiry sent — the coach will reply within 24h.');
+    if (profile && profile.role !== 'athlete') {
+      toast.error('Only athlete accounts can book or message coaches.');
+      return false;
+    }
+    return true;
   };
 
-  const closeAndReset = () => {
-    setEnquiryOpen(false);
-    setTimeout(() => {
-      setSubmitted(false);
-      setForm({ name: '', email: '', message: '', date: '' });
-    }, 250);
+  const openMessage = async () => {
+    if (!requireAthlete() || !user) return;
+    try {
+      const cid = await getOrCreateConversation(user.id, coach.id);
+      navigate(`/dashboard/messages?c=${cid}`);
+    } catch (e: any) {
+      toast.error(e.message);
+    }
+  };
+
+  const submitBooking = async () => {
+    if (!user || !selectedSlot) return;
+    setSubmitting(true);
+    // Reserve slot
+    const { error: slotErr } = await supabase
+      .from('availability_slots')
+      .update({ status: 'pending' })
+      .eq('id', selectedSlot.id)
+      .eq('status', 'open');
+    if (slotErr) { toast.error(slotErr.message); setSubmitting(false); return; }
+
+    const { error: bookErr } = await supabase.from('bookings').insert({
+      slot_id: selectedSlot.id,
+      athlete_id: user.id,
+      coach_id: coach.id,
+      status: 'pending',
+      note: note.trim() || null,
+      price: finalPrice,
+    });
+    if (bookErr) {
+      await supabase.from('availability_slots').update({ status: 'open' }).eq('id', selectedSlot.id);
+      toast.error(bookErr.message);
+      setSubmitting(false);
+      return;
+    }
+
+    // Auto-create conversation
+    try { await getOrCreateConversation(user.id, coach.id); } catch {}
+
+    toast.success('Request sent. The coach will reply shortly.');
+    setSubmitting(false);
+    setSelectedSlot(null);
+    setNote('');
+    loadSlots();
   };
 
   return (
@@ -164,6 +227,35 @@ const CoachProfile = () => {
               </div>
             )}
 
+            <div className="surface p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Calendar className="h-5 w-5 text-primary" />
+                <h2 className="font-display text-2xl">Available sessions</h2>
+              </div>
+              {slots.length === 0 ? (
+                <p className="text-muted-foreground text-sm">No open slots right now. Send {name.split(' ')[0]} a message to arrange one.</p>
+              ) : (
+                <ul className="grid sm:grid-cols-2 gap-3">
+                  {slots.map(s => (
+                    <li key={s.id}>
+                      <button
+                        onClick={() => { if (requireAthlete()) setSelectedSlot(s); }}
+                        className="w-full text-left border border-border p-4 hover:border-primary transition-colors"
+                      >
+                        <p className="font-medium">
+                          {new Date(s.date + 'T00:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
+                        </p>
+                        <p className="text-sm text-muted-foreground flex items-center gap-1.5 mt-1">
+                          <Clock className="h-3.5 w-3.5" /> {s.start_time.slice(0,5)} – {s.end_time.slice(0,5)}
+                        </p>
+                        <p className="text-sm text-primary mt-2">Request · €{finalPrice}</p>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
             {coach.gallery?.length ? (
               <div>
                 <h2 className="font-display text-2xl mb-4">Gallery</h2>
@@ -191,62 +283,40 @@ const CoachProfile = () => {
                 )}
               </div>
 
-              <Dialog open={enquiryOpen} onOpenChange={setEnquiryOpen}>
-                <DialogTrigger asChild>
-                  <Button size="lg" className="w-full mt-5">
-                    <MessageSquare className="h-4 w-4 mr-2" /> Request a session
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Request a session with {name}</DialogTitle>
-                    <DialogDescription>
-                      Send a quick enquiry. The coach typically replies within 24h.
-                    </DialogDescription>
-                  </DialogHeader>
+              <Button size="lg" className="w-full mt-5" onClick={openMessage}>
+                <MessageSquare className="h-4 w-4 mr-2" /> Message {name.split(' ')[0]}
+              </Button>
 
-                  {submitted ? (
-                    <div className="py-6 text-center">
-                      <div className="mx-auto h-14 w-14 rounded-full bg-primary/15 text-primary flex items-center justify-center mb-3">
-                        <CheckCircle2 className="h-7 w-7" />
-                      </div>
-                      <p className="font-display text-xl">Enquiry sent</p>
-                      <Button className="mt-5" onClick={closeAndReset}>Done</Button>
-                    </div>
-                  ) : (
-                    <form onSubmit={handleSubmit} className="space-y-4 pt-2">
-                      <div className="grid gap-2">
-                        <Label htmlFor="name">Your name</Label>
-                        <Input id="name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required />
-                      </div>
-                      <div className="grid gap-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input id="email" type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required />
-                      </div>
-                      <div className="grid gap-2">
-                        <Label htmlFor="date">Preferred date</Label>
-                        <Input id="date" type="date" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} />
-                      </div>
-                      <div className="grid gap-2">
-                        <Label htmlFor="message">Message</Label>
-                        <Textarea id="message" rows={4} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} required />
-                      </div>
-                      <Button type="submit" className="w-full" size="lg">Send enquiry</Button>
-                    </form>
-                  )}
-                </DialogContent>
-              </Dialog>
-
-              <div className="mt-5 surface-2 p-4 text-sm text-muted-foreground">
-                <p className="flex items-center gap-2 text-foreground font-medium mb-1">
-                  <Calendar className="h-4 w-4 text-primary" /> Booking calendar
-                </p>
-                Live booking calendar — coming soon.
+              <div className="mt-5 flex items-start gap-2 text-xs text-muted-foreground">
+                <ShieldCheck className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+                <p>All communication and bookings happen through Zenit. Do not share personal contact details.</p>
               </div>
             </div>
           </aside>
         </section>
       </main>
+
+      <Dialog open={!!selectedSlot} onOpenChange={(o) => !o && setSelectedSlot(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Request this session</DialogTitle>
+            <DialogDescription>
+              {selectedSlot && `${new Date(selectedSlot.date + 'T00:00').toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })} · ${selectedSlot.start_time.slice(0,5)} – ${selectedSlot.end_time.slice(0,5)} · €${finalPrice}`}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <Label htmlFor="note">Add a short note (optional)</Label>
+            <Textarea id="note" rows={4} value={note} onChange={e => setNote(e.target.value)}
+              placeholder="Level, goals, anything the coach should know…" />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSelectedSlot(null)}>Cancel</Button>
+            <Button onClick={submitBooking} disabled={submitting}>
+              {submitting ? 'Sending…' : 'Send request'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <PublicFooter />
     </div>

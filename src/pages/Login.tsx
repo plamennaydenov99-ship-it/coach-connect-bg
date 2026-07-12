@@ -38,7 +38,7 @@ const Login = () => {
     if (profile?.role === 'coach' || profile?.role === 'club') {
       navigate('/dashboard');
     } else {
-      navigate('/search');
+      navigate('/dashboard');
     }
   };
 
