@@ -15,8 +15,12 @@ type Role = 'athlete' | 'coach' | 'club';
 
 const Register = () => {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const initialRole: Role =
+    params.get('role') === 'coach' ? 'coach' :
+    params.get('role') === 'club' ? 'club' : 'athlete';
   const [form, setForm] = useState({ name: '', email: '', password: '', city: '' });
-  const [role, setRole] = useState<Role>('athlete');
+  const [role, setRole] = useState<Role>(initialRole);
   const [loading, setLoading] = useState(false);
 
   // Coach-specific
