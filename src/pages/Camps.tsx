@@ -12,7 +12,7 @@ const DURATIONS = [
   { label: 'Week (5-7 days)', match: (d: number) => d >= 5 && d <= 7 },
   { label: '2 Weeks+', match: (d: number) => d >= 14 },
 ];
-const CITIES = ['All cities', 'Sofia', 'Plovdiv', 'Varna', 'Burgas'];
+const CITIES = ['All cities', 'Nice', 'Monaco', 'Sofia'];
 
 export default function Camps() {
   const { t } = useLanguage();
