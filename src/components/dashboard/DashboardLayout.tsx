@@ -7,10 +7,12 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/context/LanguageContext';
 
 export function DashboardLayout() {
   const [open, setOpen] = useState(false);
   const { profile, loading } = useAuth();
+  const { t } = useLanguage();
   const role = profile?.role;
 
   if (loading || !profile) {
@@ -24,34 +26,34 @@ export function DashboardLayout() {
   const NAV = (() => {
     if (role === 'athlete') {
       return [
-        { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, end: true },
-        { to: '/dashboard/bookings', label: 'My Bookings', icon: CalendarCheck },
-        { to: '/dashboard/personal-info', label: 'Personal Info', icon: User },
-        { to: '/dashboard/bookmarks', label: 'Bookmarks', icon: Bookmark },
-        { to: '/dashboard/messages', label: 'Messages', icon: MessageSquare },
-        { to: '/search', label: 'Browse Coaches', icon: Search },
-        { to: '/dashboard/settings', label: 'Settings', icon: Settings },
+        { to: '/dashboard', label: t.dash_home, icon: LayoutDashboard, end: true },
+        { to: '/dashboard/bookings', label: t.dash_bookings, icon: CalendarCheck },
+        { to: '/dashboard/personal-info', label: t.dash_personal_info, icon: User },
+        { to: '/dashboard/bookmarks', label: t.dash_bookmarks, icon: Bookmark },
+        { to: '/dashboard/messages', label: t.dash_messages, icon: MessageSquare },
+        { to: '/search', label: t.dash_browse_coaches, icon: Search },
+        { to: '/dashboard/settings', label: t.dash_settings, icon: Settings },
       ];
     }
     if (role === 'club') {
       return [
-        { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, end: true },
-        { to: '/dashboard/profile', label: 'Club Profile', icon: UserCog },
-        { to: '/dashboard/messages', label: 'Messages', icon: MessageSquare },
-        { to: '/dashboard/billing', label: 'Subscription', icon: CreditCard },
-        { to: '/dashboard/settings', label: 'Settings', icon: Settings },
+        { to: '/dashboard', label: t.dash_home, icon: LayoutDashboard, end: true },
+        { to: '/dashboard/profile', label: t.dash_profile_club, icon: UserCog },
+        { to: '/dashboard/messages', label: t.dash_messages, icon: MessageSquare },
+        { to: '/dashboard/billing', label: t.dash_billing, icon: CreditCard },
+        { to: '/dashboard/settings', label: t.dash_settings, icon: Settings },
       ];
     }
     // coach (default)
     return [
-      { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, end: true },
-      { to: '/dashboard/profile', label: 'My Profile', icon: UserCog },
-      { to: '/dashboard/availability', label: 'Availability', icon: CalendarClock },
-      { to: '/dashboard/requests', label: 'Booking requests', icon: ListChecks },
-      { to: '/dashboard/messages', label: 'Messages', icon: MessageSquare },
-      { to: '/dashboard/analytics', label: 'Analytics', icon: BarChart3 },
-      { to: '/dashboard/billing', label: 'Subscription', icon: CreditCard },
-      { to: '/dashboard/settings', label: 'Settings', icon: Settings },
+      { to: '/dashboard', label: t.dash_home, icon: LayoutDashboard, end: true },
+      { to: '/dashboard/profile', label: t.dash_profile_coach, icon: UserCog },
+      { to: '/dashboard/availability', label: t.dash_availability, icon: CalendarClock },
+      { to: '/dashboard/requests', label: t.dash_requests, icon: ListChecks },
+      { to: '/dashboard/messages', label: t.dash_messages, icon: MessageSquare },
+      { to: '/dashboard/analytics', label: t.dash_analytics, icon: BarChart3 },
+      { to: '/dashboard/billing', label: t.dash_billing, icon: CreditCard },
+      { to: '/dashboard/settings', label: t.dash_settings, icon: Settings },
     ];
   })();
 
@@ -86,7 +88,7 @@ export function DashboardLayout() {
         <div className="p-3 border-t border-sidebar-border">
           <Link to={role === 'coach' ? `/coach/${profile?.id}` : `/club/${profile?.id}`}>
             <Button variant="outline" size="sm" className="w-full">
-              <ExternalLink className="h-3.5 w-3.5 mr-2" /> View public profile
+              <ExternalLink className="h-3.5 w-3.5 mr-2" /> {t.dash_view_public}
             </Button>
           </Link>
         </div>

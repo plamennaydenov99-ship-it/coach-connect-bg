@@ -110,6 +110,22 @@ export const t = {
     sign_in: 'Sign In',
     register: 'Register',
     read_more: 'Read more',
+
+    // Dashboard nav
+    dash_home: 'Dashboard',
+    dash_bookings: 'My Bookings',
+    dash_personal_info: 'Personal Info',
+    dash_bookmarks: 'Bookmarks',
+    dash_messages: 'Messages',
+    dash_browse_coaches: 'Browse Coaches',
+    dash_settings: 'Settings',
+    dash_profile_coach: 'My Profile',
+    dash_profile_club: 'Club Profile',
+    dash_availability: 'Availability',
+    dash_requests: 'Booking requests',
+    dash_analytics: 'Analytics',
+    dash_billing: 'Subscription',
+    dash_view_public: 'View public profile',
   },
 
   bg: {
@@ -215,6 +231,22 @@ export const t = {
     sign_in: 'Вход',
     register: 'Регистрация',
     read_more: 'Прочети още',
+
+    // Dashboard nav
+    dash_home: 'Табло',
+    dash_bookings: 'Моите резервации',
+    dash_personal_info: 'Лична информация',
+    dash_bookmarks: 'Отметки',
+    dash_messages: 'Съобщения',
+    dash_browse_coaches: 'Разгледай треньори',
+    dash_settings: 'Настройки',
+    dash_profile_coach: 'Моят профил',
+    dash_profile_club: 'Профил на клуба',
+    dash_availability: 'Свободни часове',
+    dash_requests: 'Заявки за резервация',
+    dash_analytics: 'Анализи',
+    dash_billing: 'Абонамент',
+    dash_view_public: 'Виж публичния профил',
   },
 
   fr: {
@@ -320,6 +352,22 @@ export const t = {
     sign_in: 'Connexion',
     register: "S'inscrire",
     read_more: 'Lire plus',
+
+    // Dashboard nav
+    dash_home: 'Tableau de bord',
+    dash_bookings: 'Mes réservations',
+    dash_personal_info: 'Infos personnelles',
+    dash_bookmarks: 'Favoris',
+    dash_messages: 'Messages',
+    dash_browse_coaches: 'Parcourir les coachs',
+    dash_settings: 'Paramètres',
+    dash_profile_coach: 'Mon profil',
+    dash_profile_club: 'Profil du club',
+    dash_availability: 'Disponibilités',
+    dash_requests: 'Demandes de réservation',
+    dash_analytics: 'Statistiques',
+    dash_billing: 'Abonnement',
+    dash_view_public: 'Voir le profil public',
   },
 } as const;
 

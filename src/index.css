@@ -83,10 +83,20 @@
     @apply bg-background text-foreground antialiased;
     font-family: 'Barlow', system-ui, sans-serif;
     font-weight: 400;
+    /* Prevent browser from synthesizing bold/italic when a weight/style
+       isn't available in the Cyrillic subset — this is what made
+       Bulgarian glyphs render visibly heavier than Latin ones. */
+    font-synthesis: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6, .font-display {
-    font-family: 'Barlow Condensed', 'Arial Narrow', 'Barlow', system-ui, sans-serif;
+    /* Removed 'Arial Narrow' from the fallback chain: it has no Cyrillic
+       glyphs, so Cyrillic characters were falling through to 'Barlow'
+       (the non-condensed sibling) and rendering visibly wider/heavier
+       than their Latin neighbours. Fallback now goes Condensed → generic. */
+    font-family: 'Barlow Condensed', 'Barlow Semi Condensed', 'Barlow', system-ui, sans-serif;
     font-weight: 600;
     letter-spacing: 0.005em;
     text-transform: uppercase;
