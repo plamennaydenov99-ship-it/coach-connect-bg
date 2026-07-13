@@ -11,7 +11,7 @@ export function PublicNav() {
   const { lang, setLang, t } = useLanguage();
 
   const links = [
-    { to: '/search', label: 'Find a Coach' },
+    { to: '/search', label: t.nav_search },
     { to: '/events', label: t.nav_events },
     { to: '/camps', label: t.nav_camps },
   ];
