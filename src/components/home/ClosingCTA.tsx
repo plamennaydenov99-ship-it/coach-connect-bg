@@ -49,7 +49,7 @@ export function ClosingCTA() {
         </div>
 
         <p className="mt-12 font-display uppercase tracking-[0.2em] text-[11px] text-foreground-subtle">
-          Free to join · No commission · Bulgaria
+          Free to join · No commission · Nice · Monaco · Sofia
         </p>
       </div>
     </section>
