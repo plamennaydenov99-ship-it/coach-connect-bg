@@ -56,7 +56,7 @@ export function EventsSlider() {
                 </span>
 
                 <div className="absolute inset-x-0 bottom-0 p-6 md:p-10">
-                  <Badge className="bg-coach-accent text-coach-accent-glow hover:bg-coach-accent uppercase tracking-[0.12em] font-display rounded-sm">
+                  <Badge className="bg-navy text-gold hover:bg-navy-hover uppercase tracking-[0.12em] font-display rounded-sm">
                     {ev.sport}
                   </Badge>
                   <h3 className="mt-3 font-display text-2xl md:text-4xl text-foreground">{ev.name}</h3>

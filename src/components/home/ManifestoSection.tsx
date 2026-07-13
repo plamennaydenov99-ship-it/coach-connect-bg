@@ -8,7 +8,7 @@ export function ManifestoSection() {
   return (
     <section className="bg-background py-28 md:py-40 border-t border-border">
       <div className="container max-w-5xl">
-        {/* Thin ice line above */}
+        {/* Thin gold line above */}
         <div className="h-px w-16 bg-navy mb-12" />
 
         {/* Manifesto */}

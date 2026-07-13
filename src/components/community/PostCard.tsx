@@ -54,7 +54,7 @@ export function PostCard({ post }: { post: CommunityPost }) {
             {post.authorCity} · {post.timeAgo}
           </p>
         </div>
-        <span className="px-2 py-0.5 text-[11px] font-display uppercase tracking-[0.12em] bg-[hsl(var(--coach-accent))] text-[hsl(var(--coach-accent-glow))] rounded-sm">
+        <span className="px-2 py-0.5 text-[11px] font-display uppercase tracking-[0.12em] bg-navy text-gold rounded-sm">
           {post.sport_tag}
         </span>
       </header>

@@ -14,7 +14,7 @@ export function ClosingCTA() {
       />
 
       <div className="relative container py-28 md:py-40 text-center max-w-3xl">
-        {/* Thin ice line top */}
+        {/* Thin gold line top */}
         <div className="h-px w-16 bg-navy mx-auto mb-10" />
 
         <span className="label-eyebrow text-gold">Join Zenit</span>
