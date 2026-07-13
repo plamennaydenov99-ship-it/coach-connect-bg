@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 const DashboardHome = () => {
-  const { user, profile } = useAuth();
+  const { user, profile, loading } = useAuth();
   const firstName = (profile?.full_name || '').trim().split(' ')[0] || 'there';
   const role = profile?.role;
 
