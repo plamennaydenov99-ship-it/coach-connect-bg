@@ -4,6 +4,7 @@ import { PublicFooter } from '@/components/layout/PublicFooter';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { EVENTS } from '@/lib/events';
+import { BookmarkButton } from '@/components/BookmarkButton';
 
 export default function Events() {
   return (
@@ -36,9 +37,12 @@ export default function Events() {
                 </span>
               </div>
               <div className="p-5">
-                <Badge className="bg-primary text-primary-foreground hover:bg-primary">
-                  {ev.sport}
-                </Badge>
+                <div className="flex items-start justify-between gap-2">
+                  <Badge className="bg-primary text-primary-foreground hover:bg-primary">
+                    {ev.sport}
+                  </Badge>
+                  <BookmarkButton targetType="event" targetId={String(ev.id)} variant="icon" />
+                </div>
                 <h2 className="mt-3 font-display text-xl">{ev.name}</h2>
                 <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                   <span className="inline-flex items-center gap-1.5">

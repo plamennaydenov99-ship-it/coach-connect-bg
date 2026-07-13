@@ -3,7 +3,7 @@ import { NavLink, Link, Outlet } from 'react-router-dom';
 import {
   LayoutDashboard, UserCog, BarChart3, MessageSquare,
   CreditCard, Settings, Zap, Menu, X, ExternalLink,
-  CalendarCheck, CalendarClock, ListChecks, Search
+  CalendarCheck, CalendarClock, ListChecks, Search, User, Bookmark
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -26,6 +26,8 @@ export function DashboardLayout() {
       return [
         { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, end: true },
         { to: '/dashboard/bookings', label: 'My Bookings', icon: CalendarCheck },
+        { to: '/dashboard/personal-info', label: 'Personal Info', icon: User },
+        { to: '/dashboard/bookmarks', label: 'Bookmarks', icon: Bookmark },
         { to: '/dashboard/messages', label: 'Messages', icon: MessageSquare },
         { to: '/search', label: 'Browse Coaches', icon: Search },
         { to: '/dashboard/settings', label: 'Settings', icon: Settings },
