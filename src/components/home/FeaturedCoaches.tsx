@@ -30,7 +30,7 @@ export function FeaturedCoaches() {
 
         {/* Coach layout — 1 large + 2 small */}
         <Reveal className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        <div style={{ display: 'contents' }}>
+
 
           {/* Featured — large, spans 2 columns */}
           <Link
