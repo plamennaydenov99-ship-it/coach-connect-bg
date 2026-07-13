@@ -2,7 +2,7 @@ export function ManifestoSection() {
   const stats = [
     { number: '200+', label: 'Verified coaches' },
     { number: '12', label: 'Sports covered' },
-    { number: '6', label: 'Cities in Bulgaria' },
+    { number: '3', label: 'Cities worldwide' },
   ];
 
   return (
