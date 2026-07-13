@@ -1,58 +1,100 @@
-## Goal
 
-`--primary` resolves to navy, which has ~1.3–1.7:1 contrast on the near-black background. Every use of `text-primary` / `border-primary` / `hover:text-primary` / `hover:border-primary` as a foreground/icon/border color directly against a dark surface must move to `gold`. Solid `bg-primary` filled surfaces paired with `text-primary-foreground` stay as-is (correct navy fill + cream text, 12.8:1).
+# Read-only i18n audit + Cyrillic weight investigation
 
-## Rule applied per instance
+## Item 2 — Why Cyrillic renders heavier
 
-- Foreground text / icon / border on dark surface → swap `primary` → `gold`
-  - `text-primary` → `text-gold`
-  - `border-primary` → `border-gold` (including `/40`, `/30` opacity variants)
-  - `hover:text-primary` → `hover:text-gold`
-  - `hover:border-primary` → `hover:border-gold`
-  - `bg-primary/15` / `bg-primary/10` / `bg-primary/5` tint chips (still effectively foreground-tinted on dark) → `bg-gold/15` etc.
-- Solid fill + cream text pairs → **leave unchanged**: `bg-primary text-primary-foreground`, `data-[state=checked]:bg-primary`, `SliderPrimitive.Range bg-primary`, switch checked state, calendar selected day, badge default variant, sonner action button, Register/Login/Footer logo squares, EventsSlider active dot, Events page category badge, CartDrawer count bubble, Messages sent bubble, Marketplace active category chip, DashboardLayout active nav border+bg pair.
+Confirmed root cause is **not** the Google Fonts subset. `src/index.css:1` requests `Barlow Condensed:wght@400;500;600;700` with Cyrillic in the URL, and Barlow Condensed ships Cyrillic glyphs for all those weights.
 
-## Files to edit (foreground/border cases only)
+The real culprit is the **font stack fallback** on `.font-display` (`src/index.css:89`):
 
-Product / marketplace:
-- `src/pages/Search.tsx` (lines 104, 135, 141): hover border, price, "View profile →"
-- `src/components/marketplace/CoachCard.tsx` (13, 66, 72): hover border, price, view link
-- `src/components/marketplace/ProductCard.tsx` (9, 30, 37): hover border, verified check icon, price
-- `src/components/marketplace/CartDrawer.tsx` (46, 55): item price, subtotal (keep 26 count bubble)
-- `src/pages/Events.tsx` (25): hover border (keep 39 filled badge)
-- `src/pages/ClubProfile.tsx` (128): price
+```
+font-family: 'Barlow Condensed', 'Arial Narrow', 'Barlow', system-ui, sans-serif;
+```
 
-Coach profile:
-- `src/pages/CoachProfile.tsx` (179, 220, 232, 243, 251): sport tag chip (`bg-primary/15 text-primary` → `bg-gold/15 text-gold`), cert border+text, calendar icon, slot hover border, request price
+Combined with `PublicNav` nav links using `font-semibold` (weight 600). What appears to be happening for some users: while the Cyrillic subset file is still loading (or if a weight file 302's slowly), the browser paints Cyrillic characters from the next available family. `'Arial Narrow'` has no Cyrillic → falls through to `'Barlow'` (the regular-width sibling), which at weight 600 looks visibly **heavier and wider** than Barlow Condensed. Latin text meanwhile already resolved to Barlow Condensed, so English looks correct and Cyrillic looks bold. This also matches `font-display=swap` behavior: the wrong-family glyph gets painted first and never swaps if the correct-family glyph never becomes needed (glyph cache per codepoint).
 
-Dashboard:
-- `src/pages/dashboard/Availability.tsx` (105, 124): icon, open-status border+text
-- `src/pages/dashboard/BookingRequests.tsx` (122): confirmed status border+text
-- `src/pages/dashboard/MyBookings.tsx` (84): confirmed status border+text
-- `src/pages/dashboard/Analytics.tsx` (24, 26, 37): icons + emphasized stat number
-- `src/pages/dashboard/DashboardHome.tsx` (84, 147, 160, 166): stat icons, completion %, checklist done icon
-- `src/pages/dashboard/ProfileEditor.tsx` (146, 149, 157, 269): unverified border + icons + discount % number
-- `src/pages/dashboard/Billing.tsx` (47, 48, 59, and any further `text-primary` past truncation): highlight surface border/tint, sparkles + crown icons
-- `src/pages/dashboard/Messages.tsx` (145 only — `bg-primary/10` active conversation tint on dark → `bg-gold/10`; keep 183/187 sent bubble as filled navy)
+**Fix (small):**
+1. Drop `'Arial Narrow'` from the `.font-display` fallback — it has no Cyrillic and is the source of the heavy substitution.
+2. Add `font-display: swap` explicitly via a `@font-face` override or accept that removing Arial Narrow is enough (Barlow itself has Cyrillic, so if fallback is hit, it'll still be regular weight).
+3. Add `-webkit-font-smoothing: antialiased` guard and confirm no `font-synthesis` issue by setting `font-synthesis: none;` on `body` — prevents the browser from synth-embolding when it thinks a weight is missing.
+4. Preload the Cyrillic subset with a `<link rel="preload" as="font" crossorigin>` in `index.html` for the two Condensed weights actually used (500, 600).
 
-Auth / nav / misc:
-- `src/pages/Login.tsx` (76): "Create an account" link
-- `src/pages/Register.tsx` (225): "Login" link
-- `src/pages/NotFound.tsx` (16): home link
-- `src/components/home/FeatureTicker.tsx` (20): diamond glyph
-- `src/components/dashboard/DashboardLayout.tsx` (66): active nav — **special case**: `border-primary bg-background-secondary text-foreground` is a left-border indicator against a surface fill, not a solid navy button. Swap `border-primary` → `border-gold`.
+No component code needs to change for item 2.
 
-Shadcn primitives (rendered on dark bg as outlines/borders):
-- `src/components/ui/button.tsx` (17): outline variant `hover:border-primary hover:text-foreground` → `hover:border-gold`
-- `src/components/ui/radio-group.tsx` (23): `border-primary text-primary` outer ring → `border-gold text-gold` (checked indicator dot stays default)
-- `src/components/ui/checkbox.tsx` (14): unchecked `border-primary` → `border-gold`; keep `data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground` (filled navy on check — correct)
-- `src/components/ui/slider.tsx` (18): thumb `border-primary` (empty ring on dark) → `border-gold`; keep Range `bg-primary` fill
-- `src/components/ui/calendar.tsx` (35): keep — this is the selected-day filled pill (`bg-primary text-primary-foreground` pair)
+## Item 1 — Scope of hardcoded English strings
 
-Left unchanged (verified filled pairs): `PublicNav`, `PublicFooter`, `Register`/`Login` logo squares, `FloatingCartButton`, `EventsSlider` active dot, `Events` category badge, `CartDrawer` count badge, `Community` disabled/register buttons, `CampCard`/`CampDetail` book buttons, `Marketplace` active category chip, `Messages` sent bubble, `ui/badge` default variant, `ui/sonner` action button, `ui/switch` checked state, `DashboardLayout` active bg.
+`useLanguage()` is currently wired into only **8 files** out of ~40 with user-visible copy. Everything else is hardcoded English. The regression on "Find a Coach" is representative: `PublicNav.tsx:14` has `label: 'Find a Coach'` as a literal, even though `nav_search` exists in `translations.ts`.
 
-## Verification
+Rough count of hardcoded UI strings per file (JSX text, placeholders, toasts, aria-labels — from `rg` scan):
 
-1. After edits, re-run `rg "\b(text-primary|border-primary|hover:text-primary|hover:border-primary|bg-primary/(5|10|15|20|30|40))\b" src/` and confirm each remaining hit is a documented filled-pair exception.
-2. Run `bunx tsgo --noEmit` and confirm zero errors.
-3. Report the full changed-file list with a one-line note per file.
+### Tier A — high density, user-facing chrome (do first)
+| File | Strings | Uses t? |
+|---|---|---|
+| `components/layout/PublicNav.tsx` | 2 (incl. the `label` bug) | partial |
+| `components/layout/PublicFooter.tsx` | 10 | no |
+| `components/dashboard/DashboardLayout.tsx` | 2 (nav labels) | no |
+| `pages/Login.tsx` | 5 | no |
+| `pages/Register.tsx` | 22 | no |
+| `pages/Start.tsx` | 2 | no |
+| `pages/NotFound.tsx` | 1 | no |
+
+### Tier B — dashboard pages (athlete + coach)
+| File | Strings |
+|---|---|
+| `pages/dashboard/ProfileEditor.tsx` | 24 |
+| `pages/dashboard/Bookmarks.tsx` | 11 |
+| `pages/dashboard/Availability.tsx` | 11 |
+| `pages/dashboard/Settings.tsx` | 10 |
+| `pages/dashboard/DashboardHome.tsx` | 10 |
+| `pages/dashboard/PersonalInfo.tsx` | 8 |
+| `pages/dashboard/Billing.tsx` | 6 |
+| `pages/dashboard/MyBookings.tsx` | 5 |
+| `pages/dashboard/Messages.tsx` | 4 |
+| `pages/dashboard/BookingRequests.tsx` | 4 |
+| `pages/dashboard/Analytics.tsx` | 3 |
+
+### Tier C — public pages / profile / marketplace
+| File | Strings |
+|---|---|
+| `pages/CoachProfile.tsx` | 15 |
+| `pages/ClubProfile.tsx` | 15 |
+| `pages/Search.tsx` | 7 |
+| `pages/Events.tsx` | 1 (mostly data-driven) |
+| `pages/Marketplace.tsx` | 1 |
+| `components/marketplace/EventsSlider.tsx` | 5 |
+| `components/marketplace/CartDrawer.tsx` | 4 |
+| `components/marketplace/FloatingCartButton.tsx` | 4 |
+
+### Tier D — home sections (mostly already translated headings, but bodies/CTAs leaking)
+| File | Strings |
+|---|---|
+| `components/home/SplitHero.tsx` | 1 ("Find a Coach" button) |
+| `components/home/HeroSection.tsx` | (hero has "Find a Coach" literal at line 45) |
+| `components/home/ManifestoSection.tsx` | 2 |
+| `components/home/FeaturedCoaches.tsx` | 1 |
+| `components/home/ClosingCTA.tsx` | 1 |
+| `components/community/PostCard.tsx` | 1 |
+| `components/BookmarkButton.tsx` | 2 (toasts) |
+
+**Total: ~34 files, ~200 hardcoded strings.** Every dashboard page is 0% translated. Every form (Login/Register/ProfileEditor/PersonalInfo/Settings) is 0% translated. Toasts, empty states, and aria-labels are 100% English everywhere.
+
+## Recommended split
+
+Doing all ~200 strings in a single pass is risky (translation quality suffers, huge diff, hard to review). Suggested phased plan:
+
+- **Phase 1 (this turn, small):** Fix the Cyrillic font-weight issue in `index.css` + `index.html`. Fix the immediate `PublicNav` "Find a Coach" bug by using `t.nav_search`. Wire `DashboardLayout` nav labels through `t`. ~1 file CSS + 2 component files.
+- **Phase 2:** Tier A public chrome (Footer, Login, Register, Start, NotFound). ~40 new keys × 3 languages.
+- **Phase 3:** Tier C public pages (CoachProfile, ClubProfile, Search, Marketplace, marketplace components). ~50 keys × 3.
+- **Phase 4:** Tier B dashboard pages (all 11 files). ~100 keys × 3.
+- **Phase 5:** Tier D home leftovers + toast/aria sweep.
+
+Each phase = one PR-sized turn, translations stay reviewable, and the app is never in a half-broken state.
+
+## Question for you
+
+Do you want me to:
+- **(A)** Execute Phase 1 only now (font fix + nav bug + dashboard nav labels), then wait for approval before each subsequent phase?
+- **(B)** Execute Phases 1 + 2 in one go, then pause?
+- **(C)** Blast through all phases in one very large turn (higher risk of shallow BG/FR translations and merge pain)?
+
+Also: for translations, should Bulgarian and French come from you inline, or would you prefer English keys first and BG/FR filled as a follow-up?
