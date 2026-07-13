@@ -143,18 +143,11 @@ const ProfileEditor = () => {
       </div>
 
       {(profile.role === 'coach' || profile.role === 'club') && (
-        <div className={`surface p-4 flex items-start gap-3 ${verified ? '' : 'border-primary/30'}`}>
-          {verified ? (
-            <>
-              <BadgeCheck className="h-5 w-5 text-primary mt-0.5" />
-              <div>
-                <p className="font-semibold">Verified</p>
-                <p className="text-sm text-muted-foreground">Your profile is live in search results.</p>
-              </div>
-            </>
-          ) : (
-            <>
-              <ShieldAlert className="h-5 w-5 text-primary mt-0.5" />
+        <div className={`surface p-4 flex items-start gap-3 ${verified ? '' : 'border-gold/30'}`}>
+...
+              <BadgeCheck className="h-5 w-5 text-gold mt-0.5" />
+...
+              <ShieldAlert className="h-5 w-5 text-gold mt-0.5" />
               <div>
                 <p className="font-semibold">Pending verification</p>
                 <p className="text-sm text-muted-foreground">
@@ -266,7 +259,7 @@ const ProfileEditor = () => {
                   <>
                     <Slider value={discount} min={0} max={20} step={1} onValueChange={setDiscount} />
                     <div className="mt-2 flex justify-between text-xs text-muted-foreground">
-                      <span>0%</span><span className="font-semibold text-primary">-{discount[0]}%</span><span>20%</span>
+                      <span>0%</span><span className="font-semibold text-gold">-{discount[0]}%</span><span>20%</span>
                     </div>
                   </>
                 )}

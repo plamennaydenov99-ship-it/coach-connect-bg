@@ -81,7 +81,7 @@ const MyBookings = () => {
                 </div>
               </div>
               <span className={`text-xs uppercase tracking-wider px-2 py-1 border shrink-0 ${
-                r.status === 'confirmed' ? 'border-primary text-primary' :
+                r.status === 'confirmed' ? 'border-gold text-gold' :
                 r.status === 'pending' ? 'border-yellow-500/60 text-yellow-500' :
                 'border-muted-foreground/30 text-muted-foreground'
               }`}>{r.status}</span>

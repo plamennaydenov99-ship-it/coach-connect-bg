@@ -142,7 +142,7 @@ const Messages = () => {
               key={c.id}
               onClick={() => { setActiveId(c.id); setParams({ c: c.id }); }}
               className={`w-full text-left p-4 border-b border-border flex gap-3 transition-colors ${
-                c.id === activeId ? 'bg-primary/10' : 'hover:bg-secondary/50'
+                c.id === activeId ? 'bg-gold/10' : 'hover:bg-secondary/50'
               }`}
             >
               <img

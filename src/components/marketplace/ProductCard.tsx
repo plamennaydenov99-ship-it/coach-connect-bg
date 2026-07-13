@@ -6,7 +6,7 @@ import type { Product } from '@/lib/products';
 
 export function ProductCard({ product }: { product: Product }) {
   return (
-    <article className="surface overflow-hidden flex flex-col transition hover:border-primary/50">
+    <article className="surface overflow-hidden flex flex-col transition hover:border-gold/50">
       <div className="relative aspect-square overflow-hidden">
         <img
           src={product.image}
@@ -27,14 +27,14 @@ export function ProductCard({ product }: { product: Product }) {
       <div className="p-4 flex flex-col flex-1">
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <span className="font-medium">{product.club}</span>
-          <BadgeCheck className="h-3.5 w-3.5 text-primary" />
+          <BadgeCheck className="h-3.5 w-3.5 text-gold" />
         </div>
         <h3 className="mt-1 font-display text-lg leading-tight">{product.name}</h3>
         <Badge variant="secondary" className="mt-2 self-start">
           {product.category}
         </Badge>
         <div className="mt-auto pt-4 flex items-center justify-between gap-3">
-          <span className="font-display text-2xl text-primary">€{product.price}</span>
+          <span className="font-display text-2xl text-gold">€{product.price}</span>
           <Button
             size="sm"
             onClick={() => toast.success(`${product.name} added to cart`)}

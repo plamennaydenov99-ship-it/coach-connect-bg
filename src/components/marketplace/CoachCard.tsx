@@ -10,7 +10,7 @@ export function CoachCard({ coach }: { coach: Coach }) {
   return (
     <Link
       to={`/coach/${coach.slug}`}
-      className="group surface overflow-hidden flex flex-col transition-all hover:border-primary/50"
+      className="group surface overflow-hidden flex flex-col transition-all hover:border-gold/50"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-muted">
         <img
@@ -63,13 +63,13 @@ export function CoachCard({ coach }: { coach: Coach }) {
             {coach.discountPct ? (
               <>
                 <p className="text-xs text-muted-foreground line-through">€{coach.pricePerSession}</p>
-                <p className="font-semibold text-primary">€{final}<span className="text-xs text-muted-foreground font-normal">/session</span></p>
+                <p className="font-semibold text-gold">€{final}<span className="text-xs text-muted-foreground font-normal">/session</span></p>
               </>
             ) : (
               <p className="font-semibold">€{coach.pricePerSession}<span className="text-xs text-muted-foreground font-normal">/session</span></p>
             )}
           </div>
-          <span className="text-xs font-medium text-primary group-hover:underline">View profile →</span>
+          <span className="text-xs font-medium text-gold group-hover:underline">View profile →</span>
         </div>
       </div>
     </Link>

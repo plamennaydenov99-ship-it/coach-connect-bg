@@ -102,7 +102,7 @@ const Availability = () => {
 
       <div className="surface overflow-hidden">
         <div className="p-4 border-b border-border flex items-center gap-2">
-          <Calendar className="h-4 w-4 text-primary" />
+          <Calendar className="h-4 w-4 text-gold" />
           <h2 className="font-display text-lg">Your slots</h2>
         </div>
         {loading ? (
@@ -121,7 +121,7 @@ const Availability = () => {
                     </p>
                   </div>
                   <span className={`text-xs uppercase tracking-wider px-2 py-1 border ${
-                    s.status === 'open' ? 'border-primary text-primary' :
+                    s.status === 'open' ? 'border-gold text-gold' :
                     s.status === 'pending' ? 'border-yellow-500/60 text-yellow-500' :
                     'border-muted-foreground/30 text-muted-foreground'
                   }`}>{s.status}</span>

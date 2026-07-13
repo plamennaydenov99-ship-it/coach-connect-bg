@@ -119,7 +119,7 @@ const BookingRequests = () => {
                   </>
                 ) : (
                   <span className={`text-xs uppercase tracking-wider px-2 py-1 border ${
-                    r.status === 'confirmed' ? 'border-primary text-primary' :
+                    r.status === 'confirmed' ? 'border-gold text-gold' :
                     'border-muted-foreground/30 text-muted-foreground'
                   }`}>{r.status}</span>
                 )}

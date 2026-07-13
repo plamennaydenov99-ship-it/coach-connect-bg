@@ -101,7 +101,7 @@ function CoachResultCard({ coach }: { coach: CoachRow }) {
   return (
     <Link
       to={`/coach/${coach.id}`}
-      className="group surface overflow-hidden flex flex-col transition-all hover:border-primary/50"
+      className="group surface overflow-hidden flex flex-col transition-all hover:border-gold/50"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-muted">
         <img src={cover} alt={name} loading="lazy"
@@ -132,13 +132,13 @@ function CoachResultCard({ coach }: { coach: CoachRow }) {
             {coach.discount_pct ? (
               <>
                 <p className="text-xs text-muted-foreground line-through">€{price}</p>
-                <p className="font-semibold text-primary">€{finalPrice}<span className="text-xs text-muted-foreground font-normal">/session</span></p>
+                <p className="font-semibold text-gold">€{finalPrice}<span className="text-xs text-muted-foreground font-normal">/session</span></p>
               </>
             ) : (
               <p className="font-semibold">€{price}<span className="text-xs text-muted-foreground font-normal">/session</span></p>
             )}
           </div>
-          <span className="text-xs font-medium text-primary group-hover:underline">View profile →</span>
+          <span className="text-xs font-medium text-gold group-hover:underline">View profile →</span>
         </div>
       </div>
     </Link>
