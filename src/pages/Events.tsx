@@ -4,6 +4,7 @@ import { PublicFooter } from '@/components/layout/PublicFooter';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { EVENTS } from '@/lib/events';
+import { BookmarkButton } from '@/components/BookmarkButton';
 
 export default function Events() {
   return (
