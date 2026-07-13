@@ -59,15 +59,9 @@ export function PublicNav() {
               БГ
             </button>
           </div>
-          <Link to="/login">
-            <Button variant="ghost" className="h-10">{t.nav_login}</Button>
-          </Link>
-          <Link to="/dashboard">
-            <Button
-              variant="outline"
-              className="h-10 border-foreground-subtle text-foreground-muted hover:border-accent-electric hover:text-foreground"
-            >
-              {t.nav_coach_cta}
+          <Link to="/start">
+            <Button size="lg" className="h-11 px-6 tracking-[0.12em] font-display uppercase text-sm">
+              {t.nav_login}
             </Button>
           </Link>
         </div>
