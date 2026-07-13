@@ -1,12 +1,12 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { t as translations } from '@/lib/translations';
 
-export type Lang = 'en' | 'bg';
+export type Lang = 'en' | 'bg' | 'fr';
 
 interface LanguageContextValue {
   lang: Lang;
   setLang: (l: Lang) => void;
-  t: (typeof translations)['en'] | (typeof translations)['bg'];
+  t: (typeof translations)['en'];
 }
 
 const LanguageContext = createContext<LanguageContextValue | undefined>(undefined);
