@@ -14,7 +14,7 @@ export function ClosingCTA() {
         }}
       />
 
-      <div className="relative container py-28 md:py-40 text-center max-w-3xl">
+      <Reveal className="relative container py-28 md:py-40 text-center max-w-3xl">
         {/* Thin gold line top */}
         <div className="h-px w-16 bg-navy mx-auto mb-10" />
 
@@ -50,9 +50,9 @@ export function ClosingCTA() {
         </div>
 
         <p className="mt-12 font-display uppercase tracking-[0.2em] text-[11px] text-foreground-subtle">
-          Free to join · No commission · Nice · Monaco · Sofia
+          Free to join · No commission · Global reach
         </p>
-      </div>
+      </Reveal>
     </section>
   );
 }
