@@ -26,9 +26,9 @@ export const SPORTS: Sport[] = [
   { slug: 'crossfit', label: 'CrossFit', labelBg: 'КросФит', icon: 'Dumbbell' },
 ];
 
-export const CITIES_EN = ['Sofia', 'Plovdiv', 'Varna', 'Burgas', 'Stara Zagora', 'Pleven'];
-export const CITIES_BG = ['София', 'Пловдив', 'Варна', 'Бургас', 'Стара Загора', 'Плевен'];
-// Keep CITIES = CITIES_EN for filter compatibility with coach city strings
+// Pilot cities — Nice, Monaco, Sofia
+export const CITIES_EN = ['Nice', 'Monaco', 'Sofia'];
+export const CITIES_BG = ['Ница', 'Монако', 'София'];
 export const CITIES = CITIES_EN;
 
 export interface Review {
