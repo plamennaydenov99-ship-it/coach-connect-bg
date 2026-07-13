@@ -104,7 +104,7 @@ export function FeaturedCoaches() {
               </Link>
             ))}
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
