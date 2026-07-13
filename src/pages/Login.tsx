@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,10 @@ import { supabase } from '@/integrations/supabase/client';
 
 const Login = () => {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const roleParam = params.get('role');
+  const role = roleParam === 'coach' || roleParam === 'athlete' ? roleParam : null;
+  const roleLabel = role === 'coach' ? 'Log in as a Coach' : role === 'athlete' ? 'Log in as an Athlete' : 'Welcome back';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
