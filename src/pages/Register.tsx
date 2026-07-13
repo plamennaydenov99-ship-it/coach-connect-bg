@@ -138,15 +138,12 @@ const Register = () => {
             </div>
             <div className="grid gap-2">
               <Label htmlFor="city">City</Label>
-              <select
+              <Input
                 id="city"
-                className="h-10 rounded-md border border-input bg-background px-3 text-sm"
                 value={form.city}
                 onChange={e => setForm({ ...form, city: e.target.value })}
-              >
-                <option value="">Select a city</option>
-                {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
+                placeholder="e.g. Paris, Sofia, London"
+              />
             </div>
 
             {role === 'coach' && (
