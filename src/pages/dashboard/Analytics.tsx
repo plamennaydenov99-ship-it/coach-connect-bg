@@ -22,7 +22,7 @@ const Analytics = () => {
 
       <div className="surface p-5 flex items-center gap-3">
         <TrendingUp className="h-5 w-5 text-gold" />
-...
+<p className="text-sm">
           Your profile appeared in <span className="font-semibold text-gold">348 searches</span> this week — up 22% from last week.
         </p>
       </div>
