@@ -29,7 +29,7 @@ export function HeroSection() {
 
       <div className="container relative z-10 py-20 md:py-28">
         <div className="max-w-2xl">
-          <span className="label-eyebrow text-accent-electric">Bulgaria's sports platform</span>
+          <span className="label-eyebrow text-accent-electric">Nice · Monaco · Sofia</span>
           <h1
             className="mt-5 font-display text-foreground tracking-tight"
             style={{ fontSize: 'clamp(48px, 7vw, 80px)', lineHeight: 0.9 }}
