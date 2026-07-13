@@ -85,7 +85,7 @@ export const t = {
     nav_community: 'Community',
     camps_hero_title: 'SPORTS CAMPS',
     camps_hero_sub: 'Multi-day training camps hosted by verified coaches and clubs worldwide',
-    community_hero_title: 'ATLETA COMMUNITY',
+    community_hero_title: 'ZENIT COMMUNITY',
     community_hero_sub: 'Connect with athletes, find training partners, share experiences.',
     community_cta_post: 'Start a Thread',
     community_cta_browse: 'Browse by Sport',
