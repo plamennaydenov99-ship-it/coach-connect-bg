@@ -22,7 +22,7 @@ export function ManifestoSection() {
 
         {/* Supporting paragraph */}
         <p className="mt-10 max-w-2xl font-body text-base md:text-lg text-foreground-muted leading-relaxed">
-          Zenit connects athletes with verified coaches and clubs across Bulgaria.
+          Zenit connects athletes with verified coaches and clubs in Nice, Monaco &amp; Sofia.
           Whether you're just starting out or training to compete — your coach is here.
         </p>
 
