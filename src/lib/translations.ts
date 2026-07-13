@@ -190,7 +190,7 @@ export const t = {
     nav_community: 'Общност',
     camps_hero_title: 'СПОРТНИ ЛАГЕРИ',
     camps_hero_sub: 'Многодневни тренировъчни лагери от верифицирани треньори и клубове по света',
-    community_hero_title: 'ATLETA ОБЩНОСТ',
+    community_hero_title: 'ZENIT ОБЩНОСТ',
     community_hero_sub: 'Свържи се със спортисти, намери партньори за тренировки, сподели опит.',
     community_cta_post: 'Започни тема',
     community_cta_browse: 'По спорт',
