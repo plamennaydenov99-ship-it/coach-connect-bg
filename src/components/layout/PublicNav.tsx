@@ -11,7 +11,6 @@ export function PublicNav() {
 
   const links = [
     { to: '/search', label: 'Find a Coach' },
-    { to: '/match', label: 'AI Match' },
     { to: '/events', label: t.nav_events },
     { to: '/camps', label: t.nav_camps },
     { to: '/community', label: t.nav_community },
