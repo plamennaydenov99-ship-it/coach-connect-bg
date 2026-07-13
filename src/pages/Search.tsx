@@ -61,16 +61,13 @@ function FilterPanel({
       </div>
 
       <div>
-        <Label className="text-sm font-semibold mb-2 block">City</Label>
-        <Select value={city || 'any'} onValueChange={(v) => setCity(v === 'any' ? '' : v)}>
-          <SelectTrigger><SelectValue placeholder="Any city" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="any">Any city</SelectItem>
-            <SelectItem value="Nice">Nice</SelectItem>
-            <SelectItem value="Monaco">Monaco</SelectItem>
-            <SelectItem value="Sofia">Sofia</SelectItem>
-          </SelectContent>
-        </Select>
+        <Label className="text-sm font-semibold mb-2 block" htmlFor="city-filter">City</Label>
+        <Input
+          id="city-filter"
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+          placeholder="Any city"
+        />
       </div>
 
       <div>
