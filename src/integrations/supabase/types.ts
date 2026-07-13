@@ -14,6 +14,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      athlete_profiles: {
+        Row: {
+          created_at: string
+          goals: string | null
+          height_cm: number | null
+          id: string
+          sports: string[]
+          updated_at: string
+          weight_kg: number | null
+        }
+        Insert: {
+          created_at?: string
+          goals?: string | null
+          height_cm?: number | null
+          id: string
+          sports?: string[]
+          updated_at?: string
+          weight_kg?: number | null
+        }
+        Update: {
+          created_at?: string
+          goals?: string | null
+          height_cm?: number | null
+          id?: string
+          sports?: string[]
+          updated_at?: string
+          weight_kg?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "athlete_profiles_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       availability_slots: {
         Row: {
           coach_id: string
@@ -87,6 +125,38 @@ export type Database = {
             columns: ["slot_id"]
             isOneToOne: false
             referencedRelation: "availability_slots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bookmarks: {
+        Row: {
+          athlete_id: string
+          created_at: string
+          id: string
+          target_id: string
+          target_type: string
+        }
+        Insert: {
+          athlete_id: string
+          created_at?: string
+          id?: string
+          target_id: string
+          target_type: string
+        }
+        Update: {
+          athlete_id?: string
+          created_at?: string
+          id?: string
+          target_id?: string
+          target_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookmarks_athlete_id_fkey"
+            columns: ["athlete_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
