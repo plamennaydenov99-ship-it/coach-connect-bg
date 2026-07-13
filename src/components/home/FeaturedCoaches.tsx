@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { COACHES } from '@/lib/mockData';
+import { Reveal } from '@/components/Reveal';
 
 export function FeaturedCoaches() {
   const featured = COACHES[0];
