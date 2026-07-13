@@ -1,6 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, MapPin, Calendar, Users, Award } from 'lucide-react';
-import { AnnouncementBar } from '@/components/layout/AnnouncementBar';
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { findCamp, campImage } from '@/lib/camps';
@@ -40,7 +39,6 @@ export default function CampDetail() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <AnnouncementBar />
       <PublicNav />
 
       <main className="flex-1">
