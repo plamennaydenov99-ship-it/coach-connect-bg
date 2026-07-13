@@ -29,7 +29,7 @@ export function HeroSection() {
 
       <div className="container relative z-10 py-20 md:py-28">
         <div className="max-w-2xl">
-          <span className="label-eyebrow text-accent-electric">Nice · Monaco · Sofia</span>
+          <span className="label-eyebrow text-gold">Nice · Monaco · Sofia</span>
           <h1
             className="mt-5 font-display text-foreground tracking-tight"
             style={{ fontSize: 'clamp(48px, 7vw, 80px)', lineHeight: 0.9 }}
@@ -49,7 +49,7 @@ export function HeroSection() {
               variant="outline"
               size="lg"
               onClick={scrollToMatch}
-              className="tracking-[0.1em] border-foreground-subtle text-foreground-muted hover:border-accent-electric hover:text-foreground"
+              className="tracking-[0.1em] border-foreground-subtle text-foreground-muted hover:border-gold hover:text-foreground"
             >
               AI Match Me <ArrowRight className="h-4 w-4 ml-2" />
             </Button>

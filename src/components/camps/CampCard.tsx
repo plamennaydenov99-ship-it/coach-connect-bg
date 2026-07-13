@@ -8,7 +8,7 @@ export function CampCard({ camp }: { camp: Camp }) {
   const lowSpots = camp.spotsLeft < 10;
 
   return (
-    <div className="group flex flex-col bg-card border border-border hover:border-accent-electric transition-colors rounded-sm overflow-hidden">
+    <div className="group flex flex-col bg-card border border-border hover:border-gold transition-colors rounded-sm overflow-hidden">
       <div className="relative aspect-[2/1] overflow-hidden bg-muted">
         <img
           src={campImage(camp.image)}
@@ -19,7 +19,7 @@ export function CampCard({ camp }: { camp: Camp }) {
         <span className="absolute top-3 left-3 px-2 py-1 bg-background/85 backdrop-blur font-display uppercase tracking-[0.12em] text-[11px] text-foreground rounded-sm">
           {camp.sport}
         </span>
-        <span className="absolute top-3 right-3 px-2 py-1 bg-background/85 backdrop-blur font-display uppercase tracking-[0.12em] text-[11px] text-accent-electric rounded-sm">
+        <span className="absolute top-3 right-3 px-2 py-1 bg-background/85 backdrop-blur font-display uppercase tracking-[0.12em] text-[11px] text-gold rounded-sm">
           {camp.duration}
         </span>
       </div>
@@ -48,13 +48,13 @@ export function CampCard({ camp }: { camp: Camp }) {
         <div className="mt-auto pt-3 border-t border-border flex items-end justify-between">
           <div>
             <p className="font-display text-[20px] text-foreground leading-none">{camp.price}</p>
-            <p className={`text-[12px] mt-1 ${lowSpots ? 'text-accent-electric' : 'text-foreground-muted'}`}>
+            <p className={`text-[12px] mt-1 ${lowSpots ? 'text-gold' : 'text-foreground-muted'}`}>
               {camp.spotsLeft} {t.spots_left}
             </p>
           </div>
           <Link
             to={`/camps/${camp.id}`}
-            className="px-3 py-2 border border-border-hover font-display uppercase tracking-[0.12em] text-[12px] text-foreground hover:bg-accent-electric hover:text-primary-foreground hover:border-accent-electric transition-colors rounded-sm"
+            className="px-3 py-2 border border-border-hover font-display uppercase tracking-[0.12em] text-[12px] text-foreground hover:bg-navy-hover hover:text-primary-foreground hover:border-gold transition-colors rounded-sm"
           >
             {t.view_camp}
           </Link>

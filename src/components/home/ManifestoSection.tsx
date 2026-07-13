@@ -9,11 +9,11 @@ export function ManifestoSection() {
     <section className="bg-background py-28 md:py-40 border-t border-border">
       <div className="container max-w-5xl">
         {/* Thin ice line above */}
-        <div className="h-px w-16 bg-ice mb-12" />
+        <div className="h-px w-16 bg-navy mb-12" />
 
         {/* Manifesto */}
         <h2
-          className="font-display text-ivory tracking-tight"
+          className="font-display text-foreground tracking-tight"
           style={{ fontSize: 'clamp(36px, 5.5vw, 68px)', lineHeight: 1.02 }}
         >
           Every athlete deserves<br />a great coach.<br />
@@ -33,7 +33,7 @@ export function ManifestoSection() {
               key={i}
               className={`flex flex-col ${i > 0 ? 'md:pl-12 md:border-l md:border-border' : ''}`}
             >
-              <span className="font-display text-ivory text-5xl md:text-6xl tracking-tight">
+              <span className="font-display text-foreground text-5xl md:text-6xl tracking-tight">
                 {stat.number}
               </span>
               <span className="mt-3 font-display uppercase tracking-[0.15em] text-xs text-foreground-subtle">

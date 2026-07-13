@@ -34,42 +34,28 @@ export default {
           foreground: "hsl(var(--primary-foreground))",
           hover: "hsl(var(--primary-hover))",
         },
-        ice: {
-          DEFAULT: '#4A9EBF',
-          hover: '#5BB4D6',
-          subtle: 'rgba(74, 158, 191, 0.12)',
+        navy: {
+          DEFAULT: '#1C2740',
+          hover: '#283A5C',
+          subtle: 'rgba(28, 39, 64, 0.4)',
         },
-        ember: {
-          DEFAULT: '#C97A3A',
-          hover: '#D98E50',
-          subtle: 'rgba(201, 122, 58, 0.12)',
+        gold: {
+          DEFAULT: '#C9A25D',
+          hover: '#D9B674',
+          subtle: 'rgba(201, 162, 93, 0.12)',
         },
-        ivory: '#F2EDE4',
+        copper: {
+          DEFAULT: '#A65A3A',
+          hover: '#BE6E4B',
+          subtle: 'rgba(166, 90, 58, 0.12)',
+        },
+        cream: '#F3EEE3',
         carbon: {
-          900: '#111112',
-          800: '#1C1C1E',
-          700: '#28282C',
-          600: '#3E3E42',
-          500: '#5A5A60',
-        },
-        // Legacy aliases — mapped to new palette tokens via CSS vars
-        "accent-electric": {
-          DEFAULT: "hsl(var(--accent-electric))",
-          dim: "hsl(var(--accent-electric-dim))",
-        },
-        coach: {
-          DEFAULT: "hsl(var(--coach))",
-          foreground: "hsl(var(--coach-foreground))",
-        },
-        athlete: {
-          DEFAULT: "hsl(var(--athlete-accent))",
-          bright: "hsl(var(--athlete-accent-bright))",
-          glow: "hsl(var(--athlete-accent-glow))",
-        },
-        "coach-accent": {
-          DEFAULT: "hsl(var(--coach-accent))",
-          bright: "hsl(var(--coach-accent-bright))",
-          glow: "hsl(var(--coach-accent-glow))",
+          900: '#0B0D10',
+          800: '#12151C',
+          700: '#171B22',
+          600: '#2A2D33',
+          500: '#3D4149',
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",

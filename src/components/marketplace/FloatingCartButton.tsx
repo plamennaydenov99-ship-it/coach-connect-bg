@@ -22,12 +22,12 @@ export function FloatingCartButton() {
       <SheetTrigger asChild>
         <button
           aria-label="Cart"
-          className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center bg-accent-electric text-primary-foreground hover:bg-accent-electric-dim transition-colors"
+          className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center bg-navy text-primary-foreground hover:bg-navy-hover transition-colors"
           style={{ borderRadius: '4px' }}
         >
           <ShoppingCart className="h-5 w-5" />
           {items.length > 0 && (
-            <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center bg-background border border-accent-electric text-[10px] font-bold text-accent-electric">
+            <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center bg-background border border-copper text-[10px] font-bold text-gold">
               {items.length}
             </span>
           )}
@@ -46,7 +46,7 @@ export function FloatingCartButton() {
                 <p className="font-medium text-sm truncate">{item.name}</p>
                 <p className="text-xs text-muted-foreground mt-0.5">Qty {item.qty}</p>
               </div>
-              <span className="font-display text-accent-electric">€{item.price}</span>
+              <span className="font-display text-gold">€{item.price}</span>
             </div>
           ))}
         </div>
@@ -54,7 +54,7 @@ export function FloatingCartButton() {
           <div className="w-full space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Subtotal</span>
-              <span className="font-display text-2xl text-accent-electric">€{subtotal}</span>
+              <span className="font-display text-2xl text-gold">€{subtotal}</span>
             </div>
             <Button className="w-full" size="lg" onClick={() => toast.success('Checkout flow coming soon.')}>
               Checkout

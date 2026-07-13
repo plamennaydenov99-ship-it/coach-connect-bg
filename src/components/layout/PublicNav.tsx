@@ -19,10 +19,10 @@ export function PublicNav() {
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
       <div className="container flex h-16 md:h-20 items-center justify-between gap-6">
         <Link to="/" className="flex items-center gap-2 shrink-0">
-          <div className="flex h-9 w-9 items-center justify-center bg-ice text-primary-foreground rounded-sm">
+          <div className="flex h-9 w-9 items-center justify-center bg-navy text-primary-foreground rounded-sm">
             <Zap className="h-4 w-4" strokeWidth={2.5} />
           </div>
-          <span className="font-display text-2xl md:text-3xl tracking-[0.08em] font-semibold text-ivory">ZENIT</span>
+          <span className="font-display text-2xl md:text-3xl tracking-[0.08em] font-semibold text-foreground">ZENIT</span>
         </Link>
 
 
@@ -32,7 +32,7 @@ export function PublicNav() {
               key={l.to}
               to={l.to}
               className={({ isActive }) =>
-                `relative font-display uppercase tracking-[0.12em] text-sm font-semibold transition-colors after:absolute after:left-0 after:-bottom-1 after:h-px after:w-full after:scale-x-0 after:bg-accent-electric after:transition-transform hover:after:scale-x-100 ${
+                `relative font-display uppercase tracking-[0.12em] text-sm font-semibold transition-colors after:absolute after:left-0 after:-bottom-1 after:h-px after:w-full after:scale-x-0 after:bg-navy after:transition-transform hover:after:scale-x-100 ${
                   isActive ? 'text-foreground after:scale-x-100' : 'text-foreground-muted hover:text-foreground'
                 }`
               }

@@ -48,7 +48,7 @@ export default function Community() {
                     <span tabIndex={0}>
                       <button
                         disabled
-                        className="px-4 py-3 bg-accent-electric text-primary-foreground font-display uppercase tracking-[0.12em] text-[13px] rounded-sm opacity-60 cursor-not-allowed"
+                        className="px-4 py-3 bg-navy text-primary-foreground font-display uppercase tracking-[0.12em] text-[13px] rounded-sm opacity-60 cursor-not-allowed"
                       >
                         {t.community_cta_post}
                       </button>
@@ -59,7 +59,7 @@ export default function Community() {
               </TooltipProvider>
               <a
                 href="#sport-tabs"
-                className="px-4 py-3 border border-border-hover text-foreground font-display uppercase tracking-[0.12em] text-[13px] rounded-sm hover:border-accent-electric transition-colors"
+                className="px-4 py-3 border border-border-hover text-foreground font-display uppercase tracking-[0.12em] text-[13px] rounded-sm hover:border-gold transition-colors"
               >
                 {t.community_cta_browse}
               </a>
@@ -75,7 +75,7 @@ export default function Community() {
                   key={s}
                   onClick={() => setTab(s)}
                   className={`pb-1 font-display uppercase tracking-[0.12em] text-[13px] transition-colors border-b-2 ${
-                    tab === s ? 'border-accent-electric text-accent-electric' : 'border-transparent text-foreground-subtle hover:text-foreground-muted'
+                    tab === s ? 'border-copper text-gold' : 'border-transparent text-foreground-subtle hover:text-foreground-muted'
                   }`}
                 >
                   {s === 'all' ? 'All' : s.charAt(0).toUpperCase() + s.slice(1)}
@@ -97,10 +97,10 @@ export default function Community() {
               <h3 className="font-display text-[16px] text-foreground">{t.join_community_title}</h3>
               <p className="mt-2 text-[13px] text-foreground-muted font-body normal-case">{t.join_community_sub}</p>
               <div className="mt-4 flex gap-2">
-                <Link to="/login" className="flex-1 text-center px-3 py-2 border border-border-hover text-foreground font-display uppercase tracking-[0.12em] text-[12px] rounded-sm hover:border-accent-electric transition-colors">
+                <Link to="/login" className="flex-1 text-center px-3 py-2 border border-border-hover text-foreground font-display uppercase tracking-[0.12em] text-[12px] rounded-sm hover:border-gold transition-colors">
                   {t.sign_in}
                 </Link>
-                <Link to="/register" className="flex-1 text-center px-3 py-2 bg-accent-electric text-primary-foreground font-display uppercase tracking-[0.12em] text-[12px] rounded-sm hover:bg-accent-electric-dim transition-colors">
+                <Link to="/register" className="flex-1 text-center px-3 py-2 bg-navy text-primary-foreground font-display uppercase tracking-[0.12em] text-[12px] rounded-sm hover:bg-navy-hover transition-colors">
                   {t.register}
                 </Link>
               </div>
@@ -116,7 +116,7 @@ export default function Community() {
                       <span className="text-foreground-muted">{item.count} posts</span>
                     </div>
                     <div className="mt-1.5 h-0.5 bg-border">
-                      <div className="h-full bg-accent-electric" style={{ width: `${(item.count / trendingMax) * 100}%` }} />
+                      <div className="h-full bg-navy" style={{ width: `${(item.count / trendingMax) * 100}%` }} />
                     </div>
                   </li>
                 ))}
@@ -133,7 +133,7 @@ export default function Community() {
                       <p className="font-display text-[14px] text-foreground truncate">{c.name}</p>
                       <p className="text-[12px] text-foreground-muted capitalize">{c.sport} · {c.city}</p>
                     </div>
-                    <Link to={`/coach/${c.slug}`} className="text-[11px] font-display uppercase tracking-[0.1em] text-accent-electric hover:underline">
+                    <Link to={`/coach/${c.slug}`} className="text-[11px] font-display uppercase tracking-[0.1em] text-gold hover:underline">
                       {t.view_profile}
                     </Link>
                   </li>
@@ -146,13 +146,13 @@ export default function Community() {
               <ul className="mt-4 flex flex-col gap-3">
                 {sidebarCamps.map(c => (
                   <li key={c.id}>
-                    <Link to={`/camps/${c.id}`} className="block p-3 border border-border hover:border-accent-electric transition-colors rounded-sm">
+                    <Link to={`/camps/${c.id}`} className="block p-3 border border-border hover:border-gold transition-colors rounded-sm">
                       <p className="font-display text-[14px] text-foreground truncate">{c.name}</p>
                       <div className="mt-1 flex items-center gap-3 text-[12px] text-foreground-muted">
                         <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {c.city}</span>
                         <span className="flex items-center gap-1"><Calendar className="h-3 w-3" /> {c.dates}</span>
                       </div>
-                      <span className="mt-2 inline-block text-[11px] font-display uppercase tracking-[0.1em] text-accent-electric">View →</span>
+                      <span className="mt-2 inline-block text-[11px] font-display uppercase tracking-[0.1em] text-gold">View →</span>
                     </Link>
                   </li>
                 ))}
