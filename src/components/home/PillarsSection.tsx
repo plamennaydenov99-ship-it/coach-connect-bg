@@ -50,9 +50,10 @@ export function PillarsSection() {
               aria-hidden="true"
               className="absolute inset-0 h-full w-full object-cover grayscale"
             />
-            {/* Overlay — stronger on text side */}
+            {/* Overlay — full-width dark scrim so text stays legible over any photo */}
+            <div className="absolute inset-0 bg-background/55" />
             <div
-              className={`absolute inset-0 bg-gradient-to-${isRight ? 'l' : 'r'} from-background/95 via-background/70 to-background/20`}
+              className={`absolute inset-0 bg-gradient-to-${isRight ? 'l' : 'r'} from-background via-background/85 to-background/40`}
             />
 
             {/* Content */}
