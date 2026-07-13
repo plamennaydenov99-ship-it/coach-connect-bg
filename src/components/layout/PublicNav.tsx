@@ -87,11 +87,8 @@ export function PublicNav() {
               </Link>
             ))}
             <div className="my-2 h-px bg-border" />
-            <Link to="/login" onClick={() => setOpen(false)} className="block">
-              <Button variant="ghost" className="w-full">{t.nav_login}</Button>
-            </Link>
-            <Link to="/dashboard" onClick={() => setOpen(false)} className="block">
-              <Button variant="outline" className="w-full">{t.nav_coach_cta}</Button>
+            <Link to="/start" onClick={() => setOpen(false)} className="block">
+              <Button size="lg" className="w-full font-display uppercase tracking-[0.12em]">{t.nav_login}</Button>
             </Link>
           </div>
         </div>
