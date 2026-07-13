@@ -1,15 +1,18 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { Reveal, useParallax } from '@/components/Reveal';
 
 export function HeroSection() {
+  const bgRef = useParallax<HTMLImageElement>(0.15);
   return (
     <section className="relative w-full h-[92vh] min-h-[640px] overflow-hidden bg-background">
       {/* Background image — athlete in motion */}
       <img
+        ref={bgRef}
         src="https://images.unsplash.com/photo-1517649763962-0c623066013b?w=2400&q=85"
         alt=""
         aria-hidden="true"
-        className="absolute inset-0 h-full w-full object-cover grayscale"
+        className="absolute inset-0 h-full w-full object-cover grayscale will-change-transform"
       />
       {/* Dark gradient scrim — stronger for legibility over photo */}
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/85 to-background/55" />
@@ -24,9 +27,9 @@ export function HeroSection() {
 
       {/* Content — bottom left */}
       <div className="relative z-10 h-full container flex flex-col justify-end pb-20 md:pb-28">
-        <div className="max-w-3xl">
+        <Reveal className="max-w-3xl">
           <span className="label-eyebrow text-gold">
-            Nice · Monaco · Sofia
+            Global · Verified coaches
           </span>
 
           <h1
@@ -52,7 +55,7 @@ export function HeroSection() {
               </Button>
             </Link>
           </div>
-        </div>
+        </Reveal>
 
         {/* Scroll indicator */}
         <div className="absolute bottom-6 right-6 md:right-10 hidden md:flex flex-col items-center gap-2 text-foreground-subtle">
