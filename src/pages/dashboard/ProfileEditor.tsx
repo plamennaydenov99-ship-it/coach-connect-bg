@@ -144,9 +144,18 @@ const ProfileEditor = () => {
 
       {(profile.role === 'coach' || profile.role === 'club') && (
         <div className={`surface p-4 flex items-start gap-3 ${verified ? '' : 'border-gold/30'}`}>
-...
+          {verified ? (
+            <>
               <BadgeCheck className="h-5 w-5 text-gold mt-0.5" />
-...
+              <div>
+                <p className="font-semibold">Verified</p>
+                <p className="text-sm text-muted-foreground">
+                  Your profile is verified and visible to athletes.
+                </p>
+              </div>
+            </>
+          ) : (
+            <>
               <ShieldAlert className="h-5 w-5 text-gold mt-0.5" />
               <div>
                 <p className="font-semibold">Pending verification</p>
