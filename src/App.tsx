@@ -19,6 +19,7 @@ import Camps from "./pages/Camps";
 import CampDetail from "./pages/CampDetail";
 import Community from "./pages/Community";
 import Match from "./pages/Match";
+import Start from "./pages/Start";
 import NotFound from "./pages/NotFound";
 
 import { DashboardLayout } from "./components/dashboard/DashboardLayout";
