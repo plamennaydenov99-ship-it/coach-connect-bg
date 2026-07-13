@@ -11,8 +11,9 @@ export function HeroSection() {
         aria-hidden="true"
         className="absolute inset-0 h-full w-full object-cover grayscale"
       />
-      {/* Dark gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
+      {/* Dark gradient scrim — stronger for legibility over photo */}
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/85 to-background/55" />
+      <div className="absolute inset-0 bg-background/30" />
       <div
         className="absolute inset-0 opacity-40"
         style={{
@@ -25,7 +26,7 @@ export function HeroSection() {
       <div className="relative z-10 h-full container flex flex-col justify-end pb-20 md:pb-28">
         <div className="max-w-3xl">
           <span className="label-eyebrow text-ice">
-            Bulgaria's premier sports platform
+            Nice · Monaco · Sofia
           </span>
 
           <h1

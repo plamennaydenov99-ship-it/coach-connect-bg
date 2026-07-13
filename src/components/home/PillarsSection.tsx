@@ -5,7 +5,7 @@ const PILLARS = [
     id: 'coaches',
     eyebrow: 'Coaches & Clubs',
     headline: 'Find your\nperfect coach.',
-    sub: 'Browse verified coaches and clubs across 12 sports. Filter by location, level, and price. Message directly through the platform.',
+    sub: 'Browse verified coaches and clubs across 12 sports in Nice, Monaco & Sofia. Filter by location, level, and price. Message directly through the platform.',
     cta: 'Browse coaches',
     to: '/search',
     image: 'https://images.unsplash.com/photo-1599058917765-a780eda07a3e?w=2400&q=85',
@@ -15,7 +15,7 @@ const PILLARS = [
     id: 'camps',
     eyebrow: 'Camps & Events',
     headline: 'Train further.\nCompete harder.',
-    sub: 'Discover multi-day training camps, tournaments, and sporting events happening across Bulgaria. Book your spot directly on the platform.',
+    sub: 'Discover multi-day training camps, tournaments, and sporting events across our three pilot cities. Book your spot directly on the platform.',
     cta: 'Explore camps',
     to: '/camps',
     image: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=2400&q=85',
@@ -24,7 +24,7 @@ const PILLARS = [
   {
     id: 'community',
     eyebrow: 'Community',
-    headline: "Bulgaria's next\nbig sports network.",
+    headline: 'The sports movement\nfor Nice, Monaco & Sofia.',
     sub: 'Connect with athletes in your city, find training partners, share goals, and follow events. Sport is better together.',
     cta: 'Join the community',
     to: '/community',
@@ -50,9 +50,10 @@ export function PillarsSection() {
               aria-hidden="true"
               className="absolute inset-0 h-full w-full object-cover grayscale"
             />
-            {/* Overlay — stronger on text side */}
+            {/* Overlay — full-width dark scrim so text stays legible over any photo */}
+            <div className="absolute inset-0 bg-background/55" />
             <div
-              className={`absolute inset-0 bg-gradient-to-${isRight ? 'l' : 'r'} from-background/95 via-background/70 to-background/20`}
+              className={`absolute inset-0 bg-gradient-to-${isRight ? 'l' : 'r'} from-background via-background/85 to-background/40`}
             />
 
             {/* Content */}

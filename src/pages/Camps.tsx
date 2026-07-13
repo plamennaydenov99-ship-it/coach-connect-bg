@@ -1,5 +1,4 @@
 import { useState, useMemo } from 'react';
-import { AnnouncementBar } from '@/components/layout/AnnouncementBar';
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { CampCard } from '@/components/camps/CampCard';
@@ -13,7 +12,7 @@ const DURATIONS = [
   { label: 'Week (5-7 days)', match: (d: number) => d >= 5 && d <= 7 },
   { label: '2 Weeks+', match: (d: number) => d >= 14 },
 ];
-const CITIES = ['All cities', 'Sofia', 'Plovdiv', 'Varna', 'Burgas'];
+const CITIES = ['All cities', 'Nice', 'Monaco', 'Sofia'];
 
 export default function Camps() {
   const { t } = useLanguage();
@@ -32,7 +31,6 @@ export default function Camps() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <AnnouncementBar />
       <PublicNav />
 
       <main className="flex-1">

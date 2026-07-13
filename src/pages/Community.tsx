@@ -1,6 +1,5 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { AnnouncementBar } from '@/components/layout/AnnouncementBar';
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { PostCard } from '@/components/community/PostCard';
@@ -35,7 +34,6 @@ export default function Community() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <AnnouncementBar />
       <PublicNav />
 
       <main className="flex-1">

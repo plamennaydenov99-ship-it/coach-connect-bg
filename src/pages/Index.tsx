@@ -1,4 +1,3 @@
-import { AnnouncementBar } from '@/components/layout/AnnouncementBar';
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { HeroSection } from '@/components/home/HeroSection';
@@ -10,7 +9,6 @@ import { ClosingCTA } from '@/components/home/ClosingCTA';
 const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <AnnouncementBar />
       <PublicNav />
       <main className="flex-1">
         <HeroSection />

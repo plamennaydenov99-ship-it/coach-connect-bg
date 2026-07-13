@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Eye, MessageSquare, BadgeCheck, Crown, ChevronRight, Inbox, CheckCircle2 } from 'lucide-react';
+import { Eye, MessageSquare, BadgeCheck, Crown, ChevronRight, Inbox, CheckCircle2, CalendarCheck, Search } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
@@ -9,16 +9,10 @@ import { supabase } from '@/integrations/supabase/client';
 const DashboardHome = () => {
   const { user, profile } = useAuth();
   const firstName = (profile?.full_name || '').trim().split(' ')[0] || 'there';
+  const role = profile?.role;
 
-  const [checklist, setChecklist] = useState([
-    { label: 'Add your full name', done: false },
-    { label: 'Set your city', done: false },
-    { label: 'Add a profile photo', done: false },
-    { label: 'Write your bio', done: false },
-    { label: 'List your specialisms', done: false },
-    { label: 'Add at least one certification', done: false },
-    { label: 'Set your pricing', done: false },
-  ]);
+  const [checklist, setChecklist] = useState<{ label: string; done: boolean }[]>([]);
+  const [athleteStats, setAthleteStats] = useState({ upcoming: 0, pending: 0, unread: 0 });
 
   useEffect(() => {
     if (!user || !profile) return;
@@ -54,12 +48,86 @@ const DashboardHome = () => {
         ]);
       } else {
         setChecklist(base);
+        // Athlete: light stats
+        const { data: bookings } = await supabase
+          .from('bookings')
+          .select('status')
+          .eq('athlete_id', user.id);
+        const upcoming = bookings?.filter(b => b.status === 'confirmed').length ?? 0;
+        const pending = bookings?.filter(b => b.status === 'pending').length ?? 0;
+        setAthleteStats(s => ({ ...s, upcoming, pending }));
       }
     })();
   }, [user, profile]);
 
   const completion = Math.round((checklist.filter(c => c.done).length / Math.max(checklist.length, 1)) * 100);
 
+  // ─────────────────────────────────────────────────────────
+  // ATHLETE VIEW
+  // ─────────────────────────────────────────────────────────
+  if (role === 'athlete') {
+    return (
+      <div className="space-y-6 max-w-6xl">
+        <div>
+          <h1 className="font-display text-3xl">Welcome back, {firstName}</h1>
+          <p className="text-muted-foreground mt-1">Your training at a glance.</p>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            { label: 'Upcoming sessions', value: String(athleteStats.upcoming), delta: 'Confirmed', icon: CalendarCheck },
+            { label: 'Pending requests', value: String(athleteStats.pending), delta: 'Awaiting coach', icon: Inbox },
+            { label: 'Unread messages', value: String(athleteStats.unread), delta: 'From coaches', icon: MessageSquare },
+          ].map(s => (
+            <div key={s.label} className="surface p-5">
+              <div className="flex items-center justify-between">
+                <s.icon className="h-5 w-5 text-primary" />
+                <span className="text-xs text-muted-foreground">{s.delta}</span>
+              </div>
+              <p className="font-display text-2xl mt-3">{s.value}</p>
+              <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wide">{s.label}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-3">
+          <div className="surface p-6 lg:col-span-2">
+            <h2 className="font-display text-xl mb-4">Get started</h2>
+            <p className="text-sm text-muted-foreground mb-5">
+              Find a verified coach in Nice, Monaco or Sofia and book your first session.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <Link to="/search"><Button><Search className="h-4 w-4 mr-2" /> Browse coaches</Button></Link>
+              <Link to="/dashboard/bookings"><Button variant="outline">My bookings</Button></Link>
+              <Link to="/dashboard/messages"><Button variant="outline">Open inbox</Button></Link>
+            </div>
+          </div>
+
+          <div className="surface p-6">
+            <h2 className="font-display text-xl mb-4">Quick actions</h2>
+            <div className="space-y-2">
+              {[
+                { label: 'Browse coaches', to: '/search' },
+                { label: 'My bookings', to: '/dashboard/bookings' },
+                { label: 'Messages', to: '/dashboard/messages' },
+                { label: 'Settings', to: '/dashboard/settings' },
+              ].map(a => (
+                <Link key={a.to} to={a.to}>
+                  <Button variant="outline" className="w-full justify-between">
+                    {a.label} <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────
+  // COACH / CLUB VIEW (existing)
+  // ─────────────────────────────────────────────────────────
   return (
     <div className="space-y-6 max-w-6xl">
       <div>

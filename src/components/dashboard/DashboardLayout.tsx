@@ -3,7 +3,7 @@ import { NavLink, Link, Outlet } from 'react-router-dom';
 import {
   LayoutDashboard, UserCog, BarChart3, MessageSquare,
   CreditCard, Settings, Zap, Menu, X, ExternalLink,
-  CalendarCheck, CalendarClock, ListChecks
+  CalendarCheck, CalendarClock, ListChecks, Search
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -14,25 +14,35 @@ export function DashboardLayout() {
   const role = profile?.role;
 
   const NAV = (() => {
-    const base = [
+    if (role === 'athlete') {
+      return [
+        { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, end: true },
+        { to: '/dashboard/bookings', label: 'My Bookings', icon: CalendarCheck },
+        { to: '/dashboard/messages', label: 'Messages', icon: MessageSquare },
+        { to: '/search', label: 'Browse Coaches', icon: Search },
+        { to: '/dashboard/settings', label: 'Settings', icon: Settings },
+      ];
+    }
+    if (role === 'club') {
+      return [
+        { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, end: true },
+        { to: '/dashboard/profile', label: 'Club Profile', icon: UserCog },
+        { to: '/dashboard/messages', label: 'Messages', icon: MessageSquare },
+        { to: '/dashboard/billing', label: 'Subscription', icon: CreditCard },
+        { to: '/dashboard/settings', label: 'Settings', icon: Settings },
+      ];
+    }
+    // coach (default)
+    return [
       { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, end: true },
       { to: '/dashboard/profile', label: 'My Profile', icon: UserCog },
+      { to: '/dashboard/availability', label: 'Availability', icon: CalendarClock },
+      { to: '/dashboard/requests', label: 'Booking requests', icon: ListChecks },
+      { to: '/dashboard/messages', label: 'Messages', icon: MessageSquare },
+      { to: '/dashboard/analytics', label: 'Analytics', icon: BarChart3 },
+      { to: '/dashboard/billing', label: 'Subscription', icon: CreditCard },
+      { to: '/dashboard/settings', label: 'Settings', icon: Settings },
     ];
-    if (role === 'coach' || role === 'club') {
-      base.push(
-        { to: '/dashboard/availability', label: 'Availability', icon: CalendarClock } as any,
-        { to: '/dashboard/requests', label: 'Booking requests', icon: ListChecks } as any,
-        { to: '/dashboard/analytics', label: 'Analytics', icon: BarChart3 } as any,
-      );
-    } else {
-      base.push({ to: '/dashboard/bookings', label: 'My Bookings', icon: CalendarCheck } as any);
-    }
-    base.push(
-      { to: '/dashboard/messages', label: 'Messages', icon: MessageSquare } as any,
-      { to: '/dashboard/billing', label: 'Subscription', icon: CreditCard } as any,
-      { to: '/dashboard/settings', label: 'Settings', icon: Settings } as any,
-    );
-    return base;
   })();
 
   const SidebarContent = () => (
