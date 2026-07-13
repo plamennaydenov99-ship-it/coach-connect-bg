@@ -59,6 +59,7 @@ const App = () => (
               <Route path="/camps/:id" element={<CampDetail />} />
               <Route path="/community" element={<Community />} />
               <Route path="/match" element={<Match />} />
+              <Route path="/start" element={<Start />} />
 
               <Route path="/dashboard" element={<RequireAuth><DashboardLayout /></RequireAuth>}>
                 <Route index element={<DashboardHome />} />
