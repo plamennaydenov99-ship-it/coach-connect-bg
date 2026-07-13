@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Zap, Plus, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { CITIES, SPORTS } from '@/lib/mockData';
+import { SPORTS } from '@/lib/mockData';
 
 type Role = 'athlete' | 'coach' | 'club';
 
