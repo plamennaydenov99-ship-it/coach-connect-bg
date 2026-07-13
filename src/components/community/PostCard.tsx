@@ -35,7 +35,7 @@ export function PostCard({ post }: { post: CommunityPost }) {
   return (
     <article
       className={`group relative flex flex-col gap-3 bg-card border border-border hover:border-gold transition-colors p-4 rounded-sm ${
-        isTip ? 'border-l-2 border-l-accent-electric' : ''
+        isTip ? 'border-l-2 border-l-copper' : ''
       }`}
     >
       <header className="flex items-start gap-3">

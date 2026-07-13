@@ -53,7 +53,7 @@ export function CoachCard({ coach }: { coach: Coach }) {
         </div>
 
         <div className="flex items-center gap-1.5 text-sm">
-          <Star className="h-4 w-4 fill-ember text-gold" />
+          <Star className="h-4 w-4 fill-gold text-gold" />
           <span className="font-semibold">{coach.rating.toFixed(2)}</span>
           <span className="text-muted-foreground">({coach.reviewCount})</span>
         </div>
