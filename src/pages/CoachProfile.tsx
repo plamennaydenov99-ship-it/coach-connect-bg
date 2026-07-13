@@ -13,6 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { getOrCreateConversation } from '@/lib/messaging';
 import { BookmarkButton } from '@/components/BookmarkButton';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface CoachData {
   id: string;
@@ -38,6 +39,7 @@ interface Slot { id: string; date: string; start_time: string; end_time: string;
 const CoachProfile = () => {
   const { id } = useParams<{ id: string }>();
   const { user, profile } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [coach, setCoach] = useState<CoachData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -81,7 +83,7 @@ const CoachProfile = () => {
     return (
       <div className="min-h-screen flex flex-col">
         <PublicNav />
-        <main className="flex-1 container py-20 text-center text-muted-foreground">Loading…</main>
+        <main className="flex-1 container py-20 text-center text-muted-foreground">{t.coach_loading}</main>
         <PublicFooter />
       </div>
     );
@@ -92,8 +94,8 @@ const CoachProfile = () => {
       <div className="min-h-screen flex flex-col">
         <PublicNav />
         <main className="flex-1 container py-20 text-center">
-          <h1 className="font-display">Coach not found</h1>
-          <Link to="/search"><Button className="mt-6">Back to search</Button></Link>
+          <h1 className="font-display">{t.coach_not_found}</h1>
+          <Link to="/search"><Button className="mt-6">{t.coach_back_to_search}</Button></Link>
         </main>
         <PublicFooter />
       </div>
@@ -102,6 +104,7 @@ const CoachProfile = () => {
 
   const sport = coach.sport ? findSport(coach.sport as any) : null;
   const name = coach.profiles?.full_name || 'Coach';
+  const firstName = name.split(' ')[0];
   const avatar = coach.profiles?.avatar_url || `https://i.pravatar.cc/300?u=${coach.id}`;
   const city = coach.profiles?.city ?? '';
   const price = coach.price_per_session ?? 0;
@@ -109,12 +112,12 @@ const CoachProfile = () => {
 
   const requireAthlete = (): boolean => {
     if (!user) {
-      toast.error('Sign in to continue.');
+      toast.error(t.coach_sign_in_required);
       navigate('/login');
       return false;
     }
     if (profile && profile.role !== 'athlete') {
-      toast.error('Only athlete accounts can book or message coaches.');
+      toast.error(t.coach_athlete_only);
       return false;
     }
     return true;
@@ -133,7 +136,6 @@ const CoachProfile = () => {
   const submitBooking = async () => {
     if (!user || !selectedSlot) return;
     setSubmitting(true);
-    // Reserve slot
     const { error: slotErr } = await supabase
       .from('availability_slots')
       .update({ status: 'pending' })
@@ -156,10 +158,9 @@ const CoachProfile = () => {
       return;
     }
 
-    // Auto-create conversation
     try { await getOrCreateConversation(user.id, coach.id); } catch {}
 
-    toast.success('Request sent. The coach will reply shortly.');
+    toast.success(t.coach_request_sent);
     setSubmitting(false);
     setSelectedSlot(null);
     setNote('');
@@ -181,9 +182,9 @@ const CoachProfile = () => {
                     {sport.label}
                   </span>
                 )}
-                <span className="badge-verified"><BadgeCheck className="h-3 w-3" /> Verified</span>
+                <span className="badge-verified"><BadgeCheck className="h-3 w-3" /> {t.verified}</span>
                 {coach.discount_pct ? (
-                  <span className="badge-discount">-{coach.discount_pct}% Platform rate</span>
+                  <span className="badge-discount">-{coach.discount_pct}% {t.coach_platform_rate}</span>
                 ) : null}
               </div>
               <div className="flex flex-wrap items-start justify-between gap-3">
@@ -193,7 +194,7 @@ const CoachProfile = () => {
               <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
                 {city && <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {city}</span>}
                 {coach.years_experience != null && (
-                  <span className="flex items-center gap-1.5"><Trophy className="h-4 w-4" /> {coach.years_experience} yrs experience</span>
+                  <span className="flex items-center gap-1.5"><Trophy className="h-4 w-4" /> {coach.years_experience} {t.coach_yrs_exp}</span>
                 )}
               </div>
             </div>
@@ -204,11 +205,11 @@ const CoachProfile = () => {
           <div className="space-y-8">
             {coach.bio && (
               <div className="surface p-6">
-                <h2 className="font-display text-2xl mb-3">About</h2>
+                <h2 className="font-display text-2xl mb-3">{t.coach_about}</h2>
                 <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{coach.bio}</p>
                 {coach.specialisms?.length ? (
                   <div className="mt-5">
-                    <p className="text-xs uppercase tracking-[0.1em] text-muted-foreground mb-2">Specialisms</p>
+                    <p className="text-xs uppercase tracking-[0.1em] text-muted-foreground mb-2">{t.coach_specialisms}</p>
                     <div className="flex flex-wrap gap-2">
                       {coach.specialisms.map(s => (
                         <span key={s} className="px-3 py-1 rounded-md bg-secondary text-sm">{s}</span>
@@ -218,7 +219,7 @@ const CoachProfile = () => {
                 ) : null}
                 {coach.certifications?.length ? (
                   <div className="mt-5">
-                    <p className="text-xs uppercase tracking-[0.1em] text-muted-foreground mb-2">Certifications</p>
+                    <p className="text-xs uppercase tracking-[0.1em] text-muted-foreground mb-2">{t.coach_certifications}</p>
                     <div className="flex flex-wrap gap-2">
                       {coach.certifications.map(c => (
                         <span key={c} className="px-3 py-1 rounded-md border border-gold/40 text-gold text-sm flex items-center gap-1.5">
@@ -234,10 +235,10 @@ const CoachProfile = () => {
             <div className="surface p-6">
               <div className="flex items-center gap-2 mb-4">
                 <Calendar className="h-5 w-5 text-gold" />
-                <h2 className="font-display text-2xl">Available sessions</h2>
+                <h2 className="font-display text-2xl">{t.coach_available_sessions}</h2>
               </div>
               {slots.length === 0 ? (
-                <p className="text-muted-foreground text-sm">No open slots right now. Send {name.split(' ')[0]} a message to arrange one.</p>
+                <p className="text-muted-foreground text-sm">{t.coach_no_slots.replace('{name}', firstName)}</p>
               ) : (
                 <ul className="grid sm:grid-cols-2 gap-3">
                   {slots.map(s => (
@@ -252,7 +253,7 @@ const CoachProfile = () => {
                         <p className="text-sm text-muted-foreground flex items-center gap-1.5 mt-1">
                           <Clock className="h-3.5 w-3.5" /> {s.start_time.slice(0,5)} – {s.end_time.slice(0,5)}
                         </p>
-                        <p className="text-sm text-gold mt-2">Request · €{finalPrice}</p>
+                        <p className="text-sm text-gold mt-2">{t.coach_request} · €{finalPrice}</p>
                       </button>
                     </li>
                   ))}
@@ -262,7 +263,7 @@ const CoachProfile = () => {
 
             {coach.gallery?.length ? (
               <div>
-                <h2 className="font-display text-2xl mb-4">Gallery</h2>
+                <h2 className="font-display text-2xl mb-4">{t.coach_gallery}</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {coach.gallery.map((g, i) => (
                     <img key={i} src={g} alt={`${name} session ${i + 1}`} loading="lazy"
@@ -275,7 +276,7 @@ const CoachProfile = () => {
 
           <aside className="md:sticky md:top-20 h-fit">
             <div className="surface p-6">
-              <p className="text-sm text-muted-foreground">Per session</p>
+              <p className="text-sm text-muted-foreground">{t.coach_per_session}</p>
               <div className="mt-1 flex items-baseline gap-3">
                 {coach.discount_pct ? (
                   <>
@@ -288,12 +289,12 @@ const CoachProfile = () => {
               </div>
 
               <Button size="lg" className="w-full mt-5" onClick={openMessage}>
-                <MessageSquare className="h-4 w-4 mr-2" /> Message {name.split(' ')[0]}
+                <MessageSquare className="h-4 w-4 mr-2" /> {t.coach_message} {firstName}
               </Button>
 
               <div className="mt-5 flex items-start gap-2 text-xs text-muted-foreground">
                 <ShieldCheck className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-                <p>All communication and bookings happen through Zenit. Do not share personal contact details.</p>
+                <p>{t.coach_platform_notice}</p>
               </div>
             </div>
           </aside>
@@ -303,20 +304,20 @@ const CoachProfile = () => {
       <Dialog open={!!selectedSlot} onOpenChange={(o) => !o && setSelectedSlot(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Request this session</DialogTitle>
+            <DialogTitle>{t.coach_request_dialog_title}</DialogTitle>
             <DialogDescription>
               {selectedSlot && `${new Date(selectedSlot.date + 'T00:00').toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })} · ${selectedSlot.start_time.slice(0,5)} – ${selectedSlot.end_time.slice(0,5)} · €${finalPrice}`}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3">
-            <Label htmlFor="note">Add a short note (optional)</Label>
+            <Label htmlFor="note">{t.coach_note_label}</Label>
             <Textarea id="note" rows={4} value={note} onChange={e => setNote(e.target.value)}
-              placeholder="Level, goals, anything the coach should know…" />
+              placeholder={t.coach_note_ph} />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setSelectedSlot(null)}>Cancel</Button>
+            <Button variant="outline" onClick={() => setSelectedSlot(null)}>{t.coach_cancel}</Button>
             <Button onClick={submitBooking} disabled={submitting}>
-              {submitting ? 'Sending…' : 'Send request'}
+              {submitting ? t.coach_sending : t.coach_send_request}
             </Button>
           </DialogFooter>
         </DialogContent>

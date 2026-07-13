@@ -10,11 +10,13 @@ import { Zap, Plus, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { SPORTS } from '@/lib/mockData';
+import { useLanguage } from '@/context/LanguageContext';
 
 type Role = 'athlete' | 'coach' | 'club';
 
 const Register = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [params] = useSearchParams();
   const initialRole: Role =
     params.get('role') === 'coach' ? 'coach' :
@@ -23,16 +25,17 @@ const Register = () => {
   const [role, setRole] = useState<Role>(initialRole);
   const [loading, setLoading] = useState(false);
 
-  // Coach-specific
   const [coachSport, setCoachSport] = useState('');
   const [coachBio, setCoachBio] = useState('');
   const [coachPrice, setCoachPrice] = useState<string>('');
   const [certs, setCerts] = useState<string[]>([]);
   const [newCert, setNewCert] = useState('');
 
-  // Club-specific
   const [clubSport, setClubSport] = useState('');
   const [clubAbout, setClubAbout] = useState('');
+
+  const roleLabel = (r: Role) =>
+    r === 'athlete' ? t.auth_role_athlete : r === 'coach' ? t.auth_role_coach : t.auth_role_club;
 
   const addCert = () => {
     if (newCert.trim()) {
@@ -44,11 +47,11 @@ const Register = () => {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name || !form.email || !form.password) {
-      toast.error('Please complete all required fields.');
+      toast.error(t.auth_fill_required);
       return;
     }
     if (form.password.length < 8) {
-      toast.error('Password must be at least 8 characters.');
+      toast.error(t.auth_password_min_error);
       return;
     }
 
@@ -84,7 +87,7 @@ const Register = () => {
       return;
     }
 
-    toast.success('Account created. Check your email to confirm before logging in.');
+    toast.success(t.auth_account_created);
     navigate('/login');
   };
 
@@ -97,12 +100,12 @@ const Register = () => {
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <Zap className="h-5 w-5" strokeWidth={2.5} />
             </div>
-            <span className="font-display text-xl">Create your account</span>
+            <span className="font-display text-xl">{t.auth_create_account_heading}</span>
           </div>
 
           <form onSubmit={submit} className="space-y-5">
             <div className="grid gap-2">
-              <Label>I am</Label>
+              <Label>{t.auth_i_am}</Label>
               <div className="grid grid-cols-3 gap-2">
                 {(['athlete', 'coach', 'club'] as const).map(r => (
                   <Button
@@ -110,68 +113,67 @@ const Register = () => {
                     type="button"
                     variant={role === r ? 'default' : 'outline'}
                     onClick={() => setRole(r)}
-                    className="capitalize"
                   >
-                    {r}
+                    {roleLabel(r)}
                   </Button>
                 ))}
               </div>
               {(role === 'coach' || role === 'club') && (
                 <p className="text-xs text-muted-foreground">
-                  Coach and club profiles require manual verification before appearing in search.
+                  {t.auth_verification_notice}
                 </p>
               )}
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="name">{role === 'club' ? 'Club name' : 'Full name'}</Label>
+              <Label htmlFor="name">{role === 'club' ? t.auth_club_name : t.auth_full_name}</Label>
               <Input id="name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t.auth_email}</Label>
               <Input id="email" type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t.auth_password}</Label>
               <Input id="password" type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} required />
-              <p className="text-xs text-muted-foreground">Minimum 8 characters.</p>
+              <p className="text-xs text-muted-foreground">{t.auth_password_min}</p>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="city">City</Label>
+              <Label htmlFor="city">{t.auth_city}</Label>
               <Input
                 id="city"
                 value={form.city}
                 onChange={e => setForm({ ...form, city: e.target.value })}
-                placeholder="e.g. Paris, Sofia, London"
+                placeholder={t.auth_city_placeholder}
               />
             </div>
 
             {role === 'coach' && (
               <div className="space-y-4 pt-2 border-t border-border">
-                <p className="font-display text-sm uppercase tracking-[0.1em] text-muted-foreground">Coach details</p>
+                <p className="font-display text-sm uppercase tracking-[0.1em] text-muted-foreground">{t.auth_coach_details}</p>
                 <div className="grid gap-2">
-                  <Label>Primary sport</Label>
+                  <Label>{t.auth_primary_sport}</Label>
                   <select
                     className="h-10 rounded-md border border-input bg-background px-3 text-sm"
                     value={coachSport}
                     onChange={e => setCoachSport(e.target.value)}
                   >
-                    <option value="">Select a sport</option>
+                    <option value="">{t.auth_select_sport}</option>
                     {SPORTS.map(s => <option key={s.slug} value={s.slug}>{s.label}</option>)}
                   </select>
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="cbio">Background</Label>
+                  <Label htmlFor="cbio">{t.auth_background}</Label>
                   <Textarea id="cbio" rows={4} value={coachBio} onChange={e => setCoachBio(e.target.value)}
-                    placeholder="A short intro — your experience, coaching philosophy, who you work with." />
+                    placeholder={t.auth_background_ph} />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="cprice">Starting price per session (€)</Label>
+                  <Label htmlFor="cprice">{t.auth_starting_price}</Label>
                   <Input id="cprice" type="number" min={0} value={coachPrice}
-                    onChange={e => setCoachPrice(e.target.value)} placeholder="e.g. 40" />
+                    onChange={e => setCoachPrice(e.target.value)} placeholder={t.auth_price_ph} />
                 </div>
                 <div className="grid gap-2">
-                  <Label>Certifications</Label>
+                  <Label>{t.auth_certifications}</Label>
                   <div className="flex flex-wrap gap-2">
                     {certs.map((c, i) => (
                       <span key={i} className="px-3 py-1.5 rounded-md bg-secondary text-sm flex items-center gap-2">
@@ -184,7 +186,7 @@ const Register = () => {
                   <div className="flex gap-2">
                     <Input value={newCert} onChange={e => setNewCert(e.target.value)}
                       onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCert(); } }}
-                      placeholder='e.g. "UEFA B License"' />
+                      placeholder={t.auth_cert_ph} />
                     <Button type="button" variant="outline" onClick={addCert}><Plus className="h-4 w-4" /></Button>
                   </div>
                 </div>
@@ -193,33 +195,33 @@ const Register = () => {
 
             {role === 'club' && (
               <div className="space-y-4 pt-2 border-t border-border">
-                <p className="font-display text-sm uppercase tracking-[0.1em] text-muted-foreground">Club details</p>
+                <p className="font-display text-sm uppercase tracking-[0.1em] text-muted-foreground">{t.auth_club_details}</p>
                 <div className="grid gap-2">
-                  <Label>Primary sport</Label>
+                  <Label>{t.auth_primary_sport}</Label>
                   <select
                     className="h-10 rounded-md border border-input bg-background px-3 text-sm"
                     value={clubSport}
                     onChange={e => setClubSport(e.target.value)}
                   >
-                    <option value="">Select a sport</option>
+                    <option value="">{t.auth_select_sport}</option>
                     {SPORTS.map(s => <option key={s.slug} value={s.slug}>{s.label}</option>)}
                   </select>
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="clababout">About</Label>
+                  <Label htmlFor="clababout">{t.auth_about_label}</Label>
                   <Textarea id="clababout" rows={4} value={clubAbout} onChange={e => setClubAbout(e.target.value)}
-                    placeholder="Facilities, programs offered, what makes your club stand out." />
+                    placeholder={t.auth_club_about_ph} />
                 </div>
               </div>
             )}
 
             <Button type="submit" className="w-full" size="lg" disabled={loading}>
-              {loading ? 'Creating…' : 'Create account'}
+              {loading ? t.auth_creating : t.auth_create_account_btn}
             </Button>
           </form>
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
-            Already have an account? <Link to="/login" className="text-gold hover:underline">Login</Link>
+            {t.auth_have_account} <Link to="/login" className="text-gold hover:underline">{t.auth_login}</Link>
           </p>
         </div>
       </main>

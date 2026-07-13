@@ -5,17 +5,19 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { EVENTS } from '@/lib/events';
 import { BookmarkButton } from '@/components/BookmarkButton';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function Events() {
+  const { t } = useLanguage();
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <PublicNav />
 
       <main className="flex-1 container py-10 md:py-14">
         <header className="mb-8 md:mb-10">
-          <h1 className="font-display text-4xl md:text-5xl">All events</h1>
+          <h1 className="font-display text-4xl md:text-5xl">{t.events_page_title}</h1>
           <p className="mt-2 text-muted-foreground">
-            Tournaments, races and meet-ups happening near you.
+            {t.events_page_sub}
           </p>
         </header>
 
@@ -33,7 +35,7 @@ export default function Events() {
                   loading="lazy"
                 />
                 <span className="absolute right-2 top-2 rounded-md bg-background/70 px-2 py-0.5 text-[10px] text-muted-foreground backdrop-blur">
-                  Sponsored
+                  {t.events_sponsored}
                 </span>
               </div>
               <div className="p-5">
@@ -54,7 +56,7 @@ export default function Events() {
                 </div>
                 <p className="mt-3 text-sm text-muted-foreground">{ev.description}</p>
                 <Button variant="outline" size="sm" className="mt-4 w-full">
-                  View event
+                  {t.events_view_event}
                 </Button>
               </div>
             </article>

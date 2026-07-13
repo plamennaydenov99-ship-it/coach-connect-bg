@@ -5,10 +5,12 @@ import { ProductCard } from '@/components/marketplace/ProductCard';
 import { FloatingCartButton } from '@/components/marketplace/FloatingCartButton';
 import { PRODUCTS, PRODUCT_CATEGORIES, type ProductCategory } from '@/lib/products';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/context/LanguageContext';
 
 type Filter = 'All' | ProductCategory;
 
 export default function Marketplace() {
+  const { t } = useLanguage();
   const [filter, setFilter] = useState<Filter>('All');
 
   const filtered = useMemo(
@@ -17,6 +19,7 @@ export default function Marketplace() {
   );
 
   const filters: Filter[] = ['All', ...PRODUCT_CATEGORIES];
+  const label = (f: Filter) => (f === 'All' ? t.shop_all : f);
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
@@ -24,9 +27,9 @@ export default function Marketplace() {
 
       <main className="flex-1 container py-10 md:py-14">
         <header className="mb-8">
-          <h1 className="font-display text-4xl md:text-5xl">Club Shop</h1>
+          <h1 className="font-display text-4xl md:text-5xl">{t.shop_title}</h1>
           <p className="mt-2 text-muted-foreground">
-            Gear and merch from your favourite clubs.
+            {t.shop_sub}
           </p>
         </header>
 
@@ -42,7 +45,7 @@ export default function Marketplace() {
                   : 'bg-secondary text-muted-foreground hover:text-foreground',
               )}
             >
-              {f}
+              {label(f)}
             </button>
           ))}
         </div>
