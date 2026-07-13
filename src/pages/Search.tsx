@@ -13,6 +13,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { SPORTS, findSport } from '@/lib/mockData';
 import { SlidersHorizontal, MapPin, BadgeCheck } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { useLanguage } from '@/context/LanguageContext';
 
 type SortKey = 'relevance' | 'price' | 'newest';
 
@@ -39,10 +40,11 @@ function FilterPanel({
   priceRange, setPriceRange,
   verifiedOnly, setVerifiedOnly,
 }: any) {
+  const { t } = useLanguage();
   return (
     <div className="space-y-6">
       <div>
-        <Label className="text-sm font-semibold mb-3 block">Sport</Label>
+        <Label className="text-sm font-semibold mb-3 block">{t.search_sport}</Label>
         <div className="space-y-2 max-h-56 overflow-y-auto pr-2">
           {SPORTS.map(s => (
             <label key={s.slug} className="flex items-center gap-2 text-sm cursor-pointer">
@@ -61,24 +63,24 @@ function FilterPanel({
       </div>
 
       <div>
-        <Label className="text-sm font-semibold mb-2 block" htmlFor="city-filter">City</Label>
+        <Label className="text-sm font-semibold mb-2 block" htmlFor="city-filter">{t.search_city_label}</Label>
         <Input
           id="city-filter"
           value={city}
           onChange={(e) => setCity(e.target.value)}
-          placeholder="Any city"
+          placeholder={t.search_any_city}
         />
       </div>
 
       <div>
         <Label className="text-sm font-semibold mb-2 block">
-          Price range: €{priceRange[0]} – €{priceRange[1]}
+          {t.search_price_range}: €{priceRange[0]} – €{priceRange[1]}
         </Label>
         <Slider value={priceRange} min={0} max={200} step={5} onValueChange={setPriceRange} />
       </div>
 
       <div className="flex items-center justify-between surface-2 p-3">
-        <Label className="text-sm font-medium cursor-pointer" htmlFor="verified-only">Verified only</Label>
+        <Label className="text-sm font-medium cursor-pointer" htmlFor="verified-only">{t.search_verified_only}</Label>
         <Switch id="verified-only" checked={verifiedOnly} onCheckedChange={setVerifiedOnly} />
       </div>
     </div>
@@ -86,6 +88,7 @@ function FilterPanel({
 }
 
 function CoachResultCard({ coach }: { coach: CoachRow }) {
+  const { t } = useLanguage();
   const sport = coach.sport ? findSport(coach.sport as any) : null;
   const name = coach.profiles?.full_name || 'Coach';
   const avatar = coach.profiles?.avatar_url || `https://i.pravatar.cc/300?u=${coach.id}`;
@@ -109,7 +112,7 @@ function CoachResultCard({ coach }: { coach: CoachRow }) {
               {sport.label}
             </span>
           )}
-          <span className="badge-verified"><BadgeCheck className="h-3 w-3" /> Verified</span>
+          <span className="badge-verified"><BadgeCheck className="h-3 w-3" /> {t.verified}</span>
         </div>
       </div>
       <div className="p-4 flex flex-col gap-3 flex-1">
@@ -129,13 +132,13 @@ function CoachResultCard({ coach }: { coach: CoachRow }) {
             {coach.discount_pct ? (
               <>
                 <p className="text-xs text-muted-foreground line-through">€{price}</p>
-                <p className="font-semibold text-gold">€{finalPrice}<span className="text-xs text-muted-foreground font-normal">/session</span></p>
+                <p className="font-semibold text-gold">€{finalPrice}<span className="text-xs text-muted-foreground font-normal">{t.search_per_session}</span></p>
               </>
             ) : (
-              <p className="font-semibold">€{price}<span className="text-xs text-muted-foreground font-normal">/session</span></p>
+              <p className="font-semibold">€{price}<span className="text-xs text-muted-foreground font-normal">{t.search_per_session}</span></p>
             )}
           </div>
-          <span className="text-xs font-medium text-gold group-hover:underline">View profile →</span>
+          <span className="text-xs font-medium text-gold group-hover:underline">{t.search_view_profile} →</span>
         </div>
       </div>
     </Link>
@@ -143,6 +146,7 @@ function CoachResultCard({ coach }: { coach: CoachRow }) {
 }
 
 const Search = () => {
+  const { t } = useLanguage();
   const [params] = useSearchParams();
 
   const [selectedSports, setSelectedSports] = useState<string[]>(
@@ -197,9 +201,9 @@ const Search = () => {
       <main className="flex-1 container py-8">
         <div className="flex items-end justify-between mb-6 gap-4 flex-wrap">
           <div>
-            <h1 className="font-display text-3xl md:text-4xl">Coaches</h1>
+            <h1 className="font-display text-3xl md:text-4xl">{t.search_coaches}</h1>
             <p className="text-muted-foreground mt-1 text-sm">
-              {loading ? 'Loading…' : `${results.length} results`}
+              {loading ? t.coach_loading : `${results.length} ${t.search_results}`}
             </p>
           </div>
 
@@ -207,11 +211,11 @@ const Search = () => {
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline" size="sm" className="md:hidden">
-                  <SlidersHorizontal className="h-4 w-4 mr-2" /> Filters
+                  <SlidersHorizontal className="h-4 w-4 mr-2" /> {t.search_filters}
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-[320px] overflow-y-auto">
-                <SheetHeader><SheetTitle>Filters</SheetTitle></SheetHeader>
+                <SheetHeader><SheetTitle>{t.search_filters}</SheetTitle></SheetHeader>
                 <div className="mt-6"><FilterPanel {...filterProps} /></div>
               </SheetContent>
             </Sheet>
@@ -219,9 +223,9 @@ const Search = () => {
             <Select value={sort} onValueChange={(v: SortKey) => setSort(v)}>
               <SelectTrigger className="w-[170px]"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="relevance">Sort: Relevance</SelectItem>
-                <SelectItem value="price">Sort: Price</SelectItem>
-                <SelectItem value="newest">Sort: Newest</SelectItem>
+                <SelectItem value="relevance">{t.search_sort_relevance}</SelectItem>
+                <SelectItem value="price">{t.search_sort_price}</SelectItem>
+                <SelectItem value="newest">{t.search_sort_newest}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -234,12 +238,12 @@ const Search = () => {
 
           <div>
             {loading ? (
-              <div className="surface p-10 text-center text-muted-foreground">Loading coaches…</div>
+              <div className="surface p-10 text-center text-muted-foreground">{t.search_loading_coaches}</div>
             ) : results.length === 0 ? (
               <div className="surface p-10 text-center">
-                <p className="font-display text-xl">No coaches yet</p>
+                <p className="font-display text-xl">{t.search_no_coaches}</p>
                 <p className="text-muted-foreground text-sm mt-2">
-                  Verified coaches will appear here as they join the platform.
+                  {t.search_no_coaches_sub}
                 </p>
               </div>
             ) : (
