@@ -295,7 +295,7 @@ export const t = {
     nav_community: 'Communauté',
     camps_hero_title: 'STAGES SPORTIFS',
     camps_hero_sub: 'Stages de plusieurs jours animés par des coachs et clubs vérifiés à travers le monde',
-    community_hero_title: 'COMMUNAUTÉ ATLETA',
+    community_hero_title: 'COMMUNAUTÉ ZENIT',
     community_hero_sub: "Rejoignez des athlètes, trouvez des partenaires d'entraînement, partagez vos expériences.",
     community_cta_post: 'Ouvrir un fil',
     community_cta_browse: 'Parcourir par sport',
