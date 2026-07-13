@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 const DashboardHome = () => {
-  const { user, profile } = useAuth();
+  const { user, profile, loading } = useAuth();
   const firstName = (profile?.full_name || '').trim().split(' ')[0] || 'there';
   const role = profile?.role;
 
@@ -61,6 +61,10 @@ const DashboardHome = () => {
   }, [user, profile]);
 
   const completion = Math.round((checklist.filter(c => c.done).length / Math.max(checklist.length, 1)) * 100);
+
+  if (loading || !profile) {
+    return <div className="p-8 text-muted-foreground">Loading your dashboard…</div>;
+  }
 
   // ─────────────────────────────────────────────────────────
   // ATHLETE VIEW

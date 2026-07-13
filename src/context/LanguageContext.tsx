@@ -1,12 +1,12 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { t as translations } from '@/lib/translations';
 
-export type Lang = 'en' | 'bg';
+export type Lang = 'en' | 'bg' | 'fr';
 
 interface LanguageContextValue {
   lang: Lang;
   setLang: (l: Lang) => void;
-  t: (typeof translations)['en'] | (typeof translations)['bg'];
+  t: Record<keyof (typeof translations)['en'], string>;
 }
 
 const LanguageContext = createContext<LanguageContextValue | undefined>(undefined);
@@ -18,7 +18,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY) as Lang | null;
-    if (saved === 'en' || saved === 'bg') setLangState(saved);
+    if (saved === 'en' || saved === 'bg' || saved === 'fr') setLangState(saved);
   }, []);
 
   const setLang = (l: Lang) => {

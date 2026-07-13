@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Menu, X, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/context/LanguageContext';
+import { LangSwitcher } from '@/components/layout/LangSwitcher';
 
 export function PublicNav() {
   const [open, setOpen] = useState(false);
@@ -43,22 +44,7 @@ export function PublicNav() {
         </nav>
 
         <div className="hidden md:flex items-center gap-3">
-          {/* Language toggle */}
-          <div className="flex items-center gap-2 font-body text-xs">
-            <button
-              onClick={() => setLang('en')}
-              className={`transition-colors ${lang === 'en' ? 'text-foreground' : 'text-foreground-subtle hover:text-foreground-muted'}`}
-            >
-              EN
-            </button>
-            <span className="h-3 w-px bg-border" />
-            <button
-              onClick={() => setLang('bg')}
-              className={`transition-colors ${lang === 'bg' ? 'text-foreground' : 'text-foreground-subtle hover:text-foreground-muted'}`}
-            >
-              БГ
-            </button>
-          </div>
+          <LangSwitcher lang={lang} setLang={setLang} />
           <Link to="/start">
             <Button size="lg" className="h-11 px-6 tracking-[0.12em] font-display uppercase text-sm">
               {t.nav_login}
@@ -67,11 +53,7 @@ export function PublicNav() {
         </div>
 
         <div className="flex items-center gap-2 md:hidden">
-          <div className="flex items-center gap-1.5 font-body text-xs mr-1">
-            <button onClick={() => setLang('en')} className={lang === 'en' ? 'text-foreground' : 'text-foreground-subtle'}>EN</button>
-            <span className="h-3 w-px bg-border" />
-            <button onClick={() => setLang('bg')} className={lang === 'bg' ? 'text-foreground' : 'text-foreground-subtle'}>БГ</button>
-          </div>
+          <LangSwitcher lang={lang} setLang={setLang} compact />
           <Button variant="ghost" size="icon" onClick={() => setOpen(!open)} aria-label="Toggle menu">
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>

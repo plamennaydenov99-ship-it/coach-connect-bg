@@ -10,8 +10,16 @@ import { useAuth } from '@/hooks/useAuth';
 
 export function DashboardLayout() {
   const [open, setOpen] = useState(false);
-  const { profile } = useAuth();
+  const { profile, loading } = useAuth();
   const role = profile?.role;
+
+  if (loading || !profile) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-muted-foreground">
+        Loading your dashboard…
+      </div>
+    );
+  }
 
   const NAV = (() => {
     if (role === 'athlete') {

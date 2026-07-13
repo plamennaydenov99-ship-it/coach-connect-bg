@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { COACHES } from '@/lib/mockData';
+import { Reveal } from '@/components/Reveal';
 
 export function FeaturedCoaches() {
   const featured = COACHES[0];
@@ -28,7 +29,9 @@ export function FeaturedCoaches() {
         </div>
 
         {/* Coach layout — 1 large + 2 small */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <Reveal className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+
           {/* Featured — large, spans 2 columns */}
           <Link
             to={`/coach/${featured.slug}`}
@@ -101,7 +104,7 @@ export function FeaturedCoaches() {
               </Link>
             ))}
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
