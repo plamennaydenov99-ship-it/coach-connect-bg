@@ -176,7 +176,7 @@ const CoachProfile = () => {
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-3">
                 {sport && (
-                  <span className="px-2 py-0.5 text-xs font-semibold rounded-md bg-primary/15 text-primary capitalize">
+                  <span className="px-2 py-0.5 text-xs font-semibold rounded-md bg-gold/15 text-gold capitalize">
                     {sport.label}
                   </span>
                 )}
@@ -217,7 +217,7 @@ const CoachProfile = () => {
                     <p className="text-xs uppercase tracking-[0.1em] text-muted-foreground mb-2">Certifications</p>
                     <div className="flex flex-wrap gap-2">
                       {coach.certifications.map(c => (
-                        <span key={c} className="px-3 py-1 rounded-md border border-primary/40 text-primary text-sm flex items-center gap-1.5">
+                        <span key={c} className="px-3 py-1 rounded-md border border-gold/40 text-gold text-sm flex items-center gap-1.5">
                           <BadgeCheck className="h-3.5 w-3.5" /> {c}
                         </span>
                       ))}
@@ -229,7 +229,7 @@ const CoachProfile = () => {
 
             <div className="surface p-6">
               <div className="flex items-center gap-2 mb-4">
-                <Calendar className="h-5 w-5 text-primary" />
+                <Calendar className="h-5 w-5 text-gold" />
                 <h2 className="font-display text-2xl">Available sessions</h2>
               </div>
               {slots.length === 0 ? (
@@ -240,7 +240,7 @@ const CoachProfile = () => {
                     <li key={s.id}>
                       <button
                         onClick={() => { if (requireAthlete()) setSelectedSlot(s); }}
-                        className="w-full text-left border border-border p-4 hover:border-primary transition-colors"
+                        className="w-full text-left border border-border p-4 hover:border-gold transition-colors"
                       >
                         <p className="font-medium">
                           {new Date(s.date + 'T00:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
@@ -248,7 +248,7 @@ const CoachProfile = () => {
                         <p className="text-sm text-muted-foreground flex items-center gap-1.5 mt-1">
                           <Clock className="h-3.5 w-3.5" /> {s.start_time.slice(0,5)} – {s.end_time.slice(0,5)}
                         </p>
-                        <p className="text-sm text-primary mt-2">Request · €{finalPrice}</p>
+                        <p className="text-sm text-gold mt-2">Request · €{finalPrice}</p>
                       </button>
                     </li>
                   ))}

@@ -43,7 +43,7 @@ export function CartDrawer() {
                 <p className="font-medium text-sm truncate">{item.name}</p>
                 <p className="text-xs text-muted-foreground mt-0.5">Qty {item.qty}</p>
               </div>
-              <span className="font-display text-primary">€{item.price}</span>
+              <span className="font-display text-gold">€{item.price}</span>
             </div>
           ))}
         </div>
@@ -52,7 +52,7 @@ export function CartDrawer() {
           <div className="w-full space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Subtotal</span>
-              <span className="font-display text-2xl text-primary">€{subtotal}</span>
+              <span className="font-display text-2xl text-gold">€{subtotal}</span>
             </div>
             <Button className="w-full" size="lg" onClick={() => toast.success('Checkout flow coming soon.')}>
               Checkout

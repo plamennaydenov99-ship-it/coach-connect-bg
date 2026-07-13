@@ -73,7 +73,7 @@ const Login = () => {
           </form>
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
-            New here? <Link to={role ? `/register?role=${role}` : '/register'} className="text-primary hover:underline">Create an account</Link>
+            New here? <Link to={role ? `/register?role=${role}` : '/register'} className="text-gold hover:underline">Create an account</Link>
           </p>
         </div>
       </main>

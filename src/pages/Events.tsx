@@ -22,7 +22,7 @@ export default function Events() {
           {EVENTS.map(ev => (
             <article
               key={ev.id}
-              className="surface overflow-hidden transition hover:border-primary/50"
+              className="surface overflow-hidden transition hover:border-gold/50"
             >
               <div className="relative aspect-[16/9] overflow-hidden">
                 <img

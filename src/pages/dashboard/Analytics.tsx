@@ -21,9 +21,9 @@ const Analytics = () => {
       </div>
 
       <div className="surface p-5 flex items-center gap-3">
-        <TrendingUp className="h-5 w-5 text-primary" />
-        <p className="text-sm">
-          Your profile appeared in <span className="font-semibold text-primary">348 searches</span> this week — up 22% from last week.
+        <TrendingUp className="h-5 w-5 text-gold" />
+<p className="text-sm">
+          Your profile appeared in <span className="font-semibold text-gold">348 searches</span> this week — up 22% from last week.
         </p>
       </div>
 
@@ -34,7 +34,7 @@ const Analytics = () => {
           { label: 'Avg response time', value: '2h 14m', icon: Clock },
         ].map(s => (
           <div key={s.label} className="surface p-5">
-            <s.icon className="h-5 w-5 text-primary mb-3" />
+            <s.icon className="h-5 w-5 text-gold mb-3" />
             <p className="font-display text-2xl">{s.value}</p>
             <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wide">{s.label}</p>
           </div>

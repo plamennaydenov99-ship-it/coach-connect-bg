@@ -63,7 +63,7 @@ export function DashboardLayout() {
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-3 text-sm font-display uppercase tracking-[0.1em] transition-colors border-l-2 ${
                 isActive
-                  ? 'border-primary bg-background-secondary text-foreground'
+                  ? 'border-gold bg-background-secondary text-foreground'
                   : 'border-transparent text-foreground-subtle hover:text-foreground-muted'
               }`
             }

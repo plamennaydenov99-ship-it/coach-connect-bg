@@ -17,7 +17,7 @@ export function FeatureTicker() {
             key={i}
             className="group flex items-center gap-3 px-8 py-3 min-w-[300px] border-r border-border-hover/40"
           >
-            <span className="text-primary text-sm">◆</span>
+            <span className="text-gold text-sm">◆</span>
             <div>
               <div className="font-display uppercase tracking-[0.12em] text-foreground-subtle group-hover:text-foreground-muted transition-colors text-sm">
                 {it.title}

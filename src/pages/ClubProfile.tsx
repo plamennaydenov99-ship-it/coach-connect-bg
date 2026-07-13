@@ -125,7 +125,7 @@ const ClubProfile = () => {
                       <p className="font-display text-lg">{p.name}</p>
                       {p.duration && <p className="text-xs text-muted-foreground mt-1">{p.duration}</p>}
                       {p.price != null && (
-                        <p className="font-display text-2xl text-primary mt-3">€{p.price}</p>
+                        <p className="font-display text-2xl text-gold mt-3">€{p.price}</p>
                       )}
                       <Button className="mt-4 w-full" onClick={() => toast.success('Enquiry sent.')}>
                         Book

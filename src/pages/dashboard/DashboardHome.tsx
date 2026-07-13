@@ -81,7 +81,7 @@ const DashboardHome = () => {
           ].map(s => (
             <div key={s.label} className="surface p-5">
               <div className="flex items-center justify-between">
-                <s.icon className="h-5 w-5 text-primary" />
+                <s.icon className="h-5 w-5 text-gold" />
                 <span className="text-xs text-muted-foreground">{s.delta}</span>
               </div>
               <p className="font-display text-2xl mt-3">{s.value}</p>
@@ -144,7 +144,7 @@ const DashboardHome = () => {
         ].map(s => (
           <div key={s.label} className="surface p-5">
             <div className="flex items-center justify-between">
-              <s.icon className="h-5 w-5 text-primary" />
+              <s.icon className="h-5 w-5 text-gold" />
               <span className="text-xs text-muted-foreground">{s.delta}</span>
             </div>
             <p className="font-display text-2xl mt-3">{s.value}</p>
@@ -157,13 +157,13 @@ const DashboardHome = () => {
         <div className="surface p-6 lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-display text-xl">Profile completion</h2>
-            <span className="text-sm font-semibold text-primary">{completion}%</span>
+            <span className="text-sm font-semibold text-gold">{completion}%</span>
           </div>
           <Progress value={completion} className="h-2" />
           <ul className="mt-5 space-y-2">
             {checklist.map(item => (
               <li key={item.label} className="flex items-center gap-3 text-sm">
-                <CheckCircle2 className={`h-4 w-4 ${item.done ? 'text-primary' : 'text-muted-foreground/40'}`} />
+                <CheckCircle2 className={`h-4 w-4 ${item.done ? 'text-gold' : 'text-muted-foreground/40'}`} />
                 <span className={item.done ? 'text-muted-foreground line-through' : ''}>{item.label}</span>
               </li>
             ))}

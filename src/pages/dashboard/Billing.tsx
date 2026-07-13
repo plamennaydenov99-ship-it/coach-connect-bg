@@ -44,8 +44,8 @@ const Billing = () => {
         <p className="text-muted-foreground mt-1">Manage your plan and billing.</p>
       </div>
 
-      <div className="surface p-5 flex items-center gap-3 border-primary/40 bg-primary/5">
-        <Sparkles className="h-5 w-5 text-primary" />
+      <div className="surface p-5 flex items-center gap-3 border-gold/40 bg-gold/5">
+        <Sparkles className="h-5 w-5 text-gold" />
         <p className="text-sm">
           You are on a <span className="font-semibold">free trial</span> — 47 days remaining.
         </p>
@@ -56,7 +56,7 @@ const Billing = () => {
           <div>
             <p className="text-xs uppercase tracking-wide text-muted-foreground">Current plan</p>
             <p className="font-display text-2xl mt-1 flex items-center gap-2">
-              <Crown className="h-5 w-5 text-primary" /> Pro Coach
+              <Crown className="h-5 w-5 text-gold" /> Pro Coach
             </p>
             <p className="text-sm text-muted-foreground mt-1">€29/month · Renews 12 May 2026</p>
           </div>
@@ -68,7 +68,7 @@ const Billing = () => {
         <Label htmlFor="billing-toggle" className={`text-sm ${!yearly ? 'font-semibold' : 'text-muted-foreground'}`}>Monthly</Label>
         <Switch id="billing-toggle" checked={yearly} onCheckedChange={setYearly} />
         <Label htmlFor="billing-toggle" className={`text-sm ${yearly ? 'font-semibold' : 'text-muted-foreground'}`}>
-          Yearly <span className="text-primary text-xs ml-1">save 17%</span>
+          Yearly <span className="text-gold text-xs ml-1">save 17%</span>
         </Label>
       </div>
 
@@ -77,7 +77,7 @@ const Billing = () => {
           <div
             key={p.id}
             className={`surface p-6 flex flex-col relative ${
-              p.highlight ? 'border-primary shadow-[0_0_0_1px_hsl(var(--primary))]' : ''
+              p.highlight ? 'border-gold shadow-[0_0_0_1px_hsl(var(--gold))]' : ''
             }`}
           >
             {p.badge && (
@@ -98,7 +98,7 @@ const Billing = () => {
             <ul className="mt-5 space-y-2 flex-1">
               {p.features.map(f => (
                 <li key={f} className="flex items-start gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" /> {f}
+                  <Check className="h-4 w-4 text-gold shrink-0 mt-0.5" /> {f}
                 </li>
               ))}
             </ul>
