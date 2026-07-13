@@ -17,21 +17,21 @@ function HeroCard({ icon, title, sub, cta, to, disabled }: CardProps) {
       className={`group relative h-full p-8 md:p-10 transition-colors duration-300 border ${
         disabled
           ? 'border-border bg-background-secondary opacity-60 cursor-not-allowed'
-          : 'border-border bg-background-secondary hover:border-accent-electric'
+          : 'border-border bg-background-secondary hover:border-gold'
       }`}
       style={{ borderRadius: '4px' }}
     >
       {!disabled && (
-        <div className="absolute top-0 left-0 right-0 h-px bg-transparent group-hover:bg-accent-electric transition-colors duration-300" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-transparent group-hover:bg-navy-hover transition-colors duration-300" />
       )}
-      <div className="text-foreground-subtle group-hover:text-accent-electric transition-colors duration-300">
+      <div className="text-foreground-subtle group-hover:text-gold transition-colors duration-300">
         {icon}
       </div>
       <h3 className="mt-6 font-display text-xl text-foreground leading-tight">{title}</h3>
       <p className="mt-2 text-sm font-body text-foreground-muted leading-relaxed">{sub}</p>
       <div
         className={`mt-6 inline-flex items-center gap-2 font-display uppercase tracking-[0.08em] text-[13px] ${
-          disabled ? 'text-foreground-subtle' : 'text-accent-electric'
+          disabled ? 'text-foreground-subtle' : 'text-gold'
         }`}
       >
         {cta} {!disabled && <ArrowRight className="h-3.5 w-3.5" />}

@@ -59,10 +59,10 @@ export function PillarsSection() {
             {/* Content */}
             <div className="relative z-10 h-full container flex items-center">
               <div className={`max-w-xl ${isRight ? 'ml-auto text-right' : ''}`}>
-                <span className="label-eyebrow text-ice">{pillar.eyebrow}</span>
+                <span className="label-eyebrow text-gold">{pillar.eyebrow}</span>
 
                 <h3
-                  className="mt-6 font-display text-ivory tracking-tight whitespace-pre-line"
+                  className="mt-6 font-display text-foreground tracking-tight whitespace-pre-line"
                   style={{ fontSize: 'clamp(36px, 5.5vw, 64px)', lineHeight: 0.98 }}
                 >
                   {pillar.headline}
@@ -74,7 +74,7 @@ export function PillarsSection() {
 
                 <Link
                   to={pillar.to}
-                  className="mt-8 inline-flex items-center gap-3 font-display uppercase tracking-[0.15em] text-sm text-ivory border-b border-ice pb-1 hover:text-ice transition-colors"
+                  className="mt-8 inline-flex items-center gap-3 font-display uppercase tracking-[0.15em] text-sm text-foreground border-b border-copper pb-1 hover:text-gold transition-colors"
                 >
                   {pillar.cta}
                   <span>→</span>

@@ -149,18 +149,18 @@
 }
 
 @layer utilities {
-  .text-ember { color: #C97A3A; }
-  .text-ice { color: #4A9EBF; }
-  .text-ivory { color: #F2EDE4; }
-  .bg-ember { background-color: #C97A3A; }
-  .bg-ice { background-color: #4A9EBF; }
-  .bg-ember-subtle { background-color: rgba(201, 122, 58, 0.12); }
-  .bg-ice-subtle { background-color: rgba(74, 158, 191, 0.12); }
-  .border-ember { border-color: #C97A3A; }
-  .border-ice { border-color: #4A9EBF; }
-  .hover\:border-ice:hover { border-color: #4A9EBF; }
-  .hover\:text-ice:hover { color: #4A9EBF; }
-  .hover\:bg-ice:hover { background-color: #4A9EBF; }
+  .text-gold { color: #C97A3A; }
+  .text-gold { color: #4A9EBF; }
+  .text-foreground { color: #F2EDE4; }
+  .bg-navy { background-color: #C97A3A; }
+  .bg-navy { background-color: #4A9EBF; }
+  .bg-gold-subtle { background-color: rgba(201, 122, 58, 0.12); }
+  .bg-gold-subtle { background-color: rgba(74, 158, 191, 0.12); }
+  .border-copper { border-color: #C97A3A; }
+  .border-copper { border-color: #4A9EBF; }
+  .hover\:border-copper:hover { border-color: #4A9EBF; }
+  .hover\:text-gold:hover { color: #4A9EBF; }
+  .hover\:bg-navy:hover { background-color: #4A9EBF; }
 
   .animate-fade-in { animation: fadeIn 0.5s ease-out both; }
   .animate-slide-up { animation: slideUp 0.6s ease-out both; }

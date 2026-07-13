@@ -25,12 +25,12 @@ export function HeroSection() {
       {/* Content — bottom left */}
       <div className="relative z-10 h-full container flex flex-col justify-end pb-20 md:pb-28">
         <div className="max-w-3xl">
-          <span className="label-eyebrow text-ice">
+          <span className="label-eyebrow text-gold">
             Nice · Monaco · Sofia
           </span>
 
           <h1
-            className="mt-6 font-display text-ivory tracking-tight"
+            className="mt-6 font-display text-foreground tracking-tight"
             style={{ fontSize: 'clamp(44px, 7.5vw, 96px)', lineHeight: 0.92 }}
           >
             Built for those who<br />take sport seriously.
@@ -46,7 +46,7 @@ export function HeroSection() {
               <Button
                 variant="outline"
                 size="lg"
-                className="tracking-[0.12em] h-12 px-7 border-foreground-subtle text-ivory hover:border-ice hover:text-ivory"
+                className="tracking-[0.12em] h-12 px-7 border-foreground-subtle text-foreground hover:border-gold hover:text-foreground"
               >
                 List Your Profile →
               </Button>

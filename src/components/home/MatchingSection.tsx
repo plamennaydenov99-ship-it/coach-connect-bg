@@ -59,7 +59,7 @@ export function MatchingSection({ onMatch }: Props = {}) {
     }, 1200);
   };
 
-  const activeBtn = 'bg-background-tertiary border-accent-electric text-foreground';
+  const activeBtn = 'bg-background-tertiary border-copper text-foreground';
   const idleBtn = 'bg-background-tertiary border-border text-foreground-muted hover:border-border-hover hover:text-foreground';
 
   return (
@@ -70,7 +70,7 @@ export function MatchingSection({ onMatch }: Props = {}) {
     >
       <div className="container py-20 md:py-28 max-w-5xl">
         <div className="text-center mb-12">
-          <span className="label-eyebrow text-accent-electric">{t.match_eyebrow}</span>
+          <span className="label-eyebrow text-gold">{t.match_eyebrow}</span>
           <h1 className="mt-5 font-display text-5xl md:text-7xl text-foreground">
             {t.match_heading_a}<br />{t.match_heading_b}
           </h1>
@@ -86,7 +86,7 @@ export function MatchingSection({ onMatch }: Props = {}) {
           </div>
           <div className="h-px w-full bg-border relative overflow-hidden">
             <div
-              className="absolute inset-y-0 left-0 bg-accent-electric transition-all duration-500"
+              className="absolute inset-y-0 left-0 bg-navy transition-all duration-500"
               style={{ width: `${((step + 1) / 4) * 100}%` }}
             />
           </div>
@@ -95,7 +95,7 @@ export function MatchingSection({ onMatch }: Props = {}) {
         <div className="max-w-3xl mx-auto min-h-[280px]">
           {matching ? (
             <div className="flex flex-col items-center justify-center py-16 gap-4">
-              <Loader2 className="h-8 w-8 animate-spin text-accent-electric" />
+              <Loader2 className="h-8 w-8 animate-spin text-gold" />
               <p className="font-display uppercase tracking-[0.15em] text-foreground-muted text-sm">
                 {t.matching}
               </p>

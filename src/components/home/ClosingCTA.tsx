@@ -15,12 +15,12 @@ export function ClosingCTA() {
 
       <div className="relative container py-28 md:py-40 text-center max-w-3xl">
         {/* Thin ice line top */}
-        <div className="h-px w-16 bg-ice mx-auto mb-10" />
+        <div className="h-px w-16 bg-navy mx-auto mb-10" />
 
-        <span className="label-eyebrow text-ice">Join Zenit</span>
+        <span className="label-eyebrow text-gold">Join Zenit</span>
 
         <h2
-          className="mt-6 font-display text-ivory tracking-tight"
+          className="mt-6 font-display text-foreground tracking-tight"
           style={{ fontSize: 'clamp(36px, 5.5vw, 68px)', lineHeight: 1 }}
         >
           Not everyone trains<br />with the best.
@@ -41,7 +41,7 @@ export function ClosingCTA() {
             <Button
               variant="outline"
               size="lg"
-              className="tracking-[0.12em] h-12 px-7 border-foreground-subtle text-ivory hover:border-ice hover:text-ivory"
+              className="tracking-[0.12em] h-12 px-7 border-foreground-subtle text-foreground hover:border-gold hover:text-foreground"
             >
               I'm a Coach →
             </Button>

@@ -18,7 +18,7 @@ export default function CampDetail() {
         <PublicNav />
         <main className="flex-1 container py-20 text-center">
           <h1 className="font-display text-4xl">Camp not found</h1>
-          <Link to="/camps" className="mt-4 inline-block text-accent-electric">← Back to camps</Link>
+          <Link to="/camps" className="mt-4 inline-block text-gold">← Back to camps</Link>
         </main>
         <PublicFooter />
       </div>
@@ -46,11 +46,11 @@ export default function CampDetail() {
           <img src={campImage(camp.image)} alt={camp.name} className="absolute inset-0 h-full w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/30" />
           <div className="container relative h-full flex flex-col justify-between py-6">
-            <Link to="/camps" className="self-start inline-flex items-center gap-2 px-3 py-2 bg-background/60 backdrop-blur border border-border text-foreground font-display uppercase tracking-[0.12em] text-[12px] rounded-sm hover:border-accent-electric transition-colors">
+            <Link to="/camps" className="self-start inline-flex items-center gap-2 px-3 py-2 bg-background/60 backdrop-blur border border-border text-foreground font-display uppercase tracking-[0.12em] text-[12px] rounded-sm hover:border-gold transition-colors">
               <ArrowLeft className="h-4 w-4" /> Back
             </Link>
             <div>
-              <span className="px-2 py-1 bg-background/85 backdrop-blur font-display uppercase tracking-[0.12em] text-[11px] text-accent-electric rounded-sm">
+              <span className="px-2 py-1 bg-background/85 backdrop-blur font-display uppercase tracking-[0.12em] text-[11px] text-gold rounded-sm">
                 {camp.sport}
               </span>
               <h1 className="font-display text-4xl md:text-6xl text-foreground mt-3">{camp.name}</h1>
@@ -61,14 +61,14 @@ export default function CampDetail() {
         <section className="container py-12 grid gap-10 lg:grid-cols-[2fr_1fr]">
           <div className="flex flex-col gap-10">
             <div>
-              <span className="label-eyebrow text-accent-electric">About this camp</span>
+              <span className="label-eyebrow text-gold">About this camp</span>
               <p className="mt-3 text-foreground-muted font-body text-[15px] leading-relaxed normal-case">
                 Join {camp.coach} for an intensive {camp.duration.toLowerCase()} experience in {camp.city}. This camp is designed for {camp.ageGroup.toLowerCase()} at {camp.level.toLowerCase()} level — combining technical drills, tactical sessions and live match play. Limited to a small group to ensure personal attention and rapid progress.
               </p>
             </div>
 
             <div>
-              <span className="label-eyebrow text-accent-electric">Daily schedule</span>
+              <span className="label-eyebrow text-gold">Daily schedule</span>
               <Accordion type="single" collapsible className="mt-3 border border-border rounded-sm">
                 {schedule.map((d, i) => (
                   <AccordionItem key={i} value={`d-${i}`} className="border-b border-border last:border-b-0 px-4">
@@ -84,9 +84,9 @@ export default function CampDetail() {
             </div>
 
             <div className="border border-border bg-card p-5 rounded-sm">
-              <span className="label-eyebrow text-accent-electric">Hosted by</span>
+              <span className="label-eyebrow text-gold">Hosted by</span>
               <div className="mt-3 flex items-center gap-4">
-                <div className="h-14 w-14 bg-background-tertiary border border-border rounded-sm flex items-center justify-center font-display text-xl text-accent-electric">
+                <div className="h-14 w-14 bg-background-tertiary border border-border rounded-sm flex items-center justify-center font-display text-xl text-gold">
                   {camp.coach.split(' ').slice(-1)[0][0]}
                 </div>
                 <div>
@@ -108,15 +108,15 @@ export default function CampDetail() {
               <li className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5" /> {camp.city}</li>
               <li className="flex items-center gap-2"><Users className="h-3.5 w-3.5" /> {camp.ageGroup}</li>
               <li className="flex items-center gap-2"><Award className="h-3.5 w-3.5" /> {camp.level}</li>
-              <li className={`flex items-center gap-2 ${camp.spotsLeft < 10 ? 'text-accent-electric' : ''}`}>
+              <li className={`flex items-center gap-2 ${camp.spotsLeft < 10 ? 'text-gold' : ''}`}>
                 <span className="h-1.5 w-1.5 bg-current rounded-full" /> {camp.spotsLeft} {t.spots_left}
               </li>
             </ul>
 
-            <button className="w-full px-4 py-3 bg-accent-electric text-primary-foreground font-display uppercase tracking-[0.12em] text-[13px] rounded-sm hover:bg-accent-electric-dim transition-colors">
+            <button className="w-full px-4 py-3 bg-navy text-primary-foreground font-display uppercase tracking-[0.12em] text-[13px] rounded-sm hover:bg-navy-hover transition-colors">
               {t.apply_camp}
             </button>
-            <button className="w-full px-4 py-3 border border-border-hover text-foreground font-display uppercase tracking-[0.12em] text-[13px] rounded-sm hover:border-accent-electric transition-colors">
+            <button className="w-full px-4 py-3 border border-border-hover text-foreground font-display uppercase tracking-[0.12em] text-[13px] rounded-sm hover:border-gold transition-colors">
               {t.ask_question}
             </button>
           </aside>

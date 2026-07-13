@@ -39,10 +39,10 @@ export default function Camps() {
             <h1 className="font-display text-5xl md:text-6xl text-foreground">{t.camps_hero_title}</h1>
             <p className="mt-4 max-w-2xl text-[16px] text-foreground-muted font-body normal-case">{t.camps_hero_sub}</p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <span className="px-3 py-1.5 bg-background-tertiary text-accent-electric font-display uppercase tracking-[0.12em] text-[12px] rounded-sm">
+              <span className="px-3 py-1.5 bg-background-tertiary text-gold font-display uppercase tracking-[0.12em] text-[12px] rounded-sm">
                 {CAMPS.length} Active camps
               </span>
-              <span className="px-3 py-1.5 bg-background-tertiary text-accent-electric font-display uppercase tracking-[0.12em] text-[12px] rounded-sm">
+              <span className="px-3 py-1.5 bg-background-tertiary text-gold font-display uppercase tracking-[0.12em] text-[12px] rounded-sm">
                 {uniqueCities} Cities
               </span>
             </div>
@@ -58,7 +58,7 @@ export default function Camps() {
                   onClick={() => setSport(s)}
                   className={`px-3 py-1.5 border font-display uppercase tracking-[0.12em] text-[12px] rounded-sm transition-colors ${
                     sport === s
-                      ? 'border-accent-electric text-accent-electric'
+                      ? 'border-copper text-gold'
                       : 'border-border text-foreground-muted hover:text-foreground'
                   }`}
                 >
@@ -74,7 +74,7 @@ export default function Camps() {
                     onClick={() => setDuration(i)}
                     className={`px-3 py-1.5 border font-display uppercase tracking-[0.12em] text-[11px] rounded-sm transition-colors ${
                       duration === i
-                        ? 'border-accent-electric text-accent-electric'
+                        ? 'border-copper text-gold'
                         : 'border-border text-foreground-muted hover:text-foreground'
                     }`}
                   >
@@ -85,7 +85,7 @@ export default function Camps() {
               <select
                 value={city}
                 onChange={e => setCity(e.target.value)}
-                className="ml-auto bg-background border border-border text-foreground px-3 py-1.5 font-display uppercase tracking-[0.12em] text-[12px] rounded-sm focus:outline-none focus:border-accent-electric"
+                className="ml-auto bg-background border border-border text-foreground px-3 py-1.5 font-display uppercase tracking-[0.12em] text-[12px] rounded-sm focus:outline-none focus:border-copper"
               >
                 {CITIES.map(c => <option key={c}>{c}</option>)}
               </select>

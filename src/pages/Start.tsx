@@ -45,7 +45,7 @@ const Start = () => {
                 }}
               />
               <div className="relative z-10 h-full flex flex-col justify-end p-8 md:p-16">
-                <span className="label-eyebrow text-accent-electric">Continue as</span>
+                <span className="label-eyebrow text-gold">Continue as</span>
                 <h2
                   className="mt-4 font-display text-foreground tracking-tight"
                   style={{ fontSize: 'clamp(40px, 6vw, 72px)', lineHeight: 0.9 }}
@@ -55,7 +55,7 @@ const Start = () => {
                 <p className="mt-4 text-foreground-muted font-body text-base max-w-md">
                   {p.tagline}
                 </p>
-                <span className="mt-6 inline-flex items-center gap-2 font-display uppercase tracking-[0.12em] text-sm text-foreground group-hover:text-accent-electric transition-colors">
+                <span className="mt-6 inline-flex items-center gap-2 font-display uppercase tracking-[0.12em] text-sm text-foreground group-hover:text-gold transition-colors">
                   Continue <ArrowRight className="h-4 w-4" />
                 </span>
               </div>
