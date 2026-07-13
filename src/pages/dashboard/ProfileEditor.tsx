@@ -177,11 +177,7 @@ const ProfileEditor = () => {
           </div>
           <div className="grid gap-2">
             <Label htmlFor="city">City</Label>
-            <select id="city" className="h-10 rounded-md border border-input bg-background px-3 text-sm"
-              value={city} onChange={e => setCity(e.target.value)}>
-              <option value="">Select a city</option>
-              {CITIES.map(c => <option key={c}>{c}</option>)}
-            </select>
+            <Input id="city" value={city} onChange={e => setCity(e.target.value)} placeholder="e.g. Paris, Sofia, London" />
           </div>
           <div className="grid gap-2 sm:col-span-2">
             <Label htmlFor="avatar">Avatar URL</Label>
