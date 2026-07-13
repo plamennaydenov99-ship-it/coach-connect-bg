@@ -62,6 +62,10 @@ const DashboardHome = () => {
 
   const completion = Math.round((checklist.filter(c => c.done).length / Math.max(checklist.length, 1)) * 100);
 
+  if (loading || !profile) {
+    return <div className="p-8 text-muted-foreground">Loading your dashboard…</div>;
+  }
+
   // ─────────────────────────────────────────────────────────
   // ATHLETE VIEW
   // ─────────────────────────────────────────────────────────
