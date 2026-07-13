@@ -29,7 +29,9 @@ export function FeaturedCoaches() {
         </div>
 
         {/* Coach layout — 1 large + 2 small */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <Reveal className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div style={{ display: 'contents' }}>
+
           {/* Featured — large, spans 2 columns */}
           <Link
             to={`/coach/${featured.slug}`}
