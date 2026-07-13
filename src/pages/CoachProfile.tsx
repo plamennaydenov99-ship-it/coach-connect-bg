@@ -185,7 +185,10 @@ const CoachProfile = () => {
                   <span className="badge-discount">-{coach.discount_pct}% Platform rate</span>
                 ) : null}
               </div>
-              <h1 className="font-display">{name}</h1>
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <h1 className="font-display">{name}</h1>
+                <BookmarkButton targetType="coach" targetId={coach.id} />
+              </div>
               <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
                 {city && <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {city}</span>}
                 {coach.years_experience != null && (
