@@ -51,7 +51,7 @@ export function DashboardLayout() {
         <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-foreground text-background">
           <Zap className="h-4 w-4" strokeWidth={2.5} />
         </div>
-        <span className="font-display text-xl tracking-[0.08em] text-foreground">ATLETA</span>
+        <span className="font-display text-xl tracking-[0.08em] text-foreground">ZENIT</span>
       </Link>
       <nav className="flex-1 p-2 space-y-0.5">
         {NAV.map((item: any) => (
@@ -104,7 +104,7 @@ export function DashboardLayout() {
           <Button variant="ghost" size="icon" onClick={() => setOpen(!open)}>
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
-          <span className="font-display text-lg">Atleta</span>
+          <span className="font-display text-lg">Zenit</span>
           <span className="w-9" />
         </header>
         <main className="flex-1 p-4 md:p-8">
