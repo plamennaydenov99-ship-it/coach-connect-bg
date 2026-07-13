@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,10 @@ import { supabase } from '@/integrations/supabase/client';
 
 const Login = () => {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const roleParam = params.get('role');
+  const role = roleParam === 'coach' || roleParam === 'athlete' ? roleParam : null;
+  const roleLabel = role === 'coach' ? 'Log in as a Coach' : role === 'athlete' ? 'Log in as an Athlete' : 'Welcome back';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -51,7 +55,7 @@ const Login = () => {
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <Zap className="h-5 w-5" strokeWidth={2.5} />
             </div>
-            <span className="font-display text-xl">Welcome back</span>
+            <span className="font-display text-xl">{roleLabel}</span>
           </div>
 
           <form onSubmit={submit} className="space-y-4">
@@ -69,7 +73,7 @@ const Login = () => {
           </form>
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
-            New here? <Link to="/register" className="text-primary hover:underline">Create an account</Link>
+            New here? <Link to={role ? `/register?role=${role}` : '/register'} className="text-primary hover:underline">Create an account</Link>
           </p>
         </div>
       </main>

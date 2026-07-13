@@ -13,7 +13,6 @@ export function PublicNav() {
     { to: '/search', label: 'Find a Coach' },
     { to: '/events', label: t.nav_events },
     { to: '/camps', label: t.nav_camps },
-    { to: '/community', label: t.nav_community },
   ];
 
   return (
@@ -60,15 +59,9 @@ export function PublicNav() {
               БГ
             </button>
           </div>
-          <Link to="/login">
-            <Button variant="ghost" className="h-10">{t.nav_login}</Button>
-          </Link>
-          <Link to="/dashboard">
-            <Button
-              variant="outline"
-              className="h-10 border-foreground-subtle text-foreground-muted hover:border-accent-electric hover:text-foreground"
-            >
-              {t.nav_coach_cta}
+          <Link to="/start">
+            <Button size="lg" className="h-11 px-6 tracking-[0.12em] font-display uppercase text-sm">
+              {t.nav_login}
             </Button>
           </Link>
         </div>
@@ -94,11 +87,8 @@ export function PublicNav() {
               </Link>
             ))}
             <div className="my-2 h-px bg-border" />
-            <Link to="/login" onClick={() => setOpen(false)} className="block">
-              <Button variant="ghost" className="w-full">{t.nav_login}</Button>
-            </Link>
-            <Link to="/dashboard" onClick={() => setOpen(false)} className="block">
-              <Button variant="outline" className="w-full">{t.nav_coach_cta}</Button>
+            <Link to="/start" onClick={() => setOpen(false)} className="block">
+              <Button size="lg" className="w-full font-display uppercase tracking-[0.12em]">{t.nav_login}</Button>
             </Link>
           </div>
         </div>

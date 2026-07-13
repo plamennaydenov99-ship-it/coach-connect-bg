@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { Button } from '@/components/ui/button';
@@ -15,8 +15,12 @@ type Role = 'athlete' | 'coach' | 'club';
 
 const Register = () => {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const initialRole: Role =
+    params.get('role') === 'coach' ? 'coach' :
+    params.get('role') === 'club' ? 'club' : 'athlete';
   const [form, setForm] = useState({ name: '', email: '', password: '', city: '' });
-  const [role, setRole] = useState<Role>('athlete');
+  const [role, setRole] = useState<Role>(initialRole);
   const [loading, setLoading] = useState(false);
 
   // Coach-specific
