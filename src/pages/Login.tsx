@@ -55,7 +55,7 @@ const Login = () => {
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <Zap className="h-5 w-5" strokeWidth={2.5} />
             </div>
-            <span className="font-display text-xl">Welcome back</span>
+            <span className="font-display text-xl">{roleLabel}</span>
           </div>
 
           <form onSubmit={submit} className="space-y-4">
