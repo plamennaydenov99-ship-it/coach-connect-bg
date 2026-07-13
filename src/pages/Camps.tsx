@@ -1,5 +1,4 @@
 import { useState, useMemo } from 'react';
-import { AnnouncementBar } from '@/components/layout/AnnouncementBar';
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { CampCard } from '@/components/camps/CampCard';
@@ -32,7 +31,6 @@ export default function Camps() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <AnnouncementBar />
       <PublicNav />
 
       <main className="flex-1">
