@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Menu, X, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/context/LanguageContext';
+import { LangSwitcher } from '@/components/layout/LangSwitcher';
 
 export function PublicNav() {
   const [open, setOpen] = useState(false);
