@@ -23,6 +23,8 @@ import Start from "./pages/Start";
 import NotFound from "./pages/NotFound";
 
 import { DashboardLayout } from "./components/dashboard/DashboardLayout";
+import { AccountLayout } from "./components/account/AccountLayout";
+import Account from "./pages/Account";
 import { RequireAuth } from "./components/dashboard/RequireAuth";
 import DashboardHome from "./pages/dashboard/DashboardHome";
 import ProfileEditor from "./pages/dashboard/ProfileEditor";
