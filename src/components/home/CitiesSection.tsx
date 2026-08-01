@@ -5,11 +5,11 @@ import { Reveal } from '@/components/Reveal';
 
 const CITIES = [
   {
-    name: 'Monaco',
-    blurb: 'A small city with a serious appetite for high-level sport.',
-    image: 'https://images.unsplash.com/photo-1750346240894-3c6937cc5ab8?fm=jpg&q=80&w=1600',
-    alt: 'Casino de Monte-Carlo in Monaco with luxury cars parked outside',
+    name: 'French Riviera',
+    image: 'https://images.unsplash.com/photo-1775029828803-38733896e59a?fm=jpg&q=80&w=1600',
+    alt: 'Saint-Tropez harbour with pastel waterfront buildings and yachts in golden light',
   },
+
   {
     name: 'Sofia',
     blurb: 'From city courts to the mountain trails on the doorstep.',
