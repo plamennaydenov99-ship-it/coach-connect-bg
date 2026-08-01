@@ -12,8 +12,7 @@ export function HeroSection() {
       {/* Background image */}
       <img
         src="https://images.unsplash.com/photo-1594381898411-846e7d193883?w=1600&q=80"
-        alt=""
-        aria-hidden="true"
+        alt="Athlete training with a personal coach in a gym"
         className="absolute inset-0 h-full w-full object-cover opacity-[0.08] grayscale"
       />
       {/* Diagonal line texture */}

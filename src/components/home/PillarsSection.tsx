@@ -10,6 +10,7 @@ const PILLARS = [
     cta: 'Browse coaches',
     to: '/search',
     image: 'https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?w=2400&q=85',
+    imageAlt: 'Strength coach spotting an athlete during a gym workout',
     align: 'left' as const,
   },
   {
@@ -20,6 +21,7 @@ const PILLARS = [
     cta: 'Explore camps',
     to: '/camps',
     image: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=2400&q=85',
+    imageAlt: 'Runners training together outdoors at a sports camp',
     align: 'right' as const,
   },
 ];
@@ -40,8 +42,7 @@ function Pillar({
       <img
         ref={bgRef}
         src={pillar.image}
-        alt=""
-        aria-hidden="true"
+        alt={pillar.imageAlt}
         className="absolute inset-0 h-full w-full object-cover grayscale will-change-transform"
       />
       <div className="absolute inset-0 bg-background/55" />

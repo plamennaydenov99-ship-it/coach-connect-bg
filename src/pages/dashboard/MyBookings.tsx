@@ -68,7 +68,7 @@ const MyBookings = () => {
               <div className="flex items-center gap-4 min-w-0">
                 <img
                   src={r.coach?.avatar_url || `https://i.pravatar.cc/150?u=${r.coach_id}`}
-                  alt=""
+                  alt={`Profile photo of ${r.coach?.full_name || 'coach'}`}
                   className="h-11 w-11 rounded-full object-cover shrink-0"
                 />
                 <div className="min-w-0">
