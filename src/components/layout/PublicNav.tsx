@@ -1,20 +1,51 @@
 // Cart removed from nav intentionally — appears contextually on /marketplace and coach booking only
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Menu, X, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/context/LanguageContext';
 import { LangSwitcher } from '@/components/layout/LangSwitcher';
+import { useAuth } from '@/hooks/useAuth';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+
+function initialsOf(name: string) {
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map(p => p[0])
+    .join('')
+    .toUpperCase();
+}
 
 export function PublicNav() {
   const [open, setOpen] = useState(false);
   const { lang, setLang, t } = useLanguage();
+  const { user, profile, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const displayName =
+    profile?.full_name?.trim() || user?.email?.split('@')[0] || '';
+  const initials = displayName ? initialsOf(displayName) : '?';
+  const homeFor = profile?.role === 'athlete' ? '/account' : '/dashboard';
+
+  const logout = async () => {
+    await signOut();
+    setOpen(false);
+    navigate('/start', { replace: true });
+  };
 
   const links = [
     { to: '/search', label: t.nav_search },
     { to: '/events', label: t.nav_events },
     { to: '/camps', label: t.nav_camps },
   ];
+
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
@@ -45,12 +76,37 @@ export function PublicNav() {
 
         <div className="hidden md:flex items-center gap-3">
           <LangSwitcher lang={lang} setLang={setLang} />
-          <Link to="/start">
-            <Button size="lg" className="h-11 px-6 tracking-[0.12em] font-display uppercase text-sm">
-              {t.nav_login}
-            </Button>
-          </Link>
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="flex items-center gap-2 border border-border px-3 h-11 rounded-sm hover:border-foreground-muted transition-colors"
+                  aria-label={displayName}
+                >
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground font-display text-xs">
+                    {initials}
+                  </span>
+                  <span className="font-display uppercase tracking-[0.1em] text-xs max-w-[10rem] truncate">
+                    {displayName}
+                  </span>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48 bg-popover">
+                <DropdownMenuItem onClick={() => navigate(homeFor)}>
+                  {t.account_title}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={logout}>{t.auth_logout}</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link to="/start">
+              <Button size="lg" className="h-11 px-6 tracking-[0.12em] font-display uppercase text-sm">
+                {t.nav_login}
+              </Button>
+            </Link>
+          )}
         </div>
+
 
         <div className="flex items-center gap-2 md:hidden">
           <LangSwitcher lang={lang} setLang={setLang} compact />
@@ -69,9 +125,20 @@ export function PublicNav() {
               </Link>
             ))}
             <div className="my-2 h-px bg-border" />
-            <Link to="/start" onClick={() => setOpen(false)} className="block">
-              <Button size="lg" className="w-full font-display uppercase tracking-[0.12em]">{t.nav_login}</Button>
-            </Link>
+            {user ? (
+              <>
+                <Link to={homeFor} onClick={() => setOpen(false)} className="block">
+                  <Button variant="ghost" className="w-full justify-start">{displayName}</Button>
+                </Link>
+                <Button size="lg" onClick={logout} className="w-full font-display uppercase tracking-[0.12em]">
+                  {t.auth_logout}
+                </Button>
+              </>
+            ) : (
+              <Link to="/start" onClick={() => setOpen(false)} className="block">
+                <Button size="lg" className="w-full font-display uppercase tracking-[0.12em]">{t.nav_login}</Button>
+              </Link>
+            )}
           </div>
         </div>
       )}

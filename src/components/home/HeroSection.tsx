@@ -9,15 +9,14 @@ export function HeroSection() {
       {/* Background image — athlete in motion */}
       <img
         ref={bgRef}
-        src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=2400&q=85"
-        alt="A coach guiding an athlete through a one-on-one training session"
-        className="absolute inset-0 h-full w-full object-cover grayscale will-change-transform"
+        src="https://images.unsplash.com/photo-1604651685068-8223d8790770?fm=jpg&q=80&w=2400"
+        alt="A football coach giving one-on-one instruction to a young player on a sunny pitch"
+        className="absolute inset-0 h-full w-full object-cover object-left-center will-change-transform"
       />
-      {/* Dark gradient scrim — stronger for legibility over photo */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/85 to-background/55" />
-      <div className="absolute inset-0 bg-background/30" />
+      {/* Lighter gradient scrim — keeps headline legible without dulling the photo */}
+      <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/55 to-background/15" />
       <div
-        className="absolute inset-0 opacity-40"
+        className="absolute inset-0 opacity-25"
         style={{
           backgroundImage:
             'repeating-linear-gradient(45deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 14px)',
