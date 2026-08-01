@@ -135,7 +135,7 @@ export function CitiesSection() {
                   Find a coach
                   <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                 </span>
-                <span className="mt-3 block font-display uppercase tracking-[0.15em] text-[10px] text-on-photo/70">
+                <span className="mt-3 block font-display uppercase tracking-[0.15em] text-[10px] text-on-photo/85">
                   Now onboarding coaches
                 </span>
               </div>
