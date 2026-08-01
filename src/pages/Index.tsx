@@ -2,6 +2,7 @@ import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { HeroSection } from '@/components/home/HeroSection';
 import { ManifestoSection } from '@/components/home/ManifestoSection';
+import { CitiesSection } from '@/components/home/CitiesSection';
 import { PillarsSection } from '@/components/home/PillarsSection';
 import { FeaturedCoaches } from '@/components/home/FeaturedCoaches';
 import { ClosingCTA } from '@/components/home/ClosingCTA';
@@ -13,10 +14,12 @@ const Index = () => {
       <main className="flex-1">
         <HeroSection />
         <ManifestoSection />
+        <CitiesSection />
         <PillarsSection />
         <FeaturedCoaches />
         <ClosingCTA />
       </main>
+
       <PublicFooter />
     </div>
   );

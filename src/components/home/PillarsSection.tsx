@@ -3,21 +3,10 @@ import { Reveal, useParallax } from '@/components/Reveal';
 
 const PILLARS = [
   {
-    id: 'coaches',
-    eyebrow: 'Coaches & Clubs',
-    headline: 'Find your\nperfect coach.',
-    sub: 'Browse verified coaches and clubs across 12 sports — wherever you train. Filter by location, level, and price. Message directly through the platform.',
-    cta: 'Browse coaches',
-    to: '/search',
-    image: 'https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?w=2400&q=85',
-    imageAlt: 'Strength coach spotting an athlete during a gym workout',
-    align: 'left' as const,
-  },
-  {
     id: 'camps',
     eyebrow: 'Camps & Events',
     headline: 'Train further.\nCompete harder.',
-    sub: 'Discover multi-day training camps, tournaments, and sporting events across the globe. Book your spot directly on the platform.',
+    sub: 'Multi-day training camps, tournaments and events around the world — book your spot on the platform.',
     cta: 'Explore camps',
     to: '/camps',
     image: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=2400&q=85',
@@ -25,6 +14,7 @@ const PILLARS = [
     align: 'right' as const,
   },
 ];
+
 
 function Pillar({
   pillar,
@@ -43,12 +33,19 @@ function Pillar({
         ref={bgRef}
         src={pillar.image}
         alt={pillar.imageAlt}
-        className="absolute inset-0 h-full w-full object-cover grayscale will-change-transform"
+        className="absolute inset-0 h-full w-full object-cover will-change-transform"
       />
-      <div className="absolute inset-0 bg-background/55" />
+      <div className="absolute inset-0 bg-background/20" />
       <div
-        className={`absolute inset-0 bg-gradient-to-${isRight ? 'l' : 'r'} from-background via-background/85 to-background/40`}
+        className={
+          isRight
+            ? 'absolute inset-0 bg-gradient-to-l from-background via-background/92 to-transparent'
+            : 'absolute inset-0 bg-gradient-to-r from-background via-background/92 to-transparent'
+        }
       />
+
+
+
 
       <div className="relative z-10 h-full container flex items-center">
         <Reveal className={`max-w-xl ${isRight ? 'ml-auto text-right' : ''}`}>
@@ -75,9 +72,12 @@ function Pillar({
         </Reveal>
       </div>
 
-      <div className="absolute bottom-6 left-6 md:left-10 font-display uppercase tracking-[0.2em] text-[11px] text-foreground-subtle">
-        0{index + 1} / 0{total}
-      </div>
+      {total > 1 && (
+        <div className="absolute bottom-6 left-6 md:left-10 font-display uppercase tracking-[0.2em] text-[11px] text-foreground-subtle">
+          0{index + 1} / 0{total}
+        </div>
+      )}
+
     </div>
   );
 }

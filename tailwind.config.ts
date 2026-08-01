@@ -40,23 +40,24 @@ export default {
           subtle: 'hsl(var(--background-secondary) / 0.5)',
         },
         crest: {
-          DEFAULT: '#C8102E',
-          hover: '#E8425C',
-          subtle: 'rgba(200, 16, 46, 0.14)',
+          DEFAULT: '#1C63C7',
+          hover: '#154FA0',
+          subtle: 'rgba(28, 99, 199, 0.10)',
         },
-        // legacy alias — now paints crest red everywhere except .badge-verified
+        // legacy aliases — all paint court blue now
         gold: {
-          DEFAULT: '#C8102E',
-          hover: '#E8425C',
-          subtle: 'rgba(200, 16, 46, 0.14)',
+          DEFAULT: '#1C63C7',
+          hover: '#154FA0',
+          subtle: 'rgba(28, 99, 199, 0.10)',
         },
-        verified: '#D4AF37',
+        verified: '#1C63C7',
         copper: {
-          DEFAULT: '#C8102E',
-          hover: '#E8425C',
-          subtle: 'rgba(200, 16, 46, 0.14)',
+          DEFAULT: '#1C63C7',
+          hover: '#154FA0',
+          subtle: 'rgba(28, 99, 199, 0.10)',
         },
         cream: 'hsl(var(--foreground))',
+
         carbon: {
           900: 'hsl(var(--background))',
           800: 'hsl(var(--background-secondary))',
