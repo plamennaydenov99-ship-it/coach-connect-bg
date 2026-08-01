@@ -131,52 +131,70 @@
       transparent 1px 8px
     );
   }
-  /* Verified badge — court blue, subtle */
+  /* Verified badge — ink on warm tint, no saturated hue */
   .badge-verified {
     @apply inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider;
-    background: rgba(28, 99, 199, 0.10);
-    color: #1C63C7;
-    border: 0.5px solid rgba(28, 99, 199, 0.4);
+    background: rgba(32, 31, 28, 0.07);
+    color: #201F1C;
+    border: 0.5px solid rgba(32, 31, 28, 0.28);
     border-radius: 2px;
   }
   .badge-discount {
     @apply inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider;
-    background: rgba(28, 99, 199, 0.10);
-    color: #1C63C7;
-    border: 0.5px solid rgba(28, 99, 199, 0.4);
+    background: rgba(32, 31, 28, 0.07);
+    color: #201F1C;
+    border: 0.5px solid rgba(32, 31, 28, 0.28);
     border-radius: 2px;
   }
 }
 
 @layer utilities {
-  /* Brand accent utilities — court blue is the single accent.
-     Legacy gold/copper/crest class names all paint court blue. */
-  .text-gold, .text-crest { color: #1C63C7; }
-  .text-copper { color: #1C63C7; }
+  /* Text placed on photography — always warm white, always on a scrim. */
+  .text-on-photo { color: #F7F4EE; }
+  .scrim-photo {
+    background: linear-gradient(to top, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.38) 45%, rgba(0,0,0,0) 100%);
+  }
+  .frosted-panel {
+    background: rgba(247, 244, 238, 0.14);
+    backdrop-filter: blur(10px) saturate(1.1);
+    -webkit-backdrop-filter: blur(10px) saturate(1.1);
+    border-top: 1px solid rgba(247, 244, 238, 0.22);
+  }
+  .grain-overlay {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.30'/%3E%3C/svg%3E");
+    opacity: 0.18;
+    mix-blend-mode: overlay;
+  }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Legacy accent class names now paint neutral ink — no saturated colour. */
+  .text-gold, .text-crest { color: #201F1C; }
+  .text-copper { color: #201F1C; }
   .text-navy { color: hsl(var(--foreground)); }
   .text-cream { color: hsl(var(--foreground)); }
-  .text-verified-gold { color: #1C63C7; }
+  .text-verified-gold { color: #201F1C; }
 
-  .bg-gold, .bg-crest { background-color: #1C63C7; }
-  .bg-gold-subtle, .bg-crest-subtle { background-color: rgba(28, 99, 199, 0.10); }
-  .bg-copper { background-color: #1C63C7; }
-  .bg-copper-subtle { background-color: rgba(28, 99, 199, 0.10); }
+  .bg-gold, .bg-crest { background-color: #201F1C; }
+  .bg-gold-subtle, .bg-crest-subtle { background-color: rgba(32, 31, 28, 0.07); }
+  .bg-copper { background-color: #201F1C; }
+  .bg-copper-subtle { background-color: rgba(32, 31, 28, 0.07); }
   .bg-navy { background-color: hsl(var(--foreground)); }
   .bg-navy-hover { background-color: hsl(var(--background-tertiary)); }
   .bg-navy-subtle { background-color: hsl(var(--background-secondary) / 0.5); }
 
-  .border-gold, .border-crest { border-color: #1C63C7; }
-  .border-copper { border-color: #1C63C7; }
-  .border-l-copper { border-left-color: #1C63C7; }
+  .border-gold, .border-crest { border-color: #201F1C; }
+  .border-copper { border-color: #201F1C; }
+  .border-l-copper { border-left-color: #201F1C; }
   .border-navy { border-color: hsl(var(--border)); }
 
-  .fill-gold { fill: #1C63C7; }
-  .fill-verified-gold { fill: #1C63C7; }
+  .fill-gold { fill: #201F1C; }
+  .fill-verified-gold { fill: #201F1C; }
 
   .hover\:bg-navy:hover { background-color: hsl(var(--background-secondary)); }
   .hover\:bg-navy-hover:hover { background-color: hsl(var(--background-tertiary)); }
-  .hover\:text-gold:hover { color: #1C63C7; }
-  .hover\:border-gold:hover { border-color: #1C63C7; }
+  .hover\:text-gold:hover { color: #201F1C; }
+  .hover\:border-gold:hover { border-color: #201F1C; }
   .hover\:text-foreground:hover { color: hsl(var(--foreground)); }
 
 
