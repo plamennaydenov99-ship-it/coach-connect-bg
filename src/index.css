@@ -127,71 +127,69 @@
   .texture-diagonal {
     background-image: repeating-linear-gradient(
       45deg,
-      hsl(0 0% 100% / 0.03) 0 1px,
+      hsl(60 5% 11% / 0.03) 0 1px,
       transparent 1px 8px
     );
   }
-  /* Verified badge — the ONLY place gold is used */
+  /* Verified badge — court blue, subtle */
   .badge-verified {
     @apply inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider;
-    background: rgba(212, 175, 55, 0.14);
-    color: #D4AF37;
-    border: 0.5px solid #D4AF37;
+    background: rgba(28, 99, 199, 0.10);
+    color: #1C63C7;
+    border: 0.5px solid rgba(28, 99, 199, 0.4);
     border-radius: 2px;
   }
-  /* Discount badge — crest red */
   .badge-discount {
     @apply inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider;
-    background: rgba(200, 16, 46, 0.14);
-    color: #F26178;
-    border: 0.5px solid #C8102E;
+    background: rgba(28, 99, 199, 0.10);
+    color: #1C63C7;
+    border: 0.5px solid rgba(28, 99, 199, 0.4);
     border-radius: 2px;
   }
 }
 
 @layer utilities {
-  /* Brand accent utilities — crest red is the single accent.
-     `gold` class names are kept for compatibility but now paint crest red;
-     true gold lives only in .badge-verified / .text-verified-gold. */
-  .text-gold, .text-crest { color: #E8425C; }
-  .text-copper { color: #E8425C; }
-  .text-navy { color: hsl(var(--background)); }
+  /* Brand accent utilities — court blue is the single accent.
+     Legacy gold/copper/crest class names all paint court blue. */
+  .text-gold, .text-crest { color: #1C63C7; }
+  .text-copper { color: #1C63C7; }
+  .text-navy { color: hsl(var(--foreground)); }
   .text-cream { color: hsl(var(--foreground)); }
-  .text-verified-gold { color: #D4AF37; }
+  .text-verified-gold { color: #1C63C7; }
 
-  .bg-gold, .bg-crest { background-color: #C8102E; }
-  .bg-gold-subtle, .bg-crest-subtle { background-color: rgba(200, 16, 46, 0.14); }
-  .bg-copper { background-color: #C8102E; }
-  .bg-copper-subtle { background-color: rgba(200, 16, 46, 0.14); }
-  .bg-navy { background-color: hsl(var(--background-secondary)); }
+  .bg-gold, .bg-crest { background-color: #1C63C7; }
+  .bg-gold-subtle, .bg-crest-subtle { background-color: rgba(28, 99, 199, 0.10); }
+  .bg-copper { background-color: #1C63C7; }
+  .bg-copper-subtle { background-color: rgba(28, 99, 199, 0.10); }
+  .bg-navy { background-color: hsl(var(--foreground)); }
   .bg-navy-hover { background-color: hsl(var(--background-tertiary)); }
   .bg-navy-subtle { background-color: hsl(var(--background-secondary) / 0.5); }
 
-  .border-gold, .border-crest { border-color: #C8102E; }
-  .border-copper { border-color: #C8102E; }
-  .border-l-copper { border-left-color: #C8102E; }
+  .border-gold, .border-crest { border-color: #1C63C7; }
+  .border-copper { border-color: #1C63C7; }
+  .border-l-copper { border-left-color: #1C63C7; }
   .border-navy { border-color: hsl(var(--border)); }
 
-  .fill-gold { fill: #C8102E; }
-  .fill-verified-gold { fill: #D4AF37; }
+  .fill-gold { fill: #1C63C7; }
+  .fill-verified-gold { fill: #1C63C7; }
 
   .hover\:bg-navy:hover { background-color: hsl(var(--background-secondary)); }
   .hover\:bg-navy-hover:hover { background-color: hsl(var(--background-tertiary)); }
-  .hover\:text-gold:hover { color: #E8425C; }
-  .hover\:border-gold:hover { border-color: #C8102E; }
+  .hover\:text-gold:hover { color: #1C63C7; }
+  .hover\:border-gold:hover { border-color: #1C63C7; }
   .hover\:text-foreground:hover { color: hsl(var(--foreground)); }
 
 
-  /* Cinematic image color grade — replaces flat grayscale.
-     Slight contrast+saturation boost, subtle warm-highlight/cool-shadow lift. */
+  /* Light, natural photo grade — no desaturation on a bright layout. */
   img.grayscale,
   .grayscale > img {
-    filter: contrast(1.08) saturate(1.12) brightness(0.94) sepia(0.06) hue-rotate(-4deg);
+    filter: contrast(1.03) saturate(1.05);
   }
   img.grayscale-0,
   .group:hover img.grayscale {
-    filter: contrast(1.12) saturate(1.25) brightness(0.98);
+    filter: contrast(1.06) saturate(1.15);
   }
+
 
   .animate-fade-in { animation: fadeIn 0.5s ease-out both; }
   .animate-slide-up { animation: slideUp 0.6s ease-out both; }
