@@ -1,11 +1,12 @@
 import { Reveal } from '@/components/Reveal';
 
 export function ManifestoSection() {
-  const stats = [
-    { number: '200+', label: 'Verified coaches' },
-    { number: '12', label: 'Sports covered' },
-    { number: 'Global', label: 'Wherever you train' },
+  const pillars = [
+    { title: 'Now onboarding', label: 'Coaches across 12 sports' },
+    { title: 'Verified only', label: 'Every coach checked before listing' },
+    { title: 'Wherever you train', label: 'Built for athletes everywhere' },
   ];
+
 
   return (
     <section className="bg-background py-28 md:py-40 border-t border-border">
