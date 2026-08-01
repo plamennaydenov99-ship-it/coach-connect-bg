@@ -33,21 +33,22 @@ export function ManifestoSection() {
 
         {/* Stats */}
         <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-0 border-t border-border pt-12">
-          {stats.map((stat, i) => (
+          {pillars.map((item, i) => (
             <Reveal
               key={i}
               delay={i * 120}
               className={`flex flex-col ${i > 0 ? 'md:pl-12 md:border-l md:border-border' : ''}`}
             >
-              <span className="font-display text-foreground text-5xl md:text-6xl tracking-tight">
-                {stat.number}
+              <span className="font-display text-foreground text-3xl md:text-4xl tracking-tight">
+                {item.title}
               </span>
               <span className="mt-3 font-display uppercase tracking-[0.15em] text-xs text-foreground-subtle">
-                {stat.label}
+                {item.label}
               </span>
             </Reveal>
           ))}
         </div>
+
       </div>
     </section>
   );
