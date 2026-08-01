@@ -23,6 +23,8 @@ import Start from "./pages/Start";
 import NotFound from "./pages/NotFound";
 
 import { DashboardLayout } from "./components/dashboard/DashboardLayout";
+import { AccountLayout } from "./components/account/AccountLayout";
+import Account from "./pages/Account";
 import { RequireAuth } from "./components/dashboard/RequireAuth";
 import DashboardHome from "./pages/dashboard/DashboardHome";
 import ProfileEditor from "./pages/dashboard/ProfileEditor";
@@ -63,7 +65,7 @@ const App = () => (
               <Route path="/match" element={<Match />} />
               <Route path="/start" element={<Start />} />
 
-              <Route path="/dashboard" element={<RequireAuth><DashboardLayout /></RequireAuth>}>
+              <Route path="/dashboard" element={<RequireAuth area="staff"><DashboardLayout /></RequireAuth>}>
                 <Route index element={<DashboardHome />} />
                 <Route path="profile" element={<ProfileEditor />} />
                 <Route path="availability" element={<Availability />} />
@@ -75,6 +77,14 @@ const App = () => (
                 <Route path="messages" element={<Messages />} />
                 <Route path="billing" element={<Billing />} />
                 <Route path="settings" element={<DashSettings />} />
+              </Route>
+
+              <Route path="/account" element={<RequireAuth area="athlete"><AccountLayout /></RequireAuth>}>
+                <Route index element={<Account />} />
+                <Route path="bookings" element={<MyBookings />} />
+                <Route path="personal-info" element={<PersonalInfo />} />
+                <Route path="bookmarks" element={<BookmarksPage />} />
+                <Route path="messages" element={<Messages />} />
               </Route>
 
               <Route path="*" element={<NotFound />} />

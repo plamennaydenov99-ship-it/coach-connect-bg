@@ -1,19 +1,27 @@
 import { useState } from 'react';
-import { NavLink, Link, Outlet } from 'react-router-dom';
+import { NavLink, Link, Outlet, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, UserCog, BarChart3, MessageSquare,
   CreditCard, Settings, Zap, Menu, X, ExternalLink,
-  CalendarCheck, CalendarClock, ListChecks, Search, User, Bookmark
+  CalendarCheck, CalendarClock, ListChecks, Search, User, Bookmark, LogOut
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/context/LanguageContext';
+import { toast } from 'sonner';
 
 export function DashboardLayout() {
   const [open, setOpen] = useState(false);
-  const { profile, loading } = useAuth();
+  const { profile, loading, signOut } = useAuth();
+  const navigate = useNavigate();
   const { t } = useLanguage();
   const role = profile?.role;
+
+  const logout = async () => {
+    await signOut();
+    toast.success(t.auth_signed_out);
+    navigate('/start', { replace: true });
+  };
 
   if (loading || !profile) {
     return (
@@ -84,6 +92,11 @@ export function DashboardLayout() {
           </NavLink>
         ))}
       </nav>
+      <div className="p-3 border-t border-sidebar-border">
+        <Button variant="ghost" size="sm" className="w-full justify-start" onClick={logout}>
+          <LogOut className="h-3.5 w-3.5 mr-2" /> {t.auth_logout}
+        </Button>
+      </div>
       {(role === 'coach' || role === 'club') && (
         <div className="p-3 border-t border-sidebar-border">
           <Link to={role === 'coach' ? `/coach/${profile?.id}` : `/club/${profile?.id}`}>
