@@ -9,7 +9,7 @@ export function HeroSection() {
       {/* Background image — athlete in motion */}
       <img
         ref={bgRef}
-        src="https://images.unsplash.com/photo-1517649763962-0c623066013b?w=2400&q=85"
+        src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=2400&q=85"
         alt=""
         aria-hidden="true"
         className="absolute inset-0 h-full w-full object-cover grayscale will-change-transform"
