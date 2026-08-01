@@ -40,21 +40,21 @@ export default {
           subtle: 'hsl(var(--background-secondary) / 0.5)',
         },
         crest: {
-          DEFAULT: '#1C63C7',
-          hover: '#154FA0',
-          subtle: 'rgba(28, 99, 199, 0.10)',
+          DEFAULT: '#201F1C',
+          hover: '#3A3833',
+          subtle: 'rgba(32, 31, 28, 0.07)',
         },
         // legacy aliases — all paint court blue now
         gold: {
-          DEFAULT: '#1C63C7',
-          hover: '#154FA0',
-          subtle: 'rgba(28, 99, 199, 0.10)',
+          DEFAULT: '#201F1C',
+          hover: '#3A3833',
+          subtle: 'rgba(32, 31, 28, 0.07)',
         },
-        verified: '#1C63C7',
+        verified: '#201F1C',
         copper: {
-          DEFAULT: '#1C63C7',
-          hover: '#154FA0',
-          subtle: 'rgba(28, 99, 199, 0.10)',
+          DEFAULT: '#201F1C',
+          hover: '#3A3833',
+          subtle: 'rgba(32, 31, 28, 0.07)',
         },
         cream: 'hsl(var(--foreground))',
 
