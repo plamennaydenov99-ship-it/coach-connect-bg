@@ -1,20 +1,51 @@
 // Cart removed from nav intentionally — appears contextually on /marketplace and coach booking only
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Menu, X, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/context/LanguageContext';
 import { LangSwitcher } from '@/components/layout/LangSwitcher';
+import { useAuth } from '@/hooks/useAuth';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+
+function initialsOf(name: string) {
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map(p => p[0])
+    .join('')
+    .toUpperCase();
+}
 
 export function PublicNav() {
   const [open, setOpen] = useState(false);
   const { lang, setLang, t } = useLanguage();
+  const { user, profile, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const displayName =
+    profile?.full_name?.trim() || user?.email?.split('@')[0] || '';
+  const initials = displayName ? initialsOf(displayName) : '?';
+  const homeFor = profile?.role === 'athlete' ? '/account' : '/dashboard';
+
+  const logout = async () => {
+    await signOut();
+    setOpen(false);
+    navigate('/start', { replace: true });
+  };
 
   const links = [
     { to: '/search', label: t.nav_search },
     { to: '/events', label: t.nav_events },
     { to: '/camps', label: t.nav_camps },
   ];
+
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
