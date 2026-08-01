@@ -6,78 +6,74 @@
 
 @layer base {
   :root {
-    /* ZENIT — Club Crest (pitch green + crest red) */
+    /* ZENIT — Daylight (warm stone + court blue) */
 
-    /* BASE — deep pitch-green near-black */
-    --background: 160 35% 6%;
-    --background-secondary: 162 47% 11%;  /* #0F2A22 */
-    --background-tertiary: 162 47% 11%;
+    /* BASE — warm off-white stone */
+    --background: 43 26% 94%;             /* #F4F1EA */
+    --background-secondary: 40 22% 91%;   /* #EEEAE1 */
+    --background-tertiary: 40 20% 88%;
 
-    --foreground: 45 40% 94%;             /* #F6F3EA ivory */
-    --foreground-muted: 145 10% 66%;      /* #9FB0A6 */
-    --foreground-subtle: 145 10% 66%;     /* same as muted — WCAG AA */
+    --foreground: 60 5% 11%;              /* #1E1E1C warm charcoal */
+    --foreground-muted: 40 5% 40%;        /* #6B6862 */
+    --foreground-subtle: 40 5% 40%;
 
-    --card: 162 47% 11%;
-    --card-foreground: 45 40% 94%;
+    --card: 0 0% 100%;
+    --card-foreground: 60 5% 11%;
 
-    --popover: 162 47% 11%;
-    --popover-foreground: 45 40% 94%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 60 5% 11%;
 
-    /* PITCH — primary fills (button/tab/chip backgrounds) */
-    --navy: 160 35% 6%;
-    --navy-hover: 162 47% 11%;
+    /* Legacy fill token — now neutral surface */
+    --navy: 40 22% 91%;
+    --navy-hover: 40 20% 88%;
 
-    /* CREST RED — single accent: links, eyebrows, CTAs */
-    --crest: 350 85% 42%;                 /* #C8102E */
+    /* ACCENT — court blue */
+    --crest: 215 75% 45%;                 /* #1C63C7 */
+    --gold: 215 75% 45%;
+    --copper: 215 75% 45%;
 
-    /* GOLD — verified badge ONLY */
-    --gold: 46 65% 52%;                   /* #D4AF37 */
-
-    --copper: 350 85% 42%;
-
-    /* PRIMARY = pitch green fills with ivory text */
-    --primary: 162 47% 11%;
-    --primary-foreground: 45 40% 94%;
-    --primary-hover: 160 35% 6%;
+    /* PRIMARY = court blue with white text */
+    --primary: 215 75% 45%;
+    --primary-foreground: 43 26% 97%;
+    --primary-hover: 215 75% 38%;
 
     /* NEUTRAL */
-    --secondary: 162 30% 16%;
-    --secondary-foreground: 45 40% 94%;
-    --muted: 162 47% 11%;
-    --muted-foreground: 145 10% 66%;
-    --accent: 162 47% 11%;
-    --accent-foreground: 45 40% 94%;
+    --secondary: 40 22% 91%;
+    --secondary-foreground: 60 5% 11%;
+    --muted: 40 22% 91%;
+    --muted-foreground: 40 5% 40%;
+    --accent: 40 22% 91%;
+    --accent-foreground: 60 5% 11%;
 
     /* BORDERS */
-    --border: 162 25% 17%;
-    --border-hover: 162 25% 26%;
-    --input: 162 47% 11%;
-    --ring: 350 85% 42%;
+    --border: 38 27% 85%;                 /* #E4DED2 */
+    --border-hover: 38 20% 76%;
+    --input: 38 27% 85%;
+    --ring: 215 75% 45%;
 
     /* FUNCTIONAL */
-    --success: 142 55% 45%;
-    --success-foreground: 45 40% 94%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 160 35% 6%;
-    --destructive: 0 62% 48%;
-    --destructive-foreground: 45 40% 94%;
+    --success: 152 55% 32%;
+    --success-foreground: 43 26% 97%;
+    --warning: 32 85% 42%;
+    --warning-foreground: 43 26% 97%;
+    --destructive: 0 65% 45%;
+    --destructive-foreground: 43 26% 97%;
 
     --radius: 0.25rem;
 
-    --sidebar-background: 160 35% 6%;
-    --sidebar-foreground: 145 10% 66%;
-    --sidebar-primary: 162 47% 11%;
-    --sidebar-primary-foreground: 45 40% 94%;
-    --sidebar-accent: 162 47% 11%;
-    --sidebar-accent-foreground: 45 40% 94%;
-    --sidebar-border: 162 25% 17%;
-    --sidebar-ring: 350 85% 42%;
+    --sidebar-background: 43 26% 94%;
+    --sidebar-foreground: 40 5% 40%;
+    --sidebar-primary: 215 75% 45%;
+    --sidebar-primary-foreground: 43 26% 97%;
+    --sidebar-accent: 40 22% 91%;
+    --sidebar-accent-foreground: 60 5% 11%;
+    --sidebar-border: 38 27% 85%;
+    --sidebar-ring: 215 75% 45%;
   }
 
-
-  .dark { color-scheme: dark; }
-  html { @apply dark; color-scheme: dark; }
+  html { color-scheme: light; }
 }
+
 
 @layer base {
   * { @apply border-border; }
