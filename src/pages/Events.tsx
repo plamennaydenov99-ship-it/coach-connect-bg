@@ -34,9 +34,6 @@ export default function Events() {
                   className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
                   loading="lazy"
                 />
-                <span className="absolute right-2 top-2 rounded-md bg-background/70 px-2 py-0.5 text-[10px] text-muted-foreground backdrop-blur">
-                  {t.events_sponsored}
-                </span>
               </div>
               <div className="p-5">
                 <div className="flex items-start justify-between gap-2">

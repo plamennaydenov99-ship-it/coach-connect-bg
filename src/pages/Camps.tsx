@@ -38,14 +38,15 @@ export default function Camps() {
           <div className="container">
             <h1 className="font-display text-5xl md:text-6xl text-foreground">{t.camps_hero_title}</h1>
             <p className="mt-4 max-w-2xl text-[16px] text-foreground-muted font-body normal-case">{t.camps_hero_sub}</p>
+            <p className="mt-4 text-[13px] text-foreground-muted font-body normal-case border border-border bg-background-secondary/60 px-3 py-2 inline-block rounded-sm">
+              {t.camps_demo_note}
+            </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <span className="px-3 py-1.5 bg-background-tertiary text-gold font-display uppercase tracking-[0.12em] text-[12px] rounded-sm">
-                {CAMPS.length} Active camps
-              </span>
               <span className="px-3 py-1.5 bg-background-tertiary text-gold font-display uppercase tracking-[0.12em] text-[12px] rounded-sm">
                 {uniqueCities} Cities
               </span>
             </div>
+
           </div>
         </section>
 

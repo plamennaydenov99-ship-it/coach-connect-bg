@@ -1,11 +1,12 @@
 import { Reveal } from '@/components/Reveal';
 
 export function ManifestoSection() {
-  const stats = [
-    { number: '200+', label: 'Verified coaches' },
-    { number: '12', label: 'Sports covered' },
-    { number: 'Global', label: 'Wherever you train' },
+  const pillars = [
+    { title: 'Now onboarding', label: 'Coaches across 12 sports' },
+    { title: 'Verified only', label: 'Every coach checked before listing' },
+    { title: 'Wherever you train', label: 'Built for athletes everywhere' },
   ];
+
 
   return (
     <section className="bg-background py-28 md:py-40 border-t border-border">
@@ -32,21 +33,22 @@ export function ManifestoSection() {
 
         {/* Stats */}
         <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-0 border-t border-border pt-12">
-          {stats.map((stat, i) => (
+          {pillars.map((item, i) => (
             <Reveal
               key={i}
               delay={i * 120}
               className={`flex flex-col ${i > 0 ? 'md:pl-12 md:border-l md:border-border' : ''}`}
             >
-              <span className="font-display text-foreground text-5xl md:text-6xl tracking-tight">
-                {stat.number}
+              <span className="font-display text-foreground text-3xl md:text-4xl tracking-tight">
+                {item.title}
               </span>
               <span className="mt-3 font-display uppercase tracking-[0.15em] text-xs text-foreground-subtle">
-                {stat.label}
+                {item.label}
               </span>
             </Reveal>
           ))}
         </div>
+
       </div>
     </section>
   );
