@@ -85,11 +85,8 @@ function Pillar({
         </Reveal>
       </div>
 
-      {total > 1 && (
-        <div className="absolute bottom-6 left-6 md:left-10 font-display uppercase tracking-[0.2em] text-[11px] text-foreground-subtle">
-          0{index + 1} / 0{total}
-        </div>
-      )}
+
+
 
     </div>
   );
