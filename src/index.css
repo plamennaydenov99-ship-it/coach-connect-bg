@@ -13,43 +13,43 @@
     --background-secondary: 40 22% 91%;   /* #EEEAE1 */
     --background-tertiary: 40 20% 88%;
 
-    --foreground: 60 5% 11%;              /* #1E1E1C warm charcoal */
-    --foreground-muted: 40 5% 40%;        /* #6B6862 */
-    --foreground-subtle: 40 5% 40%;
+    --foreground: 45 6% 12%;              /* #201F1C warm charcoal ink */
+    --foreground-muted: 42 6% 40%;        /* #6E6A62 warm gray */
+    --foreground-subtle: 42 6% 40%;
 
     --card: 0 0% 100%;
-    --card-foreground: 60 5% 11%;
+    --card-foreground: 45 6% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 60 5% 11%;
+    --popover-foreground: 45 6% 12%;
 
     /* Legacy fill token — now neutral surface */
     --navy: 40 22% 91%;
     --navy-hover: 40 20% 88%;
 
-    /* ACCENT — court blue */
-    --crest: 215 75% 45%;                 /* #1C63C7 */
-    --gold: 215 75% 45%;
-    --copper: 215 75% 45%;
+    /* NO saturated accent — near-black ink is the only "accent" */
+    --crest: 45 6% 12%;
+    --gold: 45 6% 12%;
+    --copper: 45 6% 12%;
 
-    /* PRIMARY = court blue with white text */
-    --primary: 215 75% 45%;
-    --primary-foreground: 43 26% 97%;
-    --primary-hover: 215 75% 38%;
+    /* PRIMARY = near-black ink with warm white text */
+    --primary: 45 6% 12%;
+    --primary-foreground: 40 32% 95%;     /* #F7F4EE */
+    --primary-hover: 45 6% 20%;
 
     /* NEUTRAL */
     --secondary: 40 22% 91%;
-    --secondary-foreground: 60 5% 11%;
+    --secondary-foreground: 45 6% 12%;
     --muted: 40 22% 91%;
-    --muted-foreground: 40 5% 40%;
+    --muted-foreground: 42 6% 40%;
     --accent: 40 22% 91%;
-    --accent-foreground: 60 5% 11%;
+    --accent-foreground: 45 6% 12%;
 
     /* BORDERS */
-    --border: 38 27% 85%;                 /* #E4DED2 */
+    --border: 38 26% 85%;                 /* #E2DCD0 */
     --border-hover: 38 20% 76%;
-    --input: 38 27% 85%;
-    --ring: 215 75% 45%;
+    --input: 38 26% 85%;
+    --ring: 45 6% 12%;
 
     /* FUNCTIONAL */
     --success: 152 55% 32%;
