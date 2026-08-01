@@ -3,9 +3,9 @@ import { Reveal } from '@/components/Reveal';
 
 export function FeaturedCoaches() {
   return (
-    <section className="bg-background py-24 md:py-32 border-t border-border">
+    <section className="bg-background py-32 md:py-44 border-t border-border">
       <div className="container">
-        <div className="mb-12 md:mb-16">
+        <div className="mb-16 md:mb-20">
           <span className="label-eyebrow text-gold">Early access</span>
           <h2
             className="mt-4 font-display text-foreground tracking-tight"
