@@ -76,12 +76,37 @@ export function PublicNav() {
 
         <div className="hidden md:flex items-center gap-3">
           <LangSwitcher lang={lang} setLang={setLang} />
-          <Link to="/start">
-            <Button size="lg" className="h-11 px-6 tracking-[0.12em] font-display uppercase text-sm">
-              {t.nav_login}
-            </Button>
-          </Link>
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="flex items-center gap-2 border border-border px-3 h-11 rounded-sm hover:border-foreground-muted transition-colors"
+                  aria-label={displayName}
+                >
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground font-display text-xs">
+                    {initials}
+                  </span>
+                  <span className="font-display uppercase tracking-[0.1em] text-xs max-w-[10rem] truncate">
+                    {displayName}
+                  </span>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48 bg-popover">
+                <DropdownMenuItem onClick={() => navigate(homeFor)}>
+                  {t.account_title}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={logout}>{t.auth_logout}</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link to="/start">
+              <Button size="lg" className="h-11 px-6 tracking-[0.12em] font-display uppercase text-sm">
+                {t.nav_login}
+              </Button>
+            </Link>
+          )}
         </div>
+
 
         <div className="flex items-center gap-2 md:hidden">
           <LangSwitcher lang={lang} setLang={setLang} compact />
