@@ -9,10 +9,9 @@ export function ManifestoSection() {
 
 
   return (
-    <section className="bg-background py-28 md:py-40 border-t border-border">
+    <section className="bg-background py-32 md:py-48 border-t border-border">
       <div className="container max-w-5xl">
-        {/* Thin gold line above */}
-        <div className="h-px w-16 bg-navy mb-12" />
+        <div className="h-px w-16 bg-crest mb-14" />
 
         {/* Manifesto */}
         <Reveal>
@@ -25,30 +24,28 @@ export function ManifestoSection() {
           </h2>
 
           {/* Supporting paragraph */}
-          <p className="mt-10 max-w-2xl font-body text-base md:text-lg text-foreground-muted leading-relaxed">
-            Zenit connects athletes with verified coaches and clubs — wherever you train.
-            Whether you're just starting out or training to compete, your coach is here.
+          <p className="mt-12 max-w-2xl font-body text-base md:text-lg text-foreground-muted leading-relaxed">
+            Zenit connects athletes with verified coaches — wherever you train.
+            Starting out or chasing a podium, your coach is here.
           </p>
         </Reveal>
 
         {/* Founder note */}
         <Reveal delay={100}>
-          <div className="mt-16 max-w-2xl border-l border-border pl-6 md:pl-8">
+          <div className="mt-20 max-w-2xl border-l border-border pl-6 md:pl-8">
             <span className="label-eyebrow text-gold">Why we're building this</span>
-            <p className="mt-4 font-body text-base text-foreground-muted leading-relaxed">
+            <p className="mt-5 font-body text-base text-foreground-muted leading-relaxed">
               We spent years asking around for a decent coach — friends of friends,
-              half-dead forum threads, a phone number on a club noticeboard. Good
-              coaches were out there; there was just no honest way to find them.
-              So we're building the place we wish we'd had. We're just getting
-              started, and we'd rather grow slowly with people who care than pretend
-              we're bigger than we are.
+              dead forum threads, a number on a club noticeboard. Good coaches were
+              out there; there was no honest way to find them. So we're building the
+              place we wish we'd had, slowly, with people who care.
             </p>
           </div>
         </Reveal>
 
 
         {/* Stats */}
-        <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-0 border-t border-border pt-12">
+        <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-0 border-t border-border pt-16">
           {pillars.map((item, i) => (
             <Reveal
               key={i}
