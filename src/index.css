@@ -135,51 +135,56 @@
       transparent 1px 8px
     );
   }
-  /* Verified badge — gold text on transparent gold, gold border (WCAG safe) */
+  /* Verified badge — the ONLY place gold is used */
   .badge-verified {
     @apply inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider;
-    background: rgba(201, 162, 93, 0.12);
-    color: #C9A25D;
-    border: 0.5px solid #C9A25D;
+    background: rgba(212, 175, 55, 0.14);
+    color: #D4AF37;
+    border: 0.5px solid #D4AF37;
     border-radius: 2px;
   }
-  /* Discount badge — gold text, copper border for warm-detail feel */
+  /* Discount badge — crest red */
   .badge-discount {
     @apply inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider;
-    background: rgba(166, 90, 58, 0.12);
-    color: #C9A25D;
-    border: 0.5px solid #A65A3A;
+    background: rgba(200, 16, 46, 0.14);
+    color: #F26178;
+    border: 0.5px solid #C8102E;
     border-radius: 2px;
   }
 }
 
 @layer utilities {
-  /* Brand accent utilities */
-  .text-gold { color: #C9A25D; }
-  .text-copper { color: #A65A3A; }
-  .text-navy { color: #1C2740; }
-  .text-cream { color: #F3EEE3; }
+  /* Brand accent utilities — crest red is the single accent.
+     `gold` class names are kept for compatibility but now paint crest red;
+     true gold lives only in .badge-verified / .text-verified-gold. */
+  .text-gold, .text-crest { color: #E8425C; }
+  .text-copper { color: #E8425C; }
+  .text-navy { color: hsl(var(--background)); }
+  .text-cream { color: hsl(var(--foreground)); }
+  .text-verified-gold { color: #D4AF37; }
 
-  .bg-gold { background-color: #C9A25D; }
-  .bg-gold-subtle { background-color: rgba(201, 162, 93, 0.12); }
-  .bg-copper { background-color: #A65A3A; }
-  .bg-copper-subtle { background-color: rgba(166, 90, 58, 0.12); }
-  .bg-navy { background-color: #1C2740; }
-  .bg-navy-hover { background-color: #283A5C; }
-  .bg-navy-subtle { background-color: rgba(28, 39, 64, 0.4); }
+  .bg-gold, .bg-crest { background-color: #C8102E; }
+  .bg-gold-subtle, .bg-crest-subtle { background-color: rgba(200, 16, 46, 0.14); }
+  .bg-copper { background-color: #C8102E; }
+  .bg-copper-subtle { background-color: rgba(200, 16, 46, 0.14); }
+  .bg-navy { background-color: hsl(var(--background-secondary)); }
+  .bg-navy-hover { background-color: hsl(var(--background-tertiary)); }
+  .bg-navy-subtle { background-color: hsl(var(--background-secondary) / 0.5); }
 
-  .border-gold { border-color: #C9A25D; }
-  .border-copper { border-color: #A65A3A; }
-  .border-l-copper { border-left-color: #A65A3A; }
-  .border-navy { border-color: #1C2740; }
+  .border-gold, .border-crest { border-color: #C8102E; }
+  .border-copper { border-color: #C8102E; }
+  .border-l-copper { border-left-color: #C8102E; }
+  .border-navy { border-color: hsl(var(--border)); }
 
-  .fill-gold { fill: #C9A25D; }
+  .fill-gold { fill: #C8102E; }
+  .fill-verified-gold { fill: #D4AF37; }
 
-  .hover\:bg-navy:hover { background-color: #1C2740; }
-  .hover\:bg-navy-hover:hover { background-color: #283A5C; }
-  .hover\:text-gold:hover { color: #C9A25D; }
-  .hover\:border-gold:hover { border-color: #C9A25D; }
+  .hover\:bg-navy:hover { background-color: hsl(var(--background-secondary)); }
+  .hover\:bg-navy-hover:hover { background-color: hsl(var(--background-tertiary)); }
+  .hover\:text-gold:hover { color: #E8425C; }
+  .hover\:border-gold:hover { border-color: #C8102E; }
   .hover\:text-foreground:hover { color: hsl(var(--foreground)); }
+
 
   /* Cinematic image color grade — replaces flat grayscale.
      Slight contrast+saturation boost, subtle warm-highlight/cool-shadow lift. */
