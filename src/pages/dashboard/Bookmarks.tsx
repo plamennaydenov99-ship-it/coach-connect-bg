@@ -88,7 +88,7 @@ const Bookmarks = () => {
                 <div key={b.id} className="surface p-4 flex items-center gap-4">
                   <img
                     src={c?.profiles?.avatar_url || `https://i.pravatar.cc/100?u=${b.target_id}`}
-                    alt=""
+                    alt={`Profile photo of ${c?.profiles?.full_name || 'coach'}`}
                     className="h-14 w-14 object-cover"
                   />
                   <div className="flex-1 min-w-0">

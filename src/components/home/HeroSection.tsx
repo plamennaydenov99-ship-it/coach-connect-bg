@@ -10,8 +10,7 @@ export function HeroSection() {
       <img
         ref={bgRef}
         src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=2400&q=85"
-        alt=""
-        aria-hidden="true"
+        alt="A coach guiding an athlete through a one-on-one training session"
         className="absolute inset-0 h-full w-full object-cover grayscale will-change-transform"
       />
       {/* Dark gradient scrim — stronger for legibility over photo */}

@@ -98,7 +98,7 @@ const BookingRequests = () => {
               <div className="flex items-center gap-4 min-w-0">
                 <img
                   src={r.athlete?.avatar_url || `https://i.pravatar.cc/150?u=${r.athlete_id}`}
-                  alt=""
+                  alt={`Profile photo of ${r.athlete?.full_name || 'athlete'}`}
                   className="h-11 w-11 rounded-full object-cover shrink-0"
                 />
                 <div className="min-w-0">

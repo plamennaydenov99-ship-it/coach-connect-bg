@@ -147,7 +147,7 @@ const Messages = () => {
             >
               <img
                 src={c.other?.avatar_url || `https://i.pravatar.cc/150?u=${c.other?.id}`}
-                alt=""
+                alt={`Profile photo of ${c.other?.full_name || 'user'}`}
                 className="h-10 w-10 rounded-full object-cover shrink-0"
               />
               <div className="min-w-0 flex-1">
@@ -170,7 +170,7 @@ const Messages = () => {
               <div className="p-4 border-b border-border flex items-center gap-3">
                 <img
                   src={active.other?.avatar_url || `https://i.pravatar.cc/150?u=${active.other?.id}`}
-                  alt=""
+                  alt={`Profile photo of ${active.other?.full_name || 'user'}`}
                   className="h-9 w-9 rounded-full object-cover"
                 />
                 <p className="font-medium">{active.other?.full_name || 'User'}</p>
