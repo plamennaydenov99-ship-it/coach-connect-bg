@@ -9,7 +9,7 @@ const PILLARS = [
     sub: 'Browse verified coaches and clubs across 12 sports — wherever you train. Filter by location, level, and price. Message directly through the platform.',
     cta: 'Browse coaches',
     to: '/search',
-    image: 'https://images.unsplash.com/photo-1599058917765-a780eda07a3e?w=2400&q=85',
+    image: 'https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?w=2400&q=85',
     align: 'left' as const,
   },
   {

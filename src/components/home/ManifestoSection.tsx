@@ -31,6 +31,22 @@ export function ManifestoSection() {
           </p>
         </Reveal>
 
+        {/* Founder note */}
+        <Reveal delay={100}>
+          <div className="mt-16 max-w-2xl border-l border-border pl-6 md:pl-8">
+            <span className="label-eyebrow text-gold">Why we're building this</span>
+            <p className="mt-4 font-body text-base text-foreground-muted leading-relaxed">
+              I spent years asking around for a decent coach — friends of friends,
+              half-dead forum threads, a phone number on a club noticeboard. Good
+              coaches were out there; there was just no honest way to find them.
+              So we're building the place I wish I'd had. We're just getting
+              started, and we'd rather grow slowly with people who care than pretend
+              we're bigger than we are.
+            </p>
+          </div>
+        </Reveal>
+
+
         {/* Stats */}
         <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-0 border-t border-border pt-12">
           {pillars.map((item, i) => (

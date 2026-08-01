@@ -11,7 +11,7 @@ export function HeroSection() {
     <section className="relative w-full min-h-[70vh] flex items-center overflow-hidden bg-background">
       {/* Background image */}
       <img
-        src="https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=1600&q=80"
+        src="https://images.unsplash.com/photo-1594381898411-846e7d193883?w=1600&q=80"
         alt=""
         aria-hidden="true"
         className="absolute inset-0 h-full w-full object-cover opacity-[0.08] grayscale"
