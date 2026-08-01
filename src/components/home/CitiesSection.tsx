@@ -12,43 +12,36 @@ const CITIES = [
 
   {
     name: 'Sofia',
-    blurb: 'From city courts to the mountain trails on the doorstep.',
     image: 'https://images.unsplash.com/photo-1455529141151-d17aac90e709?fm=jpg&q=80&w=1600',
     alt: 'View over the rooftops of Sofia with mountains behind',
   },
   {
     name: 'Plovdiv',
-    blurb: 'An old city with a young, fast-growing training scene.',
     image: 'https://images.unsplash.com/photo-1729446952907-2a740280c116?fm=jpg&q=80&w=1600',
     alt: 'Street view of the historic old town of Plovdiv',
   },
   {
     name: 'Varna',
-    blurb: 'Sea-air mornings, beach sessions and year-round outdoor work.',
     image: 'https://images.unsplash.com/photo-1689217855532-af5f53acfd83?fm=jpg&q=80&w=1600',
     alt: 'Coastline and city view of Varna on the Black Sea',
   },
   {
     name: 'Paris',
-    blurb: 'Clubs, courts and coaches on every arrondissement corner.',
     image: 'https://images.unsplash.com/photo-1520078176967-f827b3a1a899?fm=jpg&q=80&w=1600',
     alt: 'Parisian rooftops and skyline in warm light',
   },
   {
     name: 'Amsterdam',
-    blurb: 'A city that trains outdoors in every kind of weather.',
     image: 'https://images.unsplash.com/photo-1536880756060-98a6a140f0a7?fm=jpg&q=80&w=1600',
     alt: 'Canal houses and bridges in Amsterdam',
   },
   {
     name: 'Rotterdam',
-    blurb: 'Modern facilities and a no-nonsense training culture.',
     image: 'https://images.unsplash.com/photo-1758195004300-7061d5138bae?fm=jpg&q=80&w=1600',
     alt: 'Modern architecture along the waterfront in Rotterdam',
   },
   {
     name: 'Berlin',
-    blurb: 'Park pitches, big clubs and coaches for every discipline.',
     image: 'https://images.unsplash.com/photo-1552553302-9211bf7f7053?fm=jpg&q=80&w=1600',
     alt: 'Berlin skyline with the television tower at dusk',
   },
