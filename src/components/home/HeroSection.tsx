@@ -50,8 +50,8 @@ export function HeroSection() {
 
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-6 right-6 md:right-10 hidden md:flex flex-col items-center gap-2 text-foreground-subtle">
-          <div className="h-10 w-px bg-foreground-subtle/60" />
+        <div className="absolute bottom-6 right-6 md:right-10 hidden md:flex flex-col items-center gap-2 text-on-photo/80">
+          <div className="h-10 w-px bg-[#F7F4EE]/50" />
           <span className="font-display uppercase tracking-[0.2em] text-[10px]">
             Scroll to explore
           </span>
