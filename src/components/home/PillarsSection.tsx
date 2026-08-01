@@ -9,9 +9,22 @@ const PILLARS = [
     sub: 'Multi-day training camps, tournaments and events around the world — book your spot on the platform.',
     cta: 'Explore camps',
     to: '/camps',
-    image: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=2400&q=85',
-    imageAlt: 'Runners training together outdoors at a sports camp',
+    image:
+      'https://images.pexels.com/photos/37926380/pexels-photo-37926380/free-photo-of-teen-soccer-player-dribbling-on-field.jpeg?auto=compress&cs=tinysrgb&w=2000',
+    imageAlt: 'Young footballer dribbling the ball across a sunlit pitch',
     align: 'right' as const,
+  },
+  {
+    id: 'studio',
+    eyebrow: 'Studio & strength',
+    headline: 'Pilates, mobility,\nrecovery.',
+    sub: 'Reformer pilates, strength and conditioning, rehab work — the training that keeps you in the game, with coaches who specialise in it.',
+    cta: 'Find a studio coach',
+    to: '/search',
+    image:
+      'https://images.unsplash.com/photo-1747238415033-b74eec07eb59?fm=jpg&q=80&w=2000',
+    imageAlt: 'Bright reformer pilates studio with warm natural light',
+    align: 'left' as const,
   },
 ];
 

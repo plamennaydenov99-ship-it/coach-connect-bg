@@ -1,79 +1,153 @@
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Reveal } from '@/components/Reveal';
 
 const CITIES = [
   {
-    name: 'Sofia',
-    blurb: 'Padel, tennis and football, from city courts to the mountain trails.',
-    image:
-      'https://images.unsplash.com/photo-1455529141151-d17aac90e709?fm=jpg&q=80&w=1600',
-    alt: 'View over the rooftops of Sofia with mountains behind',
-    position: 'center',
-  },
-  {
-    name: 'Nice',
-    blurb: 'Year-round outdoor training between the sea and the hills.',
-    image:
-      'https://images.unsplash.com/photo-1643914729809-4aa59fdc4c17?fm=jpg&q=80&w=1600',
-    alt: 'The seafront and bay of Nice on the French Riviera',
-    position: 'center',
-  },
-  {
     name: 'Monaco',
     blurb: 'A small city with a serious appetite for high-level sport.',
-    image:
-      'https://images.unsplash.com/photo-1570003550662-dfc736bf772d?fm=jpg&q=80&w=1600',
-    alt: 'The harbour and skyline of Monaco',
-    position: 'bottom',
+    image: 'https://images.unsplash.com/photo-1750346240894-3c6937cc5ab8?fm=jpg&q=80&w=1600',
+    alt: 'Casino de Monte-Carlo in Monaco with luxury cars parked outside',
+  },
+  {
+    name: 'Sofia',
+    blurb: 'From city courts to the mountain trails on the doorstep.',
+    image: 'https://images.unsplash.com/photo-1455529141151-d17aac90e709?fm=jpg&q=80&w=1600',
+    alt: 'View over the rooftops of Sofia with mountains behind',
+  },
+  {
+    name: 'Plovdiv',
+    blurb: 'An old city with a young, fast-growing training scene.',
+    image: 'https://images.unsplash.com/photo-1729446952907-2a740280c116?fm=jpg&q=80&w=1600',
+    alt: 'Street view of the historic old town of Plovdiv',
+  },
+  {
+    name: 'Varna',
+    blurb: 'Sea-air mornings, beach sessions and year-round outdoor work.',
+    image: 'https://images.unsplash.com/photo-1689217855532-af5f53acfd83?fm=jpg&q=80&w=1600',
+    alt: 'Coastline and city view of Varna on the Black Sea',
+  },
+  {
+    name: 'Paris',
+    blurb: 'Clubs, courts and coaches on every arrondissement corner.',
+    image: 'https://images.unsplash.com/photo-1520078176967-f827b3a1a899?fm=jpg&q=80&w=1600',
+    alt: 'Parisian rooftops and skyline in warm light',
+  },
+  {
+    name: 'Amsterdam',
+    blurb: 'A city that trains outdoors in every kind of weather.',
+    image: 'https://images.unsplash.com/photo-1536880756060-98a6a140f0a7?fm=jpg&q=80&w=1600',
+    alt: 'Canal houses and bridges in Amsterdam',
+  },
+  {
+    name: 'Rotterdam',
+    blurb: 'Modern facilities and a no-nonsense training culture.',
+    image: 'https://images.unsplash.com/photo-1758195004300-7061d5138bae?fm=jpg&q=80&w=1600',
+    alt: 'Modern architecture along the waterfront in Rotterdam',
+  },
+  {
+    name: 'Berlin',
+    blurb: 'Park pitches, big clubs and coaches for every discipline.',
+    image: 'https://images.unsplash.com/photo-1552553302-9211bf7f7053?fm=jpg&q=80&w=1600',
+    alt: 'Berlin skyline with the television tower at dusk',
   },
 ];
 
 export function CitiesSection() {
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  const scrollBy = (dir: 1 | -1) => {
+    const el = trackRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * Math.min(el.clientWidth * 0.8, 640), behavior: 'smooth' });
+  };
+
   return (
     <section className="bg-background py-32 md:py-44 border-t border-border">
       <div className="container">
-        <Reveal className="max-w-2xl">
-          <span className="label-eyebrow text-gold">Where we're starting</span>
-          <h2
-            className="mt-6 font-display text-foreground tracking-tight"
-            style={{ fontSize: 'clamp(32px, 4.5vw, 56px)', lineHeight: 1 }}
-          >
-            Find your coach,<br />by city.
-          </h2>
-          <p className="mt-8 font-body text-foreground-muted text-base md:text-lg leading-relaxed">
-            We're opening city by city, starting with three we know well.
-          </p>
-        </Reveal>
+        <Reveal className="flex flex-wrap items-end justify-between gap-8">
+          <div className="max-w-2xl">
+            <span className="label-eyebrow text-foreground-muted">Where we're starting</span>
+            <h2
+              className="mt-6 font-display text-foreground tracking-tight"
+              style={{ fontSize: 'clamp(32px, 4.5vw, 56px)', lineHeight: 1 }}
+            >
+              Find your coach,<br />by city.
+            </h2>
+            <p className="mt-8 font-body text-foreground-muted text-base md:text-lg leading-relaxed">
+              We're opening city by city. Scroll to see where we're onboarding coaches next.
+            </p>
+          </div>
 
-        <div className="mt-16 md:mt-20 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-          {CITIES.map((city, i) => (
-            <Reveal key={city.name} delay={i * 120}>
-              <Link
-                to={`/search?city=${encodeURIComponent(city.name)}`}
-                className="group block"
-              >
-                <div className="relative aspect-[4/5] overflow-hidden bg-background-secondary">
-                  <img
-                    src={city.image}
-                    alt={city.alt}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                    style={{ objectPosition: `center ${city.position}` }}
-                  />
-                </div>
-                <h3 className="mt-6 font-display text-foreground text-2xl md:text-3xl tracking-tight">
+          <div className="hidden md:flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => scrollBy(-1)}
+              aria-label="Scroll cities left"
+              className="h-11 w-11 border border-border text-foreground hover:border-foreground transition-colors flex items-center justify-center"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollBy(1)}
+              aria-label="Scroll cities right"
+              className="h-11 w-11 border border-border text-foreground hover:border-foreground transition-colors flex items-center justify-center"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </div>
+        </Reveal>
+      </div>
+
+      <div
+        ref={trackRef}
+        className="no-scrollbar mt-14 md:mt-20 flex gap-5 overflow-x-auto scroll-smooth snap-x snap-mandatory px-4 md:px-[max(1rem,calc((100vw-1400px)/2+1rem))] pb-2"
+      >
+        {CITIES.map((city) => (
+          <Link
+            key={city.name}
+            to={`/search?city=${encodeURIComponent(city.name)}`}
+            className="group relative shrink-0 snap-start w-[76vw] sm:w-[46vw] lg:w-[calc((100%-40px)/3)] max-w-[420px] aspect-[3/4] overflow-hidden bg-background-secondary"
+            aria-label={`Find a coach in ${city.name}`}
+          >
+            <img
+              src={city.image}
+              alt={city.alt}
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
+            />
+            {/* soft scrim so no text ever sits on a raw photo */}
+            <div className="absolute inset-x-0 bottom-0 h-3/5 scrim-photo pointer-events-none" />
+
+            {/* frosted glass panel */}
+            <div className="absolute inset-x-0 bottom-0 frosted-panel">
+              <div className="absolute inset-0 grain-overlay pointer-events-none" />
+              <div className="relative p-6 md:p-7">
+                <h3 className="font-display text-on-photo text-2xl md:text-3xl tracking-tight">
                   {city.name}
                 </h3>
-                <p className="mt-3 font-body text-foreground-muted leading-relaxed">
+                <p className="mt-2 font-body text-sm leading-relaxed text-on-photo/85">
                   {city.blurb}
                 </p>
-                <span className="mt-5 inline-flex font-display uppercase tracking-[0.15em] text-[11px] text-crest border-b border-crest pb-1">
-                  Now onboarding coaches →
+                <span className="mt-5 inline-flex items-center gap-2 font-display uppercase tracking-[0.15em] text-[11px] text-on-photo border-b border-[#F7F4EE]/60 pb-1">
+                  Find a coach
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                 </span>
-              </Link>
-            </Reveal>
-          ))}
-        </div>
+                <span className="mt-3 block font-display uppercase tracking-[0.15em] text-[10px] text-on-photo/85">
+                  Now onboarding coaches
+                </span>
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      <div className="container mt-6">
+        <span className="font-display uppercase tracking-[0.2em] text-[10px] text-foreground-subtle">
+          Scroll to see more →
+        </span>
       </div>
     </section>
   );
