@@ -35,10 +35,11 @@ function Pillar({
         alt={pillar.imageAlt}
         className="absolute inset-0 h-full w-full object-cover will-change-transform"
       />
-      <div className="absolute inset-0 bg-background/25" />
+      <div className="absolute inset-0 bg-background/20" />
       <div
-        className={`absolute inset-0 bg-gradient-to-${isRight ? 'l' : 'r'} from-background via-background/80 to-transparent`}
+        className={`absolute inset-0 bg-gradient-to-${isRight ? 'l' : 'r'} from-background via-background/92 to-transparent`}
       />
+
 
 
       <div className="relative z-10 h-full container flex items-center">
