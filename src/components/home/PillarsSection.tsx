@@ -3,21 +3,10 @@ import { Reveal, useParallax } from '@/components/Reveal';
 
 const PILLARS = [
   {
-    id: 'coaches',
-    eyebrow: 'Coaches & Clubs',
-    headline: 'Find your\nperfect coach.',
-    sub: 'Browse verified coaches and clubs across 12 sports — wherever you train. Filter by location, level, and price. Message directly through the platform.',
-    cta: 'Browse coaches',
-    to: '/search',
-    image: 'https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?w=2400&q=85',
-    imageAlt: 'Strength coach spotting an athlete during a gym workout',
-    align: 'left' as const,
-  },
-  {
     id: 'camps',
     eyebrow: 'Camps & Events',
     headline: 'Train further.\nCompete harder.',
-    sub: 'Discover multi-day training camps, tournaments, and sporting events across the globe. Book your spot directly on the platform.',
+    sub: 'Multi-day training camps, tournaments and events around the world — book your spot on the platform.',
     cta: 'Explore camps',
     to: '/camps',
     image: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=2400&q=85',
@@ -25,6 +14,7 @@ const PILLARS = [
     align: 'right' as const,
   },
 ];
+
 
 function Pillar({
   pillar,
