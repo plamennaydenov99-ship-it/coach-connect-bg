@@ -6,38 +6,31 @@ export function HeroSection() {
   const bgRef = useParallax<HTMLImageElement>(0.15);
   return (
     <section className="relative w-full h-[92vh] min-h-[640px] overflow-hidden bg-background">
-      {/* Background image — athlete in motion */}
+      {/* Background image — indoor padel courts */}
       <img
         ref={bgRef}
-        src="https://images.unsplash.com/photo-1604651685068-8223d8790770?fm=jpg&q=80&w=2400"
-        alt="A football coach giving one-on-one instruction to a young player on a sunny pitch"
-        className="absolute inset-0 h-full w-full object-cover object-left-center will-change-transform"
+        src="https://images.pexels.com/photos/38155778/pexels-photo-38155778/free-photo-of-indoor-padel-tennis-courts-with-blue-surface.jpeg?auto=compress&cs=tinysrgb&w=2400"
+        alt="Indoor padel courts with bright blue playing surface"
+        className="absolute inset-0 h-full w-full object-cover object-center will-change-transform"
       />
-      {/* Lighter gradient scrim — keeps headline legible without dulling the photo */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/55 to-background/15" />
-      <div
-        className="absolute inset-0 opacity-25"
-        style={{
-          backgroundImage:
-            'repeating-linear-gradient(45deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 14px)',
-        }}
-      />
+      {/* Light scrim only at the bottom-left, so the photo stays bright */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-background/85 via-background/25 to-transparent" />
 
       {/* Content — bottom left */}
-      <div className="relative z-10 h-full container flex flex-col justify-end pb-20 md:pb-28">
+      <div className="relative z-10 h-full container flex flex-col justify-end pb-24 md:pb-32">
         <Reveal className="max-w-3xl">
           <span className="label-eyebrow text-gold">
             Global · Verified coaches
           </span>
 
           <h1
-            className="mt-6 font-display text-foreground tracking-tight"
+            className="mt-8 font-display text-foreground tracking-tight"
             style={{ fontSize: 'clamp(44px, 7.5vw, 96px)', lineHeight: 0.92 }}
           >
             Built for those who<br />take sport seriously.
           </h1>
 
-          <div className="mt-10 flex flex-wrap items-center gap-3">
+          <div className="mt-12 flex flex-wrap items-center gap-3">
             <Link to="/search">
               <Button size="lg" className="tracking-[0.12em] h-12 px-7">
                 Find a Coach
