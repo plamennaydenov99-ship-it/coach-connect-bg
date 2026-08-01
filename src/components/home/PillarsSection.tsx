@@ -37,8 +37,13 @@ function Pillar({
       />
       <div className="absolute inset-0 bg-background/20" />
       <div
-        className={`absolute inset-0 bg-gradient-to-${isRight ? 'l' : 'r'} from-background via-background/92 to-transparent`}
+        className={
+          isRight
+            ? 'absolute inset-0 bg-gradient-to-l from-background via-background/92 to-transparent'
+            : 'absolute inset-0 bg-gradient-to-r from-background via-background/92 to-transparent'
+        }
       />
+
 
 
 
