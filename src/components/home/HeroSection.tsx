@@ -19,11 +19,8 @@ export function HeroSection() {
       {/* Content — bottom left */}
       <div className="relative z-10 h-full container flex flex-col justify-end pb-24 md:pb-32">
         <Reveal className="max-w-3xl">
-          <span className="label-eyebrow text-on-photo/80">
-            Global · Verified coaches
-          </span>
-
           <h1
+
             className="mt-8 font-display text-on-photo tracking-tight"
             style={{ fontSize: 'clamp(44px, 7.5vw, 96px)', lineHeight: 0.92 }}
           >

@@ -5,50 +5,43 @@ import { Reveal } from '@/components/Reveal';
 
 const CITIES = [
   {
-    name: 'Monaco',
-    blurb: 'A small city with a serious appetite for high-level sport.',
-    image: 'https://images.unsplash.com/photo-1750346240894-3c6937cc5ab8?fm=jpg&q=80&w=1600',
-    alt: 'Casino de Monte-Carlo in Monaco with luxury cars parked outside',
+    name: 'French Riviera',
+    image: 'https://images.unsplash.com/photo-1775029828803-38733896e59a?fm=jpg&q=80&w=1600',
+    alt: 'Saint-Tropez harbour with pastel waterfront buildings and yachts in golden light',
   },
+
   {
     name: 'Sofia',
-    blurb: 'From city courts to the mountain trails on the doorstep.',
     image: 'https://images.unsplash.com/photo-1455529141151-d17aac90e709?fm=jpg&q=80&w=1600',
     alt: 'View over the rooftops of Sofia with mountains behind',
   },
   {
     name: 'Plovdiv',
-    blurb: 'An old city with a young, fast-growing training scene.',
     image: 'https://images.unsplash.com/photo-1729446952907-2a740280c116?fm=jpg&q=80&w=1600',
     alt: 'Street view of the historic old town of Plovdiv',
   },
   {
     name: 'Varna',
-    blurb: 'Sea-air mornings, beach sessions and year-round outdoor work.',
     image: 'https://images.unsplash.com/photo-1689217855532-af5f53acfd83?fm=jpg&q=80&w=1600',
     alt: 'Coastline and city view of Varna on the Black Sea',
   },
   {
     name: 'Paris',
-    blurb: 'Clubs, courts and coaches on every arrondissement corner.',
     image: 'https://images.unsplash.com/photo-1520078176967-f827b3a1a899?fm=jpg&q=80&w=1600',
     alt: 'Parisian rooftops and skyline in warm light',
   },
   {
     name: 'Amsterdam',
-    blurb: 'A city that trains outdoors in every kind of weather.',
     image: 'https://images.unsplash.com/photo-1536880756060-98a6a140f0a7?fm=jpg&q=80&w=1600',
     alt: 'Canal houses and bridges in Amsterdam',
   },
   {
     name: 'Rotterdam',
-    blurb: 'Modern facilities and a no-nonsense training culture.',
     image: 'https://images.unsplash.com/photo-1758195004300-7061d5138bae?fm=jpg&q=80&w=1600',
     alt: 'Modern architecture along the waterfront in Rotterdam',
   },
   {
     name: 'Berlin',
-    blurb: 'Park pitches, big clubs and coaches for every discipline.',
     image: 'https://images.unsplash.com/photo-1552553302-9211bf7f7053?fm=jpg&q=80&w=1600',
     alt: 'Berlin skyline with the television tower at dusk',
   },
@@ -119,27 +112,27 @@ export function CitiesSection() {
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
             />
             {/* soft scrim so no text ever sits on a raw photo */}
-            <div className="absolute inset-x-0 bottom-0 h-3/5 scrim-photo pointer-events-none" />
+            <div className="absolute inset-x-0 bottom-0 h-1/2 scrim-photo pointer-events-none" />
 
-            {/* frosted glass panel */}
-            <div className="absolute inset-x-0 bottom-0 frosted-panel">
-              <div className="absolute inset-0 grain-overlay pointer-events-none" />
-              <div className="relative p-6 md:p-7">
-                <h3 className="font-display text-on-photo text-2xl md:text-3xl tracking-tight">
+            <div className="absolute inset-x-0 bottom-0 p-6 md:p-7 flex items-end justify-between gap-4">
+              <div>
+                <h3 className="font-display text-on-photo text-2xl md:text-3xl tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.55)]">
                   {city.name}
                 </h3>
-                <p className="mt-2 font-body text-sm leading-relaxed text-on-photo/85">
-                  {city.blurb}
-                </p>
-                <span className="mt-5 inline-flex items-center gap-2 font-display uppercase tracking-[0.15em] text-[11px] text-on-photo border-b border-[#F7F4EE]/60 pb-1">
-                  Find a coach
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-                </span>
-                <span className="mt-3 block font-display uppercase tracking-[0.15em] text-[10px] text-on-photo/85">
+                <span className="mt-2 block font-display uppercase tracking-[0.15em] text-[10px] text-on-photo/90 drop-shadow-[0_2px_6px_rgba(0,0,0,0.55)]">
                   Now onboarding coaches
                 </span>
               </div>
+
+              {/* small glass bubble action */}
+              <span className="glass-bubble shrink-0 h-14 w-14 md:h-16 md:w-16 flex flex-col items-center justify-center text-on-photo transition-transform duration-300 group-hover:scale-105">
+                <ArrowRight className="h-4 w-4 md:h-5 md:w-5" />
+                <span className="mt-0.5 font-display uppercase tracking-[0.1em] text-[7px] md:text-[8px] leading-none">
+                  Find a coach
+                </span>
+              </span>
             </div>
+
           </Link>
         ))}
       </div>
