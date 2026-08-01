@@ -24,13 +24,14 @@ export function ClosingCTA() {
           className="mt-6 font-display text-foreground tracking-tight"
           style={{ fontSize: 'clamp(36px, 5.5vw, 68px)', lineHeight: 1 }}
         >
-          Not everyone trains<br />with the best.
+          Every athlete has<br />a next level.
         </h2>
 
         <p className="mt-8 font-body text-foreground-muted text-base md:text-lg leading-relaxed max-w-xl mx-auto">
-          Zenit is for athletes who refuse to plateau.
-          Find your coach. Raise your level.
+          Find the coach who gets you there. Whatever your sport, whatever your
+          starting point — there's a next step, and someone to help you take it.
         </p>
+
 
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
           <Link to="/search">
