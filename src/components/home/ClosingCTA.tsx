@@ -25,7 +25,7 @@ export function ClosingCTA() {
 
 
 
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+        <div className="mt-14 flex flex-wrap items-center justify-center gap-3">
           <Link to="/search">
             <Button size="lg" className="tracking-[0.12em] h-12 px-7">
               Find Your Coach
