@@ -33,12 +33,13 @@ function Pillar({
         ref={bgRef}
         src={pillar.image}
         alt={pillar.imageAlt}
-        className="absolute inset-0 h-full w-full object-cover grayscale will-change-transform"
+        className="absolute inset-0 h-full w-full object-cover will-change-transform"
       />
-      <div className="absolute inset-0 bg-background/55" />
+      <div className="absolute inset-0 bg-background/25" />
       <div
-        className={`absolute inset-0 bg-gradient-to-${isRight ? 'l' : 'r'} from-background via-background/85 to-background/40`}
+        className={`absolute inset-0 bg-gradient-to-${isRight ? 'l' : 'r'} from-background via-background/80 to-transparent`}
       />
+
 
       <div className="relative z-10 h-full container flex items-center">
         <Reveal className={`max-w-xl ${isRight ? 'ml-auto text-right' : ''}`}>
