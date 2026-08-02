@@ -114,24 +114,22 @@ export function CitiesSection() {
             {/* soft scrim so no text ever sits on a raw photo */}
             <div className="absolute inset-x-0 bottom-0 h-1/2 scrim-photo pointer-events-none" />
 
-            <div className="absolute inset-x-0 bottom-0 p-6 md:p-7 flex items-end justify-between gap-4">
-              <div>
-                <h3 className="font-display text-on-photo text-2xl md:text-3xl tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.55)]">
+            <div className="absolute inset-x-0 bottom-0 p-6 md:p-7">
+              <span className="glass-bubble inline-flex items-center gap-2 px-5 py-3 text-on-photo">
+                <span className="font-display uppercase tracking-[0.1em] text-base md:text-lg leading-none">
                   {city.name}
-                </h3>
-                <span className="mt-2 block font-display uppercase tracking-[0.15em] text-[10px] text-on-photo/90 drop-shadow-[0_2px_6px_rgba(0,0,0,0.55)]">
-                  Now onboarding coaches
                 </span>
-              </div>
-
-              {/* small glass bubble action */}
-              <span className="glass-bubble shrink-0 h-14 w-14 md:h-16 md:w-16 flex flex-col items-center justify-center text-on-photo transition-transform duration-300 group-hover:scale-105">
-                <ArrowRight className="h-4 w-4 md:h-5 md:w-5" />
-                <span className="mt-0.5 font-display uppercase tracking-[0.1em] text-[7px] md:text-[8px] leading-none">
-                  Find a coach
+                <span className="grid grid-cols-[0fr] group-hover:grid-cols-[1fr] group-focus-visible:grid-cols-[1fr] transition-[grid-template-columns] duration-300 ease-out">
+                  <span className="overflow-hidden">
+                    <span className="flex items-center gap-1.5 whitespace-nowrap pl-2 font-display uppercase tracking-[0.1em] text-[11px] leading-none opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-200">
+                      Find a Coach
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </span>
+                  </span>
                 </span>
               </span>
             </div>
+
 
           </Link>
         ))}
