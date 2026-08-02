@@ -35,7 +35,7 @@ export function ClosingCTA() {
             <Button
               variant="outline"
               size="lg"
-              className="tracking-[0.12em] h-12 px-7 border-foreground-subtle text-foreground hover:border-gold hover:text-foreground"
+              className="tracking-[0.12em] h-12 px-7"
             >
               I'm a Coach →
             </Button>
