@@ -80,7 +80,7 @@ export function PublicNav() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
-                  className="flex items-center gap-2 border border-border px-3 h-11 rounded-sm hover:border-foreground-muted transition-colors"
+                  className="glass-clear flex items-center gap-2 px-3 h-11 rounded-full transition-all"
                   aria-label={displayName}
                 >
                   <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground font-display text-xs">
