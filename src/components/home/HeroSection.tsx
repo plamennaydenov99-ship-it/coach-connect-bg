@@ -29,15 +29,15 @@ export function HeroSection() {
 
           <div className="mt-12 flex flex-wrap items-center gap-3">
             <Link to="/search">
-              <Button size="lg" className="tracking-[0.12em] h-12 px-7">
+              <Button variant="glass" size="lg" className="tracking-[0.12em] h-12 px-7">
                 Find a Coach
               </Button>
             </Link>
             <Link to="/dashboard">
               <Button
-                variant="outline"
+                variant="glass"
                 size="lg"
-                className="tracking-[0.12em] h-12 px-7 bg-transparent border-[#F7F4EE]/70 text-on-photo hover:bg-[#F7F4EE]/10 hover:text-on-photo"
+                className="tracking-[0.12em] h-12 px-7"
               >
                 List Your Profile →
               </Button>
