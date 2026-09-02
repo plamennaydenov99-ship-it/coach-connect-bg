@@ -124,7 +124,7 @@ export function CitiesSection() {
                 <span className="grid grid-cols-[0fr] group-hover:grid-cols-[1fr] group-focus-visible:grid-cols-[1fr] transition-[grid-template-columns] duration-300 ease-out">
                   <span className="overflow-hidden">
                     <span className="flex items-center gap-1.5 whitespace-nowrap pl-2 font-display uppercase tracking-[0.1em] text-[11px] leading-none opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-200">
-                      Find a Coach
+                      {t.cities_find_coach}
                       <ArrowRight className="h-3.5 w-3.5" />
                     </span>
                   </span>
@@ -139,7 +139,7 @@ export function CitiesSection() {
 
       <div className="container mt-6">
         <span className="font-display uppercase tracking-[0.2em] text-[10px] text-foreground-subtle">
-          Scroll to see more →
+          {t.cities_scroll_more} →
         </span>
       </div>
     </section>
