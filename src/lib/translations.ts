@@ -1291,8 +1291,6 @@ export const t = {
     cart_checkout_soon: 'Le paiement arrive bientôt.',
     cart_qty: 'Qté',
     cart_aria: 'Panier',
-  },
-
     // Dashboard pages (Tier B)
     dashhome_loading: 'Chargement de votre tableau de bord…',
     dashhome_welcome: 'Bon retour',
@@ -1502,6 +1500,7 @@ export const t = {
     dashbookmarks_remove_aria: 'Retirer des favoris',
     dashbookmarks_removed: 'Retiré',
     dashbookmarks_empty: 'Enregistrez des coachs et des événements pour les retrouver ici.',
+  },
 
 } as const;
 
