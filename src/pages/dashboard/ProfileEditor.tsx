@@ -11,10 +11,12 @@ import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '@/context/LanguageContext';
 
 const ProfileEditor = () => {
   const { user, profile, loading, refreshProfile } = useAuth();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const [saving, setSaving] = useState(false);
   const [fullName, setFullName] = useState('');
@@ -113,12 +115,12 @@ const ProfileEditor = () => {
     }
 
     await refreshProfile();
-    toast.success('Profile saved.');
+    toast.success(t.profileed_saved_toast);
     setSaving(false);
   };
 
   if (loading || !profile) {
-    return <div className="text-muted-foreground p-6">Loading…</div>;
+    return <div className="text-muted-foreground p-6">{t.profileed_loading}</div>;
   }
 
   const addSpec = () => {
@@ -138,8 +140,8 @@ const ProfileEditor = () => {
   return (
     <div className="max-w-4xl space-y-6">
       <div>
-        <h1 className="font-display text-3xl">My profile</h1>
-        <p className="text-muted-foreground mt-1 capitalize">Role: {profile.role}</p>
+        <h1 className="font-display text-3xl">{t.profileed_title}</h1>
+        <p className="text-muted-foreground mt-1 capitalize">{t.profileed_role}: {profile.role}</p>
       </div>
 
       {(profile.role === 'coach' || profile.role === 'club') && (
@@ -148,9 +150,9 @@ const ProfileEditor = () => {
             <>
               <BadgeCheck className="h-5 w-5 text-gold mt-0.5" />
               <div>
-                <p className="font-semibold">Verified</p>
+                <p className="font-semibold">{t.profileed_verified}</p>
                 <p className="text-sm text-muted-foreground">
-                  Your profile is verified and visible to athletes.
+                  {t.profileed_verified_sub}
                 </p>
               </div>
             </>
@@ -158,9 +160,9 @@ const ProfileEditor = () => {
             <>
               <ShieldAlert className="h-5 w-5 text-gold mt-0.5" />
               <div>
-                <p className="font-semibold">Pending verification</p>
+                <p className="font-semibold">{t.profileed_pending}</p>
                 <p className="text-sm text-muted-foreground">
-                  Your profile is not yet visible to athletes. Our team will review your account and mark you verified.
+                  {t.profileed_pending_sub}
                 </p>
               </div>
             </>
@@ -169,18 +171,18 @@ const ProfileEditor = () => {
       )}
 
       <section className="surface p-6 space-y-4">
-        <h2 className="font-display text-xl">Basic info</h2>
+        <h2 className="font-display text-xl">{t.profileed_basic_info}</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="grid gap-2">
-            <Label htmlFor="name">{profile.role === 'club' ? 'Contact name' : 'Full name'}</Label>
+            <Label htmlFor="name">{profile.role === 'club' ? t.profileed_contact_name : t.profileed_full_name}</Label>
             <Input id="name" value={fullName} onChange={e => setFullName(e.target.value)} />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="city">City</Label>
-            <Input id="city" value={city} onChange={e => setCity(e.target.value)} placeholder="e.g. Paris, Sofia, London" />
+            <Label htmlFor="city">{t.profileed_city}</Label>
+            <Input id="city" value={city} onChange={e => setCity(e.target.value)} placeholder={t.profileed_city_ph} />
           </div>
           <div className="grid gap-2 sm:col-span-2">
-            <Label htmlFor="avatar">Avatar URL</Label>
+            <Label htmlFor="avatar">{t.profileed_avatar}</Label>
             <Input id="avatar" value={avatarUrl} onChange={e => setAvatarUrl(e.target.value)} placeholder="https://…" />
           </div>
         </div>
@@ -189,29 +191,29 @@ const ProfileEditor = () => {
       {profile.role === 'coach' && (
         <>
           <section className="surface p-6 space-y-4">
-            <h2 className="font-display text-xl">Coaching details</h2>
+            <h2 className="font-display text-xl">{t.profileed_coaching_details}</h2>
             <div className="grid gap-2">
-              <Label htmlFor="bio">Bio</Label>
+              <Label htmlFor="bio">{t.profileed_bio}</Label>
               <Textarea id="bio" rows={5} value={bio} onChange={e => setBio(e.target.value)} />
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="grid gap-2">
-                <Label>Sport</Label>
+                <Label>{t.profileed_sport}</Label>
                 <select className="h-10 rounded-md border border-input bg-background px-3 text-sm"
                   value={sport} onChange={e => setSport(e.target.value)}>
-                  <option value="">Select a sport</option>
+                  <option value="">{t.profileed_select_sport}</option>
                   {SPORTS.map(s => <option key={s.slug} value={s.slug}>{s.label}</option>)}
                 </select>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="years">Years of experience</Label>
+                <Label htmlFor="years">{t.profileed_years}</Label>
                 <Input id="years" type="number" min={0} value={yearsExperience}
                   onChange={e => setYearsExperience(Number(e.target.value))} />
               </div>
             </div>
 
             <div>
-              <Label className="mb-2 block">Specialisms</Label>
+              <Label className="mb-2 block">{t.profileed_specialisms}</Label>
               <div className="flex flex-wrap gap-2 mb-3">
                 {specialisms.map((s, i) => (
                   <span key={i} className="px-3 py-1.5 rounded-md bg-secondary text-sm flex items-center gap-2">
@@ -222,13 +224,13 @@ const ProfileEditor = () => {
                 ))}
               </div>
               <div className="flex gap-2">
-                <Input value={newSpec} onChange={e => setNewSpec(e.target.value)} placeholder="Add a specialism" />
+                <Input value={newSpec} onChange={e => setNewSpec(e.target.value)} placeholder={t.profileed_add_specialism} />
                 <Button type="button" variant="outline" onClick={addSpec}><Plus className="h-4 w-4" /></Button>
               </div>
             </div>
 
             <div>
-              <Label className="mb-2 block">Certifications</Label>
+              <Label className="mb-2 block">{t.profileed_certifications}</Label>
               <div className="flex flex-wrap gap-2 mb-3">
                 {certifications.map((c, i) => (
                   <span key={i} className="px-3 py-1.5 rounded-md bg-secondary text-sm flex items-center gap-2">
@@ -241,23 +243,23 @@ const ProfileEditor = () => {
               <div className="flex gap-2">
                 <Input value={newCert} onChange={e => setNewCert(e.target.value)}
                   onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCert(); } }}
-                  placeholder='e.g. "UEFA B License"' />
+                  placeholder={t.profileed_cert_ph} />
                 <Button type="button" variant="outline" onClick={addCert}><Plus className="h-4 w-4" /></Button>
               </div>
             </div>
           </section>
 
           <section className="surface p-6 space-y-4">
-            <h2 className="font-display text-xl">Pricing</h2>
+            <h2 className="font-display text-xl">{t.profileed_pricing}</h2>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="grid gap-2">
-                <Label htmlFor="price">Price per session (€)</Label>
+                <Label htmlFor="price">{t.profileed_price_session}</Label>
                 <Input id="price" type="number" value={pricePerSession}
                   onChange={e => setPricePerSession(Number(e.target.value))} />
               </div>
               <div className="surface-2 p-4">
                 <div className="flex items-center justify-between mb-3">
-                  <Label htmlFor="discount-toggle" className="text-sm font-medium">Platform discount</Label>
+                  <Label htmlFor="discount-toggle" className="text-sm font-medium">{t.profileed_platform_discount}</Label>
                   <Switch id="discount-toggle" checked={discountOn} onCheckedChange={setDiscountOn} />
                 </div>
                 {discountOn && (
@@ -276,25 +278,25 @@ const ProfileEditor = () => {
 
       {profile.role === 'club' && (
         <section className="surface p-6 space-y-4">
-          <h2 className="font-display text-xl">Club details</h2>
+          <h2 className="font-display text-xl">{t.profileed_club_details}</h2>
           <div className="grid gap-2">
-            <Label htmlFor="cn">Club name</Label>
+            <Label htmlFor="cn">{t.profileed_club_name}</Label>
             <Input id="cn" value={clubName} onChange={e => setClubName(e.target.value)} />
           </div>
           <div className="grid gap-2">
-            <Label>Primary sport</Label>
+            <Label>{t.profileed_primary_sport}</Label>
             <select className="h-10 rounded-md border border-input bg-background px-3 text-sm"
               value={sport} onChange={e => setSport(e.target.value)}>
-              <option value="">Select a sport</option>
+              <option value="">{t.profileed_select_sport}</option>
               {SPORTS.map(s => <option key={s.slug} value={s.slug}>{s.label}</option>)}
             </select>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="about">About</Label>
+            <Label htmlFor="about">{t.profileed_about}</Label>
             <Textarea id="about" rows={5} value={clubAbout} onChange={e => setClubAbout(e.target.value)} />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="hours">Opening hours</Label>
+            <Label htmlFor="hours">{t.profileed_hours}</Label>
             <Textarea id="hours" rows={4} value={clubHours} onChange={e => setClubHours(e.target.value)}
               placeholder={'Mon–Fri: 07:00–22:00\nSat–Sun: 09:00–18:00'} />
           </div>
@@ -303,7 +305,7 @@ const ProfileEditor = () => {
 
       <div className="flex justify-end">
         <Button size="lg" onClick={save} disabled={saving}>
-          {saving ? 'Saving…' : 'Save changes'}
+          {saving ? t.profileed_saving : t.profileed_save}
         </Button>
       </div>
     </div>
