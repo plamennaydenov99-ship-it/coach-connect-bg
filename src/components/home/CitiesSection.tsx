@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Reveal } from '@/components/Reveal';
+import { useLanguage } from '@/context/LanguageContext';
 
 const CITIES = [
   {
@@ -49,6 +50,7 @@ const CITIES = [
 
 export function CitiesSection() {
   const trackRef = useRef<HTMLDivElement>(null);
+  const { t } = useLanguage();
 
   const scrollBy = (dir: 1 | -1) => {
     const el = trackRef.current;
@@ -61,15 +63,15 @@ export function CitiesSection() {
       <div className="container">
         <Reveal className="flex flex-wrap items-end justify-between gap-8">
           <div className="max-w-2xl">
-            <span className="label-eyebrow text-foreground-muted">Where we're starting</span>
+            <span className="label-eyebrow text-foreground-muted">{t.cities_eyebrow}</span>
             <h2
               className="mt-6 font-display text-foreground tracking-tight"
               style={{ fontSize: 'clamp(32px, 4.5vw, 56px)', lineHeight: 1 }}
             >
-              Find your coach,<br />by city.
+              {t.cities_heading_a}<br />{t.cities_heading_b}
             </h2>
             <p className="mt-8 font-body text-foreground-muted text-base md:text-lg leading-relaxed">
-              We're opening city by city. Scroll to see where we're onboarding coaches next.
+              {t.cities_sub}
             </p>
           </div>
 
@@ -77,7 +79,7 @@ export function CitiesSection() {
             <button
               type="button"
               onClick={() => scrollBy(-1)}
-              aria-label="Scroll cities left"
+              aria-label={t.cities_prev_aria}
               className="h-11 w-11 border border-border text-foreground hover:border-foreground transition-colors flex items-center justify-center"
             >
               <ChevronLeft className="h-5 w-5" />
@@ -85,7 +87,7 @@ export function CitiesSection() {
             <button
               type="button"
               onClick={() => scrollBy(1)}
-              aria-label="Scroll cities right"
+              aria-label={t.cities_next_aria}
               className="h-11 w-11 border border-border text-foreground hover:border-foreground transition-colors flex items-center justify-center"
             >
               <ChevronRight className="h-5 w-5" />
@@ -103,7 +105,7 @@ export function CitiesSection() {
             key={city.name}
             to={`/search?city=${encodeURIComponent(city.name)}`}
             className="group relative shrink-0 snap-start w-[76vw] sm:w-[46vw] lg:w-[calc((100%-40px)/3)] max-w-[420px] aspect-[3/4] overflow-hidden bg-background-secondary"
-            aria-label={`Find a coach in ${city.name}`}
+            aria-label={`${t.cities_card_aria} ${city.name}`}
           >
             <img
               src={city.image}
@@ -122,7 +124,7 @@ export function CitiesSection() {
                 <span className="grid grid-cols-[0fr] group-hover:grid-cols-[1fr] group-focus-visible:grid-cols-[1fr] transition-[grid-template-columns] duration-300 ease-out">
                   <span className="overflow-hidden">
                     <span className="flex items-center gap-1.5 whitespace-nowrap pl-2 font-display uppercase tracking-[0.1em] text-[11px] leading-none opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-200">
-                      Find a Coach
+                      {t.cities_find_coach}
                       <ArrowRight className="h-3.5 w-3.5" />
                     </span>
                   </span>
@@ -137,7 +139,7 @@ export function CitiesSection() {
 
       <div className="container mt-6">
         <span className="font-display uppercase tracking-[0.2em] text-[10px] text-foreground-subtle">
-          Scroll to see more →
+          {t.cities_scroll_more} →
         </span>
       </div>
     </section>

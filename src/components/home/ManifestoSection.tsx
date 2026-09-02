@@ -1,10 +1,12 @@
 import { Reveal } from '@/components/Reveal';
+import { useLanguage } from '@/context/LanguageContext';
 
 export function ManifestoSection() {
+  const { t } = useLanguage();
   const pillars = [
-    { title: 'Now onboarding', label: 'Coaches across 12 sports' },
-    { title: 'Verified only', label: 'Every coach checked before listing' },
-    { title: 'Wherever you train', label: 'Built for athletes everywhere' },
+    { title: t.manifesto_pillar1_title, label: t.manifesto_pillar1_label },
+    { title: t.manifesto_pillar2_title, label: t.manifesto_pillar2_label },
+    { title: t.manifesto_pillar3_title, label: t.manifesto_pillar3_label },
   ];
 
 
@@ -19,26 +21,22 @@ export function ManifestoSection() {
             className="font-display text-foreground tracking-tight"
             style={{ fontSize: 'clamp(36px, 5.5vw, 68px)', lineHeight: 1.02 }}
           >
-            Every athlete deserves<br />a great coach.<br />
-            <span className="text-foreground-muted">Now they can find one.</span>
+            {t.manifesto_heading_a}<br />{t.manifesto_heading_b}<br />
+            <span className="text-foreground-muted">{t.manifesto_heading_c}</span>
           </h2>
 
           {/* Supporting paragraph */}
           <p className="mt-12 max-w-2xl font-body text-base md:text-lg text-foreground-muted leading-relaxed">
-            Zenit connects athletes with verified coaches — wherever you train.
-            Starting out or chasing a podium, your coach is here.
+            {t.manifesto_sub}
           </p>
         </Reveal>
 
         {/* Founder note */}
         <Reveal delay={100}>
           <div className="mt-20 max-w-2xl border-l border-border pl-6 md:pl-8">
-            <span className="label-eyebrow text-gold">Why we're building this</span>
+            <span className="label-eyebrow text-gold">{t.manifesto_founder_eyebrow}</span>
             <p className="mt-5 font-body text-base text-foreground-muted leading-relaxed">
-              We spent years asking around for a decent coach — friends of friends,
-              dead forum threads, a number on a club noticeboard. Good coaches were
-              out there; there was no honest way to find them. So we're building the
-              place we wish we'd had, slowly, with people who care.
+              {t.manifesto_founder_note}
             </p>
           </div>
         </Reveal>

@@ -1,13 +1,15 @@
-const ITEMS = [
-  { title: 'Find Your Coach', body: 'Match with certified professionals' },
-  { title: 'Find Your Club', body: 'Discover clubs near you' },
-  { title: 'Events Near You', body: 'Marathons, tournaments, camps' },
-  { title: 'Connect With Athletes', body: 'Build your sports network' },
-  { title: 'Exclusive Discounts', body: 'Members-only deals on gear' },
-  { title: 'Elevate Your Game', body: 'Track progress, level up' },
-];
+import { useLanguage } from '@/context/LanguageContext';
 
 export function FeatureTicker() {
+  const { t } = useLanguage();
+  const ITEMS = [
+    { title: t.ticker_1_title, body: t.ticker_1_body },
+    { title: t.ticker_2_title, body: t.ticker_2_body },
+    { title: t.ticker_3_title, body: t.ticker_3_body },
+    { title: t.ticker_4_title, body: t.ticker_4_body },
+    { title: t.ticker_5_title, body: t.ticker_5_body },
+    { title: t.ticker_6_title, body: t.ticker_6_body },
+  ];
   const loop = [...ITEMS, ...ITEMS];
   return (
     <section className="border-y border-border bg-background py-6 overflow-hidden pause-on-hover">
