@@ -1,29 +1,42 @@
 import { Link } from 'react-router-dom';
 import { Reveal, useParallax } from '@/components/Reveal';
+import { useLanguage, type TranslationKey } from '@/context/LanguageContext';
 
-const PILLARS = [
+interface PillarDef {
+  id: string;
+  eyebrow: TranslationKey;
+  headline: TranslationKey;
+  sub: TranslationKey;
+  cta: TranslationKey;
+  to: string;
+  image: string;
+  imageAlt: TranslationKey;
+  align: 'left' | 'right';
+}
+
+const PILLARS: PillarDef[] = [
   {
     id: 'camps',
-    eyebrow: 'Camps & Events',
-    headline: 'Train further.\nCompete harder.',
-    sub: 'Multi-day training camps, tournaments and events around the world — book your spot on the platform.',
-    cta: 'Explore camps',
+    eyebrow: 'pillars_camps_eyebrow',
+    headline: 'pillars_camps_headline',
+    sub: 'pillars_camps_sub',
+    cta: 'pillars_camps_cta',
     to: '/camps',
     image:
       'https://images.pexels.com/photos/37926380/pexels-photo-37926380/free-photo-of-teen-soccer-player-dribbling-on-field.jpeg?auto=compress&cs=tinysrgb&w=2000',
-    imageAlt: 'Young footballer dribbling the ball across a sunlit pitch',
+    imageAlt: 'pillars_camps_alt',
     align: 'right' as const,
   },
   {
     id: 'studio',
-    eyebrow: 'Studio & strength',
-    headline: 'Pilates, mobility,\nrecovery.',
-    sub: 'Reformer pilates, strength and conditioning, rehab work — the training that keeps you in the game, with coaches who specialise in it.',
-    cta: 'Find a studio coach',
+    eyebrow: 'pillars_studio_eyebrow',
+    headline: 'pillars_studio_headline',
+    sub: 'pillars_studio_sub',
+    cta: 'pillars_studio_cta',
     to: '/search',
     image:
       'https://images.unsplash.com/photo-1747238415033-b74eec07eb59?fm=jpg&q=80&w=2000',
-    imageAlt: 'Bright reformer pilates studio with warm natural light',
+    imageAlt: 'pillars_studio_alt',
     align: 'left' as const,
   },
 ];
@@ -34,10 +47,11 @@ function Pillar({
   index,
   total,
 }: {
-  pillar: typeof PILLARS[number];
+  pillar: PillarDef;
   index: number;
   total: number;
 }) {
+  const { t } = useLanguage();
   const isRight = pillar.align === 'right';
   const bgRef = useParallax<HTMLImageElement>(0.18);
   return (
@@ -45,7 +59,7 @@ function Pillar({
       <img
         ref={bgRef}
         src={pillar.image}
-        alt={pillar.imageAlt}
+        alt={t[pillar.imageAlt]}
         className="absolute inset-0 h-full w-full object-cover will-change-transform"
       />
       <div className="absolute inset-0 bg-background/20" />
