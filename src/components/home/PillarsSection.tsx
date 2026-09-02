@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Reveal, useParallax } from '@/components/Reveal';
-import { useLanguage, type TranslationKey } from '@/context/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
+import type { TranslationKey } from '@/lib/translations';
 
 interface PillarDef {
   id: string;
