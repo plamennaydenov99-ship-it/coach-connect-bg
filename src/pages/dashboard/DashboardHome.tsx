@@ -5,10 +5,12 @@ import { Eye, MessageSquare, BadgeCheck, Crown, ChevronRight, Inbox, CheckCircle
 import { useAuth } from '@/hooks/useAuth';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useLanguage } from '@/context/LanguageContext';
 
 const DashboardHome = () => {
   const { user, profile, loading } = useAuth();
-  const firstName = (profile?.full_name || '').trim().split(' ')[0] || 'there';
+  const { t } = useLanguage();
+  const firstName = (profile?.full_name || '').trim().split(' ')[0] || t.dashhome_there;
   const role = profile?.role;
 
   const [checklist, setChecklist] = useState<{ label: string; done: boolean }[]>([]);
@@ -18,9 +20,9 @@ const DashboardHome = () => {
     if (!user || !profile) return;
     (async () => {
       const base = [
-        { label: 'Add your full name', done: !!profile.full_name },
-        { label: 'Set your city', done: !!profile.city },
-        { label: 'Add a profile photo', done: !!profile.avatar_url },
+        { label: t.dashhome_task_name, done: !!profile.full_name },
+        { label: t.dashhome_task_city, done: !!profile.city },
+        { label: t.dashhome_task_photo, done: !!profile.avatar_url },
       ];
       if (profile.role === 'coach') {
         const { data } = await supabase
@@ -30,10 +32,10 @@ const DashboardHome = () => {
           .maybeSingle();
         setChecklist([
           ...base,
-          { label: 'Write your bio', done: !!data?.bio },
-          { label: 'List your specialisms', done: !!(data?.specialisms?.length) },
-          { label: 'Add at least one certification', done: !!(data?.certifications?.length) },
-          { label: 'Set your pricing', done: !!data?.price_per_session },
+          { label: t.dashhome_task_bio, done: !!data?.bio },
+          { label: t.dashhome_task_specialisms, done: !!(data?.specialisms?.length) },
+          { label: t.dashhome_task_cert, done: !!(data?.certifications?.length) },
+          { label: t.dashhome_task_pricing, done: !!data?.price_per_session },
         ]);
       } else if (profile.role === 'club') {
         const { data } = await supabase
@@ -43,8 +45,8 @@ const DashboardHome = () => {
           .maybeSingle();
         setChecklist([
           ...base,
-          { label: 'Write an about section', done: !!data?.about },
-          { label: 'Set your primary sport', done: !!data?.sport },
+          { label: t.dashhome_task_about, done: !!data?.about },
+          { label: t.dashhome_task_sport, done: !!data?.sport },
         ]);
       } else {
         setChecklist(base);
@@ -58,12 +60,12 @@ const DashboardHome = () => {
         setAthleteStats(s => ({ ...s, upcoming, pending }));
       }
     })();
-  }, [user, profile]);
+  }, [user, profile, t]);
 
   const completion = Math.round((checklist.filter(c => c.done).length / Math.max(checklist.length, 1)) * 100);
 
   if (loading || !profile) {
-    return <div className="p-8 text-muted-foreground">Loading your dashboard…</div>;
+    return <div className="p-8 text-muted-foreground">{t.dashhome_loading}</div>;
   }
 
   // ─────────────────────────────────────────────────────────
@@ -73,15 +75,15 @@ const DashboardHome = () => {
     return (
       <div className="space-y-6 max-w-6xl">
         <div>
-          <h1 className="font-display text-3xl">Welcome back, {firstName}</h1>
-          <p className="text-muted-foreground mt-1">Your training at a glance.</p>
+          <h1 className="font-display text-3xl">{t.dashhome_welcome}, {firstName}</h1>
+          <p className="text-muted-foreground mt-1">{t.dashhome_sub_athlete}</p>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[
-            { label: 'Upcoming sessions', value: String(athleteStats.upcoming), delta: 'Confirmed', icon: CalendarCheck },
-            { label: 'Pending requests', value: String(athleteStats.pending), delta: 'Awaiting coach', icon: Inbox },
-            { label: 'Unread messages', value: String(athleteStats.unread), delta: 'From coaches', icon: MessageSquare },
+            { label: t.dashhome_upcoming, value: String(athleteStats.upcoming), delta: t.dashhome_confirmed, icon: CalendarCheck },
+            { label: t.dashhome_pending, value: String(athleteStats.pending), delta: t.dashhome_awaiting, icon: Inbox },
+            { label: t.dashhome_unread, value: String(athleteStats.unread), delta: t.dashhome_from_coaches, icon: MessageSquare },
           ].map(s => (
             <div key={s.label} className="surface p-5">
               <div className="flex items-center justify-between">
@@ -96,25 +98,25 @@ const DashboardHome = () => {
 
         <div className="grid gap-4 lg:grid-cols-3">
           <div className="surface p-6 lg:col-span-2">
-            <h2 className="font-display text-xl mb-4">Get started</h2>
+            <h2 className="font-display text-xl mb-4">{t.dashhome_get_started}</h2>
             <p className="text-sm text-muted-foreground mb-5">
-              Find a verified coach in Nice, Monaco or Sofia and book your first session.
+              {t.dashhome_get_started_sub}
             </p>
             <div className="flex flex-wrap gap-2">
-              <Link to="/search"><Button><Search className="h-4 w-4 mr-2" /> Browse coaches</Button></Link>
-              <Link to="/dashboard/bookings"><Button variant="outline">My bookings</Button></Link>
-              <Link to="/dashboard/messages"><Button variant="outline">Open inbox</Button></Link>
+              <Link to="/search"><Button><Search className="h-4 w-4 mr-2" /> {t.dashhome_browse_coaches}</Button></Link>
+              <Link to="/dashboard/bookings"><Button variant="outline">{t.dashhome_my_bookings}</Button></Link>
+              <Link to="/dashboard/messages"><Button variant="outline">{t.dashhome_open_inbox}</Button></Link>
             </div>
           </div>
 
           <div className="surface p-6">
-            <h2 className="font-display text-xl mb-4">Quick actions</h2>
+            <h2 className="font-display text-xl mb-4">{t.dashhome_quick_actions}</h2>
             <div className="space-y-2">
               {[
-                { label: 'Browse coaches', to: '/search' },
-                { label: 'My bookings', to: '/dashboard/bookings' },
-                { label: 'Messages', to: '/dashboard/messages' },
-                { label: 'Settings', to: '/dashboard/settings' },
+                { label: t.dashhome_browse_coaches, to: '/search' },
+                { label: t.dashhome_my_bookings, to: '/dashboard/bookings' },
+                { label: t.dashhome_messages, to: '/dashboard/messages' },
+                { label: t.dashhome_settings, to: '/dashboard/settings' },
               ].map(a => (
                 <Link key={a.to} to={a.to}>
                   <Button variant="outline" className="w-full justify-between">
@@ -135,16 +137,16 @@ const DashboardHome = () => {
   return (
     <div className="space-y-6 max-w-6xl">
       <div>
-        <h1 className="font-display text-3xl">Welcome back, {firstName}</h1>
-        <p className="text-muted-foreground mt-1">Here's a snapshot of your account.</p>
+        <h1 className="font-display text-3xl">{t.dashhome_welcome}, {firstName}</h1>
+        <p className="text-muted-foreground mt-1">{t.dashhome_sub_coach}</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
-          { label: 'Profile views', value: '0', delta: 'This week', icon: Eye },
-          { label: 'Enquiries received', value: '0', delta: 'All time', icon: MessageSquare },
-          { label: 'Subscription', value: 'Free trial', delta: 'No card on file', icon: Crown },
-          { label: 'Completion', value: `${completion}%`, delta: completion === 100 ? 'Complete' : 'Keep going', icon: BadgeCheck },
+          { label: t.dashhome_profile_views, value: '0', delta: t.dashhome_this_week, icon: Eye },
+          { label: t.dashhome_enquiries_received, value: '0', delta: t.dashhome_all_time, icon: MessageSquare },
+          { label: t.dashhome_subscription, value: t.dashhome_free_trial, delta: t.dashhome_no_card, icon: Crown },
+          { label: t.dashhome_completion, value: `${completion}%`, delta: completion === 100 ? t.dashhome_complete : t.dashhome_keep_going, icon: BadgeCheck },
         ].map(s => (
           <div key={s.label} className="surface p-5">
             <div className="flex items-center justify-between">
@@ -160,7 +162,7 @@ const DashboardHome = () => {
       <div className="grid gap-4 lg:grid-cols-3">
         <div className="surface p-6 lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-display text-xl">Profile completion</h2>
+            <h2 className="font-display text-xl">{t.dashhome_profile_completion}</h2>
             <span className="text-sm font-semibold text-gold">{completion}%</span>
           </div>
           <Progress value={completion} className="h-2" />
@@ -173,18 +175,18 @@ const DashboardHome = () => {
             ))}
           </ul>
           <Link to="/dashboard/profile">
-            <Button className="mt-5">Complete profile</Button>
+            <Button className="mt-5">{t.dashhome_complete_profile}</Button>
           </Link>
         </div>
 
         <div className="surface p-6">
-          <h2 className="font-display text-xl mb-4">Quick actions</h2>
+          <h2 className="font-display text-xl mb-4">{t.dashhome_quick_actions}</h2>
           <div className="space-y-2">
             {[
-              { label: 'Edit profile', to: '/dashboard/profile' },
-              { label: 'Upgrade plan', to: '/dashboard/billing' },
-              { label: 'Open analytics', to: '/dashboard/analytics' },
-              { label: 'Account settings', to: '/dashboard/settings' },
+              { label: t.dashhome_edit_profile, to: '/dashboard/profile' },
+              { label: t.dashhome_upgrade_plan, to: '/dashboard/billing' },
+              { label: t.dashhome_open_analytics, to: '/dashboard/analytics' },
+              { label: t.dashhome_account_settings, to: '/dashboard/settings' },
             ].map(a => (
               <Link key={a.to} to={a.to}>
                 <Button variant="outline" className="w-full justify-between">
@@ -198,11 +200,11 @@ const DashboardHome = () => {
 
       <div className="surface p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display text-xl">Recent enquiries</h2>
+          <h2 className="font-display text-xl">{t.dashhome_recent_enquiries}</h2>
         </div>
         <div className="py-10 flex flex-col items-center text-center text-muted-foreground">
           <Inbox className="h-8 w-8 mb-3 text-muted-foreground/50" />
-          <p className="text-sm">No enquiries yet — they'll show up here once athletes reach out.</p>
+          <p className="text-sm">{t.dashhome_no_enquiries}</p>
         </div>
       </div>
     </div>
