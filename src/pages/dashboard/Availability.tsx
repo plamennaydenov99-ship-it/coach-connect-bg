@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Calendar, Plus, Trash2, Clock } from 'lucide-react';
 import { toast } from 'sonner';
+import { useLanguage } from '@/context/LanguageContext';
+
 
 interface Slot {
   id: string;
@@ -17,6 +19,7 @@ interface Slot {
 
 const Availability = () => {
   const { user, profile } = useAuth();
+  const { t } = useLanguage();
   const [slots, setSlots] = useState<Slot[]>([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({ date: '', start_time: '', end_time: '' });
@@ -38,18 +41,18 @@ const Availability = () => {
   useEffect(() => { load(); }, [user]);
 
   if (profile && profile.role !== 'coach') {
-    return <p className="text-muted-foreground">Availability is only available for coach accounts.</p>;
+    return <p className="text-muted-foreground">{t.avail_coach_only}</p>;
   }
 
   const addSlot = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
     if (!form.date || !form.start_time || !form.end_time) {
-      toast.error('Fill in all fields.');
+      toast.error(t.avail_err_fill);
       return;
     }
     if (form.end_time <= form.start_time) {
-      toast.error('End time must be after start time.');
+      toast.error(t.avail_err_order);
       return;
     }
     setSaving(true);
@@ -61,7 +64,7 @@ const Availability = () => {
     });
     setSaving(false);
     if (error) { toast.error(error.message); return; }
-    toast.success('Slot added.');
+    toast.success(t.avail_added);
     setForm({ date: '', start_time: '', end_time: '' });
     load();
   };
@@ -69,33 +72,33 @@ const Availability = () => {
   const removeSlot = async (id: string) => {
     const { error } = await supabase.from('availability_slots').delete().eq('id', id);
     if (error) { toast.error(error.message); return; }
-    toast.success('Slot removed.');
+    toast.success(t.avail_removed);
     load();
   };
 
   return (
     <div className="max-w-4xl space-y-6">
       <div>
-        <h1 className="font-display text-3xl">Availability</h1>
-        <p className="text-muted-foreground mt-1">Open individual time slots that athletes can request to book.</p>
+        <h1 className="font-display text-3xl">{t.avail_title}</h1>
+        <p className="text-muted-foreground mt-1">{t.avail_sub}</p>
       </div>
 
       <form onSubmit={addSlot} className="surface p-6 grid gap-4 sm:grid-cols-4 items-end">
         <div className="grid gap-2 sm:col-span-2">
-          <Label htmlFor="date">Date</Label>
+          <Label htmlFor="date">{t.avail_date}</Label>
           <Input id="date" type="date" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="start">Start</Label>
+          <Label htmlFor="start">{t.avail_start}</Label>
           <Input id="start" type="time" value={form.start_time} onChange={e => setForm({ ...form, start_time: e.target.value })} />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="end">End</Label>
+          <Label htmlFor="end">{t.avail_end}</Label>
           <Input id="end" type="time" value={form.end_time} onChange={e => setForm({ ...form, end_time: e.target.value })} />
         </div>
         <div className="sm:col-span-4">
           <Button type="submit" disabled={saving}>
-            <Plus className="h-4 w-4 mr-2" /> {saving ? 'Adding…' : 'Add slot'}
+            <Plus className="h-4 w-4 mr-2" /> {saving ? t.avail_adding : t.avail_add}
           </Button>
         </div>
       </form>
@@ -103,12 +106,12 @@ const Availability = () => {
       <div className="surface overflow-hidden">
         <div className="p-4 border-b border-border flex items-center gap-2">
           <Calendar className="h-4 w-4 text-gold" />
-          <h2 className="font-display text-lg">Your slots</h2>
+          <h2 className="font-display text-lg">{t.avail_your_slots}</h2>
         </div>
         {loading ? (
-          <p className="p-6 text-muted-foreground">Loading…</p>
+          <p className="p-6 text-muted-foreground">{t.avail_loading}</p>
         ) : slots.length === 0 ? (
-          <p className="p-6 text-muted-foreground">No slots yet. Add one above.</p>
+          <p className="p-6 text-muted-foreground">{t.avail_empty}</p>
         ) : (
           <ul className="divide-y divide-border">
             {slots.map(s => (
@@ -124,7 +127,7 @@ const Availability = () => {
                     s.status === 'open' ? 'border-gold text-gold' :
                     s.status === 'pending' ? 'border-yellow-500/60 text-yellow-500' :
                     'border-muted-foreground/30 text-muted-foreground'
-                  }`}>{s.status}</span>
+                  }`}>{t[`avail_status_${s.status}` as const]}</span>
                 </div>
                 {s.status === 'open' && (
                   <Button variant="ghost" size="icon" onClick={() => removeSlot(s.id)}>

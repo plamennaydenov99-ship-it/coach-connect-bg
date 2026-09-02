@@ -9,9 +9,12 @@ import { SPORTS } from '@/lib/mockData';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useLanguage } from '@/context/LanguageContext';
+
 
 const PersonalInfo = () => {
   const { user, profile, loading } = useAuth();
+  const { t } = useLanguage();
   const [heightCm, setHeightCm] = useState<string>('');
   const [weightKg, setWeightKg] = useState<string>('');
   const [sports, setSports] = useState<string[]>([]);
@@ -37,9 +40,9 @@ const PersonalInfo = () => {
     })();
   }, [user, profile]);
 
-  if (loading || !profile) return <div className="text-muted-foreground p-6">Loading…</div>;
+  if (loading || !profile) return <div className="text-muted-foreground p-6">{t.personalinfo_loading}</div>;
   if (profile.role !== 'athlete') {
-    return <div className="text-muted-foreground p-6">Personal info is only available for athletes.</div>;
+    return <div className="text-muted-foreground p-6">{t.personalinfo_athlete_only}</div>;
   }
 
   const toggleSport = (slug: string) => {
@@ -60,25 +63,25 @@ const PersonalInfo = () => {
       ? await supabase.from('athlete_profiles').update(payload).eq('id', user.id)
       : await supabase.from('athlete_profiles').insert(payload);
     if (error) toast.error(error.message);
-    else { toast.success('Personal info saved.'); setRowExists(true); }
+    else { toast.success(t.personalinfo_saved); setRowExists(true); }
     setSaving(false);
   };
 
   return (
     <div className="max-w-3xl space-y-6">
       <div>
-        <h1 className="font-display text-3xl">Personal info</h1>
-        <p className="text-muted-foreground mt-1">Help coaches understand you better.</p>
+        <h1 className="font-display text-3xl">{t.personalinfo_title}</h1>
+        <p className="text-muted-foreground mt-1">{t.personalinfo_sub}</p>
       </div>
 
       <section className="surface p-6 space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="grid gap-2">
-            <Label htmlFor="height">Height (cm)</Label>
+            <Label htmlFor="height">{t.personalinfo_height}</Label>
             <Input id="height" type="number" value={heightCm} onChange={e => setHeightCm(e.target.value)} placeholder="180" />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="weight">Weight (kg)</Label>
+            <Label htmlFor="weight">{t.personalinfo_weight}</Label>
             <Input id="weight" type="number" step="0.1" value={weightKg} onChange={e => setWeightKg(e.target.value)} placeholder="75" />
           </div>
         </div>
@@ -86,8 +89,8 @@ const PersonalInfo = () => {
 
       <section className="surface p-6 space-y-4">
         <div>
-          <Label>Sports</Label>
-          <p className="text-sm text-muted-foreground mt-1">Tap to add or remove.</p>
+          <Label>{t.personalinfo_sports}</Label>
+          <p className="text-sm text-muted-foreground mt-1">{t.personalinfo_sports_hint}</p>
         </div>
         <div className="flex flex-wrap gap-2">
           {SPORTS.map(sp => {
@@ -120,19 +123,19 @@ const PersonalInfo = () => {
 
       <section className="surface p-6 space-y-4">
         <div className="grid gap-2">
-          <Label htmlFor="goals">Goals</Label>
+          <Label htmlFor="goals">{t.personalinfo_goals}</Label>
           <Textarea
             id="goals"
             rows={4}
             value={goals}
             onChange={e => setGoals(e.target.value)}
-            placeholder="What are you working toward? e.g. Prepare for a marathon, improve backhand, build strength…"
+            placeholder={t.personalinfo_goals_ph}
           />
         </div>
       </section>
 
       <Button onClick={save} disabled={saving}>
-        {saving ? 'Saving…' : 'Save changes'}
+        {saving ? t.personalinfo_saving : t.personalinfo_save}
       </Button>
     </div>
   );
