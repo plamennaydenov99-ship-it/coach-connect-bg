@@ -1,5 +1,7 @@
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { Eye, MessageSquare, Clock, TrendingUp } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
+
 
 const viewsData = Array.from({ length: 30 }, (_, i) => ({
   day: `${i + 1}`,
@@ -13,25 +15,26 @@ const enquiriesData = [
 ];
 
 const Analytics = () => {
+  const { t } = useLanguage();
   return (
     <div className="max-w-6xl space-y-6">
       <div>
-        <h1 className="font-display text-3xl">Analytics</h1>
-        <p className="text-muted-foreground mt-1">Track how your profile is performing.</p>
+        <h1 className="font-display text-3xl">{t.analytics_title}</h1>
+        <p className="text-muted-foreground mt-1">{t.analytics_sub}</p>
       </div>
 
       <div className="surface p-5 flex items-center gap-3">
         <TrendingUp className="h-5 w-5 text-gold" />
 <p className="text-sm">
-          Your profile appeared in <span className="font-semibold text-gold">348 searches</span> this week — up 22% from last week.
+          {t.analytics_insight_a} <span className="font-semibold text-gold">{t.analytics_insight_b}</span> {t.analytics_insight_c}
         </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
         {[
-          { label: 'Total profile views', value: '1,284', icon: Eye },
-          { label: 'Conversion rate', value: '6.4%', icon: TrendingUp },
-          { label: 'Avg response time', value: '2h 14m', icon: Clock },
+          { label: t.analytics_total_views, value: '1,284', icon: Eye },
+          { label: t.analytics_conversion, value: '6.4%', icon: TrendingUp },
+          { label: t.analytics_response, value: '2h 14m', icon: Clock },
         ].map(s => (
           <div key={s.label} className="surface p-5">
             <s.icon className="h-5 w-5 text-gold mb-3" />
@@ -42,7 +45,7 @@ const Analytics = () => {
       </div>
 
       <div className="surface p-6">
-        <h2 className="font-display text-xl mb-4">Profile views — last 30 days</h2>
+        <h2 className="font-display text-xl mb-4">{t.analytics_views_chart}</h2>
         <div className="h-72">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={viewsData}>
@@ -65,7 +68,7 @@ const Analytics = () => {
       </div>
 
       <div className="surface p-6">
-        <h2 className="font-display text-xl mb-4">Enquiries per week</h2>
+        <h2 className="font-display text-xl mb-4">{t.analytics_enquiries_chart}</h2>
         <div className="h-72">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={enquiriesData}>
