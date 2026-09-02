@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Reveal } from '@/components/Reveal';
+import { useLanguage } from '@/context/LanguageContext';
 
 const CITIES = [
   {
@@ -49,6 +50,7 @@ const CITIES = [
 
 export function CitiesSection() {
   const trackRef = useRef<HTMLDivElement>(null);
+  const { t } = useLanguage();
 
   const scrollBy = (dir: 1 | -1) => {
     const el = trackRef.current;
