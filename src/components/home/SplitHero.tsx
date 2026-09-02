@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/context/LanguageContext';
 
 export function HeroSection() {
+  const { t } = useLanguage();
   const scrollToMatch = () => {
     document.getElementById('matching-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
@@ -12,7 +14,7 @@ export function HeroSection() {
       {/* Background image */}
       <img
         src="https://images.unsplash.com/photo-1594381898411-846e7d193883?w=1600&q=80"
-        alt="Athlete training with a personal coach in a gym"
+        alt={t.splithero_alt}
         className="absolute inset-0 h-full w-full object-cover opacity-[0.08] grayscale"
       />
       {/* Diagonal line texture */}
@@ -28,20 +30,20 @@ export function HeroSection() {
 
       <div className="container relative z-10 py-20 md:py-28">
         <div className="max-w-2xl">
-          <span className="label-eyebrow text-gold">Global · Verified coaches</span>
+          <span className="label-eyebrow text-gold">{t.splithero_eyebrow}</span>
           <h1
             className="mt-5 font-display text-foreground tracking-tight"
             style={{ fontSize: 'clamp(48px, 7vw, 80px)', lineHeight: 0.9 }}
           >
-            CONNECT.<br />TRAIN.<br />COMPETE.
+            {t.splithero_heading_a}<br />{t.splithero_heading_b}<br />{t.splithero_heading_c}
           </h1>
           <p className="mt-6 text-foreground-muted font-body text-base max-w-md">
-            Find verified coaches, join clubs, discover camps and events — all in one place.
+            {t.splithero_sub}
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link to="/search">
               <Button size="lg" className="tracking-[0.1em]">
-                Find a Coach <ArrowRight className="h-4 w-4 ml-2" />
+                {t.splithero_cta_find} <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </Link>
             <Button
@@ -50,7 +52,7 @@ export function HeroSection() {
               onClick={scrollToMatch}
               className="tracking-[0.1em] border-foreground-subtle text-foreground-muted hover:border-gold hover:text-foreground"
             >
-              AI Match Me <ArrowRight className="h-4 w-4 ml-2" />
+              {t.splithero_cta_match} <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           </div>
         </div>
