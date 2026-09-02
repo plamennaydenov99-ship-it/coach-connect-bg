@@ -63,15 +63,15 @@ export function CitiesSection() {
       <div className="container">
         <Reveal className="flex flex-wrap items-end justify-between gap-8">
           <div className="max-w-2xl">
-            <span className="label-eyebrow text-foreground-muted">Where we're starting</span>
+            <span className="label-eyebrow text-foreground-muted">{t.cities_eyebrow}</span>
             <h2
               className="mt-6 font-display text-foreground tracking-tight"
               style={{ fontSize: 'clamp(32px, 4.5vw, 56px)', lineHeight: 1 }}
             >
-              Find your coach,<br />by city.
+              {t.cities_heading_a}<br />{t.cities_heading_b}
             </h2>
             <p className="mt-8 font-body text-foreground-muted text-base md:text-lg leading-relaxed">
-              We're opening city by city. Scroll to see where we're onboarding coaches next.
+              {t.cities_sub}
             </p>
           </div>
 
@@ -79,7 +79,7 @@ export function CitiesSection() {
             <button
               type="button"
               onClick={() => scrollBy(-1)}
-              aria-label="Scroll cities left"
+              aria-label={t.cities_prev_aria}
               className="h-11 w-11 border border-border text-foreground hover:border-foreground transition-colors flex items-center justify-center"
             >
               <ChevronLeft className="h-5 w-5" />
@@ -87,7 +87,7 @@ export function CitiesSection() {
             <button
               type="button"
               onClick={() => scrollBy(1)}
-              aria-label="Scroll cities right"
+              aria-label={t.cities_next_aria}
               className="h-11 w-11 border border-border text-foreground hover:border-foreground transition-colors flex items-center justify-center"
             >
               <ChevronRight className="h-5 w-5" />
@@ -105,7 +105,7 @@ export function CitiesSection() {
             key={city.name}
             to={`/search?city=${encodeURIComponent(city.name)}`}
             className="group relative shrink-0 snap-start w-[76vw] sm:w-[46vw] lg:w-[calc((100%-40px)/3)] max-w-[420px] aspect-[3/4] overflow-hidden bg-background-secondary"
-            aria-label={`Find a coach in ${city.name}`}
+            aria-label={`${t.cities_card_aria} ${city.name}`}
           >
             <img
               src={city.image}
