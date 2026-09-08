@@ -96,9 +96,14 @@ export function PublicNav() {
                   {t.account_title}
                 </DropdownMenuItem>
                 {profile?.is_admin && (
-                  <DropdownMenuItem onClick={() => navigate('/admin/review')}>
-                    Review applications
-                  </DropdownMenuItem>
+                  <>
+                    <DropdownMenuItem onClick={() => navigate('/admin/review')}>
+                      Review applications
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/admin/users')}>
+                      All users
+                    </DropdownMenuItem>
+                  </>
                 )}
                 <DropdownMenuItem onClick={logout}>{t.auth_logout}</DropdownMenuItem>
               </DropdownMenuContent>
