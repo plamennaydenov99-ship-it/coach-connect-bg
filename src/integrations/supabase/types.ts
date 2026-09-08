@@ -324,6 +324,44 @@ export type Database = {
           },
         ]
       }
+      coach_events: {
+        Row: {
+          coach_id: string
+          created_at: string
+          description: string | null
+          event_date: string
+          id: string
+          location: string | null
+          title: string
+        }
+        Insert: {
+          coach_id: string
+          created_at?: string
+          description?: string | null
+          event_date: string
+          id?: string
+          location?: string | null
+          title: string
+        }
+        Update: {
+          coach_id?: string
+          created_at?: string
+          description?: string | null
+          event_date?: string
+          id?: string
+          location?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coach_events_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coach_profiles: {
         Row: {
           application_status: string
@@ -457,6 +495,42 @@ export type Database = {
             columns: ["conversation_id"]
             isOneToOne: false
             referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profile_views: {
+        Row: {
+          coach_id: string
+          created_at: string
+          id: string
+          viewer_id: string | null
+        }
+        Insert: {
+          coach_id: string
+          created_at?: string
+          id?: string
+          viewer_id?: string | null
+        }
+        Update: {
+          coach_id?: string
+          created_at?: string
+          id?: string
+          viewer_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_views_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profile_views_viewer_id_fkey"
+            columns: ["viewer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

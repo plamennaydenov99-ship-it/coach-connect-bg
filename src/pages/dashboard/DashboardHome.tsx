@@ -6,6 +6,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/context/LanguageContext';
+import { CoachEvents } from '@/components/dashboard/CoachEvents';
+
 
 const DashboardHome = () => {
   const { user, profile, loading } = useAuth();
@@ -198,6 +200,8 @@ const DashboardHome = () => {
         </div>
       </div>
 
+      {role === 'coach' && <CoachEvents />}
+
       <div className="surface p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-display text-xl">{t.dashhome_recent_enquiries}</h2>
@@ -207,6 +211,7 @@ const DashboardHome = () => {
           <p className="text-sm">{t.dashhome_no_enquiries}</p>
         </div>
       </div>
+
     </div>
   );
 };
