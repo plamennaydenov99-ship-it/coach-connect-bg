@@ -3,7 +3,7 @@ import { NavLink, Link, Outlet, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, UserCog, BarChart3, MessageSquare,
   CreditCard, Settings, Zap, Menu, X, ExternalLink,
-  CalendarCheck, CalendarClock, ListChecks, Search, User, Bookmark, LogOut
+  CalendarCheck, CalendarClock, ListChecks, Search, User, Users, Bookmark, LogOut
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
