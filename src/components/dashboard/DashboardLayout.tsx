@@ -58,6 +58,7 @@ export function DashboardLayout() {
       { to: '/dashboard/profile', label: t.dash_profile_coach, icon: UserCog },
       { to: '/dashboard/availability', label: t.dash_availability, icon: CalendarClock },
       { to: '/dashboard/requests', label: t.dash_requests, icon: ListChecks },
+      { to: '/dashboard/clients', label: t.dash_clients, icon: Users },
       { to: '/dashboard/messages', label: t.dash_messages, icon: MessageSquare },
       { to: '/dashboard/analytics', label: t.dash_analytics, icon: BarChart3 },
       { to: '/dashboard/billing', label: t.dash_billing, icon: CreditCard },

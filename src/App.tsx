@@ -33,6 +33,8 @@ import Billing from "./pages/dashboard/Billing";
 import DashSettings from "./pages/dashboard/Settings";
 import Availability from "./pages/dashboard/Availability";
 import BookingRequests from "./pages/dashboard/BookingRequests";
+import Clients from "./pages/dashboard/Clients";
+import ClientDetail from "./pages/dashboard/ClientDetail";
 import MyBookings from "./pages/dashboard/MyBookings";
 import PersonalInfo from "./pages/dashboard/PersonalInfo";
 import BookmarksPage from "./pages/dashboard/Bookmarks";
@@ -71,6 +73,8 @@ const App = () => (
                 <Route path="profile" element={<ProfileEditor />} />
                 <Route path="availability" element={<Availability />} />
                 <Route path="requests" element={<BookingRequests />} />
+                <Route path="clients" element={<Clients />} />
+                <Route path="clients/:id" element={<ClientDetail />} />
                 <Route path="bookings" element={<MyBookings />} />
                 <Route path="personal-info" element={<PersonalInfo />} />
                 <Route path="bookmarks" element={<BookmarksPage />} />
