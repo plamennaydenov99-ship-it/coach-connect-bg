@@ -36,6 +36,7 @@ import BookingRequests from "./pages/dashboard/BookingRequests";
 import MyBookings from "./pages/dashboard/MyBookings";
 import PersonalInfo from "./pages/dashboard/PersonalInfo";
 import BookmarksPage from "./pages/dashboard/Bookmarks";
+import AdminReview from "./pages/admin/AdminReview";
 
 const queryClient = new QueryClient();
 
