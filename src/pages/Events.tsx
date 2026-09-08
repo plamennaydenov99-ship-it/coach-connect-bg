@@ -1,4 +1,7 @@
+import { useEffect, useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { Calendar, MapPin } from 'lucide-react';
+
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { Button } from '@/components/ui/button';
@@ -7,8 +10,27 @@ import { EVENTS } from '@/lib/events';
 import { BookmarkButton } from '@/components/BookmarkButton';
 import { useLanguage } from '@/context/LanguageContext';
 
+interface CoachEvent {
+  id: string;
+  title: string;
+  description: string | null;
+  event_date: string;
+  location: string | null;
+}
+
 export default function Events() {
   const { t } = useLanguage();
+  const [coachEvents, setCoachEvents] = useState<CoachEvent[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from('coach_events')
+      .select('id, title, description, event_date, location')
+      .gte('event_date', new Date().toISOString().slice(0, 10))
+      .order('event_date', { ascending: true })
+      .then(({ data }) => setCoachEvents((data as any) ?? []));
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <PublicNav />
