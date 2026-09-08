@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { CanonicalTag } from "@/components/CanonicalTag";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { AuthProvider } from "@/hooks/useAuth";
@@ -11,8 +11,6 @@ import Index from "./pages/Index";
 import Search from "./pages/Search";
 import CoachProfile from "./pages/CoachProfile";
 import ClubProfile from "./pages/ClubProfile";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
 import ForCoaches from "./pages/ForCoaches";
 import Events from "./pages/Events";
 import Marketplace from "./pages/Marketplace";
@@ -56,8 +54,8 @@ const App = () => (
               <Route path="/search" element={<Search />} />
               <Route path="/coach/:id" element={<CoachProfile />} />
               <Route path="/club/:id" element={<ClubProfile />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
+              <Route path="/login" element={<Navigate to="/start" replace />} />
+              <Route path="/register" element={<Navigate to="/start" replace />} />
               <Route path="/for-coaches" element={<ForCoaches />} />
               <Route path="/events" element={<Events />} />
               <Route path="/marketplace" element={<Marketplace />} />
