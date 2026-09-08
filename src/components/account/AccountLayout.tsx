@@ -20,6 +20,7 @@ export function AccountLayout() {
   const links = [
     { to: '/account', label: t.account_title, end: true },
     { to: '/account/bookings', label: t.dash_bookings },
+    { to: '/account/program', label: t.account_program },
     { to: '/account/personal-info', label: t.dash_personal_info },
     { to: '/account/bookmarks', label: t.dash_bookmarks },
     { to: '/search', label: t.dash_browse_coaches },
