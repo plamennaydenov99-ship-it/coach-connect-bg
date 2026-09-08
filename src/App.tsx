@@ -35,6 +35,7 @@ import Availability from "./pages/dashboard/Availability";
 import BookingRequests from "./pages/dashboard/BookingRequests";
 import Clients from "./pages/dashboard/Clients";
 import ClientDetail from "./pages/dashboard/ClientDetail";
+import MyProgram from "./pages/account/MyProgram";
 import MyBookings from "./pages/dashboard/MyBookings";
 import PersonalInfo from "./pages/dashboard/PersonalInfo";
 import BookmarksPage from "./pages/dashboard/Bookmarks";
@@ -87,6 +88,7 @@ const App = () => (
               <Route path="/account" element={<RequireAuth area="athlete"><AccountLayout /></RequireAuth>}>
                 <Route index element={<Account />} />
                 <Route path="bookings" element={<MyBookings />} />
+                <Route path="program" element={<MyProgram />} />
                 <Route path="personal-info" element={<PersonalInfo />} />
                 <Route path="bookmarks" element={<BookmarksPage />} />
                 <Route path="messages" element={<Messages />} />
