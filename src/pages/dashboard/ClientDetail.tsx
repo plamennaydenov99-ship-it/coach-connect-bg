@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+import { ProgramSection } from '@/components/dashboard/ProgramSection';
 import { ArrowLeft } from 'lucide-react';
 
 interface Booking {
@@ -202,8 +203,8 @@ const ClientDetail = () => {
         )}
       </section>
 
-      {/* TODO: future "Program" tab attaches here — the program builder will render
-          the coach's training program for this relationship (relationship_id = params id). */}
+      {/* Training programs for this relationship */}
+      <ProgramSection relationshipId={id!} athleteId={athleteId} />
     </div>
   );
 };
