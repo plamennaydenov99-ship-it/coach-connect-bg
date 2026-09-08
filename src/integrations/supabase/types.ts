@@ -234,9 +234,11 @@ export type Database = {
           gallery: string[]
           id: string
           level: string | null
+          price_per_group_session: number | null
           price_per_session: number | null
           reviewed_at: string | null
           reviewed_by: string | null
+          social_links: Json
           specialisms: string[]
           sport: string | null
           updated_at: string
@@ -252,9 +254,11 @@ export type Database = {
           gallery?: string[]
           id: string
           level?: string | null
+          price_per_group_session?: number | null
           price_per_session?: number | null
           reviewed_at?: string | null
           reviewed_by?: string | null
+          social_links?: Json
           specialisms?: string[]
           sport?: string | null
           updated_at?: string
@@ -270,9 +274,11 @@ export type Database = {
           gallery?: string[]
           id?: string
           level?: string | null
+          price_per_group_session?: number | null
           price_per_session?: number | null
           reviewed_at?: string | null
           reviewed_by?: string | null
+          social_links?: Json
           specialisms?: string[]
           sport?: string | null
           updated_at?: string

@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { ApplicationReview } from './ApplicationReview';
+import { CoachOnboarding } from './CoachOnboarding';
 
 type Area = 'athlete' | 'staff';
 
@@ -41,6 +42,10 @@ export function RequireAuth({ children, area }: { children: React.ReactNode; are
   }
   if (area === 'staff' && profile && profile.role === 'athlete') {
     return <Navigate to="/account" replace />;
+  }
+
+  if (area === 'staff' && role === 'coach' && status === 'draft') {
+    return <CoachOnboarding onSubmitted={() => setStatus('pending')} />;
   }
 
   if (area === 'staff' && isStaff && (status === 'pending' || status === 'rejected')) {

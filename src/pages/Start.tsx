@@ -27,7 +27,7 @@ export async function ensureRole(userId: string, role: Role, currentRole?: strin
     if (!data) await supabase.from('athlete_profiles').insert({ id: userId });
   } else if (role === 'coach') {
     const { data } = await supabase.from('coach_profiles').select('id').eq('id', userId).maybeSingle();
-    if (!data) await supabase.from('coach_profiles').insert({ id: userId, application_status: 'pending' });
+    if (!data) await supabase.from('coach_profiles').insert({ id: userId, application_status: 'draft' });
   } else {
     const { data } = await supabase.from('club_profiles').select('id').eq('id', userId).maybeSingle();
     if (!data) await supabase.from('club_profiles').insert({ id: userId, application_status: 'pending' });
