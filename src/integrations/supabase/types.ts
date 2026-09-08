@@ -652,7 +652,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      admin_confirm_email: { Args: { _user_id: string }; Returns: undefined }
+      admin_list_users: {
+        Args: never
+        Returns: {
+          application_status: string
+          city: string
+          created_at: string
+          email: string
+          email_confirmed: boolean
+          full_name: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+        }[]
+      }
     }
     Enums: {
       app_role: "athlete" | "coach" | "club"
