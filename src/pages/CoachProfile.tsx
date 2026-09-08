@@ -63,6 +63,16 @@ const CoachProfile = () => {
     })();
   }, [id]);
 
+  // Log a profile view once per coach per browser session
+  useEffect(() => {
+    if (!id) return;
+    const key = `pv_${id}`;
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, '1');
+    supabase.from('profile_views').insert({ coach_id: id, viewer_id: user?.id ?? null }).then(() => {});
+  }, [id, user?.id]);
+
+
   const loadSlots = async () => {
     if (!id) return;
     const today = new Date().toISOString().slice(0, 10);
