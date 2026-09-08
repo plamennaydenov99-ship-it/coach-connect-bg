@@ -88,6 +88,8 @@ const App = () => (
                 <Route path="messages" element={<Messages />} />
               </Route>
 
+              <Route path="/admin/review" element={<AdminReview />} />
+
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
