@@ -95,6 +95,11 @@ export function PublicNav() {
                 <DropdownMenuItem onClick={() => navigate(homeFor)}>
                   {t.account_title}
                 </DropdownMenuItem>
+                {profile?.is_admin && (
+                  <DropdownMenuItem onClick={() => navigate('/admin/review')}>
+                    Review applications
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem onClick={logout}>{t.auth_logout}</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

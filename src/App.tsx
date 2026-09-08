@@ -36,6 +36,7 @@ import BookingRequests from "./pages/dashboard/BookingRequests";
 import MyBookings from "./pages/dashboard/MyBookings";
 import PersonalInfo from "./pages/dashboard/PersonalInfo";
 import BookmarksPage from "./pages/dashboard/Bookmarks";
+import AdminReview from "./pages/admin/AdminReview";
 
 const queryClient = new QueryClient();
 
@@ -86,6 +87,8 @@ const App = () => (
                 <Route path="bookmarks" element={<BookmarksPage />} />
                 <Route path="messages" element={<Messages />} />
               </Route>
+
+              <Route path="/admin/review" element={<AdminReview />} />
 
               <Route path="*" element={<NotFound />} />
             </Routes>
