@@ -164,36 +164,45 @@ export type Database = {
       club_profiles: {
         Row: {
           about: string | null
+          application_status: string
           city: string | null
           created_at: string
           hours: string | null
           id: string
           name: string
           programs: Json
+          reviewed_at: string | null
+          reviewed_by: string | null
           sport: string | null
           updated_at: string
           verified: boolean
         }
         Insert: {
           about?: string | null
+          application_status?: string
           city?: string | null
           created_at?: string
           hours?: string | null
           id: string
           name?: string
           programs?: Json
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           sport?: string | null
           updated_at?: string
           verified?: boolean
         }
         Update: {
           about?: string | null
+          application_status?: string
           city?: string | null
           created_at?: string
           hours?: string | null
           id?: string
           name?: string
           programs?: Json
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           sport?: string | null
           updated_at?: string
           verified?: boolean
@@ -206,10 +215,18 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "club_profiles_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       coach_profiles: {
         Row: {
+          application_status: string
           bio: string | null
           certifications: string[]
           created_at: string
@@ -218,6 +235,8 @@ export type Database = {
           id: string
           level: string | null
           price_per_session: number | null
+          reviewed_at: string | null
+          reviewed_by: string | null
           specialisms: string[]
           sport: string | null
           updated_at: string
@@ -225,6 +244,7 @@ export type Database = {
           years_experience: number | null
         }
         Insert: {
+          application_status?: string
           bio?: string | null
           certifications?: string[]
           created_at?: string
@@ -233,6 +253,8 @@ export type Database = {
           id: string
           level?: string | null
           price_per_session?: number | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           specialisms?: string[]
           sport?: string | null
           updated_at?: string
@@ -240,6 +262,7 @@ export type Database = {
           years_experience?: number | null
         }
         Update: {
+          application_status?: string
           bio?: string | null
           certifications?: string[]
           created_at?: string
@@ -248,6 +271,8 @@ export type Database = {
           id?: string
           level?: string | null
           price_per_session?: number | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           specialisms?: string[]
           sport?: string | null
           updated_at?: string
@@ -259,6 +284,13 @@ export type Database = {
             foreignKeyName: "coach_profiles_id_fkey"
             columns: ["id"]
             isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coach_profiles_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
