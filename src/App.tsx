@@ -40,6 +40,7 @@ import MyBookings from "./pages/dashboard/MyBookings";
 import PersonalInfo from "./pages/dashboard/PersonalInfo";
 import BookmarksPage from "./pages/dashboard/Bookmarks";
 import AdminReview from "./pages/admin/AdminReview";
+import AdminUsers from "./pages/admin/AdminUsers";
 
 const queryClient = new QueryClient();
 
@@ -95,6 +96,7 @@ const App = () => (
               </Route>
 
               <Route path="/admin/review" element={<AdminReview />} />
+              <Route path="/admin/users" element={<AdminUsers />} />
 
               <Route path="*" element={<NotFound />} />
             </Routes>
