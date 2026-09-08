@@ -368,6 +368,7 @@ export type Database = {
           created_at: string
           full_name: string | null
           id: string
+          is_admin: boolean
           language: string
           role: Database["public"]["Enums"]["app_role"]
           updated_at: string
@@ -378,6 +379,7 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id: string
+          is_admin?: boolean
           language?: string
           role: Database["public"]["Enums"]["app_role"]
           updated_at?: string
@@ -388,6 +390,7 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id?: string
+          is_admin?: boolean
           language?: string
           role?: Database["public"]["Enums"]["app_role"]
           updated_at?: string
