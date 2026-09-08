@@ -161,6 +161,70 @@ export type Database = {
           },
         ]
       }
+      client_goals: {
+        Row: {
+          created_at: string
+          goal: string
+          id: string
+          relationship_id: string
+          status: string
+          target_date: string | null
+        }
+        Insert: {
+          created_at?: string
+          goal: string
+          id?: string
+          relationship_id: string
+          status?: string
+          target_date?: string | null
+        }
+        Update: {
+          created_at?: string
+          goal?: string
+          id?: string
+          relationship_id?: string
+          status?: string
+          target_date?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_goals_relationship_id_fkey"
+            columns: ["relationship_id"]
+            isOneToOne: false
+            referencedRelation: "coach_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      client_notes: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          relationship_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          relationship_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          relationship_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_notes_relationship_id_fkey"
+            columns: ["relationship_id"]
+            isOneToOne: false
+            referencedRelation: "coach_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       club_profiles: {
         Row: {
           about: string | null
@@ -218,6 +282,42 @@ export type Database = {
           {
             foreignKeyName: "club_profiles_reviewed_by_fkey"
             columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coach_clients: {
+        Row: {
+          athlete_id: string
+          coach_id: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          athlete_id: string
+          coach_id: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          athlete_id?: string
+          coach_id?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coach_clients_athlete_id_fkey"
+            columns: ["athlete_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coach_clients_coach_id_fkey"
+            columns: ["coach_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]

@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.tg_upsert_coach_client() FROM PUBLIC, anon, authenticated;
