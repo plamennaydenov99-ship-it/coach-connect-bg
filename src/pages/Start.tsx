@@ -46,6 +46,11 @@ const Start = () => {
   const [busy, setBusy] = useState(false);
   const handled = useRef(false);
 
+  // Allow a fresh reconciliation after a sign-out → sign-in in the same tab
+  useEffect(() => {
+    if (!user) handled.current = false;
+  }, [user]);
+
   // Already signed in (incl. returning from Google) → reconcile role then route
   useEffect(() => {
     if (loading || !user || !profile || handled.current) return;
@@ -77,6 +82,25 @@ const Start = () => {
     setRole(r);
   };
 
+  /** Reconcile the picked role against the signed-in user, then route. Deterministic — no effect needed. */
+  const finishAuth = async (userId: string, picked: Role) => {
+    // The profile row is created by a DB trigger on signup; poll briefly for it.
+    let currentRole: string | null = null;
+    for (let i = 0; i < 10; i++) {
+      const { data } = await supabase.from('profiles').select('role').eq('id', userId).maybeSingle();
+      if (data) {
+        currentRole = data.role as string;
+        break;
+      }
+      await new Promise(r => setTimeout(r, 300));
+    }
+    await ensureRole(userId, picked, currentRole);
+    sessionStorage.removeItem(INTENDED_ROLE_KEY);
+    handled.current = true; // the mount effect must not re-route on top of us
+    await refreshProfile();
+    navigate(picked === 'athlete' ? '/account' : '/dashboard', { replace: true });
+  };
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!role) return;
@@ -86,11 +110,14 @@ const Start = () => {
     }
     setBusy(true);
     if (mode === 'login') {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      setBusy(false);
-      if (error) return toast.error(error.message);
-      sessionStorage.setItem(INTENDED_ROLE_KEY, role);
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error || !data.user) {
+        setBusy(false);
+        return toast.error(error?.message ?? t.auth_email_pw_required);
+      }
       toast.success(t.auth_welcome_back_toast);
+      await finishAuth(data.user.id, role);
+      setBusy(false);
       return;
     }
 
@@ -98,7 +125,7 @@ const Start = () => {
       setBusy(false);
       return toast.error(t.auth_password_min_error);
     }
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -106,8 +133,20 @@ const Start = () => {
         data: { role, full_name: name || null, language: 'en' },
       },
     });
+    if (error) {
+      setBusy(false);
+      return toast.error(error.message);
+    }
+
+    // Auto-confirm on → a session comes back immediately; otherwise the user must confirm by email.
+    if (data.session && data.user) {
+      toast.success(t.auth_account_ready);
+      await finishAuth(data.user.id, role);
+      setBusy(false);
+      return;
+    }
+
     setBusy(false);
-    if (error) return toast.error(error.message);
     sessionStorage.setItem(INTENDED_ROLE_KEY, role);
     toast.success(t.auth_account_created);
   };
