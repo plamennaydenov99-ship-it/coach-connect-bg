@@ -11,6 +11,8 @@ interface AuthContextValue {
   user: User | null;
   profile: Profile | null;
   loading: boolean;
+  profileLoading: boolean;
+  profileError: string | null;
   refreshProfile: () => Promise<void>;
   signOut: () => Promise<void>;
 }
@@ -22,10 +24,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [profileError, setProfileError] = useState<string | null>(null);
 
   const loadProfile = async (uid: string) => {
-    const { data } = await supabase.from('profiles').select('*').eq('id', uid).maybeSingle();
-    setProfile(data ?? null);
+    setProfileLoading(true);
+    try {
+      const { data, error } = await supabase.from('profiles').select('*').eq('id', uid).maybeSingle();
+      if (error) {
+        console.error('Failed to load profile', error);
+        setProfileError(error.message);
+        setProfile(null);
+      } else {
+        setProfileError(null);
+        setProfile(data ?? null);
+      }
+    } catch (e) {
+      console.error('Failed to load profile', e);
+      setProfileError(e instanceof Error ? e.message : 'Unknown error');
+      setProfile(null);
+    } finally {
+      setProfileLoading(false);
+    }
   };
 
   useEffect(() => {
