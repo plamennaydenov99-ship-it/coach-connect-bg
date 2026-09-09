@@ -666,6 +666,7 @@ export type Database = {
           role: Database["public"]["Enums"]["app_role"]
         }[]
       }
+      is_admin: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "athlete" | "coach" | "club"
