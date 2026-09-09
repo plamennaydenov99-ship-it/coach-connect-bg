@@ -8,7 +8,7 @@ import { CoachOnboarding } from './CoachOnboarding';
 type Area = 'athlete' | 'staff';
 
 export function RequireAuth({ children, area }: { children: React.ReactNode; area?: Area }) {
-  const { user, profile, loading } = useAuth();
+  const { user, profile, loading, profileLoading, profileError, refreshProfile } = useAuth();
   const role = profile?.role;
   const isStaff = role === 'coach' || role === 'club';
   const [status, setStatus] = useState<string | null>(null);
@@ -23,19 +23,33 @@ export function RequireAuth({ children, area }: { children: React.ReactNode; are
     setChecking(true);
     (async () => {
       const table = role === 'coach' ? 'coach_profiles' : 'club_profiles';
-      const { data } = await supabase.from(table).select('application_status').eq('id', user.id).maybeSingle();
-      if (!cancelled) {
-        setStatus((data?.application_status as string) ?? 'pending');
-        setChecking(false);
+      try {
+        const { data, error } = await supabase.from(table).select('application_status').eq('id', user.id).maybeSingle();
+        if (error) console.error('Failed to load application status', error);
+        if (!cancelled) setStatus((data?.application_status as string) ?? 'pending');
+      } catch (e) {
+        console.error('Failed to load application status', e);
+        if (!cancelled) setStatus('pending');
+      } finally {
+        if (!cancelled) setChecking(false);
       }
     })();
     return () => { cancelled = true; };
-  }, [user, role, isStaff]);
+  }, [user?.id, role, isStaff]);
 
-  if (loading || (user && !profile) || (isStaff && checking)) {
+  if (loading || (user && !profile && (profileLoading || !profileError)) || (isStaff && checking)) {
     return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Loading…</div>;
   }
   if (!user) return <Navigate to="/start" replace />;
+
+  if (!profile && profileError) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4 p-6 text-center">
+        <p className="text-muted-foreground text-sm">We couldn’t load your account details.</p>
+        <button className="underline" onClick={() => refreshProfile()}>Try again</button>
+      </div>
+    );
+  }
 
   if (area === 'athlete' && profile && profile.role !== 'athlete') {
     return <Navigate to="/dashboard" replace />;
