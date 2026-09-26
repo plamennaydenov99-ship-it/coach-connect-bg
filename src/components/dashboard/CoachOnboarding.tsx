@@ -86,7 +86,20 @@ export function CoachOnboarding({ onSubmitted }: { onSubmitted: () => void }) {
   const finish = async () => {
     setBusy(true);
     await saveStep();
-    await supabase.from('coach_profiles').update({ application_status: 'pending' }).eq('id', user.id);
+    const { error: submitError } = await supabase
+      .from('coach_profiles')
+      .update({ application_status: 'pending' })
+      .eq('id', user.id);
+    if (!submitError) {
+      try {
+        const { error: notifyError } = await supabase.functions.invoke('notify-coach-application', {
+          body: { user_id: user.id },
+        });
+        if (notifyError) console.error('notify-coach-application failed:', notifyError);
+      } catch (e) {
+        console.error('notify-coach-application failed:', e);
+      }
+    }
     await refreshProfile();
     setBusy(false);
     setDone(true);
