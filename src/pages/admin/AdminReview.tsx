@@ -18,7 +18,7 @@ interface PendingCoach {
 }
 
 export default function AdminReview() {
-  const { user, profile, loading } = useAuth();
+  const { user, profile, loading, profileLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [items, setItems] = useState<PendingCoach[]>([]);
@@ -28,7 +28,7 @@ export default function AdminReview() {
   const isAdmin = !!profile?.is_admin;
 
   useEffect(() => {
-    if (loading) return;
+    if (loading || profileLoading) return;
     if (!user || !isAdmin) {
       navigate('/', { replace: true });
       return;
@@ -56,7 +56,7 @@ export default function AdminReview() {
       setFetching(false);
     };
     load();
-  }, [loading, user, isAdmin, navigate]);
+  }, [loading, profileLoading, user, isAdmin, navigate]);
 
   const act = async (id: string, status: 'approved' | 'rejected') => {
     if (!user) return;
@@ -77,7 +77,7 @@ export default function AdminReview() {
     setItems(prev => prev.filter(c => c.id !== id));
   };
 
-  if (loading || !user || !isAdmin) return null;
+  if (loading || profileLoading || !user || !isAdmin) return null;
 
   return (
     <div className="min-h-screen bg-background">
