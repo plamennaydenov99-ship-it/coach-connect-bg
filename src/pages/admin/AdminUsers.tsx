@@ -37,7 +37,7 @@ export default function AdminUsers() {
   const isAdmin = !!profile?.is_admin;
 
   useEffect(() => {
-    if (loading) return;
+    if (loading || profileLoading) return;
     if (!user || !isAdmin) {
       navigate('/', { replace: true });
       return;
@@ -53,7 +53,7 @@ export default function AdminUsers() {
       setFetching(false);
     };
     load();
-  }, [loading, user, isAdmin, navigate, toast]);
+  }, [loading, profileLoading, user, isAdmin, navigate, toast]);
 
   const visible = useMemo(
     () => (filter === 'all' ? rows : rows.filter(r => r.role === filter)),
@@ -72,7 +72,7 @@ export default function AdminUsers() {
     toast({ title: 'Email confirmed' });
   };
 
-  if (loading || !user || !isAdmin) return null;
+  if (loading || profileLoading || !user || !isAdmin) return null;
 
   return (
     <div className="min-h-screen bg-background">
