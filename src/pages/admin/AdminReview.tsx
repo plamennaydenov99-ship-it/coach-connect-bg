@@ -18,7 +18,7 @@ interface PendingCoach {
 }
 
 export default function AdminReview() {
-  const { user, profile, loading } = useAuth();
+  const { user, profile, loading, profileLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [items, setItems] = useState<PendingCoach[]>([]);

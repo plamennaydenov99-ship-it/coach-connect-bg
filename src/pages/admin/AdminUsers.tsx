@@ -26,7 +26,7 @@ const FILTERS = [
 ] as const;
 
 export default function AdminUsers() {
-  const { user, profile, loading } = useAuth();
+  const { user, profile, loading, profileLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [rows, setRows] = useState<AdminUserRow[]>([]);
