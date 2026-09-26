@@ -71,3 +71,12 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+
+## Granting admin access
+
+Admin access is controlled by the `is_admin` boolean column on the `public.profiles` table. It cannot be set from the app itself — there is deliberately no UI for it, so it must be granted directly in the database (via a migration or a SQL query against the backend). To grant admin to an account:
+
+1. Find the user's id: `SELECT id FROM auth.users WHERE email = 'user@example.com';`
+2. Set the flag: `UPDATE public.profiles SET is_admin = true WHERE id = '<user-id>';`
+
+Admins can then access `/admin/review` (coach application review) and `/admin/users` (user roster). To revoke, set `is_admin = false` the same way.
