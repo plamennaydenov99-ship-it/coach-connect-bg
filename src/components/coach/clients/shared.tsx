@@ -19,18 +19,19 @@ export function Avatar({ name, size = 32 }: { name: string; size?: number }) {
   );
 }
 
-export function isToday(iso: string) {
-  const d = new Date(iso);
-  const n = new Date();
-  return d.getFullYear() === n.getFullYear() && d.getMonth() === n.getMonth() && d.getDate() === n.getDate();
+export function isToday(iso: string, timeZone = 'Europe/Sofia') {
+  const f = (x: Date) => x.toLocaleDateString('en-CA', { timeZone });
+  return f(new Date(iso)) === f(new Date());
 }
 
-export function fmtDateTime(iso: string, lang: Lang) {
-  return new Date(iso).toLocaleString(LOCALES[lang], { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+export function fmtDateTime(iso: string, lang: Lang, timeZone?: string) {
+  return new Date(iso).toLocaleString(LOCALES[lang], { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone });
 }
 
-export function fmtDate(iso: string, lang: Lang) {
-  return new Date(iso).toLocaleDateString(LOCALES[lang], { day: 'numeric', month: 'short', year: 'numeric' });
+export function fmtDate(iso: string, lang: Lang, timeZone?: string) {
+  // Plain YYYY-MM-DD values are calendar dates: render them without shifting.
+  if (/^\d{4}-\d{2}-\d{2}$/.test(iso)) return new Date(iso + 'T12:00:00Z').toLocaleDateString(LOCALES[lang], { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+  return new Date(iso).toLocaleDateString(LOCALES[lang], { day: 'numeric', month: 'short', year: 'numeric', timeZone });
 }
 
 /** True on touch-first devices (no drag & drop there). */

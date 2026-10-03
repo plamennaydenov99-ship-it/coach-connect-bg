@@ -9,6 +9,7 @@ import {
   AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { useLanguage } from '@/context/LanguageContext';
+import { useCoachTz } from '@/hooks/coach/useCoachCalendar';
 import {
   ALL_STAGES, useAddNote, useAddTask, useClientDetail, useDeleteClient, useMoveClient,
   useSetSessionStatus, useToggleTask, useUpdateClient, type CoachSession,
@@ -49,6 +50,7 @@ export function ClientDrawer({ clientId, onClose }: { clientId: string | undefin
 
 function DrawerBody({ data, onDeleted }: { data: NonNullable<ReturnType<typeof useClientDetail>['data']>; onDeleted: () => void }) {
   const { t, lang } = useLanguage();
+  const tz = useCoachTz();
   const c = data.client!;
   const move = useMoveClient();
   const update = useUpdateClient();
@@ -79,7 +81,7 @@ function DrawerBody({ data, onDeleted }: { data: NonNullable<ReturnType<typeof u
           <Avatar name={c.display_name} size={44} />
           <div className="min-w-0 flex-1">
             <div className="font-display text-xl uppercase tracking-[0.06em] text-portal-ink truncate">{c.display_name}</div>
-            <div className="text-xs text-portal-muted">{t.crm_since} {fmtDate(c.created_at, lang)}</div>
+            <div className="text-xs text-portal-muted">{t.crm_since} {fmtDate(c.created_at, lang, tz)}</div>
           </div>
           <select value={c.stage} onChange={(e) => changeStage(e.target.value)} className="h-8 px-2 rounded-[4px] border border-portal-selected-border bg-portal-selected text-portal-ink text-sm" aria-label={t.crm_stage}>
             {ALL_STAGES.map((s) => <option key={s} value={s}>{t[stageKey(s)]}</option>)}
@@ -97,7 +99,7 @@ function DrawerBody({ data, onDeleted }: { data: NonNullable<ReturnType<typeof u
         <div className="grid grid-cols-3 gap-2">
           <Stat label={t.crm_sessions} value={String(data.sessions.length)} />
           <Stat label={t.crm_attendance} value={attended + noShow ? `${attended}/${attended + noShow}` : '—'} />
-          <Stat label={t.crm_next_session} value={next ? fmtDateTime(next.starts_at, lang) : '—'} small />
+          <Stat label={t.crm_next_session} value={next ? fmtDateTime(next.starts_at, lang, tz) : '—'} small />
         </div>
         {(c.phone || c.email) && (
           <div className="rounded-[4px] border border-portal-border bg-portal-bg p-3 space-y-1.5">
@@ -138,6 +140,7 @@ function Stat({ label, value, small }: { label: string; value: string; small?: b
 
 function TimelineTab({ data }: { data: NonNullable<ReturnType<typeof useClientDetail>['data']> }) {
   const { t, lang } = useLanguage();
+  const tz = useCoachTz();
   const addNote = useAddNote(data.client!.id);
   const [note, setNote] = useState('');
 
@@ -145,7 +148,7 @@ function TimelineTab({ data }: { data: NonNullable<ReturnType<typeof useClientDe
     const out: TimelineItem[] = [];
     data.notes.forEach((n) => out.push({ id: `n${n.id}`, at: n.created_at, label: t.crm_type_note, text: n.content }));
     data.sessions.forEach((s) =>
-      out.push({ id: `s${s.id}`, at: s.starts_at, label: t.crm_type_session, text: `${fmtDateTime(s.starts_at, lang)} · ${t[`crm_status_${s.status}` as 'crm_status_scheduled']}${s.kind === 'trial' ? ` · ${t.crm_trial}` : ''}` }),
+      out.push({ id: `s${s.id}`, at: s.starts_at, label: t.crm_type_session, text: `${fmtDateTime(s.starts_at, lang, tz)} · ${t[`crm_status_${s.status}` as 'crm_status_scheduled']}${s.kind === 'trial' ? ` · ${t.crm_trial}` : ''}` }),
     );
     data.tasks.forEach((k) => {
       out.push({ id: `tc${k.id}`, at: k.created_at, label: t.crm_type_task_created, text: k.title });
@@ -175,7 +178,7 @@ function TimelineTab({ data }: { data: NonNullable<ReturnType<typeof useClientDe
             <div key={i.id} className="border-l-2 border-portal-border pl-3">
               <div className="flex items-center gap-2">
                 <span className={portalLabel}>{i.label}</span>
-                <span className="text-[11px] text-portal-muted">{fmtDate(i.at, lang)}</span>
+                <span className="text-[11px] text-portal-muted">{fmtDate(i.at, lang, tz)}</span>
               </div>
               <p className="text-sm text-portal-ink whitespace-pre-wrap break-words">{i.text}</p>
             </div>
@@ -192,6 +195,7 @@ function TimelineTab({ data }: { data: NonNullable<ReturnType<typeof useClientDe
 
 function TasksTab({ clientId, tasks }: { clientId: string; tasks: NonNullable<ReturnType<typeof useClientDetail>['data']>['tasks'] }) {
   const { t, lang } = useLanguage();
+  const tz = useCoachTz();
   const add = useAddTask(clientId);
   const toggle = useToggleTask();
   const [title, setTitle] = useState('');
@@ -226,7 +230,7 @@ function TasksTab({ clientId, tasks }: { clientId: string; tasks: NonNullable<Re
                   <div className={`text-sm ${k.done ? 'line-through text-portal-muted' : 'text-portal-ink'}`}>{k.title}</div>
                   {k.due_date && (
                     <div className={`text-xs ${overdue ? 'text-portal-copper font-medium' : 'text-portal-muted'}`}>
-                      {overdue ? t.crm_overdue : t.crm_due} · {fmtDate(k.due_date, lang)}
+                      {overdue ? t.crm_overdue : t.crm_due} · {fmtDate(k.due_date, lang, tz)}
                     </div>
                   )}
                 </div>
@@ -241,6 +245,7 @@ function TasksTab({ clientId, tasks }: { clientId: string; tasks: NonNullable<Re
 
 function SessionsTab({ clientId, sessions }: { clientId: string; sessions: CoachSession[] }) {
   const { t, lang } = useLanguage();
+  const tz = useCoachTz();
   const setStatus = useSetSessionStatus();
   const now = Date.now();
   const upcoming = sessions.filter((s) => new Date(s.starts_at).getTime() >= now).sort((a, b) => a.starts_at.localeCompare(b.starts_at));
@@ -249,7 +254,7 @@ function SessionsTab({ clientId, sessions }: { clientId: string; sessions: Coach
   const row = (s: CoachSession, isPast: boolean) => (
     <li key={s.id} className="py-2 border-b border-portal-border last:border-0 space-y-1.5">
       <div className="flex items-center gap-2">
-        <span className="text-sm text-portal-ink flex-1">{fmtDateTime(s.starts_at, lang)}{s.kind === 'trial' ? ` · ${t.crm_trial}` : ''}</span>
+        <span className="text-sm text-portal-ink flex-1">{fmtDateTime(s.starts_at, lang, tz)}{s.kind === 'trial' ? ` · ${t.crm_trial}` : ''}</span>
         <span className={`text-[11px] px-1.5 py-0.5 rounded-[4px] border ${statusChip[s.status] ?? ''}`}>{t[`crm_status_${s.status}` as 'crm_status_scheduled']}</span>
       </div>
       {s.location && <div className="text-xs text-portal-muted">{s.location}</div>}

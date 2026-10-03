@@ -8,6 +8,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { CalendarClock, CheckSquare, MoreHorizontal, Activity } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useLanguage } from '@/context/LanguageContext';
+import { useCoachTz } from '@/hooks/coach/useCoachCalendar';
 import { BOARD_STAGES, useMoveClient, useReorderClients, type ClientSummary } from '@/hooks/coach/useCoachClients';
 import { Avatar, fmtDateTime, isToday, stageKey, useCoarsePointer } from './shared';
 import { toast } from 'sonner';
@@ -24,8 +25,9 @@ function buildColumns(clients: ClientSummary[]): Columns {
 
 export function ClientCard({ c, onOpen, touch, dragging }: { c: ClientSummary; onOpen?: () => void; touch?: boolean; dragging?: boolean }) {
   const { t, lang } = useLanguage();
+  const tz = useCoachTz();
   const move = useMoveClient();
-  const today = c.nextSession && isToday(c.nextSession.starts_at);
+  const today = c.nextSession && isToday(c.nextSession.starts_at, tz);
   return (
     <div
       onClick={onOpen}
@@ -55,7 +57,7 @@ export function ClientCard({ c, onOpen, touch, dragging }: { c: ClientSummary; o
       </div>
       <div className={`flex items-center gap-1.5 text-xs ${today ? 'text-portal-copper font-medium' : 'text-portal-muted-strong'}`}>
         <CalendarClock className="h-3.5 w-3.5" />
-        {c.nextSession ? fmtDateTime(c.nextSession.starts_at, lang) : t.crm_no_upcoming}
+        {c.nextSession ? fmtDateTime(c.nextSession.starts_at, lang, tz) : t.crm_no_upcoming}
       </div>
       <div className="flex items-center gap-3 text-xs text-portal-muted-strong">
         <span className="inline-flex items-center gap-1" title={t.crm_attended}><Activity className="h-3.5 w-3.5" />{c.attendedCount}</span>
