@@ -15,6 +15,13 @@
       "when": 1791059105730,
       "tag": "0001_coach_portal_crm",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791059263617,
+      "tag": "0002_profiles_timezone_and_booking_tz",
+      "breakpoints": true
     }
   ]
 }
