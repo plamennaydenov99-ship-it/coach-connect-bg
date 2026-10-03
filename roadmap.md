@@ -8,3 +8,6 @@
 
 - [x] Step 6: coach dashboard at /coach/dashboard (KPIs, today, pipeline, tasks, weekly chart, inbox)
 - [x] Step 7: portal messages, unread count, settings/profile restyle, timezone, token fixes
+- [x] Step 8: mobile Today, settings cleanup, copy audit, end-to-end check
+- [ ] Coaches cannot read athlete names (profiles access rule) — needs approval for a database rule change
+- [ ] Real contact email for account deletion — waiting on user
