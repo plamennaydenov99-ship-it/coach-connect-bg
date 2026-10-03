@@ -133,7 +133,7 @@ export default function Community() {
                       <p className="font-display text-[14px] text-foreground truncate">{c.name}</p>
                       <p className="text-[12px] text-foreground-muted capitalize">{c.sport} · {c.city}</p>
                     </div>
-                    <Link to={`/coach/${c.slug}`} className="text-[11px] font-display uppercase tracking-[0.1em] text-gold hover:underline">
+                    <Link to={`/coaches/${c.slug}`} className="text-[11px] font-display uppercase tracking-[0.1em] text-gold hover:underline">
                       {t.view_profile}
                     </Link>
                   </li>

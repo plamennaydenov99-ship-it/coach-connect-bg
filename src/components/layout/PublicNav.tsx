@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/context/LanguageContext';
 import { LangSwitcher } from '@/components/layout/LangSwitcher';
 import { useAuth } from '@/hooks/useAuth';
+import { homeFor } from '@/lib/routes';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,7 +33,7 @@ export function PublicNav() {
   const displayName =
     profile?.full_name?.trim() || user?.email?.split('@')[0] || '';
   const initials = displayName ? initialsOf(displayName) : '?';
-  const homeFor = profile?.role === 'athlete' ? '/account' : '/dashboard';
+  const homePath = homeFor(profile?.role);
 
   const logout = async () => {
     await signOut();
@@ -92,7 +93,7 @@ export function PublicNav() {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48 bg-popover">
-                <DropdownMenuItem onClick={() => navigate(homeFor)}>
+                <DropdownMenuItem onClick={() => navigate(homePath)}>
                   {t.account_title}
                 </DropdownMenuItem>
                 {profile?.is_admin && (
@@ -137,7 +138,7 @@ export function PublicNav() {
             <div className="my-2 h-px bg-border" />
             {user ? (
               <>
-                <Link to={homeFor} onClick={() => setOpen(false)} className="block">
+                <Link to={homePath} onClick={() => setOpen(false)} className="block">
                   <Button variant="ghost" className="w-full justify-start">{displayName}</Button>
                 </Link>
                 <Button size="lg" onClick={logout} className="w-full font-display uppercase tracking-[0.12em]">

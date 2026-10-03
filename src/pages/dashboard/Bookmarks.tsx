@@ -95,7 +95,7 @@ const Bookmarks = () => {
                     className="h-14 w-14 object-cover"
                   />
                   <div className="flex-1 min-w-0">
-                    <Link to={`/coach/${b.target_id}`} className="font-display text-lg hover:text-gold transition-colors block truncate">
+                    <Link to={`/coaches/${b.target_id}`} className="font-display text-lg hover:text-gold transition-colors block truncate">
                       {c?.profiles?.full_name || t.dashbookmarks_coach}
                     </Link>
                     <p className="text-sm text-muted-foreground truncate">

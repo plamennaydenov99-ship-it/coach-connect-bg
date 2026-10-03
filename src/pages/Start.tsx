@@ -11,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { lovable } from '@/integrations/lovable/index';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/context/LanguageContext';
+import { homeFor } from '@/lib/routes';
 
 type Mode = 'login' | 'signup';
 type Role = 'athlete' | 'coach' | 'club';
@@ -64,7 +65,7 @@ const Start = () => {
         active = intended;
         await refreshProfile();
       }
-      navigate(active === 'athlete' ? '/account' : '/dashboard', { replace: true });
+      navigate(homeFor(active), { replace: true });
     })();
   }, [loading, user, profile, navigate, refreshProfile]);
 
@@ -76,7 +77,7 @@ const Start = () => {
       await refreshProfile();
       setBusy(false);
       if (r !== profile.role) toast.success(t.entry_role_added);
-      navigate(r === 'athlete' ? '/account' : '/dashboard', { replace: true });
+      navigate(homeFor(r), { replace: true });
       return;
     }
     setRole(r);
@@ -98,7 +99,7 @@ const Start = () => {
     sessionStorage.removeItem(INTENDED_ROLE_KEY);
     handled.current = true; // the mount effect must not re-route on top of us
     await refreshProfile();
-    navigate(picked === 'athlete' ? '/account' : '/dashboard', { replace: true });
+    navigate(homeFor(picked), { replace: true });
   };
 
   const submit = async (e: React.FormEvent) => {

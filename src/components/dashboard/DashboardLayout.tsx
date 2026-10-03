@@ -100,7 +100,7 @@ export function DashboardLayout() {
       </div>
       {(role === 'coach' || role === 'club') && (
         <div className="p-3 border-t border-sidebar-border">
-          <Link to={role === 'coach' ? `/coach/${profile?.id}` : `/club/${profile?.id}`}>
+          <Link to={role === 'coach' ? `/coaches/${profile?.id}` : `/club/${profile?.id}`}>
             <Button variant="outline" size="sm" className="w-full">
               <ExternalLink className="h-3.5 w-3.5 mr-2" /> {t.dash_view_public}
             </Button>

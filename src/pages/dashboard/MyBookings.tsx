@@ -72,7 +72,7 @@ const MyBookings = () => {
                   className="h-11 w-11 rounded-full object-cover shrink-0"
                 />
                 <div className="min-w-0">
-                  <Link to={`/coach/${r.coach_id}`} className="font-medium hover:underline">{r.coach?.full_name || 'Coach'}</Link>
+                  <Link to={`/coaches/${r.coach_id}`} className="font-medium hover:underline">{r.coach?.full_name || 'Coach'}</Link>
                   <p className="text-sm text-muted-foreground flex items-center gap-1.5">
                     <Clock className="h-3.5 w-3.5" />
                     {r.slot ? `${new Date(r.slot.date + 'T00:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })} · ${r.slot.start_time.slice(0,5)}–${r.slot.end_time.slice(0,5)}` : 'Slot removed'}

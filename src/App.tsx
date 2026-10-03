@@ -20,6 +20,7 @@ import Community from "./pages/Community";
 import Match from "./pages/Match";
 import Start from "./pages/Start";
 import NotFound from "./pages/NotFound";
+import LegacyCoachRedirect from "./pages/LegacyCoachRedirect";
 
 import { DashboardLayout } from "./components/dashboard/DashboardLayout";
 import { AccountLayout } from "./components/account/AccountLayout";
@@ -57,7 +58,9 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/athlete" element={<Index />} />
               <Route path="/search" element={<Search />} />
-              <Route path="/coach/:id" element={<CoachProfile />} />
+              <Route path="/coaches/:id" element={<CoachProfile />} />
+              {/* Legacy profile links. Register future /coach/* portal paths above this. */}
+              <Route path="/coach/:id" element={<LegacyCoachRedirect />} />
               <Route path="/club/:id" element={<ClubProfile />} />
               <Route path="/login" element={<Navigate to="/start" replace />} />
               <Route path="/register" element={<Navigate to="/start" replace />} />
