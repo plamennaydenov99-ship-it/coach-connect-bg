@@ -26,6 +26,8 @@ import { CoachLayout } from "./components/coach/CoachLayout";
 import CoachCalendar from "./pages/coach/CoachCalendar";
 import CoachClients from "./pages/coach/CoachClients";
 import CoachDashboard from "./pages/coach/CoachDashboard";
+import CoachMessages from "./pages/coach/CoachMessages";
+import CoachSettings from "./pages/coach/CoachSettings";
 import { DashboardLayout } from "./components/dashboard/DashboardLayout";
 import { AccountLayout } from "./components/account/AccountLayout";
 import Account from "./pages/Account";
@@ -69,9 +71,9 @@ const App = () => (
                 <Route path="clients" element={<CoachClients />} />
                 <Route path="clients/:id" element={<CoachClients />} />
                 <Route path="calendar" element={<CoachCalendar />} />
-                <Route path="messages" element={<Messages />} />
-                <Route path="profile" element={<ProfileEditor />} />
-                <Route path="settings" element={<DashSettings />} />
+                <Route path="messages" element={<CoachMessages />} />
+                <Route path="profile" element={<div className="portal-skin"><ProfileEditor /></div>} />
+                <Route path="settings" element={<CoachSettings />} />
               </Route>
               {/* Legacy profile links. Register future /coach/* portal paths above this. */}
               <Route path="/coach/:id" element={<LegacyCoachRedirect />} />

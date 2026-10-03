@@ -9,6 +9,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCoachTz, useSessionStatus, type CalSession } from '@/hooks/coach/useCoachCalendar';
 import { useToggleTask, BOARD_STAGES } from '@/hooks/coach/useCoachClients';
 import { useCoachDashboard, useCoachInbox, useQuickTask } from '@/hooks/coach/useCoachDashboard';
+import { useUnreadCount } from '@/hooks/coach/useUnreadCount';
 import { SessionSheet } from '@/components/coach/calendar/SessionSheet';
 import { Avatar, LOCALES, portalInput, portalLabel, stageKey } from '@/components/coach/clients/shared';
 import { labelDate, todayStr, toTimeStr, zonedParts } from '@/lib/tz';
@@ -218,6 +219,7 @@ function Inbox() {
   const { t, lang } = useLanguage();
   const tz = useCoachTz();
   const { data, isLoading } = useCoachInbox();
+  const { byConvo } = useUnreadCount();
   const today = todayStr(tz);
   const when = (iso: string) => {
     const d = new Date(iso);
@@ -242,7 +244,7 @@ function Inbox() {
                   <Avatar name={c.name} size={36} />
                   <span className="flex-1 min-w-0">
                     <span className="flex justify-between gap-2"><span className="truncate text-portal-ink text-sm">{c.name}</span><span className="text-xs text-portal-muted shrink-0">{when(c.last_message_at)}</span></span>
-                    <span className="block truncate text-xs text-portal-muted">{c.preview ?? ''}</span>
+                    <span className="flex items-center gap-2"><span className="block truncate text-xs text-portal-muted flex-1">{c.preview ?? ''}</span>{byConvo.has(c.id) && <span aria-label={t.cmsg_unread} className="w-2 h-2 rounded-full bg-portal-copper shrink-0" />}</span>
                   </span>
                 </Link>
               </li>

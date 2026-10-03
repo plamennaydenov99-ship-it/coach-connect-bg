@@ -65,7 +65,7 @@ const BookingRequests = () => {
     if (!user) return;
     try {
       const cid = await getOrCreateConversation(athleteId, user.id);
-      navigate(`/dashboard/messages?c=${cid}`);
+      navigate(`${window.location.pathname.startsWith('/coach') ? '/coach' : '/dashboard'}/messages?c=${cid}`);
     } catch (e: any) {
       toast.error(e.message);
     }
