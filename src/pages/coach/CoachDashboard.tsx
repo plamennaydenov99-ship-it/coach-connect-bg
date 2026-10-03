@@ -9,13 +9,14 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCoachTz, useSessionStatus, type CalSession } from '@/hooks/coach/useCoachCalendar';
 import { useToggleTask, BOARD_STAGES } from '@/hooks/coach/useCoachClients';
 import { useCoachDashboard, useCoachInbox, useQuickTask } from '@/hooks/coach/useCoachDashboard';
+import { useUnreadCount } from '@/hooks/coach/useUnreadCount';
 import { SessionSheet } from '@/components/coach/calendar/SessionSheet';
 import { Avatar, LOCALES, portalInput, portalLabel, stageKey } from '@/components/coach/clients/shared';
 import { labelDate, todayStr, toTimeStr, zonedParts } from '@/lib/tz';
 
 const card = 'bg-portal-card border border-portal-border rounded-[4px] p-5';
 const title = 'font-display uppercase tracking-[0.1em] text-base text-portal-ink';
-const link = 'text-sm text-portal-primary hover:underline';
+const link = 'text-sm text-portal-copper hover:underline';
 
 export default function CoachDashboard() {
   const { t, lang } = useLanguage();
@@ -78,7 +79,7 @@ export default function CoachDashboard() {
                   return (
                     <div key={s}>
                       <div className="flex justify-between text-sm"><span>{t[stageKey(s)]}</span><span className="font-display">{data.pipeline[s]}</span></div>
-                      <div className="h-2 bg-portal-bg rounded-[2px] mt-1"><div className="h-2 bg-portal-primary rounded-[2px]" style={{ width: `${(data.pipeline[s] / max) * 100}%` }} /></div>
+                      <div className="h-2 bg-portal-bg rounded-[2px] mt-1"><div className="h-2 bg-portal-copper rounded-[2px]" style={{ width: `${(data.pipeline[s] / max) * 100}%` }} /></div>
                     </div>
                   );
                 })}
@@ -135,10 +136,10 @@ function TodayList({ sessions, onOpen }: { sessions: CalSession[]; onOpen: (s: C
   const nextId = sessions.find((s) => s.status === 'scheduled' && new Date(s.starts_at).getTime() >= now)?.id;
   const chip = (s: CalSession) => {
     if (s.status === 'attended') return [t.dash_chip_done, 'bg-portal-bg text-portal-muted-strong'];
-    if (s.status === 'no_show') return [t.dash_chip_noshow, 'bg-portal-bg text-portal-primary'];
+    if (s.status === 'no_show') return [t.dash_chip_noshow, 'bg-portal-bg text-portal-copper'];
     if (s.status === 'cancelled') return [t.dash_chip_cancelled, 'bg-portal-bg text-portal-muted line-through'];
     if (s.id === nextId) return [t.dash_chip_next, 'bg-portal-selected text-portal-ink border border-portal-selected-border'];
-    if (s.kind === 'trial') return [t.dash_chip_trial, 'bg-portal-trial text-portal-primary border border-portal-primary'];
+    if (s.kind === 'trial') return [t.dash_chip_trial, 'bg-portal-copper-tint text-portal-copper border border-portal-copper'];
     return ['', ''];
   };
   return (
@@ -146,7 +147,7 @@ function TodayList({ sessions, onOpen }: { sessions: CalSession[]; onOpen: (s: C
       {sessions.map((s) => {
         const [label, cls] = chip(s);
         const past = s.status === 'scheduled' && new Date(s.ends_at).getTime() < now;
-        const dot = s.status === 'attended' ? 'bg-portal-muted' : s.id === nextId ? 'bg-portal-primary' : s.status === 'scheduled' ? 'bg-[#5B82E0]' : 'bg-portal-border';
+        const dot = s.status === 'attended' ? 'bg-portal-muted' : s.id === nextId ? 'bg-portal-copper' : s.status === 'scheduled' ? 'bg-[#5B82E0]' : 'bg-portal-border';
         return (
           <li key={s.id} className="flex items-center gap-3 py-2.5">
             <button onClick={() => onOpen(s)} className="flex items-center gap-3 flex-1 min-w-0 text-left">
@@ -196,7 +197,7 @@ function TasksCard({ loading, tasks, today, locale }: { loading: boolean; tasks:
                 <span className="flex-1 min-w-0">
                   <span className="block text-portal-ink">{k.title}</span>
                   <span className="text-xs text-portal-muted">
-                    {k.due_date && <span className={overdue ? 'text-portal-primary' : ''}>{labelDate(k.due_date, locale, { day: '2-digit', month: 'short' })}</span>}
+                    {k.due_date && <span className={overdue ? 'text-portal-copper' : ''}>{labelDate(k.due_date, locale, { day: '2-digit', month: 'short' })}</span>}
                     {k.due_date && k.client && ' · '}
                     {k.client && <Link to={`/coach/clients/${k.client.id}`} className="hover:underline">{k.client.display_name}</Link>}
                   </span>
@@ -218,6 +219,7 @@ function Inbox() {
   const { t, lang } = useLanguage();
   const tz = useCoachTz();
   const { data, isLoading } = useCoachInbox();
+  const { byConvo } = useUnreadCount();
   const today = todayStr(tz);
   const when = (iso: string) => {
     const d = new Date(iso);
@@ -242,7 +244,7 @@ function Inbox() {
                   <Avatar name={c.name} size={36} />
                   <span className="flex-1 min-w-0">
                     <span className="flex justify-between gap-2"><span className="truncate text-portal-ink text-sm">{c.name}</span><span className="text-xs text-portal-muted shrink-0">{when(c.last_message_at)}</span></span>
-                    <span className="block truncate text-xs text-portal-muted">{c.preview ?? ''}</span>
+                    <span className="flex items-center gap-2"><span className="block truncate text-xs text-portal-muted flex-1">{c.preview ?? ''}</span>{byConvo.has(c.id) && <span aria-label={t.cmsg_unread} className="w-2 h-2 rounded-full bg-portal-copper shrink-0" />}</span>
                   </span>
                 </Link>
               </li>

@@ -7,3 +7,4 @@
 - [ ] Steps 6–8 per plan (awaiting go-ahead)
 
 - [x] Step 6: coach dashboard at /coach/dashboard (KPIs, today, pipeline, tasks, weekly chart, inbox)
+- [x] Step 7: portal messages, unread count, settings/profile restyle, timezone, token fixes

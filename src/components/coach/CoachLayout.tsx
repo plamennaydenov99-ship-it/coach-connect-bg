@@ -11,6 +11,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLanguage, type Lang } from '@/context/LanguageContext';
 import { coachProfilePath } from '@/lib/routes';
 import { toast } from 'sonner';
+import { useUnreadCount } from '@/hooks/coach/useUnreadCount';
+import { useCoachInbox } from '@/hooks/coach/useCoachDashboard';
 
 const LANGS: Lang[] = ['en', 'bg', 'fr'];
 
@@ -30,8 +32,11 @@ export function CoachLayout() {
   const { profile, signOut } = useAuth();
   const { t, lang, setLang } = useLanguage();
   const navigate = useNavigate();
-  // No unread-message tracking exists yet; wired up in a later step.
-  const unread = 0;
+  const { count: unread, byConvo } = useUnreadCount();
+  const { data: inbox } = useCoachInbox(50);
+  const unreadConvos = [...byConvo.entries()].slice(0, 6).map(([id, msgs]) => ({
+    id, n: msgs.length, preview: msgs[0]?.content ?? '', name: inbox?.find((c) => c.id === id)?.name ?? '',
+  }));
 
   const logout = async () => {
     await signOut();
@@ -100,9 +105,16 @@ export function CoachLayout() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator className="bg-portal-border" />
             {unread > 0 ? (
-              <DropdownMenuItem onClick={() => navigate('/coach/messages')}>
-                {unread} {t.portal_unread_count}
-              </DropdownMenuItem>
+              <>
+                {unreadConvos.map((c) => (
+                  <DropdownMenuItem key={c.id} onClick={() => navigate(`/coach/messages?c=${c.id}`)} className="flex-col items-start gap-0.5">
+                    <span className="text-sm font-medium flex w-full justify-between gap-2"><span className="truncate">{c.name}</span><span className="text-portal-copper text-xs">{c.n}</span></span>
+                    <span className="text-xs text-portal-muted truncate w-full">{c.preview}</span>
+                  </DropdownMenuItem>
+                ))}
+                <DropdownMenuSeparator className="bg-portal-border" />
+                <DropdownMenuItem onClick={() => navigate('/coach/messages')}>{unread} {t.portal_unread_count}</DropdownMenuItem>
+              </>
             ) : (
               <div className="px-2 py-3 text-sm text-portal-muted">{t.portal_no_notifications}</div>
             )}

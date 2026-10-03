@@ -89,10 +89,10 @@ export function useQuickTask() {
 export interface InboxItem { id: string; name: string; last_message_at: string; preview: string | null }
 
 /** Latest 6 conversations where the coach participates, with last message preview. */
-export function useCoachInbox() {
+export function useCoachInbox(limit = 6) {
   const { user } = useAuth();
   return useQuery({
-    queryKey: ['coach', user?.id, 'inbox'],
+    queryKey: ['coach', user?.id, 'inbox', limit],
     enabled: !!user,
     queryFn: async (): Promise<InboxItem[]> => {
       const { data, error } = await supabase
@@ -100,7 +100,7 @@ export function useCoachInbox() {
         .select('id, last_message_at, other:profiles!conversations_athlete_id_fkey(full_name)')
         .eq('coach_id', user!.id)
         .order('last_message_at', { ascending: false })
-        .limit(6);
+        .limit(limit);
       if (error) throw error;
       const convos = (data ?? []) as any[];
       const previews = await Promise.all(convos.map((c) =>

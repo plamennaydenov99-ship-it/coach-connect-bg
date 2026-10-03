@@ -281,3 +281,36 @@
     to { transform: translateX(-50%); }
   }
 }
+
+/* Portal skin: remaps shared shadcn tokens so reused dashboard pages (e.g. ProfileEditor)
+   render in the coach-portal look without forking them. Only used inside .coach-portal. */
+.coach-portal .portal-skin {
+  --background: 0 0% 100%;
+  --background-secondary: 43 26% 94%;
+  --background-tertiary: 43 26% 94%;
+  --foreground: 45 7% 12%;
+  --card: 0 0% 100%;
+  --card-foreground: 45 7% 12%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 45 7% 12%;
+  --primary: 17 52% 40%;
+  --primary-foreground: 43 26% 94%;
+  --secondary: 43 26% 94%;
+  --secondary-foreground: 45 7% 12%;
+  --muted: 43 26% 94%;
+  --muted-foreground: 40 6% 41%;
+  --accent: 220 38% 92%;
+  --accent-foreground: 45 7% 12%;
+  --border: 40 24% 85%;
+  --input: 41 22% 80%;
+  --ring: 17 52% 40%;
+  --gold: 17 52% 40%;
+  color: hsl(var(--foreground));
+}
+.coach-portal .portal-skin h1,
+.coach-portal .portal-skin h2 {
+  font-family: 'Barlow Condensed', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.coach-portal .portal-skin button[class*="bg-primary"]:hover { background: hsl(18 55% 32%); }
