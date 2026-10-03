@@ -37,15 +37,20 @@ export default function CoachCalendar() {
   useSeriesTopUp();
   const { data: pending = 0 } = usePendingRequests();
 
-  // ?new=1 or ?client=<id> opens the quick-book panel.
+  // ?new=1 or ?client=<id> opens the quick-book panel; params are cleared when it closes
+  // (kept until then so a remount of the page doesn't lose the panel).
   useEffect(() => {
     const client = params.get('client');
-    if (params.get('new') || client) {
+    if ((params.get('new') || client) && !book) {
       const nowT = toTimeStr(new Date(Date.now() + 3600000), tz).slice(0, 2) + ':00';
       setBook({ date: todayStr(tz), time: nowT, clientId: client ?? undefined });
-      setParams({}, { replace: true });
     }
-  }, [params, setParams, tz]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params, tz]);
+  const closeBook = () => {
+    setBook(null);
+    if (params.get('new') || params.get('client')) setParams({}, { replace: true });
+  };
 
   const range = useMemo(() => {
     if (view === 'day') return { start: anchor, days: 1, from: anchor, to: addDays(anchor, 1) };
@@ -71,7 +76,7 @@ export default function CoachCalendar() {
   );
 
   const form = book && (
-    <QuickBookForm initial={book} onDone={() => setBook(null)} onClose={() => setBook(null)} />
+    <QuickBookForm initial={book} onDone={closeBook} onClose={closeBook} />
   );
 
   return (
@@ -120,7 +125,7 @@ export default function CoachCalendar() {
         </aside>
       )}
       {isMobile && (
-        <Sheet open={!!book} onOpenChange={(o) => !o && setBook(null)}>
+        <Sheet open={!!book} onOpenChange={(o) => !o && closeBook()}>
           <SheetContent side="bottom" className="coach-portal bg-portal-card border-portal-border max-h-[92vh] overflow-y-auto [&>button]:hidden">
             <SheetTitle className="sr-only">{t.cal_quick_book}</SheetTitle>
             <SheetDescription className="sr-only">{t.cal_quick_book}</SheetDescription>
