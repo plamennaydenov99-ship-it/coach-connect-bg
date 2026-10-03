@@ -24,6 +24,7 @@ import LegacyCoachRedirect from "./pages/LegacyCoachRedirect";
 
 import { CoachLayout } from "./components/coach/CoachLayout";
 import CoachCalendar from "./pages/coach/CoachCalendar";
+import CoachClients from "./pages/coach/CoachClients";
 import { DashboardLayout } from "./components/dashboard/DashboardLayout";
 import { AccountLayout } from "./components/account/AccountLayout";
 import Account from "./pages/Account";
@@ -64,8 +65,8 @@ const App = () => (
               <Route path="/coach" element={<RequireAuth area="coach"><CoachLayout /></RequireAuth>}>
                 <Route index element={<Navigate to="/coach/dashboard" replace />} />
                 <Route path="dashboard" element={<DashboardHome />} />
-                <Route path="clients" element={<Clients />} />
-                <Route path="clients/:id" element={<ClientDetail />} />
+                <Route path="clients" element={<CoachClients />} />
+                <Route path="clients/:id" element={<CoachClients />} />
                 <Route path="calendar" element={<CoachCalendar />} />
                 <Route path="messages" element={<Messages />} />
                 <Route path="profile" element={<ProfileEditor />} />
