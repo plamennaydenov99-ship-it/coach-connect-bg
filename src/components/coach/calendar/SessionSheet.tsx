@@ -29,7 +29,6 @@ function Body({ s, onClose }: { s: CalSession; onClose: () => void }) {
   const { t, lang } = useLanguage();
   const tz = useCoachTz();
   const { user } = useAuth();
-  const tz = useCoachTz();
   const setStatus = useSessionStatus();
   const cancelFollowing = useCancelFollowing();
   const reschedule = useReschedule();
