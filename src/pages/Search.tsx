@@ -154,7 +154,7 @@ const Search = () => {
   );
   const [city, setCity] = useState(params.get('city') ?? '');
   const [priceRange, setPriceRange] = useState<number[]>([0, 200]);
-  const [verifiedOnly, setVerifiedOnly] = useState(true);
+  const [verifiedOnly, setVerifiedOnly] = useState(false);
   const [sort, setSort] = useState<SortKey>('relevance');
 
   const [coaches, setCoaches] = useState<CoachRow[]>([]);
@@ -166,7 +166,7 @@ const Search = () => {
       const { data, error } = await supabase
         .from('coach_profiles')
         .select('id, bio, sport, price_per_session, discount_pct, years_experience, gallery, verified, created_at, profiles!coach_profiles_id_fkey(full_name, avatar_url, city)')
-        .eq('verified', true);
+        .eq('application_status', 'approved');
       if (!error && data) setCoaches(data as any);
       setLoading(false);
     })();
