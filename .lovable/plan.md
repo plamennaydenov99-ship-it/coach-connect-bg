@@ -1,100 +1,121 @@
+# Coach Portal — Audit and Build Plan
 
-# Read-only i18n audit + Cyrillic weight investigation
+## 1. What exists today (reusable)
 
-## Item 2 — Why Cyrillic renders heavier
+Routes (`src/App.tsx`)
+- `/dashboard/*`, behind `RequireAuth area="staff"`, used by coach and club. It has a dark sidebar (`DashboardLayout`) whose menu items change by role.
+- Coach pages: Home, ProfileEditor, Availability, BookingRequests, Clients, ClientDetail, Messages, Analytics, Billing, Settings.
+- **`/coach/:id` is already taken by the public coach profile** (it is linked from Search, Bookmarks, MyBookings, CoachCard, Community and the dashboard's "view public" button).
+- `/account/*` is the athlete area. Admin pages live at `/admin/review` and `/admin/users`.
 
-Confirmed root cause is **not** the Google Fonts subset. `src/index.css:1` requests `Barlow Condensed:wght@400;500;600;700` with Cyrillic in the URL, and Barlow Condensed ships Cyrillic glyphs for all those weights.
+Components and hooks
+- `RequireAuth` checks the session, the profile and the application status, and gates onboarding. `CoachOnboarding` is the six-step flow; coaches are now auto-approved.
+- `useAuth` provides session, profile, `profileLoading` and `profileError`. `useLanguage` with `translations.ts` covers EN/BG/FR.
+- `ProgramSection` is the training-program editor inside ClientDetail. `CoachEvents` lets coaches create public events.
+- `Messages.tsx` is the two-sided inbox. `lib/messaging.ts` has `getOrCreateConversation`.
+- `Analytics.tsx` already counts real 30-day views, bookings and messages. The recharts library is installed.
 
-The real culprit is the **font stack fallback** on `.font-display` (`src/index.css:89`):
+Tables (all of them are currently empty: coach_clients, bookings, slots, notes and programs each have 0 rows)
+- `availability_slots`: the coach's dated open/pending/booked slots. Athletes can see open slots for verified coaches.
+- `bookings`: an athlete books a slot, and the coach confirms or declines it. Triggers sync the slot status and create the matching `coach_clients` row.
+- `coach_clients`: links a coach to an athlete profile. It has `athlete_id NOT NULL`, a foreign key to profiles and a unique (coach, athlete) pair. Only the coach can access it (one ALL policy).
+- `client_notes` and `client_goals`: private records per relationship, coach-only.
+- `training_programs` and `program_tasks`: draft or sent programs. Athletes can read sent programs and tick tasks off, and a guard trigger stops them editing anything else.
+- `conversations` and `messages`: athlete–coach threads. Only athletes can start a thread.
 
+## 2. Gaps vs the target
+
+- No `/coach/*` portal, no light top-bar layout, no copper or navy-tint tokens. The theme today is warm monochrome; "Daylight" values exist only in parts of the homepage.
+- No support for **external clients** (no account, a phone number, a stage).
+- No pipeline stages, no board or drag-and-drop, no table view, no drawer with a timeline.
+- No session entity separate from athlete bookings: no attendance (done / no-show), no trial flag, no location, no recurrence.
+- No coach to-do tasks. `program_tasks` belong to athletes.
+- No calendar (week, day or month), no quick-book panel.
+- No dashboard KPIs for attendance %, hours coached or the 8-week chart. No inbox panel on the right.
+- No mobile Today screen or bottom tabs.
+- No notifications feed. This first version will show a bell with an unread-messages count only.
+- Coaches cannot start a conversation. External clients have no inbox; messages apply to clients who have an account.
+
+## 3. Proposed data model (not applied)
+
+```text
+coach_clients (extend)
+  athlete_id        uuid NULL  -> profiles.id   (null = external)
+  display_name      text NOT NULL               (backfilled from the profile for linked rows)
+  email             text NULL
+  phone             text NULL                   (private, coach only)
+  stage             text NOT NULL default 'enquiry'
+                    check in (enquiry, trial, active, on_hold, archived)
+  stage_position    int  NOT NULL default 0     (order on the board)
+  goal              text NULL
+  source            text NULL
+  updated_at        timestamptz
+  drop UNIQUE(coach_id, athlete_id) -> partial unique index where athlete_id is not null
+
+coach_sessions (new; 1:1)
+  id, coach_id -> profiles, client_id -> coach_clients (on delete cascade)
+  starts_at timestamptz, ends_at timestamptz, location text
+  kind text check in (session, trial)
+  status text check in (scheduled, attended, no_show, cancelled)
+  series_id uuid NULL -> session_series
+  booking_id uuid NULL -> bookings (unique)    (set when it came from an athlete booking)
+  note text, created_at, updated_at
+
+session_series (new; weekly recurrence)
+  id, coach_id, client_id, weekday smallint, start_time time, duration_min int,
+  location, starts_on date, ends_on date NULL, kind
+  -> materialise concrete coach_sessions rows 12 weeks ahead (one for each occurrence, editable on its own)
+
+coach_tasks (new)
+  id, coach_id, client_id NULL -> coach_clients, title, due_date NULL,
+  done bool default false, done_at, created_at
+
+client_events (new; drives the drawer timeline)
+  id, client_id, coach_id, type (note | stage_change | session | task), payload jsonb, created_at
+  written by triggers on stage changes, sessions and tasks; client_notes stays the store for notes
 ```
-font-family: 'Barlow Condensed', 'Arial Narrow', 'Barlow', system-ui, sans-serif;
-```
 
-Combined with `PublicNav` nav links using `font-semibold` (weight 600). What appears to be happening for some users: while the Cyrillic subset file is still loading (or if a weight file 302's slowly), the browser paints Cyrillic characters from the next available family. `'Arial Narrow'` has no Cyrillic → falls through to `'Barlow'` (the regular-width sibling), which at weight 600 looks visibly **heavier and wider** than Barlow Condensed. Latin text meanwhile already resolved to Barlow Condensed, so English looks correct and Cyrillic looks bold. This also matches `font-display=swap` behavior: the wrong-family glyph gets painted first and never swaps if the correct-family glyph never becomes needed (glyph cache per codepoint).
+RLS: every new table gets `GRANT ... TO authenticated, service_role`, RLS turned on, and one ALL policy `coach_id = auth.uid()` (both USING and WITH CHECK). `client_notes` and `client_goals` keep their existing relationship-based policy. Athletes get no access to the new tables. Phone privacy holds because only the coach can read `coach_clients`.
 
-**Fix (small):**
-1. Drop `'Arial Narrow'` from the `.font-display` fallback — it has no Cyrillic and is the source of the heavy substitution.
-2. Add `font-display: swap` explicitly via a `@font-face` override or accept that removing Arial Narrow is enough (Barlow itself has Cyrillic, so if fallback is hit, it'll still be regular weight).
-3. Add `-webkit-font-smoothing: antialiased` guard and confirm no `font-synthesis` issue by setting `font-synthesis: none;` on `body` — prevents the browser from synth-embolding when it thinks a weight is missing.
-4. Preload the Cyrillic subset with a `<link rel="preload" as="font" crossorigin>` in `index.html` for the two Condensed weights actually used (500, 600).
+How bookings link: the existing booking trigger, once a booking is confirmed, also inserts a `coach_sessions` row with `booking_id` set, linked to the existing `coach_clients` row (or a new one with stage 'active'). The trigger that creates `coach_clients` must also fill `display_name` from the athlete's name. Open availability slots still come from `availability_slots` and appear on the calendar as available time.
 
-No component code needs to change for item 2.
+KPIs come from `coach_sessions`:
+- sessions this week
+- attendance % (attended out of attended plus no-show)
+- hours coached (sum of attended session lengths)
+- active clients (stage = active)
 
-## Item 1 — Scope of hardcoded English strings
+## 4. Login redirect today and the change
 
-`useLanguage()` is currently wired into only **8 files** out of ~40 with user-visible copy. Everything else is hardcoded English. The regression on "Find a Coach" is representative: `PublicNav.tsx:14` has `label: 'Find a Coach'` as a literal, even though `nav_search` exists in `translations.ts`.
+- The redirect lives in `src/pages/Start.tsx` lines 67, 79 and 101 (`athlete ? '/account' : '/dashboard'`), plus `ForCoaches.tsx` and the redirects inside `RequireAuth`.
+- **Route conflict:** `/coach/:id` is the public profile. Two options:
+  - (a) Recommended: move the public profile to `/coaches/:id`, keep a redirect from the old link, then use `/coach/*` for the portal. Put the fixed paths (`/coach/dashboard`, `/coach/clients`, …) ahead of the old link pattern.
+  - (b) Name the portal `/portal/*` and skip the move.
+- Add a helper `homeFor(role)` that sends athletes to `/account`, coaches to `/coach` and clubs to `/dashboard`. Use it in Start, RequireAuth and the PublicNav menu. Add `area="coach"` to RequireAuth so onboarding and status gating still apply. Redirect old `/dashboard/*` coach links to `/coach/*`.
 
-Rough count of hardcoded UI strings per file (JSX text, placeholders, toasts, aria-labels — from `rg` scan):
+## 5. Risks
 
-### Tier A — high density, user-facing chrome (do first)
-| File | Strings | Uses t? |
-|---|---|---|
-| `components/layout/PublicNav.tsx` | 2 (incl. the `label` bug) | partial |
-| `components/layout/PublicFooter.tsx` | 10 | no |
-| `components/dashboard/DashboardLayout.tsx` | 2 (nav labels) | no |
-| `pages/Login.tsx` | 5 | no |
-| `pages/Register.tsx` | 22 | no |
-| `pages/Start.tsx` | 2 | no |
-| `pages/NotFound.tsx` | 1 | no |
+- Breaking public coach links (the route conflict above). Fix it first, together with every place that links to a coach profile.
+- Club accounts still depend on `DashboardLayout`. Leave `/dashboard` running for clubs.
+- Making `athlete_id` nullable affects `Clients`, `ClientDetail`, `ProgramSection` and `MyProgram` (training programs need an athlete account to be "sent", so block sending to external clients).
+- Booking triggers: the extra session insert must not fail when a booking is confirmed (SECURITY DEFINER and idempotent).
+- Recurrence: materialising sessions ahead needs a "generate more" step. In this first version it runs when the series is created or edited and when the calendar opens.
+- Theme: portal colours must be separate tokens scoped to the portal, so the public pages are unaffected.
+- Data risk is low, because every affected table is currently empty.
 
-### Tier B — dashboard pages (athlete + coach)
-| File | Strings |
-|---|---|
-| `pages/dashboard/ProfileEditor.tsx` | 24 |
-| `pages/dashboard/Bookmarks.tsx` | 11 |
-| `pages/dashboard/Availability.tsx` | 11 |
-| `pages/dashboard/Settings.tsx` | 10 |
-| `pages/dashboard/DashboardHome.tsx` | 10 |
-| `pages/dashboard/PersonalInfo.tsx` | 8 |
-| `pages/dashboard/Billing.tsx` | 6 |
-| `pages/dashboard/MyBookings.tsx` | 5 |
-| `pages/dashboard/Messages.tsx` | 4 |
-| `pages/dashboard/BookingRequests.tsx` | 4 |
-| `pages/dashboard/Analytics.tsx` | 3 |
+## Recommended build order
 
-### Tier C — public pages / profile / marketplace
-| File | Strings |
-|---|---|
-| `pages/CoachProfile.tsx` | 15 |
-| `pages/ClubProfile.tsx` | 15 |
-| `pages/Search.tsx` | 7 |
-| `pages/Events.tsx` | 1 (mostly data-driven) |
-| `pages/Marketplace.tsx` | 1 |
-| `components/marketplace/EventsSlider.tsx` | 5 |
-| `components/marketplace/CartDrawer.tsx` | 4 |
-| `components/marketplace/FloatingCartButton.tsx` | 4 |
+1. Move the public profile to `/coaches/:id` with redirects and update all links. Add `homeFor(role)`.
+2. Database migration: extend `coach_clients`, add `coach_sessions`, `session_series`, `coach_tasks` and `client_events` with grants, RLS and triggers (booking to session, stage change to event). Regenerate the types.
+3. Portal shell: light Daylight tokens, `CoachLayout` with the top bar, side menu and mobile bottom tabs, `/coach/*` routes, redirect after login, EN/BG/FR keys.
+4. Clients CRM: board with drag-and-drop (@dnd-kit) plus a table view, an "add client" form for external clients, and the drawer with the timeline, notes and phone.
+5. Calendar: week, day and month views showing sessions, trials and open slots, a quick-book panel, weekly repeats, marking attendance.
+6. Dashboard: KPI tiles, Today list, pipeline counts, tasks with checkboxes, 8-week bar chart, inbox panel on the right (reusing the Messages queries).
+7. Messages page and public profile/settings inside the portal (reusing ProfileEditor and Settings), plus the unread-messages bell.
+8. Mobile Today screen (mark attended, add note), tests for the KPI formulas, and an end-to-end check signed in as a coach.
 
-### Tier D — home sections (mostly already translated headings, but bodies/CTAs leaking)
-| File | Strings |
-|---|---|
-| `components/home/SplitHero.tsx` | 1 ("Find a Coach" button) |
-| `components/home/HeroSection.tsx` | (hero has "Find a Coach" literal at line 45) |
-| `components/home/ManifestoSection.tsx` | 2 |
-| `components/home/FeaturedCoaches.tsx` | 1 |
-| `components/home/ClosingCTA.tsx` | 1 |
-| `components/community/PostCard.tsx` | 1 |
-| `components/BookmarkButton.tsx` | 2 (toasts) |
+## Assumptions
 
-**Total: ~34 files, ~200 hardcoded strings.** Every dashboard page is 0% translated. Every form (Login/Register/ProfileEditor/PersonalInfo/Settings) is 0% translated. Toasts, empty states, and aria-labels are 100% English everywhere.
-
-## Recommended split
-
-Doing all ~200 strings in a single pass is risky (translation quality suffers, huge diff, hard to review). Suggested phased plan:
-
-- **Phase 1 (this turn, small):** Fix the Cyrillic font-weight issue in `index.css` + `index.html`. Fix the immediate `PublicNav` "Find a Coach" bug by using `t.nav_search`. Wire `DashboardLayout` nav labels through `t`. ~1 file CSS + 2 component files.
-- **Phase 2:** Tier A public chrome (Footer, Login, Register, Start, NotFound). ~40 new keys × 3 languages.
-- **Phase 3:** Tier C public pages (CoachProfile, ClubProfile, Search, Marketplace, marketplace components). ~50 keys × 3.
-- **Phase 4:** Tier B dashboard pages (all 11 files). ~100 keys × 3.
-- **Phase 5:** Tier D home leftovers + toast/aria sweep.
-
-Each phase = one PR-sized turn, translations stay reviewable, and the app is never in a half-broken state.
-
-## Question for you
-
-Do you want me to:
-- **(A)** Execute Phase 1 only now (font fix + nav bug + dashboard nav labels), then wait for approval before each subsequent phase?
-- **(B)** Execute Phases 1 + 2 in one go, then pause?
-- **(C)** Blast through all phases in one very large turn (higher risk of shallow BG/FR translations and merge pain)?
-
-Also: for translations, should Bulgarian and French come from you inline, or would you prefer English keys first and BG/FR filled as a follow-up?
+- Clubs stay on `/dashboard` for now.
+- Coaches cannot message external clients in this version.
+- "Notifications" means the unread-messages count only.
