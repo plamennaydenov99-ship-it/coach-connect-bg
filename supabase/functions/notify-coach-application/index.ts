@@ -70,13 +70,13 @@ Deno.serve(async req => {
       <p><a href="${reviewUrl}">Review applications →</a></p>`;
 
     const applicantHtml = `
-      <h2>Thanks for applying, ${esc(profile?.full_name || 'coach')}!</h2>
-      <p>Your application to coach on Lokka is now in review. We check every coach by hand, and you'll hear back from us soon.</p>
+      <h2>Welcome to Lokka, ${esc(profile?.full_name || 'coach')}!</h2>
+      <p>Your coach profile is live in the beta. Head to your dashboard to add your clients, sessions and availability.</p>
       <p>— The Lokka team</p>`;
 
     const [adminRes, applicantRes] = await Promise.all([
       sendEmail(Deno.env.get('ADMIN_NOTIFICATION_EMAIL')!, `New coach application: ${name}`, adminHtml),
-      email ? sendEmail(email, 'Your Lokka coach application is in review', applicantHtml) : Promise.resolve(null),
+      email ? sendEmail(email, 'Welcome to Lokka — your coach profile is live', applicantHtml) : Promise.resolve(null),
     ]);
 
     return json({ admin: adminRes, applicant: applicantRes }, adminRes.ok ? 200 : 502);
