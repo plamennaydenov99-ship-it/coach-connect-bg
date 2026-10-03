@@ -54,7 +54,7 @@ export function PublicNav() {
           <div className="flex h-9 w-9 items-center justify-center bg-navy text-primary-foreground rounded-sm">
             <Zap className="h-4 w-4" strokeWidth={2.5} />
           </div>
-          <span className="font-display text-2xl md:text-3xl tracking-[0.08em] font-semibold text-foreground">ZENIT</span>
+          <span className="font-display text-2xl md:text-3xl tracking-[0.08em] font-semibold text-foreground">LOKKA</span>
         </Link>
 
 
