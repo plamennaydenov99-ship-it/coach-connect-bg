@@ -229,7 +229,7 @@ function Inbox() {
   return (
     <aside className={`${card} xl:w-[340px] xl:shrink-0 self-start`}>
       <div className="flex items-center justify-between mb-3">
-        <h2 className={title}>{t.dash_messages}</h2>
+        <h2 className={title}>{t.dash_inbox_title}</h2>
         <Link to="/coach/messages" className={link}>{t.dash_open_messages} →</Link>
       </div>
       {isLoading ? <div className="space-y-3">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-12" />)}</div>
