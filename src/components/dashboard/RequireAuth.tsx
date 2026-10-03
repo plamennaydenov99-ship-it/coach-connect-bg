@@ -3,10 +3,11 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { homeFor } from '@/lib/routes';
 import { supabase } from '@/integrations/supabase/client';
+import LegacyDashboardRedirect from '@/pages/coach/LegacyDashboardRedirect';
 import { ApplicationReview } from './ApplicationReview';
 import { CoachOnboarding } from './CoachOnboarding';
 
-type Area = 'athlete' | 'staff';
+type Area = 'athlete' | 'staff' | 'coach';
 
 export function RequireAuth({ children, area }: { children: React.ReactNode; area?: Area }) {
   const { user, profile, loading, profileLoading, profileError, refreshProfile } = useAuth();
@@ -59,7 +60,16 @@ export function RequireAuth({ children, area }: { children: React.ReactNode; are
     return <Navigate to={homeFor(profile.role)} replace />;
   }
 
-  if (area === 'staff' && role === 'coach' && status === 'draft') {
+  if (area === 'coach' && profile && profile.role !== 'coach') {
+    return <Navigate to={homeFor(profile.role)} replace />;
+  }
+  // Coaches now live in the /coach portal; old /dashboard URLs forward there.
+  if (area === 'staff' && role === 'coach') {
+    return <LegacyDashboardRedirect />;
+  }
+
+  const gated = area === 'staff' || area === 'coach';
+  if (gated && role === 'coach' && status === 'draft') {
     return (
       <CoachOnboarding
         onSubmitted={async () => {
@@ -76,7 +86,7 @@ export function RequireAuth({ children, area }: { children: React.ReactNode; are
     );
   }
 
-  if (area === 'staff' && isStaff && (status === 'pending' || status === 'rejected')) {
+  if (gated && isStaff && (status === 'pending' || status === 'rejected')) {
     return <ApplicationReview status={status} />;
   }
 

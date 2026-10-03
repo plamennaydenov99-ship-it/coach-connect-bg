@@ -22,6 +22,8 @@ import Start from "./pages/Start";
 import NotFound from "./pages/NotFound";
 import LegacyCoachRedirect from "./pages/LegacyCoachRedirect";
 
+import { CoachLayout } from "./components/coach/CoachLayout";
+import CoachCalendar from "./pages/coach/CoachCalendar";
 import { DashboardLayout } from "./components/dashboard/DashboardLayout";
 import { AccountLayout } from "./components/account/AccountLayout";
 import Account from "./pages/Account";
@@ -59,6 +61,16 @@ const App = () => (
               <Route path="/athlete" element={<Index />} />
               <Route path="/search" element={<Search />} />
               <Route path="/coaches/:id" element={<CoachProfile />} />
+              <Route path="/coach" element={<RequireAuth area="coach"><CoachLayout /></RequireAuth>}>
+                <Route index element={<Navigate to="/coach/dashboard" replace />} />
+                <Route path="dashboard" element={<DashboardHome />} />
+                <Route path="clients" element={<Clients />} />
+                <Route path="clients/:id" element={<ClientDetail />} />
+                <Route path="calendar" element={<CoachCalendar />} />
+                <Route path="messages" element={<Messages />} />
+                <Route path="profile" element={<ProfileEditor />} />
+                <Route path="settings" element={<DashSettings />} />
+              </Route>
               {/* Legacy profile links. Register future /coach/* portal paths above this. */}
               <Route path="/coach/:id" element={<LegacyCoachRedirect />} />
               <Route path="/club/:id" element={<ClubProfile />} />
