@@ -97,18 +97,23 @@ export function useCoachInbox(limit = 6) {
     queryFn: async (): Promise<InboxItem[]> => {
       const { data, error } = await supabase
         .from('conversations')
-        .select('id, last_message_at, other:profiles!conversations_athlete_id_fkey(full_name)')
+        .select('id, athlete_id, last_message_at')
         .eq('coach_id', user!.id)
         .order('last_message_at', { ascending: false })
         .limit(limit);
       if (error) throw error;
-      const convos = (data ?? []) as any[];
+      const convos = data ?? [];
+      const ids = [...new Set(convos.map((c) => c.athlete_id))];
+      const { data: profs } = ids.length
+        ? await supabase.from('profiles').select('id, full_name').in('id', ids)
+        : { data: [] as { id: string; full_name: string | null }[] };
+      const nameOf = new Map((profs ?? []).map((p) => [p.id, p.full_name]));
       const previews = await Promise.all(convos.map((c) =>
         supabase.from('messages').select('content').eq('conversation_id', c.id).order('created_at', { ascending: false }).limit(1).maybeSingle(),
       ));
       return convos.map((c, i) => ({
         id: c.id,
-        name: c.other?.full_name || '—',
+        name: nameOf.get(c.athlete_id) || '—',
         last_message_at: c.last_message_at,
         preview: previews[i].data?.content ?? null,
       }));

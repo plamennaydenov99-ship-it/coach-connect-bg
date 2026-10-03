@@ -158,7 +158,7 @@ function TodayList({ sessions, onOpen }: { sessions: CalSession[]; onOpen: (s: C
     <ul className="divide-y divide-portal-border">
       {sessions.map((s) => {
         const [label, cls] = chip(s);
-        const past = s.status === 'scheduled' && new Date(s.ends_at).getTime() < now;
+        const past = s.status === 'scheduled' && new Date(s.starts_at).getTime() <= now;
         const dot = s.status === 'attended' ? 'bg-portal-muted' : s.id === nextId ? 'bg-portal-copper' : s.status === 'scheduled' ? 'bg-[#5B82E0]' : 'bg-portal-border';
         return (
           <li key={s.id} className="flex items-center gap-3 py-2.5">
