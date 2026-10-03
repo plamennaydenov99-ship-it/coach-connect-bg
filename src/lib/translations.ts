@@ -1626,7 +1626,7 @@ export const t = {
     onb_price_solo: 'Séance individuelle (BGN)',
     onb_price_group: 'Séance collective (BGN)',
     onb_done_title: 'C’est parti !',
-    onb_done_body: 'Ton profil est actif en bêta. Accède à ton tableau de bord pour ajouter tes clients et tes séances.',
+    onb_done_body: 'Votre profil est actif en bêta. Accédez à votre tableau de bord pour ajouter vos clients et vos séances.',
     onb_done_cta: 'Aller au tableau de bord',
     entry_choose_sub: 'Choisissez votre profil. Vous pourrez en ajouter un autre plus tard.',
     entry_athlete_desc: 'Trouvez un coach et réservez des séances.',
