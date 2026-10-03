@@ -125,6 +125,7 @@
   --portal-copper: 17 52% 40%;        /* #9A4F31 */
   --portal-copper-hover: 18 55% 32%;  /* #7E3F25 */
   --portal-on-copper: 43 26% 94%;     /* #F4F1EA */
+  --portal-copper-tint: 23 59% 91%;   /* #F6E6DC */
   --portal-selected: 220 38% 92%;     /* #E3E8F2 */
   --portal-selected-border: 220 35% 80%; /* #B9C5DD */
   background: hsl(var(--portal-bg));

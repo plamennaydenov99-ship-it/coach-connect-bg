@@ -30,6 +30,7 @@ export default {
           copper: "hsl(var(--portal-copper))",
           "copper-hover": "hsl(var(--portal-copper-hover))",
           "on-copper": "hsl(var(--portal-on-copper))",
+          "copper-tint": "hsl(var(--portal-copper-tint))",
           selected: "hsl(var(--portal-selected))",
           "selected-border": "hsl(var(--portal-selected-border))",
         },

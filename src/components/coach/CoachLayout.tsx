@@ -75,7 +75,7 @@ export function CoachLayout() {
         <div className="flex-1" />
 
         <Link
-          to="/coach/calendar"
+          to="/coach/calendar?new=1"
           className="inline-flex items-center gap-1.5 h-9 px-3 md:px-4 rounded-[4px] bg-portal-copper hover:bg-portal-copper-hover text-portal-on-copper font-display uppercase tracking-[0.1em] text-sm transition-colors"
         >
           <Plus className="h-4 w-4" />
