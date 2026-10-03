@@ -9,7 +9,7 @@ export function CoachCard({ coach }: { coach: Coach }) {
 
   return (
     <Link
-      to={`/coach/${coach.slug}`}
+      to={`/coaches/${coach.slug}`}
       className="group surface overflow-hidden flex flex-col transition-all hover:border-gold/50"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-muted">

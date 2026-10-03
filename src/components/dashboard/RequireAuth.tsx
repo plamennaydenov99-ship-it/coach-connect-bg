@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { homeFor } from '@/lib/routes';
 import { supabase } from '@/integrations/supabase/client';
 import { ApplicationReview } from './ApplicationReview';
 import { CoachOnboarding } from './CoachOnboarding';
@@ -52,10 +53,10 @@ export function RequireAuth({ children, area }: { children: React.ReactNode; are
   }
 
   if (area === 'athlete' && profile && profile.role !== 'athlete') {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to={homeFor(profile.role)} replace />;
   }
   if (area === 'staff' && profile && profile.role === 'athlete') {
-    return <Navigate to="/account" replace />;
+    return <Navigate to={homeFor(profile.role)} replace />;
   }
 
   if (area === 'staff' && role === 'coach' && status === 'draft') {

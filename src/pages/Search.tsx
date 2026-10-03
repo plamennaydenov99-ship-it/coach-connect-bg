@@ -100,7 +100,7 @@ function CoachResultCard({ coach }: { coach: CoachRow }) {
 
   return (
     <Link
-      to={`/coach/${coach.id}`}
+      to={`/coaches/${coach.id}`}
       className="group surface overflow-hidden flex flex-col transition-all hover:border-gold/50"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-muted">
