@@ -83,7 +83,6 @@ function Body({ s, onClose }: { s: CalSession; onClose: () => void }) {
     </div>
   );
 
-  const past = new Date(s.starts_at).getTime() < Date.now();
 
   return (
     <div className="space-y-5 pt-2">
@@ -106,7 +105,7 @@ function Body({ s, onClose }: { s: CalSession; onClose: () => void }) {
 
       {mode === 'view' && s.status !== 'cancelled' && (
         <div className="grid grid-cols-2 gap-2">
-          {s.status !== 'attended' && <button className={portalBtnGhost} onClick={() => status('attended')} disabled={!past && false}>{t.cal_mark_attended}</button>}
+          {s.status !== 'attended' && <button className={portalBtnGhost} onClick={() => status('attended')}>{t.cal_mark_attended}</button>}
           {s.status !== 'no_show' && <button className={portalBtnGhost} onClick={() => status('no_show')}>{t.cal_no_show}</button>}
           <button className={portalBtnGhost} onClick={() => setMode('reschedule')}>{t.cal_reschedule}</button>
           <button className={`${portalBtnGhost} text-portal-copper border-portal-copper`} onClick={onCancel}>{t.cal_cancel_session}</button>
