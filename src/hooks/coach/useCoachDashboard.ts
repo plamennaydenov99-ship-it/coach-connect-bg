@@ -82,7 +82,7 @@ export function useQuickTask() {
       const { error } = await supabase.from('coach_tasks').insert({ coach_id: user!.id, title });
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['coach', user?.id] }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
   });
 }
 
