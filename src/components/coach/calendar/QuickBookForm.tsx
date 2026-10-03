@@ -1,0 +1,177 @@
+import { useEffect, useMemo, useState } from 'react';
+import { AlertTriangle, Plus, X } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { useLanguage } from '@/context/LanguageContext';
+import { useAuth } from '@/hooks/useAuth';
+import { useClientList, useCreateClient } from '@/hooks/coach/useCoachClients';
+import { bookingCandidates, findOverlaps, useBookSession, useCoachTz, TOPUP_WEEKS } from '@/hooks/coach/useCoachCalendar';
+import { addDays, type DateStr } from '@/lib/tz';
+import { Avatar, portalBtnGhost, portalBtnPrimary, portalInput, portalLabel } from '@/components/coach/clients/shared';
+import { toast } from 'sonner';
+
+const DURATIONS = [30, 45, 60, 90];
+
+export function QuickBookForm({ initial, onDone, onClose }: {
+  initial: { date: DateStr; time: string; clientId?: string };
+  onDone: () => void;
+  onClose: () => void;
+}) {
+  const { t } = useLanguage();
+  const { user } = useAuth();
+  const tz = useCoachTz();
+  const { data: clients = [] } = useClientList();
+  const createClient = useCreateClient();
+  const book = useBookSession();
+
+  const [clientId, setClientId] = useState(initial.clientId ?? '');
+  const [q, setQ] = useState('');
+  const [newName, setNewName] = useState<string | null>(null);
+  const [date, setDate] = useState(initial.date);
+  const [time, setTime] = useState(initial.time);
+  const [duration, setDuration] = useState(60);
+  const [custom, setCustom] = useState(false);
+  const [location, setLocation] = useState('');
+  const [kind, setKind] = useState<'session' | 'trial'>('session');
+  const [repeat, setRepeat] = useState(false);
+  const [endsOn, setEndsOn] = useState(addDays(initial.date, TOPUP_WEEKS * 7));
+  const [overlaps, setOverlaps] = useState(0);
+  const [confirmed, setConfirmed] = useState(false);
+
+  useEffect(() => { setDate(initial.date); setTime(initial.time); if (initial.clientId) setClientId(initial.clientId); }, [initial.date, initial.time, initial.clientId]);
+  useEffect(() => { setConfirmed(false); setOverlaps(0); }, [date, time, duration, repeat, endsOn]);
+
+  const active = clients.filter((c) => c.stage !== 'archived');
+  const selected = active.find((c) => c.id === clientId);
+  const matches = useMemo(() => {
+    const s = q.trim().toLowerCase();
+    return active.filter((c) => !s || c.display_name.toLowerCase().includes(s)).slice(0, 6);
+  }, [active, q]);
+
+  const addClient = async () => {
+    const name = (newName ?? '').trim().slice(0, 120);
+    if (!name) return;
+    try {
+      const row = await createClient.mutateAsync({ display_name: name, stage: 'enquiry' });
+      setClientId(row.id); setNewName(null); setQ('');
+    } catch { toast.error(t.crm_error); }
+  };
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!clientId) return toast.error(t.cal_pick_client);
+    if (!date || !/^\d{2}:\d{2}$/.test(time) || duration < 5 || duration > 600) return;
+    const input = { client_id: clientId, date, time, duration, location: location.trim().slice(0, 200), kind, repeat, endsOn: repeat ? endsOn || null : null };
+    try {
+      if (!confirmed) {
+        const n = await findOverlaps(user!.id, bookingCandidates(input, tz));
+        if (n > 0) { setOverlaps(n); setConfirmed(true); return; }
+      }
+      await book.mutateAsync(input);
+      toast.success(t.cal_booked);
+      onDone();
+    } catch { toast.error(t.crm_error); }
+  };
+
+  return (
+    <form onSubmit={submit} className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="font-display text-lg uppercase tracking-[0.1em]">{t.cal_quick_book}</h2>
+        <button type="button" onClick={onClose} aria-label={t.cal_close} className="h-8 w-8 flex items-center justify-center text-portal-muted-strong"><X className="h-4 w-4" /></button>
+      </div>
+
+      <div className="space-y-1.5">
+        <span className={portalLabel}>{t.cal_client}</span>
+        {selected ? (
+          <div className="flex items-center gap-2 p-2 rounded-[4px] border border-portal-selected-border bg-portal-selected">
+            <Avatar name={selected.display_name} size={28} />
+            <span className="flex-1 text-sm">{selected.display_name}</span>
+            <button type="button" onClick={() => setClientId('')} className="text-portal-muted-strong"><X className="h-4 w-4" /></button>
+          </div>
+        ) : (
+          <div className="rounded-[4px] border border-portal-border">
+            <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t.cal_search_client} className={`${portalInput} border-0 border-b border-portal-border rounded-b-none`} />
+            <ul className="max-h-48 overflow-y-auto">
+              {matches.map((c) => (
+                <li key={c.id}>
+                  <button type="button" onClick={() => setClientId(c.id)} className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-portal-bg text-left">
+                    <Avatar name={c.display_name} size={24} />{c.display_name}
+                  </button>
+                </li>
+              ))}
+              {matches.length === 0 && <li className="px-3 py-2 text-sm text-portal-muted">{t.cal_no_clients}</li>}
+            </ul>
+            {newName === null ? (
+              <button type="button" onClick={() => setNewName(q)} className="w-full flex items-center gap-1.5 px-3 py-2 text-sm text-portal-copper border-t border-portal-border">
+                <Plus className="h-4 w-4" />{t.cal_new_client_inline}
+              </button>
+            ) : (
+              <div className="flex gap-2 p-2 border-t border-portal-border">
+                <input autoFocus value={newName} onChange={(e) => setNewName(e.target.value)} placeholder={t.cal_new_client_name} className={portalInput} maxLength={120}
+                  onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addClient(); } }} />
+                <button type="button" onClick={addClient} disabled={!newName.trim() || createClient.isPending} className={portalBtnPrimary}><Plus className="h-4 w-4" /></button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <label className="space-y-1 block"><span className={portalLabel}>{t.cal_date}</span>
+          <input type="date" required value={date} onChange={(e) => setDate(e.target.value)} className={portalInput} /></label>
+        <label className="space-y-1 block"><span className={portalLabel}>{t.cal_start}</span>
+          <input type="time" required step={300} value={time} onChange={(e) => setTime(e.target.value)} className={portalInput} /></label>
+      </div>
+
+      <div className="space-y-1.5">
+        <span className={portalLabel}>{t.cal_duration}</span>
+        <div className="flex flex-wrap gap-1.5">
+          {DURATIONS.map((d) => (
+            <button type="button" key={d} onClick={() => { setDuration(d); setCustom(false); }}
+              className={`h-8 px-3 rounded-[4px] border text-sm ${!custom && duration === d ? 'bg-portal-selected border-portal-selected-border' : 'border-portal-border text-portal-muted-strong'}`}>
+              {d} {t.cal_minutes}
+            </button>
+          ))}
+          <button type="button" onClick={() => setCustom(true)} className={`h-8 px-3 rounded-[4px] border text-sm ${custom ? 'bg-portal-selected border-portal-selected-border' : 'border-portal-border text-portal-muted-strong'}`}>{t.cal_custom}</button>
+        </div>
+        {custom && <input type="number" min={5} max={600} step={5} value={duration} onChange={(e) => setDuration(Number(e.target.value))} className={`${portalInput} w-28`} />}
+      </div>
+
+      <label className="space-y-1 block"><span className={portalLabel}>{t.cal_location}</span>
+        <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder={t.cal_location_ph} maxLength={200} className={portalInput} /></label>
+
+      <div className="space-y-1.5">
+        <span className={portalLabel}>{t.cal_type}</span>
+        <div className="flex gap-1.5">
+          {(['session', 'trial'] as const).map((k) => (
+            <button type="button" key={k} onClick={() => setKind(k)}
+              className={`flex-1 h-9 rounded-[4px] border text-sm ${kind === k ? (k === 'trial' ? 'bg-portal-copper-tint border-portal-copper' : 'bg-portal-selected border-portal-selected-border') : 'border-portal-border text-portal-muted-strong'}`}>
+              {k === 'trial' ? t.cal_type_trial : t.cal_type_session}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <label className="flex items-center justify-between text-sm"><span>{t.cal_repeat_weekly}</span><Switch checked={repeat} onCheckedChange={setRepeat} /></label>
+        {repeat && (
+          <label className="space-y-1 block"><span className={portalLabel}>{t.cal_ends_on}</span>
+            <input type="date" value={endsOn} min={date} onChange={(e) => setEndsOn(e.target.value)} className={portalInput} />
+            <span className="text-xs text-portal-muted">{t.cal_ends_hint}</span>
+          </label>
+        )}
+      </div>
+
+      {confirmed && overlaps > 0 && (
+        <div className="flex gap-2 p-3 rounded-[4px] border border-portal-copper bg-portal-copper-tint text-sm">
+          <AlertTriangle className="h-4 w-4 text-portal-copper shrink-0 mt-0.5" />
+          <span>{t.cal_overlap_warning.replace('{n}', String(overlaps))}</span>
+        </div>
+      )}
+
+      <div className="flex gap-2 justify-end">
+        <button type="button" onClick={onClose} className={portalBtnGhost}>{t.crm_cancel}</button>
+        <button type="submit" disabled={book.isPending} className={portalBtnPrimary}>{confirmed && overlaps > 0 ? t.cal_save_anyway : t.cal_book}</button>
+      </div>
+    </form>
+  );
+}
