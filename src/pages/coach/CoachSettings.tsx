@@ -46,7 +46,7 @@ export default function CoachSettings() {
     <div className="max-w-3xl space-y-6">
       <div>
         <h1 className="font-display uppercase text-3xl tracking-[0.06em] text-portal-ink">{t.dashsettings_title}</h1>
-        <p className="text-portal-muted-strong mt-1">{t.dashsettings_sub}</p>
+        <p className="text-portal-muted-strong mt-1">{t.cset_sub}</p>
       </div>
 
       <section className={card}>
