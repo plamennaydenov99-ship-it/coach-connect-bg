@@ -5,3 +5,5 @@
 - [x] Step 4: Clients CRM
 - [x] Step 5: Calendar
 - [ ] Steps 6–8 per plan (awaiting go-ahead)
+
+- [x] Step 6: coach dashboard at /coach/dashboard (KPIs, today, pipeline, tasks, weekly chart, inbox)
