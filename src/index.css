@@ -113,6 +113,26 @@
   }
 }
 
+/* Coach portal tokens — scoped to .coach-portal only (light theme). */
+.coach-portal {
+  --portal-bg: 43 26% 94%;            /* #F4F1EA */
+  --portal-card: 0 0% 100%;           /* #FFFFFF */
+  --portal-ink: 45 7% 12%;            /* #201F1C */
+  --portal-muted: 40 6% 41%;          /* #6E6A62 */
+  --portal-muted-strong: 40 7% 34%;   /* #5E5A52 */
+  --portal-border: 40 24% 85%;        /* #E2DCD0 */
+  --portal-input: 41 22% 80%;         /* #D6CFC0 */
+  --portal-copper: 17 52% 40%;        /* #9A4F31 */
+  --portal-copper-hover: 18 55% 32%;  /* #7E3F25 */
+  --portal-on-copper: 43 26% 94%;     /* #F4F1EA */
+  --portal-selected: 220 38% 92%;     /* #E3E8F2 */
+  --portal-selected-border: 220 35% 80%; /* #B9C5DD */
+  background: hsl(var(--portal-bg));
+  color: hsl(var(--portal-ink));
+  font-family: 'Barlow', system-ui, sans-serif;
+  color-scheme: light;
+}
+
 @layer components {
   .surface {
     background: hsl(var(--card));
