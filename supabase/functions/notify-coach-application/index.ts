@@ -5,7 +5,7 @@ import { z } from 'npm:zod@3';
 const GATEWAY_URL = 'https://connector-gateway.lovable.dev/resend';
 const SITE_URL = 'https://lokka1.lovable.app';
 // Change to an address on a domain verified in Resend to deliver to applicants.
-const FROM = 'Zenit <onboarding@resend.dev>';
+const FROM = 'Lokka <onboarding@resend.dev>';
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
@@ -71,12 +71,12 @@ Deno.serve(async req => {
 
     const applicantHtml = `
       <h2>Thanks for applying, ${esc(profile?.full_name || 'coach')}!</h2>
-      <p>Your application to coach on Zenit is now in review. We check every coach by hand, and you'll hear back from us soon.</p>
-      <p>— The Zenit team</p>`;
+      <p>Your application to coach on Lokka is now in review. We check every coach by hand, and you'll hear back from us soon.</p>
+      <p>— The Lokka team</p>`;
 
     const [adminRes, applicantRes] = await Promise.all([
       sendEmail(Deno.env.get('ADMIN_NOTIFICATION_EMAIL')!, `New coach application: ${name}`, adminHtml),
-      email ? sendEmail(email, 'Your Zenit coach application is in review', applicantHtml) : Promise.resolve(null),
+      email ? sendEmail(email, 'Your Lokka coach application is in review', applicantHtml) : Promise.resolve(null),
     ]);
 
     return json({ admin: adminRes, applicant: applicantRes }, adminRes.ok ? 200 : 502);

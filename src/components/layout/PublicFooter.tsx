@@ -12,7 +12,7 @@ export function PublicFooter() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <Zap className="h-4 w-4" strokeWidth={2.5} />
             </div>
-            <span className="font-display text-lg">Zenit</span>
+            <span className="font-display text-lg">Lokka</span>
           </Link>
           <p className="mt-3 text-sm text-muted-foreground max-w-sm">
             {t.footer_tagline}
@@ -39,7 +39,7 @@ export function PublicFooter() {
       </div>
       <div className="border-t border-border">
         <div className="container py-5 text-xs text-muted-foreground flex flex-wrap justify-between gap-2">
-          <span>© {new Date().getFullYear()} Zenit. {t.footer_rights}</span>
+          <span>© {new Date().getFullYear()} Lokka. {t.footer_rights}</span>
           <span>{t.footer_made_for}</span>
         </div>
       </div>
