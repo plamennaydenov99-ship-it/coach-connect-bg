@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { ArrowUpDown } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+import { useCoachTz } from '@/hooks/coach/useCoachCalendar';
 import type { ClientSummary } from '@/hooks/coach/useCoachClients';
 import { Avatar, fmtDate, fmtDateTime, isToday, stageKey } from './shared';
 
@@ -8,6 +9,7 @@ type SortKey = 'name' | 'next';
 
 export function ClientTable({ clients, onOpen }: { clients: ClientSummary[]; onOpen: (id: string) => void }) {
   const { t, lang } = useLanguage();
+  const tz = useCoachTz();
   const [sort, setSort] = useState<{ key: SortKey; dir: 1 | -1 }>({ key: 'name', dir: 1 });
 
   const rows = useMemo(() => {
@@ -44,12 +46,12 @@ export function ClientTable({ clients, onOpen }: { clients: ClientSummary[]; onO
               <td className="px-3 py-2.5"><div className="flex items-center gap-2"><Avatar name={c.display_name} size={28} /><span className="font-medium">{c.display_name}</span></div></td>
               <td className="px-3 py-2.5 text-portal-muted-strong">{t[stageKey(c.stage)]}</td>
               <td className="px-3 py-2.5 text-portal-muted-strong max-w-[220px] truncate">{c.goal || '—'}</td>
-              <td className={`px-3 py-2.5 ${c.nextSession && isToday(c.nextSession.starts_at) ? 'text-portal-copper font-medium' : 'text-portal-muted-strong'}`}>
-                {c.nextSession ? fmtDateTime(c.nextSession.starts_at, lang) : '—'}
+              <td className={`px-3 py-2.5 ${c.nextSession && isToday(c.nextSession.starts_at, tz) ? 'text-portal-copper font-medium' : 'text-portal-muted-strong'}`}>
+                {c.nextSession ? fmtDateTime(c.nextSession.starts_at, lang, tz) : '—'}
               </td>
               <td className="px-3 py-2.5">{c.attendedCount}</td>
               <td className="px-3 py-2.5">{c.openTasks}</td>
-              <td className="px-3 py-2.5 text-portal-muted-strong">{fmtDate(c.updated_at, lang)}</td>
+              <td className="px-3 py-2.5 text-portal-muted-strong">{fmtDate(c.updated_at, lang, tz)}</td>
             </tr>
           ))}
         </tbody>

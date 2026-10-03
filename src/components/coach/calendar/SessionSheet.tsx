@@ -27,6 +27,7 @@ export function SessionSheet({ session, onClose }: { session: CalSession | null;
 
 function Body({ s, onClose }: { s: CalSession; onClose: () => void }) {
   const { t, lang } = useLanguage();
+  const tz = useCoachTz();
   const { user } = useAuth();
   const tz = useCoachTz();
   const setStatus = useSessionStatus();
@@ -92,7 +93,7 @@ function Body({ s, onClose }: { s: CalSession; onClose: () => void }) {
         <Link to={`/coach/clients/${s.client_id}`} className="text-sm text-portal-copper underline-offset-2 hover:underline">{t.cal_open_client}</Link>
       </div>
       <div className="space-y-2 text-sm">
-        <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-portal-muted" />{fmtDateTime(s.starts_at, lang)} – {toTimeStr(s.ends_at, tz)}</div>
+        <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-portal-muted" />{fmtDateTime(s.starts_at, lang, tz)} – {toTimeStr(s.ends_at, tz)}</div>
         {s.location && <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-portal-muted" />{s.location}</div>}
         {s.series_id && <div className="flex items-center gap-2"><Repeat className="h-4 w-4 text-portal-muted" />{t.cal_repeats}</div>}
         <div className="flex gap-2 pt-1">
