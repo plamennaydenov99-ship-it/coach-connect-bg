@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { attachProfiles } from '@/lib/profiles';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Check, X, Clock, MessageSquare, Inbox } from 'lucide-react';
@@ -32,10 +33,10 @@ const BookingRequests = () => {
     setLoading(true);
     const { data } = await supabase
       .from('bookings')
-      .select('id, status, note, price, created_at, athlete_id, slot:availability_slots!bookings_slot_id_fkey(date, start_time, end_time), athlete:profiles!bookings_athlete_id_fkey(full_name, avatar_url, city)')
+      .select('id, status, note, price, created_at, athlete_id, slot:availability_slots!bookings_slot_id_fkey(date, start_time, end_time)')
       .eq('coach_id', user.id)
       .order('created_at', { ascending: false });
-    setRows((data as any) ?? []);
+    setRows((await attachProfiles((data as any[]) ?? [], 'athlete_id', 'athlete')) as any);
     setLoading(false);
   };
 
