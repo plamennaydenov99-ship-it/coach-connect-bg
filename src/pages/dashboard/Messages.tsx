@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { attachProfiles } from '@/lib/profiles';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -46,10 +47,10 @@ const Messages = () => {
       const otherCol = isCoach ? 'athlete_id' : 'coach_id';
       const { data } = await supabase
         .from('conversations')
-        .select(`id, athlete_id, coach_id, last_message_at, other:profiles!conversations_${otherCol}_fkey(id, full_name, avatar_url)`)
+        .select(`id, athlete_id, coach_id, last_message_at`)
         .eq(col, user.id)
         .order('last_message_at', { ascending: false });
-      setConvos((data as any) ?? []);
+      setConvos((await attachProfiles((data as any[]) ?? [], otherCol as any, 'other', 'id, full_name, avatar_url')) as any);
       setLoading(false);
       if (!activeId && data && data.length > 0) {
         setActiveId((data[0] as any).id);
@@ -71,10 +72,10 @@ const Messages = () => {
           const otherCol = isCoach ? 'athlete_id' : 'coach_id';
           const { data } = await supabase
             .from('conversations')
-            .select(`id, athlete_id, coach_id, last_message_at, other:profiles!conversations_${otherCol}_fkey(id, full_name, avatar_url)`)
+            .select(`id, athlete_id, coach_id, last_message_at`)
             .eq(col, user.id)
             .order('last_message_at', { ascending: false });
-          setConvos((data as any) ?? []);
+          setConvos((await attachProfiles((data as any[]) ?? [], otherCol as any, 'other', 'id, full_name, avatar_url')) as any);
         })();
       })
       .subscribe();

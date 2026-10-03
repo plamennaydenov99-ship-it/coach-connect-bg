@@ -173,7 +173,7 @@ export function useBookSession() {
       if (error) throw error;
       await fillSeries(series, v.date, v.endsOn ?? addDays(v.date, TOPUP_WEEKS * 7), tz);
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['coach', user?.id] }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
   });
 }
 
@@ -185,7 +185,7 @@ export function useSessionStatus() {
       const { error } = await supabase.from('coach_sessions').update({ status }).eq('id', id).eq('coach_id', user!.id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['coach', user?.id] }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
   });
 }
 
@@ -206,7 +206,7 @@ export function useCancelFollowing() {
       const ser = await supabase.from('session_series').update({ ends_on: end }).eq('id', s.series_id).eq('coach_id', user!.id);
       if (ser.error) throw ser.error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['coach', user?.id] }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
   });
 }
 
@@ -247,6 +247,6 @@ export function useReschedule() {
       const from = toDateStr(cutoff, tz) > v.date ? toDateStr(cutoff, tz) : v.date;
       await fillSeries(series, from, series.ends_on ?? addDays(todayStr(tz), TOPUP_WEEKS * 7), tz);
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['coach', user?.id] }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
   });
 }

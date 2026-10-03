@@ -82,7 +82,7 @@ export function useCreateClient() {
       if (error) throw error;
       return data;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['coach', user?.id] }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
   });
 }
 
@@ -149,7 +149,7 @@ export function useUpdateClient() {
       const { error } = await supabase.from('coach_clients').update(patch).eq('id', id).eq('coach_id', user!.id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['coach', user?.id] }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
   });
 }
 
@@ -161,7 +161,7 @@ export function useDeleteClient() {
       const { error } = await supabase.from('coach_clients').delete().eq('id', id).eq('coach_id', user!.id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['coach', user?.id] }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
   });
 }
 
@@ -200,7 +200,7 @@ export function useAddNote(clientId: string) {
       const { error } = await supabase.from('client_notes').insert({ relationship_id: clientId, content });
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: keys.client(user?.id, clientId) }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: keys.client(user?.id, clientId) }); },
   });
 }
 
@@ -214,7 +214,7 @@ export function useAddTask(clientId: string) {
         .insert({ coach_id: user!.id, client_id: clientId, title: v.title, due_date: v.due_date || null });
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['coach', user?.id] }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
   });
 }
 
@@ -230,7 +230,7 @@ export function useToggleTask() {
         .eq('coach_id', user!.id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['coach', user?.id] }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
   });
 }
 
@@ -242,6 +242,6 @@ export function useSetSessionStatus() {
       const { error } = await supabase.from('coach_sessions').update({ status }).eq('id', id).eq('coach_id', user!.id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['coach', user?.id] }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
   });
 }

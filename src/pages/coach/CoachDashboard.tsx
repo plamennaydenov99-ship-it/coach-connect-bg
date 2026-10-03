@@ -8,6 +8,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/hooks/useAuth';
 import { useCoachTz, useSessionStatus, type CalSession } from '@/hooks/coach/useCoachCalendar';
 import { useToggleTask, BOARD_STAGES } from '@/hooks/coach/useCoachClients';
+import { MobileTodayCards } from '@/components/coach/dashboard/MobileTodayCards';
 import { useCoachDashboard, useCoachInbox, useQuickTask } from '@/hooks/coach/useCoachDashboard';
 import { useUnreadCount } from '@/hooks/coach/useUnreadCount';
 import { SessionSheet } from '@/components/coach/calendar/SessionSheet';
@@ -35,7 +36,7 @@ export default function CoachDashboard() {
   return (
     <div className="flex flex-col xl:flex-row gap-6">
       <div className="flex-1 min-w-0 space-y-6">
-        <header>
+        <header className="hidden md:block">
           <p className={portalLabel}>{dateLine}</p>
           <h1 className="font-display uppercase text-3xl tracking-[0.06em] text-portal-ink mt-1">{greet}{first ? `, ${first}` : ''}</h1>
           {isLoading ? <Skeleton className="h-4 w-72 mt-2" /> : data && (
@@ -44,6 +45,17 @@ export default function CoachDashboard() {
             </p>
           )}
         </header>
+
+        <div className="md:hidden space-y-6">
+          <div>
+            <p className={portalLabel}>{dateLine}</p>
+            <h1 className="font-display uppercase text-2xl tracking-[0.06em] text-portal-ink mt-1">{t.dash_today}</h1>
+          </div>
+          {isLoading || !data ? <div className="space-y-3"><Skeleton className="h-32" /><Skeleton className="h-32" /></div>
+            : data.todaySessions.length === 0 ? <p className="text-sm text-portal-muted bg-portal-card border border-portal-border rounded-[4px] p-5">{t.dash_today_empty}</p>
+            : <MobileTodayCards sessions={data.todaySessions} />}
+          <TasksCard loading={isLoading} tasks={data?.tasks ?? []} today={today} locale={locale} />
+        </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {isLoading || !data ? Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-28" />) : (
@@ -57,7 +69,7 @@ export default function CoachDashboard() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-6">
-          <section className={`${card} lg:col-span-2`}>
+          <section className={`${card} lg:col-span-2 hidden md:block`}>
             <div className="flex items-center justify-between mb-3">
               <h2 className={title}>{t.dash_today}</h2>
               <Link to="/coach/calendar" className={link}>{t.dash_open_calendar} →</Link>
@@ -87,7 +99,7 @@ export default function CoachDashboard() {
             )}
           </section>
 
-          <TasksCard loading={isLoading} tasks={data?.tasks ?? []} today={today} locale={locale} />
+          <TasksCard className="hidden md:block" loading={isLoading} tasks={data?.tasks ?? []} today={today} locale={locale} />
 
           <section className={`${card} lg:col-span-2`}>
             <h2 className={`${title} mb-3`}>{t.dash_per_week}</h2>
@@ -146,7 +158,7 @@ function TodayList({ sessions, onOpen }: { sessions: CalSession[]; onOpen: (s: C
     <ul className="divide-y divide-portal-border">
       {sessions.map((s) => {
         const [label, cls] = chip(s);
-        const past = s.status === 'scheduled' && new Date(s.ends_at).getTime() < now;
+        const past = s.status === 'scheduled' && new Date(s.starts_at).getTime() <= now;
         const dot = s.status === 'attended' ? 'bg-portal-muted' : s.id === nextId ? 'bg-portal-copper' : s.status === 'scheduled' ? 'bg-[#5B82E0]' : 'bg-portal-border';
         return (
           <li key={s.id} className="flex items-center gap-3 py-2.5">
@@ -172,7 +184,7 @@ function TodayList({ sessions, onOpen }: { sessions: CalSession[]; onOpen: (s: C
   );
 }
 
-function TasksCard({ loading, tasks, today, locale }: { loading: boolean; tasks: any[]; today: string; locale: string }) {
+function TasksCard({ loading, tasks, today, locale, className = '' }: { loading: boolean; tasks: any[]; today: string; locale: string; className?: string }) {
   const { t } = useLanguage();
   const toggle = useToggleTask();
   const add = useQuickTask();
@@ -184,7 +196,7 @@ function TasksCard({ loading, tasks, today, locale }: { loading: boolean; tasks:
     add.mutate(v, { onSuccess: () => setDraft(''), onError: () => toast.error(t.crm_error) });
   };
   return (
-    <section className={card}>
+    <section className={`${card} ${className}`}>
       <div className="flex items-center justify-between mb-3"><h2 className={title}>{t.dash_tasks}</h2></div>
       {loading ? <Skeleton className="h-32" /> : tasks.length === 0 ? <p className="text-sm text-portal-muted py-2">{t.dash_tasks_empty}</p> : (
         <ul className="space-y-2">
