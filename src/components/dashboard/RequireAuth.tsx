@@ -59,7 +59,20 @@ export function RequireAuth({ children, area }: { children: React.ReactNode; are
   }
 
   if (area === 'staff' && role === 'coach' && status === 'draft') {
-    return <CoachOnboarding onSubmitted={() => setStatus('pending')} />;
+    return (
+      <CoachOnboarding
+        onSubmitted={async () => {
+          if (!user) return;
+          const { data, error } = await supabase
+            .from('coach_profiles')
+            .select('application_status')
+            .eq('id', user.id)
+            .maybeSingle();
+          if (error) console.error('Failed to load application status', error);
+          setStatus((data?.application_status as string) ?? 'pending');
+        }}
+      />
+    );
   }
 
   if (area === 'staff' && isStaff && (status === 'pending' || status === 'rejected')) {
