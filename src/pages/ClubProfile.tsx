@@ -38,7 +38,7 @@ const ClubProfile = () => {
         .from('club_profiles')
         .select('*')
         .eq('id', id)
-        .eq('verified', true)
+        .eq('application_status', 'approved')
         .maybeSingle();
       setClub(data as any);
       setLoading(false);

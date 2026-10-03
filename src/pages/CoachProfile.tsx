@@ -56,7 +56,7 @@ const CoachProfile = () => {
         .from('coach_profiles')
         .select('id, bio, sport, specialisms, certifications, price_per_session, discount_pct, years_experience, gallery, verified, level, profiles!coach_profiles_id_fkey(full_name, avatar_url, city)')
         .eq('id', id)
-        .eq('verified', true)
+        .eq('application_status', 'approved')
         .maybeSingle();
       setCoach(data as any);
       setLoading(false);
