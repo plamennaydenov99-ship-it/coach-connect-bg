@@ -6,25 +6,28 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useStaffRole } from '@/context/StaffRoleContext';
 import { useAuth } from '@/hooks/useAuth';
 import { useClientList, useCreateClient } from '@/hooks/coach/useCoachClients';
-import { bookingCandidates, findOverlaps, useBookSession, useCoachTz, TOPUP_WEEKS } from '@/hooks/coach/useCoachCalendar';
+import { bookingCandidates, findOverlaps, findResourceClashes, isResourceConflict, useBookSession, useCoachTz, TOPUP_WEEKS } from '@/hooks/coach/useCoachCalendar';
+import { useClubResources } from '@/hooks/coach/useClubResources';
 import { addDays, type DateStr } from '@/lib/tz';
-import { Avatar, portalBtnGhost, portalBtnPrimary, portalInput, portalLabel } from '@/components/coach/clients/shared';
+import { Avatar, fmtDateTime, portalBtnGhost, portalBtnPrimary, portalInput, portalLabel } from '@/components/coach/clients/shared';
 import { toast } from 'sonner';
 
 const DURATIONS = [30, 45, 60, 90];
 
 export function QuickBookForm({ initial, onDone, onClose }: {
-  initial: { date: DateStr; time: string; clientId?: string; kind?: 'session' | 'trial' | 'group' };
+  initial: { date: DateStr; time: string; clientId?: string; kind?: 'session' | 'trial' | 'group' | 'hire'; resourceId?: string };
   onDone: () => void;
   onClose: () => void;
 }) {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const club = useStaffRole() === 'club';
   const { user } = useAuth();
   const tz = useCoachTz();
   const { data: clients = [] } = useClientList();
   const createClient = useCreateClient();
   const book = useBookSession();
+  const { data: allResources = [] } = useClubResources();
+  const resources = club ? allResources.filter((r) => r.active) : [];
 
   const [clientId, setClientId] = useState(initial.clientId ?? '');
   const [q, setQ] = useState('');
@@ -34,7 +37,10 @@ export function QuickBookForm({ initial, onDone, onClose }: {
   const [duration, setDuration] = useState(60);
   const [custom, setCustom] = useState(false);
   const [location, setLocation] = useState('');
-  const [kind, setKind] = useState<'session' | 'trial' | 'group'>(initial.kind ?? 'session');
+  const [kind, setKind] = useState<'session' | 'trial' | 'group' | 'hire'>(initial.kind ?? 'session');
+  const [resourceId, setResourceId] = useState(initial.resourceId ?? '');
+  const [note, setNote] = useState('');
+  const [clashes, setClashes] = useState<{ starts_at: string }[]>([]);
   const [title, setTitle] = useState('');
   const [sport, setSport] = useState('');
   const [ledBy, setLedBy] = useState('');
@@ -45,9 +51,11 @@ export function QuickBookForm({ initial, onDone, onClose }: {
   const [endsOn, setEndsOn] = useState(addDays(initial.date, TOPUP_WEEKS * 7));
   const [overlaps, setOverlaps] = useState(0);
   const [confirmed, setConfirmed] = useState(false);
+  const [skipClashes, setSkipClashes] = useState(false);
 
   useEffect(() => { setDate(initial.date); setTime(initial.time); if (initial.clientId) setClientId(initial.clientId); }, [initial.date, initial.time, initial.clientId]);
-  useEffect(() => { setConfirmed(false); setOverlaps(0); }, [date, time, duration, repeat, endsOn]);
+  useEffect(() => { setConfirmed(false); setOverlaps(0); setClashes([]); setSkipClashes(false); }, [date, time, duration, repeat, endsOn, resourceId]);
+  useEffect(() => { if (initial.resourceId) setResourceId(initial.resourceId); }, [initial.resourceId]);
 
   const active = clients.filter((c) => c.stage !== 'archived');
   const selected = active.find((c) => c.id === clientId);
@@ -67,20 +75,29 @@ export function QuickBookForm({ initial, onDone, onClose }: {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (kind !== 'group' && !clientId) return toast.error(t.cal_pick_client);
+    if (kind === 'hire' && (!title.trim() || !resourceId)) return toast.error(t.hire_required);
+    if (kind !== 'group' && kind !== 'hire' && !clientId) return toast.error(t.cal_pick_client);
     if (kind === 'group' && (!Number.isInteger(capacity) || capacity < 1 || attendeeIds.length > capacity)) return toast.error(t.group_capacity_error);
     if (!user) return;
     if (!date || !/^\d{2}:\d{2}$/.test(time) || duration < 5 || duration > 600) return;
-    const input = { client_id: kind === 'group' ? null : clientId, date, time, duration, location: location.trim().slice(0, 200), kind: kind === 'trial' ? 'trial' as const : 'session' as const, repeat, endsOn: repeat ? endsOn || null : null, capacity: kind === 'group' ? capacity : null, title: title.trim(), sport: sport.trim(), led_by: ledBy.trim(), is_public: isPublic, attendee_ids: attendeeIds };
+    const input = { resource_id: resourceId || null, note: kind === 'hire' ? note : '', skip: [] as string[], client_id: kind === 'group' || kind === 'hire' ? null : clientId, date, time, duration, location: location.trim().slice(0, 200), kind: kind === 'trial' ? 'trial' as const : kind === 'hire' ? 'hire' as const : 'session' as const, repeat, endsOn: repeat ? endsOn || null : null, capacity: kind === 'group' ? capacity : null, title: title.trim(), sport: sport.trim(), led_by: ledBy.trim(), is_public: isPublic, attendee_ids: attendeeIds };
     try {
+      if (input.resource_id) {
+        const cands = bookingCandidates(input, tz);
+        const hits = await findResourceClashes(input.resource_id, cands);
+        if (hits.length) {
+          if (!(skipClashes && repeat && hits.length < cands.length)) { setClashes(hits); return; }
+          input.skip = hits.map((h) => h.starts_at);
+        }
+      }
       if (!confirmed) {
-        const n = await findOverlaps(user.id, bookingCandidates(input, tz));
+        const n = await findOverlaps(user.id, bookingCandidates(input, tz).filter((c) => !input.skip.includes(c.starts_at)));
         if (n > 0) { setOverlaps(n); setConfirmed(true); return; }
       }
       await book.mutateAsync(input);
       toast.success(t.cal_booked);
       onDone();
-    } catch { toast.error(t.crm_error); }
+    } catch (err) { toast.error(isResourceConflict(err) ? t.cal_resource_conflict : t.crm_error); }
   };
 
   return (
@@ -93,10 +110,10 @@ export function QuickBookForm({ initial, onDone, onClose }: {
       <div className="space-y-1.5">
         <span className={portalLabel}>{t.cal_type}</span>
         <div className="flex gap-1.5">
-          {(club ? ['group', 'session'] as const : ['session', 'trial', 'group'] as const).map((k) => (
+          {(club ? ['group', 'session', 'hire'] as const : ['session', 'trial', 'group'] as const).map((k) => (
             <Button variant="ghost" type="button" key={k} onClick={() => setKind(k)}
               className={`flex-1 h-9 rounded-[4px] border text-sm ${kind === k ? (k === 'trial' ? 'bg-portal-copper-tint border-portal-copper' : 'bg-portal-selected border-portal-selected-border') : 'border-portal-border text-portal-muted-strong'}`}>
-              {k === 'group' ? t.group_type : k === 'trial' ? t.cal_type_trial : t.cal_type_one}
+              {k === 'group' ? t.group_type : k === 'hire' ? t.hire_type : k === 'trial' ? t.cal_type_trial : t.cal_type_one}
             </Button>
           ))}
         </div>
@@ -115,6 +132,9 @@ export function QuickBookForm({ initial, onDone, onClose }: {
             <input type="checkbox" checked={attendeeIds.includes(c.id)} disabled={!attendeeIds.includes(c.id) && attendeeIds.length >= capacity} onChange={e => setAttendees(ids => e.target.checked ? [...ids, c.id] : ids.filter(id => id !== c.id))} className="accent-portal-blue" />{c.display_name}
           </label>)}</div>
         </fieldset>
+      </div> : kind === 'hire' ? <div className="space-y-3">
+        <label className="block space-y-1"><span className={portalLabel}>{t.hire_label}</span><input required value={title} onChange={e => setTitle(e.target.value)} maxLength={120} placeholder={t.hire_label_ph} className={portalInput} /></label>
+        <label className="block space-y-1"><span className={portalLabel}>{t.hire_note}</span><textarea value={note} onChange={e => setNote(e.target.value)} maxLength={500} rows={2} className={portalInput} /></label>
       </div> : (
       <div className="space-y-1.5">
         <span className={portalLabel}>{t.cal_client}</span>
@@ -175,6 +195,16 @@ export function QuickBookForm({ initial, onDone, onClose }: {
         {custom && <input type="number" min={5} max={600} step={5} value={duration} onChange={(e) => setDuration(Number(e.target.value))} className={`${portalInput} w-28`} />}
       </div>
 
+      {club && (
+        <label className="space-y-1 block"><span className={portalLabel}>{t.cal_facility}{kind === 'hire' ? ' *' : ''}</span>
+          <select value={resourceId} required={kind === 'hire'} onChange={(e) => setResourceId(e.target.value)} className={portalInput}>
+            <option value="">{t.cal_no_facility}</option>
+            {resources.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
+          </select>
+          {resources.length === 0 && <span className="text-xs text-portal-muted">{t.cal_no_facilities_yet}</span>}
+        </label>
+      )}
+
       <label className="space-y-1 block"><span className={portalLabel}>{t.cal_location}</span>
         <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder={t.cal_location_ph} maxLength={200} className={portalInput} /></label>
 
@@ -189,6 +219,17 @@ export function QuickBookForm({ initial, onDone, onClose }: {
         )}
       </div>
 
+      {clashes.length > 0 && (
+        <div role="alert" className="space-y-2 p-3 rounded-[4px] border border-portal-ink bg-portal-bg text-sm">
+          <div className="flex gap-2"><AlertTriangle className="h-4 w-4 text-portal-ink shrink-0 mt-0.5" /><span className="font-medium">{t.cal_resource_clash}</span></div>
+          <ul className="list-disc pl-6 max-h-28 overflow-y-auto">{clashes.map((c) => <li key={c.starts_at}>{fmtDateTime(c.starts_at, lang, tz)}</li>)}</ul>
+          <p className="text-portal-muted-strong">{t.cal_clash_change}</p>
+          {repeat && clashes.length < bookingCandidates({ date, time, duration, repeat, endsOn: endsOn || null }, tz).length && (
+            <button type="submit" onClick={() => setSkipClashes(true)} className={portalBtnGhost}>{t.cal_skip_clashes}</button>
+          )}
+        </div>
+      )}
+
       {confirmed && overlaps > 0 && (
         <div className="flex gap-2 p-3 rounded-[4px] border border-portal-copper bg-portal-copper-tint text-sm">
           <AlertTriangle className="h-4 w-4 text-portal-ink shrink-0 mt-0.5" />
@@ -198,7 +239,7 @@ export function QuickBookForm({ initial, onDone, onClose }: {
 
       <div className="flex gap-2 justify-end">
         <button type="button" onClick={onClose} className={portalBtnGhost}>{t.crm_cancel}</button>
-        <button type="submit" disabled={book.isPending} className={portalBtnPrimary}>{confirmed && overlaps > 0 ? t.cal_save_anyway : kind === 'group' ? t.group_submit : t.cal_book}</button>
+        <button type="submit" disabled={book.isPending || clashes.length > 0} className={portalBtnPrimary}>{confirmed && overlaps > 0 ? t.cal_save_anyway : kind === 'group' ? t.group_submit : kind === 'hire' ? t.hire_submit : t.cal_book}</button>
       </div>
     </form>
   );
