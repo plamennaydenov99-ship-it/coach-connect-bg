@@ -58,6 +58,7 @@ export function useCoachDashboard() {
 
       return {
         todaySessions: sessions.filter((x) => toDateStr(x.starts_at, tz) === today),
+        weekSessions: sessions.filter((x) => wk(x.starts_at) === weekStart),
         sessionsWeek: thisWeek.length,
         sessionsDelta: thisWeek.length - lastWeekCount,
         activeClients: pipeline.active,

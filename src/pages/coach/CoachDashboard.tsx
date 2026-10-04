@@ -1,4 +1,6 @@
-import { useStaffPaths } from '@/context/StaffRoleContext';
+import { useStaffPaths, useStaffRole } from '@/context/StaffRoleContext';
+import { classFill, clubSummary, resourceOccupancy } from '@/lib/sessionMetrics';
+import { useClubResources, useWeekResourceSessions } from '@/hooks/coach/useClubResources';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Check, Plus } from 'lucide-react';
