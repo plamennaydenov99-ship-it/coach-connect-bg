@@ -36,3 +36,36 @@ test('class fill is zero with no classes', async () => {
   const { classFill } = await import('./sessionMetrics');
   assert.deepEqual(classFill([]), { classes: 0, fill: 0 });
 });
+
+test('occupancy is booked hours over 7 × daily open hours, excluding cancelled sessions', async () => {
+  const { resourceOccupancy } = await import('./sessionMetrics');
+  const ws = Date.parse('2026-10-04T21:00:00Z'); const we = ws + 7 * 86400000;
+  const s = (status: string, a: string, b: string) => ({ status, starts_at: a, ends_at: b });
+  // Open 07:00–23:00 = 16h × 7 = 112h. Booked: 2h + 1.5h + 3.5h = 7h → 6.25% → 6.
+  const r = resourceOccupancy({ open_time: '07:00:00', close_time: '23:00:00' }, [
+    s('scheduled', '2026-10-05T08:00:00Z', '2026-10-05T10:00:00Z'),
+    s('attended', '2026-10-06T08:00:00Z', '2026-10-06T09:30:00Z'),
+    s('scheduled', '2026-10-07T08:00:00Z', '2026-10-07T11:30:00Z'),
+    s('cancelled', '2026-10-08T08:00:00Z', '2026-10-08T18:00:00Z'),
+  ], ws, we);
+  assert.deepEqual(r, { bookedHours: 7, openHours: 112, percentage: 6 });
+});
+
+test('occupancy only counts the part of a session inside the week', async () => {
+  const { resourceOccupancy } = await import('./sessionMetrics');
+  const ws = Date.parse('2026-10-04T21:00:00Z'); const we = ws + 7 * 86400000;
+  const r = resourceOccupancy({ open_time: '09:00', close_time: '19:00' }, [
+    { status: 'scheduled', starts_at: '2026-10-04T20:00:00Z', ends_at: '2026-10-04T23:00:00Z' },
+  ], ws, we);
+  assert.deepEqual(r, { bookedHours: 2, openHours: 70, percentage: 3 });
+});
+
+test('club summary counts private hires separately from classes', async () => {
+  const { clubSummary } = await import('./sessionMetrics');
+  const b = { starts_at: '2026-10-05T10:00:00Z', ends_at: '2026-10-05T11:00:00Z' };
+  assert.deepEqual(clubSummary([
+    { ...b, kind: 'session', status: 'scheduled', capacity: 4, attendees: [{ status: 'booked' }] },
+    { ...b, kind: 'hire', status: 'scheduled', capacity: null },
+    { ...b, kind: 'hire', status: 'cancelled', capacity: null },
+  ]), { classes: 1, fill: 25, hires: 1 });
+});
