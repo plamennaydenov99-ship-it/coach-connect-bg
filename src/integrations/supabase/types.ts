@@ -330,6 +330,56 @@ export type Database = {
           },
         ]
       }
+      club_resources: {
+        Row: {
+          active: boolean
+          capacity: number | null
+          close_time: string
+          created_at: string | null
+          id: string
+          kind: string
+          name: string
+          open_time: string
+          owner_id: string
+          sort_order: number
+          sport: string | null
+        }
+        Insert: {
+          active?: boolean
+          capacity?: number | null
+          close_time?: string
+          created_at?: string | null
+          id?: string
+          kind: string
+          name: string
+          open_time?: string
+          owner_id: string
+          sort_order?: number
+          sport?: string | null
+        }
+        Update: {
+          active?: boolean
+          capacity?: number | null
+          close_time?: string
+          created_at?: string | null
+          id?: string
+          kind?: string
+          name?: string
+          open_time?: string
+          owner_id?: string
+          sort_order?: number
+          sport?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_resources_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coach_clients: {
         Row: {
           athlete_id: string | null
@@ -590,6 +640,13 @@ export type Database = {
             columns: ["coach_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coach_sessions_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "club_resources"
             referencedColumns: ["id"]
           },
           {
@@ -961,6 +1018,13 @@ export type Database = {
             columns: ["coach_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "session_series_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "club_resources"
             referencedColumns: ["id"]
           },
         ]
