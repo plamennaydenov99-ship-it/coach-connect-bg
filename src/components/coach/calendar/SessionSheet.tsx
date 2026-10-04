@@ -7,7 +7,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/hooks/useAuth';
 import {
-  findOverlaps, useCancelFollowing, useCoachTz, useReschedule, useSessionStatus, type CalSession,
+  findOverlaps, isResourceConflict, useCancelFollowing, useCoachTz, useReschedule, useSessionStatus, type CalSession,
 } from '@/hooks/coach/useCoachCalendar';
 import { toDateStr, toTimeStr, zonedToUtc } from '@/lib/tz';
 import { fmtDateTime, portalBtnGhost, portalBtnPrimary, portalInput, portalLabel } from '@/components/coach/clients/shared';
@@ -47,7 +47,7 @@ function Body({ s, onClose }: { s: CalSession; onClose: () => void }) {
   const [confirmed, setConfirmed] = useState(false);
   useEffect(() => { setConfirmed(false); setOverlap(0); }, [date, time, duration]);
 
-  const err = () => toast.error(t.crm_error);
+  const err = (e?: unknown) => toast.error(isResourceConflict(e) ? t.cal_resource_conflict : t.crm_error);
   const status = (st: 'attended' | 'no_show' | 'cancelled') =>
     setStatus.mutate({ id: s.id, status: st }, { onSuccess: () => { toast.success(t.cal_updated); onClose(); }, onError: err });
 
@@ -70,7 +70,7 @@ function Body({ s, onClose }: { s: CalSession; onClose: () => void }) {
       await reschedule.mutateAsync({ session: s, date, time, duration, location: location.trim().slice(0, 200), scope });
       toast.success(t.cal_updated);
       onClose();
-    } catch { err(); }
+    } catch (e) { err(e); }
   };
 
   const ScopePicker = ({ value, onChange }: { value: Scope; onChange: (v: Scope) => void }) => (

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AlertTriangle, Plus, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -51,10 +51,10 @@ export function QuickBookForm({ initial, onDone, onClose }: {
   const [endsOn, setEndsOn] = useState(addDays(initial.date, TOPUP_WEEKS * 7));
   const [overlaps, setOverlaps] = useState(0);
   const [confirmed, setConfirmed] = useState(false);
-  const [skipClashes, setSkipClashes] = useState(false);
+  const skipClashes = useRef(false);
 
   useEffect(() => { setDate(initial.date); setTime(initial.time); if (initial.clientId) setClientId(initial.clientId); }, [initial.date, initial.time, initial.clientId]);
-  useEffect(() => { setConfirmed(false); setOverlaps(0); setClashes([]); setSkipClashes(false); }, [date, time, duration, repeat, endsOn, resourceId]);
+  useEffect(() => { setConfirmed(false); setOverlaps(0); setClashes([]); skipClashes.current = false; }, [date, time, duration, repeat, endsOn, resourceId]);
   useEffect(() => { if (initial.resourceId) setResourceId(initial.resourceId); }, [initial.resourceId]);
 
   const active = clients.filter((c) => c.stage !== 'archived');
@@ -86,7 +86,7 @@ export function QuickBookForm({ initial, onDone, onClose }: {
         const cands = bookingCandidates(input, tz);
         const hits = await findResourceClashes(input.resource_id, cands);
         if (hits.length) {
-          if (!(skipClashes && repeat && hits.length < cands.length)) { setClashes(hits); return; }
+          if (!(skipClashes.current && repeat && hits.length < cands.length)) { setClashes(hits); return; }
           input.skip = hits.map((h) => h.starts_at);
         }
       }
@@ -225,7 +225,7 @@ export function QuickBookForm({ initial, onDone, onClose }: {
           <ul className="list-disc pl-6 max-h-28 overflow-y-auto">{clashes.map((c) => <li key={c.starts_at}>{fmtDateTime(c.starts_at, lang, tz)}</li>)}</ul>
           <p className="text-portal-muted-strong">{t.cal_clash_change}</p>
           {repeat && clashes.length < bookingCandidates({ date, time, duration, repeat, endsOn: endsOn || null }, tz).length && (
-            <button type="submit" onClick={() => setSkipClashes(true)} className={portalBtnGhost}>{t.cal_skip_clashes}</button>
+            <button type="submit" onClick={() => { skipClashes.current = true; setClashes([]); }} className={portalBtnGhost}>{t.cal_skip_clashes}</button>
           )}
         </div>
       )}
