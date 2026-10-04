@@ -17,6 +17,7 @@ export function GroupRoster({ session }: { session: CalSession }) {
   const actions = useGroupActions(session.id);
   const [capacity, setCapacity] = useState(session.capacity ?? 1);
   const [isPublic, setPublic] = useState(session.is_public);
+  const [savedCap, setSavedCap] = useState(session.capacity ?? 1);
   const [title, setTitle] = useState(session.title ?? '');
   const [ledBy, setLedBy] = useState(session.led_by ?? '');
   const [clientId, setClientId] = useState('');
@@ -24,7 +25,7 @@ export function GroupRoster({ session }: { session: CalSession }) {
   const fill = active.filter(a => a.status === 'booked' || a.status === 'attended').length;
   return <section className="space-y-3 border-t border-portal-border pt-4">
     <div className="flex items-center justify-between gap-2">
-      <h3 className={portalLabel}>{t.group_attendees} · {fill}/{session.capacity}</h3>
+      <h3 className={portalLabel}>{t.group_attendees} · {fill}/{savedCap}</h3>
       <Tooltip><TooltipTrigger asChild><span tabIndex={0}><Button variant="outline" size="sm" disabled className="gap-1.5"><MessageSquare className="h-4 w-4" />{t.group_message_all}</Button></span></TooltipTrigger><TooltipContent>{t.group_coming_soon}</TooltipContent></Tooltip>
     </div>
     {isLoading ? <p className="text-sm text-portal-muted">{t.group_loading}</p> : <ul className="space-y-2">
@@ -42,7 +43,7 @@ export function GroupRoster({ session }: { session: CalSession }) {
       </select>
       <Button variant="outline" size="icon" aria-label={t.group_add_attendee} disabled={!clientId || fill >= capacity || actions.isPending || session.status === 'cancelled'} onClick={() => actions.mutate({ type: 'add', client_id: clientId }, { onSuccess: () => setClientId('') })}><Plus className="h-4 w-4" /></Button>
     </div>
-    <form className="space-y-3" onSubmit={e => { e.preventDefault(); if (!Number.isInteger(capacity) || capacity < Math.max(1, fill)) { toast.error(t.group_capacity_below.replace('{n}', String(fill))); return; } actions.mutate({ type: 'settings', capacity, is_public: isPublic, title, led_by: ledBy }); }}>
+    <form className="space-y-3" onSubmit={e => { e.preventDefault(); if (!Number.isInteger(capacity) || capacity < Math.max(1, fill)) { toast.error(t.group_capacity_below.replace('{n}', String(fill))); return; } actions.mutate({ type: 'settings', capacity, is_public: isPublic, title, led_by: ledBy }, { onSuccess: () => setSavedCap(capacity) }); }}>
       <label className="block space-y-1"><span className={portalLabel}>{t.group_title}</span><input value={title} onChange={e => setTitle(e.target.value)} maxLength={120} className={portalInput} /></label>
       <label className="block space-y-1"><span className={portalLabel}>{t.group_led_by}</span><input value={ledBy} onChange={e => setLedBy(e.target.value)} maxLength={80} className={portalInput} /></label>
       <label className="block space-y-1"><span className={portalLabel}>{t.group_capacity}</span><input type="number" required min={1} step={1} value={capacity} onChange={e => setCapacity(Number(e.target.value))} className={portalInput} /></label>
