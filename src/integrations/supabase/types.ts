@@ -945,6 +945,13 @@ export type Database = {
             referencedRelation: "coach_sessions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "session_attendees_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "public_sessions"
+            referencedColumns: ["id"]
+          },
         ]
       }
       session_series: {
@@ -1029,6 +1036,72 @@ export type Database = {
           },
         ]
       }
+      spot_requests: {
+        Row: {
+          athlete_id: string
+          conversation_id: string | null
+          created_at: string | null
+          id: string
+          owner_id: string
+          session_id: string
+          status: string
+        }
+        Insert: {
+          athlete_id: string
+          conversation_id?: string | null
+          created_at?: string | null
+          id?: string
+          owner_id: string
+          session_id: string
+          status?: string
+        }
+        Update: {
+          athlete_id?: string
+          conversation_id?: string | null
+          created_at?: string | null
+          id?: string
+          owner_id?: string
+          session_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "spot_requests_athlete_id_fkey"
+            columns: ["athlete_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "spot_requests_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "spot_requests_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "spot_requests_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "coach_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "spot_requests_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "public_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       training_programs: {
         Row: {
           created_at: string
@@ -1069,7 +1142,53 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_sessions: {
+        Row: {
+          capacity: number | null
+          ends_at: string | null
+          id: string | null
+          led_by: string | null
+          location: string | null
+          owner_id: string | null
+          sport: string | null
+          spots_left: number | null
+          starts_at: string | null
+          title: string | null
+        }
+        Insert: {
+          capacity?: number | null
+          ends_at?: string | null
+          id?: string | null
+          led_by?: string | null
+          location?: string | null
+          owner_id?: string | null
+          sport?: string | null
+          spots_left?: never
+          starts_at?: string | null
+          title?: string | null
+        }
+        Update: {
+          capacity?: number | null
+          ends_at?: string | null
+          id?: string | null
+          led_by?: string | null
+          location?: string | null
+          owner_id?: string | null
+          sport?: string | null
+          spots_left?: never
+          starts_at?: string | null
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coach_sessions_coach_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       admin_confirm_email: { Args: { _user_id: string }; Returns: undefined }
@@ -1092,7 +1211,6 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
-      public_session_spots: { Args: { session_id: string }; Returns: number }
     }
     Enums: {
       app_role: "athlete" | "coach" | "club"
