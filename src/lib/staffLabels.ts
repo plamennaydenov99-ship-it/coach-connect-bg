@@ -6,7 +6,7 @@ type Key = keyof (typeof t)['en'];
 /** Club portals reuse coach pages; these keys say "members" instead of "clients". */
 export const clubLabelOverrides: Record<Lang, Partial<Record<Key, string>>> = {
   en: {
-    portal_clients: 'Members', dash_kpi_active: 'Active members', dash_pipeline: 'Member pipeline', crm_clients: 'Members', dash_clients: 'Members', crm_new_client: 'New member',
+    portal_clients: 'Members', cal_quick_book: 'New class', cal_booked: 'Class created', group_title: 'Class name', group_submit: 'Create class', group_type: 'Group class', cal_type_one: '1:1 session', portal_new_session: 'New class', dash_kpi_active: 'Active members', dash_pipeline: 'Member pipeline', crm_clients: 'Members', dash_clients: 'Members', crm_new_client: 'New member',
     crm_empty_title: 'No members yet', crm_empty_body: 'Add your first member to start tracking classes, tasks and notes.',
     crm_no_match: 'No members match your search.', crm_create: 'Create member', crm_archive: 'Archive member',
     crm_unarchive: 'Restore member', crm_delete: 'Delete member', crm_delete_title: 'Delete this member?',
@@ -16,7 +16,7 @@ export const clubLabelOverrides: Record<Lang, Partial<Record<Key, string>>> = {
     cal_no_clients: 'No members found.', cal_pick_client: 'Choose a member', cal_open_client: 'Open member',
   },
   bg: {
-    portal_clients: 'Членове', dash_kpi_active: 'Активни членове', dash_pipeline: 'Етапи на членовете', crm_clients: 'Членове', dash_clients: 'Членове', crm_new_client: 'Нов член',
+    portal_clients: 'Членове', cal_quick_book: 'Нов клас', cal_booked: 'Класът е създаден', group_title: 'Име на класа', group_submit: 'Създай клас', group_type: 'Групов клас', cal_type_one: '1:1 сесия', portal_new_session: 'Нов клас', dash_kpi_active: 'Активни членове', dash_pipeline: 'Етапи на членовете', crm_clients: 'Членове', dash_clients: 'Членове', crm_new_client: 'Нов член',
     crm_empty_title: 'Още нямаш членове', crm_empty_body: 'Добави първия си член, за да следиш тренировки, задачи и бележки.',
     crm_no_match: 'Няма членове, които отговарят на търсенето ти.', crm_create: 'Създай член', crm_archive: 'Архивирай члена',
     crm_unarchive: 'Възстанови члена', crm_delete: 'Изтрий члена', crm_delete_title: 'Да изтрия ли този член?',
@@ -26,7 +26,7 @@ export const clubLabelOverrides: Record<Lang, Partial<Record<Key, string>>> = {
     cal_no_clients: 'Няма намерени членове.', cal_pick_client: 'Избери член', cal_open_client: 'Отвори члена',
   },
   fr: {
-    portal_clients: 'Membres', dash_kpi_active: 'Membres actifs', dash_pipeline: 'Parcours des membres', crm_clients: 'Membres', dash_clients: 'Membres', crm_new_client: 'Nouveau membre',
+    portal_clients: 'Membres', cal_quick_book: 'Nouveau cours', cal_booked: 'Cours créé', group_title: 'Nom du cours', group_submit: 'Créer le cours', group_type: 'Cours collectif', cal_type_one: 'Séance 1:1', portal_new_session: 'Nouveau cours', dash_kpi_active: 'Membres actifs', dash_pipeline: 'Parcours des membres', crm_clients: 'Membres', dash_clients: 'Membres', crm_new_client: 'Nouveau membre',
     crm_empty_title: 'Aucun membre pour le moment', crm_empty_body: 'Ajoutez votre premier membre pour suivre les cours, tâches et notes.',
     crm_no_match: 'Aucun membre ne correspond à votre recherche.', crm_create: 'Créer le membre', crm_archive: 'Archiver le membre',
     crm_unarchive: 'Restaurer le membre', crm_delete: 'Supprimer le membre', crm_delete_title: 'Supprimer ce membre ?',

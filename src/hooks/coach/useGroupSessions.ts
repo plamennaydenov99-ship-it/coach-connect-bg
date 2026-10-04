@@ -28,7 +28,7 @@ export function useGroupActions(sessionId: string) {
     mutationFn: async (action:
       | { type: 'add'; client_id: string }
       | { type: 'status'; id: string; status: 'attended' | 'no_show' | 'cancelled' }
-      | { type: 'settings'; capacity: number; is_public: boolean }) => {
+      | { type: 'settings'; capacity: number; is_public: boolean; title: string; led_by: string }) => {
       if (!user) throw new Error('Sign in required');
       const { data: owned, error: ownerError } = await supabase.from('coach_sessions').select('id')
         .eq('id', sessionId).eq('coach_id', user.id).maybeSingle();
@@ -38,7 +38,7 @@ export function useGroupActions(sessionId: string) {
         ? await supabase.from('session_attendees').upsert({ session_id: sessionId, client_id: action.client_id, status: 'booked' }, { onConflict: 'session_id,client_id' })
         : action.type === 'status'
           ? await supabase.from('session_attendees').update({ status: action.status }).eq('id', action.id).eq('session_id', sessionId)
-          : await supabase.from('coach_sessions').update({ capacity: action.capacity, is_public: action.is_public }).eq('id', sessionId).eq('coach_id', user.id);
+          : await supabase.from('coach_sessions').update({ capacity: action.capacity, is_public: action.is_public, title: action.title.trim().slice(0, 120) || null, led_by: action.led_by.trim().slice(0, 80) || null }).eq('id', sessionId).eq('coach_id', user.id);
       if (result.error) throw result.error;
     },
     onSuccess: () => { toast.success(t.cal_updated); qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },

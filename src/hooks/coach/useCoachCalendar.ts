@@ -142,6 +142,7 @@ export interface BookInput {
   client_id: string | null;
   capacity?: number | null;
   title?: string;
+  led_by?: string;
   sport?: string;
   is_public?: boolean;
   attendee_ids?: string[];
@@ -172,13 +173,25 @@ export function useBookSession() {
     mutationFn: async (v: BookInput) => {
       if (!user) throw new Error('Sign in required');
       if (v.capacity != null) {
-        const { error } = await supabase.rpc('book_group_session', { payload: {
+        const { data: createdId, error } = await supabase.rpc('book_group_session', { payload: {
           capacity: v.capacity, title: v.title || null, sport: v.sport || null, is_public: v.is_public ?? false,
           attendee_ids: v.attendee_ids ?? [], repeat: v.repeat, location: v.location || null,
           date: v.date, time: v.time, duration: v.duration, weekday: isoWeekday(v.date), ends_on: v.endsOn,
           occurrences: bookingCandidates(v, tz),
         } });
         if (error) throw error;
+        // The booking RPC predates "Led by"; store it on the new series/occurrences in one follow-up.
+        const ledBy = v.led_by?.trim().slice(0, 80) || null;
+        if (ledBy && createdId) {
+          const id = createdId as string;
+          const r = v.repeat
+            ? await supabase.from('session_series').update({ led_by: ledBy }).eq('id', id).eq('coach_id', user.id)
+            : { error: null };
+          if (r.error) throw r.error;
+          const q = supabase.from('coach_sessions').update({ led_by: ledBy }).eq('coach_id', user.id);
+          const s = await (v.repeat ? q.eq('series_id', id) : q.eq('id', id));
+          if (s.error) throw s.error;
+        }
         return;
       }
       const base = { coach_id: user.id, client_id: v.client_id, location: v.location || null, kind: v.kind };

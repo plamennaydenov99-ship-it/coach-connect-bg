@@ -131,10 +131,12 @@ export function WeekGrid({ start, days, tz, sessions, slots, onEmpty, onSession 
                           <div className="flex items-center gap-1 font-medium">
                             <span>{toTimeStr(s.starts_at, tz)}</span>
                             {s.series_id && <Repeat className="h-3 w-3 shrink-0" aria-label={t.cal_repeats} />}
+                            {s.capacity != null && s.is_public && <span className="ml-auto truncate font-medium text-portal-blue">{t.group_trending_marker}</span>}
                             {s.status === 'attended' && <Check className="h-3 w-3 shrink-0" />}
                             {s.status === 'no_show' && <UserX className="h-3 w-3 shrink-0 text-portal-ink" />}
                           </div>
                           <div className="truncate">{s.capacity != null ? `${s.title || t.group_type} · ${sessionFill(s)}/${s.capacity}` : s.client?.display_name ?? '—'}</div>
+                          {s.capacity != null && s.led_by && <div className="truncate text-portal-muted-strong">{t.group_led_by_line.replace('{name}', s.led_by)}</div>}
                           {s.status === 'no_show' && <div className="text-portal-ink">{t.cal_no_show}</div>}
                         </button>
                       );
