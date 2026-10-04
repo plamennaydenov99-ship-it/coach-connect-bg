@@ -26,11 +26,18 @@ const link = 'text-sm text-portal-blue hover:underline';
 export default function CoachDashboard() {
   const { t, lang } = useLanguage();
   const { base, peoplePath } = useStaffPaths();
+  const isClub = useStaffRole() === 'club';
   const { profile } = useAuth();
   const tz = useCoachTz();
   const locale = LOCALES[lang];
   const { data, isLoading } = useCoachDashboard();
+  const { data: resources } = useClubResources();
+  const { data: weekRes } = useWeekResourceSessions();
   const [selected, setSelected] = useState<CalSession | null>(null);
+
+  const activeRes = (resources ?? []).filter((r) => r.active);
+  const occRows = activeRes.map((r) => ({ r, occ: weekRes ? resourceOccupancy(r, weekRes.sessions.filter((s) => s.resource_id === r.id), weekRes.start, weekRes.end) : null }));
+  const avgOcc = activeRes.length && weekRes ? Math.round(occRows.reduce((n, o) => n + (o.occ?.percentage ?? 0), 0) / activeRes.length) : null;
 
   const today = todayStr(tz);
   const h = zonedParts(new Date(), tz).h;
@@ -46,7 +53,12 @@ export default function CoachDashboard() {
           <h1 className="font-display uppercase text-3xl tracking-[0.06em] text-portal-ink mt-1">{greet}{first ? `, ${first}` : ''}</h1>
           {isLoading ? <Skeleton className="h-4 w-72 mt-2" /> : data && (
             <p className="text-sm text-portal-muted-strong mt-1">
-              {data.todaySessions.filter((s) => s.status !== 'cancelled').length} {t.dash_sum_sessions} · {data.tasksDue} {t.dash_sum_tasks} · {data.newEnquiries} {t.dash_sum_enquiries}
+              {isClub
+                ? t.dash_sum_club
+                    .replace('{n}', String(clubSummary(data.todaySessions).classes))
+                    .replace('{h}', String(clubSummary(data.todaySessions).hires))
+                    .replace('{e}', String(data.newEnquiries))
+                : `${data.todaySessions.filter((s) => s.status !== 'cancelled').length} ${t.dash_sum_sessions} · ${data.tasksDue} ${t.dash_sum_tasks} · ${data.newEnquiries} ${t.dash_sum_enquiries}`}
             </p>
           )}
         </header>
