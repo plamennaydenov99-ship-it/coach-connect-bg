@@ -29,6 +29,13 @@
       "when": 1791069558011,
       "tag": "0003_coach_reads_athletes_and_approved_visibility",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791076451323,
+      "tag": "0004_group_sessions_and_rosters",
+      "breakpoints": true
     }
   ]
 }
