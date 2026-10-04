@@ -50,6 +50,13 @@
       "when": 1791078424355,
       "tag": "0006_club_resources_private_hire",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1791079108243,
+      "tag": "0007_allow_hire_sessions_without_client",
+      "breakpoints": true
     }
   ]
 }
