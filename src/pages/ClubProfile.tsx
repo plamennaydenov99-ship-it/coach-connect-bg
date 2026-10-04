@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { Button } from '@/components/ui/button';
@@ -7,10 +7,12 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BadgeCheck, MapPin } from 'lucide-react';
+import { BadgeCheck, MapPin, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/context/LanguageContext';
+import { useAuth } from '@/hooks/useAuth';
+import { getOrCreateConversation } from '@/lib/messaging';
 
 interface ClubData {
   id: string;
@@ -26,6 +28,8 @@ interface ClubData {
 const ClubProfile = () => {
   const { id } = useParams<{ id: string }>();
   const { t } = useLanguage();
+  const { user, profile } = useAuth();
+  const navigate = useNavigate();
   const [club, setClub] = useState<ClubData | null>(null);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({ name: '', email: '', message: '' });
@@ -68,6 +72,24 @@ const ClubProfile = () => {
     );
   }
 
+  const openMessage = async () => {
+    if (!user) {
+      toast.error(t.coach_sign_in_required);
+      navigate('/login');
+      return;
+    }
+    if (profile && profile.role !== 'athlete') {
+      toast.error(t.coach_athlete_only);
+      return;
+    }
+    try {
+      const cid = await getOrCreateConversation(user.id, club.id);
+      navigate(`/dashboard/messages?c=${cid}`);
+    } catch (e: any) {
+      toast.error(e.message);
+    }
+  };
+
   const programs: Array<{ name: string; duration?: string; price?: number }> =
     Array.isArray(club.programs) ? club.programs : [];
 
@@ -90,6 +112,9 @@ const ClubProfile = () => {
                 <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {club.city}</span>
               </div>
             )}
+            <Button size="lg" className="mt-5" onClick={openMessage}>
+              <MessageSquare className="h-4 w-4 mr-2" /> {t.coach_message} {club.name}
+            </Button>
           </div>
         </section>
 

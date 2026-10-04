@@ -57,6 +57,13 @@
       "when": 1791079108243,
       "tag": "0007_allow_hire_sessions_without_client",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1791079430776,
+      "tag": "0008_spot_requests_public_sessions",
+      "breakpoints": true
     }
   ]
 }
