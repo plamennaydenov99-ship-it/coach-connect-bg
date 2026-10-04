@@ -17,3 +17,5 @@
 
 - [x] Club portal shell, public club route move, role checks and temporary-account QA cleanup
 - [x] Club classes: Led by, class wording, Trending markers, weekly fill summary, roster Message all placeholder
+
+- [x] Step 7c: Discover, live athlete actions, Trending staff requests, club contact cleanup (typecheck only)

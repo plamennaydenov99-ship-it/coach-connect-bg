@@ -1,9 +1,11 @@
+import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { Reveal } from '@/components/Reveal';
 import { useLanguage } from '@/context/LanguageContext';
 
-export function FeaturedCoaches() {
+export function FeaturedCoaches({ discover }: { discover?: ReactNode }) {
   const { t } = useLanguage();
+  if (discover) return <section className="space-y-4"><h2 className="font-display uppercase text-2xl text-portal-ink">{t.disc_coaches}</h2>{discover}</section>;
   return (
     <section className="bg-background py-32 md:py-44 border-t border-border">
       <div className="container">

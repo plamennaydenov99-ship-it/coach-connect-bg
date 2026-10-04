@@ -9,6 +9,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 
 import Index from "./pages/Index";
 import Search from "./pages/Search";
+import Discover from "./pages/Discover";
 import CoachProfile from "./pages/CoachProfile";
 import ClubProfile from "./pages/ClubProfile";
 import ForCoaches from "./pages/ForCoaches";
@@ -68,6 +69,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/athlete" element={<Index />} />
               <Route path="/search" element={<Search />} />
+              <Route path="/discover" element={<Discover />} />
               <Route path="/coaches/:id" element={<CoachProfile />} />
               <Route path="/coach" element={<RequireAuth area="coach"><CoachLayout /></RequireAuth>}>
                 <Route index element={<Navigate to="/coach/dashboard" replace />} />

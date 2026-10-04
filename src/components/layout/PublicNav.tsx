@@ -42,6 +42,7 @@ export function PublicNav() {
   };
 
   const links = [
+    { to: "/discover", label: t.disc_nav },
     { to: '/search', label: t.nav_search },
     { to: '/events', label: t.nav_events },
     { to: '/camps', label: t.nav_camps },
