@@ -23,6 +23,7 @@ type View = 'week' | 'day' | 'month';
 
 export default function CoachCalendar() {
   const { t, lang } = useLanguage();
+  const role = useStaffRole();
   const { user } = useAuth();
   const tz = useCoachTz();
   const isMobile = useIsMobile();
