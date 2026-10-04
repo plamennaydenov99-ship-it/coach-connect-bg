@@ -9,7 +9,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "glass-ink",
+        default: "bg-primary text-primary-foreground hover:bg-primary-hover",
 
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
@@ -17,7 +17,9 @@ const buttonVariants = cva(
         secondary: "glass-clear",
         ghost: "text-foreground-muted hover:text-foreground hover:bg-background-secondary",
         link: "text-foreground underline-offset-4 hover:underline normal-case tracking-normal",
-        hero: "glass-ink",
+        hero: "bg-accent text-accent-foreground hover:bg-accent-hover",
+        coral: "bg-accent text-accent-foreground hover:bg-accent-hover",
+        portal: "rounded-[4px] bg-portal-copper text-portal-on-copper hover:bg-portal-copper-hover",
         soft: "glass-clear",
         glass: "glass-bubble text-on-photo hover:brightness-110",
         success: "bg-success text-success-foreground hover:bg-success/90",

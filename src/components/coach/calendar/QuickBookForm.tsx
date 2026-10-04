@@ -59,11 +59,12 @@ export function QuickBookForm({ initial, onDone, onClose }: {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!clientId) return toast.error(t.cal_pick_client);
+    if (!user) return;
     if (!date || !/^\d{2}:\d{2}$/.test(time) || duration < 5 || duration > 600) return;
     const input = { client_id: clientId, date, time, duration, location: location.trim().slice(0, 200), kind, repeat, endsOn: repeat ? endsOn || null : null };
     try {
       if (!confirmed) {
-        const n = await findOverlaps(user!.id, bookingCandidates(input, tz));
+        const n = await findOverlaps(user.id, bookingCandidates(input, tz));
         if (n > 0) { setOverlaps(n); setConfirmed(true); return; }
       }
       await book.mutateAsync(input);
@@ -101,7 +102,7 @@ export function QuickBookForm({ initial, onDone, onClose }: {
               {matches.length === 0 && <li className="px-3 py-2 text-sm text-portal-muted">{t.cal_no_clients}</li>}
             </ul>
             {newName === null ? (
-              <button type="button" onClick={() => setNewName(q)} className="w-full flex items-center gap-1.5 px-3 py-2 text-sm text-portal-copper border-t border-portal-border">
+              <button type="button" onClick={() => setNewName(q)} className="w-full flex items-center gap-1.5 px-3 py-2 text-sm text-portal-coral-text border-t border-portal-border">
                 <Plus className="h-4 w-4" />{t.cal_new_client_inline}
               </button>
             ) : (
@@ -163,7 +164,7 @@ export function QuickBookForm({ initial, onDone, onClose }: {
 
       {confirmed && overlaps > 0 && (
         <div className="flex gap-2 p-3 rounded-[4px] border border-portal-copper bg-portal-copper-tint text-sm">
-          <AlertTriangle className="h-4 w-4 text-portal-copper shrink-0 mt-0.5" />
+          <AlertTriangle className="h-4 w-4 text-portal-ink shrink-0 mt-0.5" />
           <span>{t.cal_overlap_warning.replace('{n}', String(overlaps))}</span>
         </div>
       )}

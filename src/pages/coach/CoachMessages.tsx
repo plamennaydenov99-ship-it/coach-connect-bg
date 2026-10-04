@@ -50,7 +50,7 @@ export default function CoachMessages() {
                     </span>
                     <span className="flex items-center gap-2">
                       <span className="block truncate text-xs text-portal-muted flex-1">{c.preview ?? ''}</span>
-                      {unread && <span aria-label={t.cmsg_unread} className="w-2 h-2 rounded-full bg-portal-copper shrink-0" />}
+                      {unread && <span aria-label={t.cmsg_unread} className="w-2 h-2 rounded-full bg-portal-blue shrink-0" />}
                     </span>
                   </span>
                 </button>
@@ -118,6 +118,7 @@ function Thread({ id, name, onBack }: { id: string; name: string; onBack: () => 
     setSending(false);
     if (error) { toast.error(t.crm_error); return; }
     setDraft('');
+    toast.success(t.cmsg_sent);
     qc.setQueryData<Msg[]>(key, (prev = []) => prev.some((m) => m.id === data.id) ? prev : [...prev, data as Msg]);
     qc.invalidateQueries({ queryKey: ['coach', user.id, 'inbox'] });
   };

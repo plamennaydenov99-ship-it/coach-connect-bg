@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Check, Plus } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { toast } from 'sonner';
+import { CountUp } from '@/components/CountUp';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/hooks/useAuth';
@@ -15,9 +16,9 @@ import { SessionSheet } from '@/components/coach/calendar/SessionSheet';
 import { Avatar, LOCALES, portalInput, portalLabel, stageKey } from '@/components/coach/clients/shared';
 import { labelDate, todayStr, toTimeStr, zonedParts } from '@/lib/tz';
 
-const card = 'bg-portal-card border border-portal-border rounded-[4px] p-5';
+const card = 'animate-fade-up-in bg-portal-card border border-portal-border rounded-[4px] p-5';
 const title = 'font-display uppercase tracking-[0.1em] text-base text-portal-ink';
-const link = 'text-sm text-portal-copper hover:underline';
+const link = 'text-sm text-portal-blue hover:underline';
 
 export default function CoachDashboard() {
   const { t, lang } = useLanguage();
@@ -91,7 +92,7 @@ export default function CoachDashboard() {
                   return (
                     <div key={s}>
                       <div className="flex justify-between text-sm"><span>{t[stageKey(s)]}</span><span className="font-display">{data.pipeline[s]}</span></div>
-                      <div className="h-2 bg-portal-bg rounded-[2px] mt-1"><div className="h-2 bg-portal-copper rounded-[2px]" style={{ width: `${(data.pipeline[s] / max) * 100}%` }} /></div>
+                      <div className="h-2 bg-portal-bg rounded-[2px] mt-1"><div className="h-2 bg-portal-blue animate-grow-in rounded-[2px]" style={{ width: `${(data.pipeline[s] / max) * 100}%` }} /></div>
                     </div>
                   );
                 })}
@@ -107,15 +108,15 @@ export default function CoachDashboard() {
               <div className="h-56">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={data.perWeek.map((w) => ({ ...w, label: labelDate(w.week, locale, { day: '2-digit', month: 'short' }) }))}>
-                    <CartesianGrid vertical={false} stroke="#EDE8DE" />
-                    <XAxis dataKey="label" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: '#6E6A62' }} />
-                    <YAxis allowDecimals={false} domain={[0, 'auto']} tickLine={false} axisLine={false} width={28} tick={{ fontSize: 11, fill: '#6E6A62' }} />
-                    <Tooltip cursor={{ fill: '#F4F1EA' }} content={({ active, payload }) => active && payload?.length ? (
+                    <CartesianGrid vertical={false} stroke="hsl(var(--portal-border))" />
+                    <XAxis dataKey="label" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: 'hsl(var(--portal-muted))' }} />
+                    <YAxis allowDecimals={false} domain={[0, 'auto']} tickLine={false} axisLine={false} width={28} tick={{ fontSize: 11, fill: 'hsl(var(--portal-muted))' }} />
+                    <Tooltip cursor={{ fill: 'hsl(var(--portal-bg))' }} content={({ active, payload }) => active && payload?.length ? (
                       <div className="bg-portal-card border border-portal-border rounded-[4px] px-2 py-1 text-xs">
                         {t.dash_tooltip.replace('{date}', (payload[0].payload as any).label).replace('{n}', String(payload[0].value))}
                       </div>
                     ) : null} />
-                    <Bar dataKey="count" fill="#5B82E0" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="count" fill="hsl(var(--portal-blue))" animationDuration={800} animationEasing="ease-out" isAnimationActive={!window.matchMedia('(prefers-reduced-motion: reduce)').matches} radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -132,9 +133,9 @@ export default function CoachDashboard() {
 
 function Kpi({ label, value, sub }: { label: string; value: string; sub: string }) {
   return (
-    <div className="bg-portal-card border border-portal-border rounded-[4px] p-4">
+    <div className="motion-card bg-portal-card border border-portal-border rounded-[4px] p-4">
       <p className={portalLabel}>{label}</p>
-      <p className="font-display text-4xl text-portal-ink mt-1 leading-none">{value}</p>
+      <p className="font-display text-4xl text-portal-ink mt-1 leading-none"><CountUp value={value} /></p>
       <p className="text-xs text-portal-muted mt-2">{sub}</p>
     </div>
   );
@@ -147,11 +148,11 @@ function TodayList({ sessions, onOpen }: { sessions: CalSession[]; onOpen: (s: C
   const now = Date.now();
   const nextId = sessions.find((s) => s.status === 'scheduled' && new Date(s.starts_at).getTime() >= now)?.id;
   const chip = (s: CalSession) => {
-    if (s.status === 'attended') return [t.dash_chip_done, 'bg-portal-bg text-portal-muted-strong'];
-    if (s.status === 'no_show') return [t.dash_chip_noshow, 'bg-portal-bg text-portal-copper'];
+    if (s.status === 'attended') return [t.dash_chip_done, 'bg-portal-bg text-portal-success'];
+    if (s.status === 'no_show') return [t.dash_chip_noshow, 'bg-portal-bg text-portal-coral-text'];
     if (s.status === 'cancelled') return [t.dash_chip_cancelled, 'bg-portal-bg text-portal-muted line-through'];
     if (s.id === nextId) return [t.dash_chip_next, 'bg-portal-selected text-portal-ink border border-portal-selected-border'];
-    if (s.kind === 'trial') return [t.dash_chip_trial, 'bg-portal-copper-tint text-portal-copper border border-portal-copper'];
+    if (s.kind === 'trial') return [t.dash_chip_trial, 'bg-portal-copper-tint text-portal-ink border border-portal-copper'];
     return ['', ''];
   };
   return (
@@ -159,7 +160,7 @@ function TodayList({ sessions, onOpen }: { sessions: CalSession[]; onOpen: (s: C
       {sessions.map((s) => {
         const [label, cls] = chip(s);
         const past = s.status === 'scheduled' && new Date(s.starts_at).getTime() <= now;
-        const dot = s.status === 'attended' ? 'bg-portal-muted' : s.id === nextId ? 'bg-portal-copper' : s.status === 'scheduled' ? 'bg-[#5B82E0]' : 'bg-portal-border';
+        const dot = s.status === 'attended' ? 'bg-portal-muted' : s.id === nextId ? 'bg-portal-copper' : s.status === 'scheduled' ? 'bg-portal-blue' : 'bg-portal-border';
         return (
           <li key={s.id} className="flex items-center gap-3 py-2.5">
             <button onClick={() => onOpen(s)} className="flex items-center gap-3 flex-1 min-w-0 text-left">
@@ -204,12 +205,12 @@ function TasksCard({ loading, tasks, today, locale, className = '' }: { loading:
             const overdue = k.due_date && k.due_date < today;
             return (
               <li key={k.id} className="flex items-start gap-2.5 text-sm">
-                <input type="checkbox" className="mt-1 accent-[#9A4F31]" checked={false}
+                <input type="checkbox" className="mt-1 accent-portal-blue" checked={false}
                   onChange={() => toggle.mutate({ id: k.id, done: true }, { onError: () => toast.error(t.crm_error) })} />
                 <span className="flex-1 min-w-0">
                   <span className="block text-portal-ink">{k.title}</span>
                   <span className="text-xs text-portal-muted">
-                    {k.due_date && <span className={overdue ? 'text-portal-copper' : ''}>{labelDate(k.due_date, locale, { day: '2-digit', month: 'short' })}</span>}
+                    {k.due_date && <span className={overdue ? 'text-portal-coral-text' : ''}>{labelDate(k.due_date, locale, { day: '2-digit', month: 'short' })}</span>}
                     {k.due_date && k.client && ' · '}
                     {k.client && <Link to={`/coach/clients/${k.client.id}`} className="hover:underline">{k.client.display_name}</Link>}
                   </span>
@@ -256,7 +257,7 @@ function Inbox() {
                   <Avatar name={c.name} size={36} />
                   <span className="flex-1 min-w-0">
                     <span className="flex justify-between gap-2"><span className="truncate text-portal-ink text-sm">{c.name}</span><span className="text-xs text-portal-muted shrink-0">{when(c.last_message_at)}</span></span>
-                    <span className="flex items-center gap-2"><span className="block truncate text-xs text-portal-muted flex-1">{c.preview ?? ''}</span>{byConvo.has(c.id) && <span aria-label={t.cmsg_unread} className="w-2 h-2 rounded-full bg-portal-copper shrink-0" />}</span>
+                    <span className="flex items-center gap-2"><span className="block truncate text-xs text-portal-muted flex-1">{c.preview ?? ''}</span>{byConvo.has(c.id) && <span aria-label={t.cmsg_unread} className="w-2 h-2 rounded-full bg-portal-blue shrink-0" />}</span>
                   </span>
                 </Link>
               </li>

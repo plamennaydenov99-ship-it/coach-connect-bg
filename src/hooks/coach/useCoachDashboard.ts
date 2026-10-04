@@ -1,3 +1,5 @@
+import { toast } from 'sonner';
+import { useLanguage } from '@/context/LanguageContext';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
@@ -76,13 +78,14 @@ export function useCoachDashboard() {
 
 export function useQuickTask() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (title: string) => {
       const { error } = await supabase.from('coach_tasks').insert({ coach_id: user!.id, title });
       if (error) throw error;
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
+    onSuccess: () => { toast.success(t.crm_task_saved); qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
   });
 }
 

@@ -42,7 +42,7 @@ export function HeroSection() {
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link to="/search">
-              <Button size="lg" className="tracking-[0.1em]">
+              <Button variant="coral" size="lg" className="tracking-[0.1em]">
                 {t.splithero_cta_find} <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </Link>

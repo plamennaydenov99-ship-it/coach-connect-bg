@@ -62,7 +62,7 @@ export function WeekGrid({ start, days, tz, sessions, slots, onEmpty, onSession 
             {dates.map((d) => (
               <div key={d} className={`px-2 py-2 text-center border-l border-portal-border ${d === today ? 'bg-portal-selected' : ''}`}>
                 <div className="font-display uppercase tracking-[0.12em] text-[11px] text-portal-muted">{labelDate(d, LOCALES[lang], { weekday: 'short' })}</div>
-                <div className={`font-display text-lg ${d === today ? 'text-portal-copper' : 'text-portal-ink'}`}>{labelDate(d, LOCALES[lang], { day: 'numeric' })}</div>
+                <div className={`font-display text-lg ${d === today ? 'text-portal-ink' : 'text-portal-ink'}`}>{labelDate(d, LOCALES[lang], { day: 'numeric' })}</div>
               </div>
             ))}
           </div>
@@ -131,10 +131,10 @@ export function WeekGrid({ start, days, tz, sessions, slots, onEmpty, onSession 
                             <span>{toTimeStr(s.starts_at, tz)}</span>
                             {s.series_id && <Repeat className="h-3 w-3 shrink-0" aria-label={t.cal_repeats} />}
                             {s.status === 'attended' && <Check className="h-3 w-3 shrink-0" />}
-                            {s.status === 'no_show' && <UserX className="h-3 w-3 shrink-0 text-portal-copper" />}
+                            {s.status === 'no_show' && <UserX className="h-3 w-3 shrink-0 text-portal-ink" />}
                           </div>
                           <div className="truncate">{s.client?.display_name ?? '—'}</div>
-                          {s.status === 'no_show' && <div className="text-portal-copper">{t.cal_no_show}</div>}
+                          {s.status === 'no_show' && <div className="text-portal-ink">{t.cal_no_show}</div>}
                         </button>
                       );
                     })}

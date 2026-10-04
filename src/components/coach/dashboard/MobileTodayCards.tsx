@@ -18,11 +18,11 @@ export function MobileTodayCards({ sessions }: { sessions: CalSession[] }) {
   const nextId = sessions.find((s) => s.status === 'scheduled' && new Date(s.starts_at).getTime() >= now)?.id;
 
   const chip = (s: CalSession): [string, string] => {
-    if (s.status === 'attended') return [t.dash_chip_done, 'bg-portal-bg text-portal-muted-strong'];
-    if (s.status === 'no_show') return [t.dash_chip_noshow, 'bg-portal-bg text-portal-copper'];
+    if (s.status === 'attended') return [t.dash_chip_done, 'bg-portal-bg text-portal-success'];
+    if (s.status === 'no_show') return [t.dash_chip_noshow, 'bg-portal-bg text-portal-coral-text'];
     if (s.status === 'cancelled') return [t.dash_chip_cancelled, 'bg-portal-bg text-portal-muted line-through'];
     if (s.id === nextId) return [t.dash_chip_next, 'bg-portal-selected text-portal-ink border border-portal-selected-border'];
-    if (s.kind === 'trial') return [t.dash_chip_trial, 'bg-portal-copper-tint text-portal-copper border border-portal-copper'];
+    if (s.kind === 'trial') return [t.dash_chip_trial, 'bg-portal-copper-tint text-portal-ink border border-portal-copper'];
     return [t.dash_session, 'bg-portal-bg text-portal-muted-strong'];
   };
   const mark = (id: string, status: 'attended' | 'no_show') =>
@@ -35,7 +35,7 @@ export function MobileTodayCards({ sessions }: { sessions: CalSession[] }) {
           const [label, cls] = chip(s);
           const past = s.status === 'scheduled' && new Date(s.starts_at).getTime() <= now;
           return (
-            <li key={s.id} data-testid="today-card" className="bg-portal-card border border-portal-border rounded-[4px] p-4">
+            <li key={s.id} data-testid="today-card" className="motion-card bg-portal-card border border-portal-border rounded-[4px] p-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="font-display text-2xl leading-none text-portal-ink">{toTimeStr(s.starts_at, tz)}–{toTimeStr(s.ends_at, tz)}</p>

@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap&subset=latin,latin-ext,cyrillic,cyrillic-ext');
 
 @tailwind base;
 @tailwind components;
@@ -6,59 +5,65 @@
 
 @layer base {
   :root {
-    /* ZENIT — Daylight (warm stone + court blue) */
+    /* Court blue + coral */
 
     /* BASE — warm off-white stone */
-    --background: 43 26% 94%;             /* #F4F1EA */
-    --background-secondary: 40 22% 91%;   /* #EEEAE1 */
-    --background-tertiary: 40 20% 88%;
+    --background: 216.000000 33.333333% 97.058824%; /* #F5F7FA */
+    --background-secondary: 222.000000 76.923077% 94.901961%; /* #E8EEFC */
+    --background-tertiary: 215.000000 27.272727% 91.372549%; /* #E3E8EF */
 
-    --foreground: 45 6% 12%;              /* #201F1C warm charcoal ink */
-    --foreground-muted: 42 6% 40%;        /* #6E6A62 warm gray */
-    --foreground-subtle: 42 6% 40%;
+    --foreground: 216.000000 50.000000% 11.764706%; /* #0F1B2D */
+    --foreground-muted: 218.571429 13.333333% 41.176471%; /* #5B6577 */
+    --foreground-subtle: 218.571429 13.333333% 41.176471%; /* #5B6577 */
 
-    --card: 0 0% 100%;
-    --card-foreground: 45 6% 12%;
+    --card: 0.000000 0.000000% 100.000000%; /* #FFFFFF */
+    --card-foreground: 216.000000 50.000000% 11.764706%; /* #0F1B2D */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 45 6% 12%;
+    --popover: 0.000000 0.000000% 100.000000%; /* #FFFFFF */
+    --popover-foreground: 216.000000 50.000000% 11.764706%; /* #0F1B2D */
 
     /* Legacy fill token — now neutral surface */
     --navy: 40 22% 91%;
     --navy-hover: 40 20% 88%;
 
-    /* NO saturated accent — near-black ink is the only "accent" */
+    /* Legacy neutral accents */
     --crest: 45 6% 12%;
     --gold: 45 6% 12%;
     --copper: 45 6% 12%;
 
-    /* PRIMARY = near-black ink with warm white text */
-    --primary: 45 6% 12%;
-    --primary-foreground: 40 32% 95%;     /* #F7F4EE */
-    --primary-hover: 45 6% 20%;
+    /* PRIMARY = court blue with white text */
+    --primary: 224.021739 75.409836% 47.843137%; /* #1E4FD6 */
+    --primary-foreground: 0.000000 0.000000% 100.000000%; /* #FFFFFF */
+    --primary-hover: 224.583333 76.595745% 36.862745%; /* #163BA6 */
 
     /* NEUTRAL */
-    --secondary: 40 22% 91%;
-    --secondary-foreground: 45 6% 12%;
-    --muted: 40 22% 91%;
-    --muted-foreground: 42 6% 40%;
-    --accent: 40 22% 91%;
-    --accent-foreground: 45 6% 12%;
+    --secondary: 222.000000 76.923077% 94.901961%; /* #E8EEFC */
+    --secondary-foreground: 216.000000 50.000000% 11.764706%; /* #0F1B2D */
+    --muted: 215.000000 27.272727% 91.372549%; /* #E3E8EF */
+    --muted-foreground: 218.571429 13.333333% 41.176471%; /* #5B6577 */
+    --accent: 10.939227 100.000000% 64.509804%; /* #FF6B4A */
+    --accent-foreground: 216.000000 50.000000% 11.764706%; /* #0F1B2D */
 
     /* BORDERS */
-    --border: 38 26% 85%;                 /* #E2DCD0 */
-    --border-hover: 38 20% 76%;
-    --input: 38 26% 85%;
-    --ring: 45 6% 12%;
+    --border: 215.000000 27.272727% 91.372549%; /* #E3E8EF */
+    --border-hover: 214.736842 22.352941% 83.333333%; /* #CBD3DE */
+    --input: 214.736842 22.352941% 83.333333%; /* #CBD3DE */
+    --ring: 224.021739 75.409836% 47.843137%; /* #1E4FD6 */
 
     /* FUNCTIONAL */
-    --success: 152 55% 32%;
-    --success-foreground: 43 26% 97%;
+    --success: 160.363636 75.342466% 28.627451%; /* #12805C */
+    --success-foreground: 0.000000 0.000000% 100.000000%; /* #FFFFFF */
     --warning: 32 85% 42%;
     --warning-foreground: 43 26% 97%;
     --destructive: 0 65% 45%;
     --destructive-foreground: 43 26% 97%;
 
+    --accent-hover: 12.156863 100.000000% 70.000000%;
+    --verified-gold: 38.333333 50.000000% 57.647059%;
+    --motion-shadow: 0 8px 20px hsl(var(--foreground) / 0.10);
+    --toast-bg: var(--foreground);
+    --toast-fg: 0 0% 100%;
+    --toast-check: 141.891892 69.158879% 58.039216%;
     --radius: 0.25rem;
 
     --sidebar-background: 43 26% 94%;
@@ -115,19 +120,39 @@
 
 /* Coach portal tokens — scoped to .coach-portal only (light theme). */
 .coach-portal {
-  --portal-bg: 43 26% 94%;            /* #F4F1EA */
-  --portal-card: 0 0% 100%;           /* #FFFFFF */
-  --portal-ink: 45 7% 12%;            /* #201F1C */
-  --portal-muted: 40 6% 41%;          /* #6E6A62 */
-  --portal-muted-strong: 40 7% 34%;   /* #5E5A52 */
-  --portal-border: 40 24% 85%;        /* #E2DCD0 */
-  --portal-input: 41 22% 80%;         /* #D6CFC0 */
-  --portal-copper: 17 52% 40%;        /* #9A4F31 */
-  --portal-copper-hover: 18 55% 32%;  /* #7E3F25 */
-  --portal-on-copper: 43 26% 94%;     /* #F4F1EA */
-  --portal-copper-tint: 23 59% 91%;   /* #F6E6DC */
-  --portal-selected: 220 38% 92%;     /* #E3E8F2 */
-  --portal-selected-border: 220 35% 80%; /* #B9C5DD */
+  --portal-bg: 216.000000 33.333333% 97.058824%; /* #F5F7FA */
+  --portal-card: 0.000000 0.000000% 100.000000%; /* #FFFFFF */
+  --portal-ink: 216.000000 50.000000% 11.764706%; /* #0F1B2D */
+  --portal-muted: 218.571429 13.333333% 41.176471%; /* #5B6577 */
+  --portal-muted-strong: 218.000000 16.853933% 34.901961%; /* #4A5568 */
+  --portal-border: 215.000000 27.272727% 91.372549%; /* #E3E8EF */
+  --portal-input: 214.736842 22.352941% 83.333333%; /* #CBD3DE */
+  --portal-copper: 10.939227 100.000000% 64.509804%; /* #FF6B4A */
+  --portal-copper-hover: 12.156863 100.000000% 70.000000%; /* #FF8566 */
+  --portal-on-copper: 216.000000 50.000000% 11.764706%; /* #0F1B2D */
+  --portal-copper-tint: 12.857143 100.000000% 94.509804%; /* #FFE9E3 */
+  --portal-selected: 222.000000 76.923077% 94.901961%; /* #E8EEFC */
+  --portal-selected-border: 221.785714 77.777778% 85.882353%; /* #BFD0F7 */
+  --portal-blue: 224.021739 75.409836% 47.843137%; /* #1E4FD6 */
+  --portal-blue-hover: 224.583333 76.595745% 36.862745%; /* #163BA6 */
+  --portal-coral-text: 10.404624 75.545852% 44.901961%; /* #C93A1C */
+  --portal-success: 160.363636 75.342466% 28.627451%; /* #12805C */
+  --background: var(--portal-bg);
+  --foreground: var(--portal-ink);
+  --card: var(--portal-card);
+  --card-foreground: var(--portal-ink);
+  --popover: var(--portal-card);
+  --popover-foreground: var(--portal-ink);
+  --primary: var(--portal-copper);
+  --primary-foreground: var(--portal-on-copper);
+  --primary-hover: var(--portal-copper-hover);
+  --muted: var(--portal-border);
+  --muted-foreground: var(--portal-muted);
+  --accent: var(--portal-selected);
+  --accent-foreground: var(--portal-ink);
+  --border: var(--portal-border);
+  --input: var(--portal-input);
+  --ring: var(--portal-blue);
   background: hsl(var(--portal-bg));
   color: hsl(var(--portal-ink));
   font-family: 'Barlow', system-ui, sans-serif;
@@ -152,12 +177,12 @@
       transparent 1px 8px
     );
   }
-  /* Verified badge — ink on warm tint, no saturated hue */
+  /* Gold is reserved for verified badges. */
   .badge-verified {
     @apply inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider;
-    background: rgba(32, 31, 28, 0.07);
-    color: #201F1C;
-    border: 0.5px solid rgba(32, 31, 28, 0.28);
+    background: hsl(var(--verified-gold) / 0.18);
+    color: hsl(var(--foreground));
+    border: 0.5px solid hsl(var(--verified-gold));
     border-radius: 2px;
   }
   .badge-discount {
@@ -230,7 +255,7 @@
   .text-copper { color: #201F1C; }
   .text-navy { color: hsl(var(--foreground)); }
   .text-cream { color: hsl(var(--foreground)); }
-  .text-verified-gold { color: #201F1C; }
+  .text-verified-gold { color: hsl(var(--verified-gold)); }
 
   .bg-gold, .bg-crest { background-color: #201F1C; }
   .bg-gold-subtle, .bg-crest-subtle { background-color: rgba(32, 31, 28, 0.07); }
@@ -246,7 +271,7 @@
   .border-navy { border-color: hsl(var(--border)); }
 
   .fill-gold { fill: #201F1C; }
-  .fill-verified-gold { fill: #201F1C; }
+  .fill-verified-gold { fill: hsl(var(--verified-gold)); }
 
   .hover\:bg-navy:hover { background-color: hsl(var(--background-secondary)); }
   .hover\:bg-navy-hover:hover { background-color: hsl(var(--background-tertiary)); }
@@ -285,32 +310,55 @@
 /* Portal skin: remaps shared shadcn tokens so reused dashboard pages (e.g. ProfileEditor)
    render in the coach-portal look without forking them. Only used inside .coach-portal. */
 .coach-portal .portal-skin {
-  --background: 0 0% 100%;
-  --background-secondary: 43 26% 94%;
-  --background-tertiary: 43 26% 94%;
-  --foreground: 45 7% 12%;
-  --card: 0 0% 100%;
-  --card-foreground: 45 7% 12%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 45 7% 12%;
-  --primary: 17 52% 40%;
-  --primary-foreground: 43 26% 94%;
-  --secondary: 43 26% 94%;
-  --secondary-foreground: 45 7% 12%;
-  --muted: 43 26% 94%;
-  --muted-foreground: 40 6% 41%;
-  --accent: 220 38% 92%;
-  --accent-foreground: 45 7% 12%;
-  --border: 40 24% 85%;
-  --input: 41 22% 80%;
-  --ring: 17 52% 40%;
-  --gold: 17 52% 40%;
-  color: hsl(var(--foreground));
+  --background: var(--portal-card);
+  --background-secondary: var(--portal-bg);
+  --background-tertiary: var(--portal-bg);
+  --secondary: var(--portal-bg);
+  --secondary-foreground: var(--portal-ink);
+  color: hsl(var(--portal-ink));
 }
+
 .coach-portal .portal-skin h1,
 .coach-portal .portal-skin h2 {
   font-family: 'Barlow Condensed', sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
-.coach-portal .portal-skin button[class*="bg-primary"]:hover { background: hsl(18 55% 32%); }
+.coach-portal .portal-skin button[class*="bg-primary"]:hover { background: hsl(var(--portal-copper-hover)); }
+
+/* Shared motion and feedback; movement never changes layout dimensions. */
+@keyframes fade-up-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes grow-in { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes rise-in { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes skeleton-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+@keyframes sheet-in { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes sheet-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.animate-fade-up-in { animation: fade-up-in 450ms ease-out both; }
+.animate-grow-in { transform-origin: left; animation: grow-in 800ms ease-out both; }
+.animate-rise-in { transform-origin: bottom; animation: rise-in 800ms ease-out both; }
+.motion-card { animation: fade-up-in 450ms ease-out both; transition: transform 200ms ease-out, box-shadow 200ms ease-out; }
+.motion-card:nth-child(2) { animation-delay: 50ms; }
+.motion-card:nth-child(3) { animation-delay: 100ms; }
+.motion-card:nth-child(4) { animation-delay: 150ms; }
+@media (hover: hover) { .motion-card:hover, .hover-lift:hover { transform: translateY(-3px); box-shadow: var(--motion-shadow); } }
+.hover-lift { transition: transform 200ms ease-out, box-shadow 200ms ease-out; }
+button:not(:disabled):active, .press-feedback:active { transform: scale(.97); }
+.skeleton-shimmer { background: linear-gradient(100deg, hsl(var(--muted)) 25%, hsl(var(--card)) 45%, hsl(var(--muted)) 65%); background-size: 200% 100%; animation: skeleton-shimmer 1.8s linear infinite; }
+.coach-portal li, .surface { animation: fade-up-in 450ms ease-out both; }
+.coach-portal li:nth-child(2) { animation-delay: 35ms; }
+.coach-portal li:nth-child(3) { animation-delay: 70ms; }
+.coach-portal li:nth-child(4) { animation-delay: 105ms; }
+.coach-portal[data-state="open"][data-side="right"] { animation: sheet-in 300ms ease-out both; }
+.coach-portal[data-state="open"][data-side="bottom"] { animation: sheet-up 300ms ease-out both; }
+[data-sonner-toaster] [data-sonner-toast] { background: hsl(var(--toast-bg)); color: hsl(var(--toast-fg)); border-color: hsl(var(--toast-bg)); border-radius: 999px; box-shadow: var(--motion-shadow); }
+[data-sonner-toast][data-type="success"] [data-icon] { color: hsl(var(--toast-check)); }
+@media (max-width: 767px) {
+  .coach-portal[data-state="open"][data-side="right"] { animation-name: sheet-up; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .motion-card:hover, .hover-lift:hover, button:not(:disabled):active, .press-feedback:active { transform: none; }
+}
+
+.coach-portal[role="dialog"], .coach-portal[data-radix-menu-content] { background: hsl(var(--portal-card)); }
+.badge-verified svg { color: hsl(var(--verified-gold)); }

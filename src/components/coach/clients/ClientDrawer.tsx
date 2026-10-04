@@ -22,7 +22,7 @@ type TimelineItem = { id: string; at: string; label: string; text: string };
 const statusChip: Record<string, string> = {
   scheduled: 'border-portal-selected-border bg-portal-selected text-portal-ink',
   attended: 'border-portal-border bg-portal-bg text-portal-ink',
-  no_show: 'border-portal-copper text-portal-copper',
+  no_show: 'border-portal-copper text-portal-coral-text',
   cancelled: 'border-portal-border text-portal-muted line-through',
 };
 
@@ -225,11 +225,11 @@ function TasksTab({ clientId, tasks }: { clientId: string; tasks: NonNullable<Re
             const overdue = !k.done && k.due_date && k.due_date < todayStr;
             return (
               <li key={k.id} className="flex items-start gap-2 py-1.5">
-                <input type="checkbox" checked={k.done} onChange={(e) => toggle.mutate({ id: k.id, done: e.target.checked }, { onError: () => toast.error(t.crm_error) })} className="mt-1 h-4 w-4 accent-[hsl(var(--portal-copper))]" />
+                <input type="checkbox" checked={k.done} onChange={(e) => toggle.mutate({ id: k.id, done: e.target.checked }, { onError: () => toast.error(t.crm_error) })} className="mt-1 h-4 w-4 accent-portal-blue" />
                 <div className="flex-1 min-w-0">
                   <div className={`text-sm ${k.done ? 'line-through text-portal-muted' : 'text-portal-ink'}`}>{k.title}</div>
                   {k.due_date && (
-                    <div className={`text-xs ${overdue ? 'text-portal-copper font-medium' : 'text-portal-muted'}`}>
+                    <div className={`text-xs ${overdue ? 'text-portal-coral-text font-medium' : 'text-portal-muted'}`}>
                       {overdue ? t.crm_overdue : t.crm_due} · {fmtDate(k.due_date, lang, tz)}
                     </div>
                   )}
@@ -324,7 +324,7 @@ function DetailsTab({ client, onDeleted }: { client: NonNullable<NonNullable<Ret
         <button className={portalBtnGhost} onClick={() => move.move(client.id, archived ? 'enquiry' : 'archived').catch(() => toast.error(t.crm_error))}>
           {archived ? t.crm_unarchive : t.crm_archive}
         </button>
-        <button className={`${portalBtnGhost} text-portal-copper border-portal-copper`} onClick={() => setConfirm(true)}>{t.crm_delete}</button>
+        <button className={`${portalBtnGhost} text-portal-coral-text border-portal-copper`} onClick={() => setConfirm(true)}>{t.crm_delete}</button>
       </div>
       <AlertDialog open={confirm} onOpenChange={setConfirm}>
         <AlertDialogContent className="coach-portal bg-portal-card border-portal-border rounded-[4px]">

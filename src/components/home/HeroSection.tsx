@@ -31,13 +31,13 @@ export function HeroSection() {
 
           <div className="mt-12 flex flex-wrap items-center gap-3">
             <Link to="/search">
-              <Button variant="glass" size="lg" className="tracking-[0.12em] h-12 px-7">
+              <Button variant="coral" size="lg" className="tracking-[0.12em] h-12 px-7">
                 {t.hero_cta_find}
               </Button>
             </Link>
             <Link to="/dashboard">
               <Button
-                variant="glass"
+                variant="coral"
                 size="lg"
                 className="tracking-[0.12em] h-12 px-7"
               >

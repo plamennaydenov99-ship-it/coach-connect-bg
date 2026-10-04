@@ -80,7 +80,7 @@ export default function CoachClients() {
           ))}
         </div>
       ) : error ? (
-        <p className="text-sm text-portal-copper">{t.crm_error}</p>
+        <p className="text-sm text-portal-coral-text">{t.crm_error}</p>
       ) : clients.length === 0 ? (
         <div className="bg-portal-card border border-portal-border rounded-[4px] p-10 text-center space-y-3">
           <Users className="h-8 w-8 mx-auto text-portal-muted" />

@@ -1,3 +1,5 @@
+import { toast } from 'sonner';
+import { useLanguage } from '@/context/LanguageContext';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
@@ -60,6 +62,7 @@ export function useClientList() {
 
 export function useCreateClient() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (v: { display_name: string; phone?: string; email?: string; goal?: string; source?: string; stage: Stage }) => {
@@ -82,13 +85,14 @@ export function useCreateClient() {
       if (error) throw error;
       return data;
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
+    onSuccess: () => { toast.success(t.crm_client_created); qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
   });
 }
 
 /** Persist a new ordering for the board (optimistic, rolls back on error). */
 export function useReorderClients() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const qc = useQueryClient();
   const key = keys.list(user?.id);
   return useMutation({
@@ -119,6 +123,7 @@ export function useReorderClients() {
       }
       return { prev };
     },
+    onSuccess: () => toast.success(t.crm_stage_updated),
     onError: (_e, _v, ctx) => {
       if (ctx?.prev) qc.setQueryData(key, ctx.prev);
     },
@@ -194,18 +199,20 @@ export function useClientDetail(id: string | undefined) {
 
 export function useAddNote(clientId: string) {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (content: string) => {
       const { error } = await supabase.from('client_notes').insert({ relationship_id: clientId, content });
       if (error) throw error;
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: keys.client(user?.id, clientId) }); },
+    onSuccess: () => { toast.success(t.dash_note_saved); qc.invalidateQueries({ queryKey: keys.client(user?.id, clientId) }); },
   });
 }
 
 export function useAddTask(clientId: string) {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (v: { title: string; due_date?: string | null }) => {
@@ -214,12 +221,13 @@ export function useAddTask(clientId: string) {
         .insert({ coach_id: user!.id, client_id: clientId, title: v.title, due_date: v.due_date || null });
       if (error) throw error;
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
+    onSuccess: () => { toast.success(t.crm_task_saved); qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
   });
 }
 
 export function useToggleTask() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, done }: { id: string; done: boolean }) => {
@@ -230,18 +238,19 @@ export function useToggleTask() {
         .eq('coach_id', user!.id);
       if (error) throw error;
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
+    onSuccess: () => { toast.success(t.crm_task_done); qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
   });
 }
 
 export function useSetSessionStatus() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, status }: { id: string; status: 'attended' | 'no_show' }) => {
       const { error } = await supabase.from('coach_sessions').update({ status }).eq('id', id).eq('coach_id', user!.id);
       if (error) throw error;
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
+    onSuccess: () => { toast.success(t.cal_updated); qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
   });
 }
