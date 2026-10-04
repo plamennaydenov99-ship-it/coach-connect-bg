@@ -225,7 +225,7 @@ function TasksTab({ clientId, tasks }: { clientId: string; tasks: NonNullable<Re
             const overdue = !k.done && k.due_date && k.due_date < todayStr;
             return (
               <li key={k.id} className="flex items-start gap-2 py-1.5">
-                <input type="checkbox" checked={k.done} onChange={(e) => toggle.mutate({ id: k.id, done: e.target.checked }, { onError: () => toast.error(t.crm_error) })} className="mt-1 h-4 w-4 accent-[hsl(var(--portal-copper))]" />
+                <input type="checkbox" checked={k.done} onChange={(e) => toggle.mutate({ id: k.id, done: e.target.checked }, { onError: () => toast.error(t.crm_error) })} className="mt-1 h-4 w-4 accent-portal-blue" />
                 <div className="flex-1 min-w-0">
                   <div className={`text-sm ${k.done ? 'line-through text-portal-muted' : 'text-portal-ink'}`}>{k.title}</div>
                   {k.due_date && (

@@ -76,7 +76,7 @@ export function CoachLayout() {
             <Zap className="h-4 w-4" strokeWidth={2.5} />
           </span>
           <span className="font-display text-xl tracking-[0.08em] text-portal-ink">LOKKA</span>
-          <span className="font-display text-[11px] tracking-[0.14em] uppercase px-1.5 py-0.5 rounded-[4px] border border-portal-copper text-portal-blue">
+          <span className="font-display text-[11px] tracking-[0.14em] uppercase px-1.5 py-0.5 rounded-[4px] border border-portal-copper text-portal-coral-text">
             {t.portal_coach_tag}
           </span>
         </Link>

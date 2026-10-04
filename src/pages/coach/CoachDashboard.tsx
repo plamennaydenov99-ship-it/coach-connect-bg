@@ -160,7 +160,7 @@ function TodayList({ sessions, onOpen }: { sessions: CalSession[]; onOpen: (s: C
       {sessions.map((s) => {
         const [label, cls] = chip(s);
         const past = s.status === 'scheduled' && new Date(s.starts_at).getTime() <= now;
-        const dot = s.status === 'attended' ? 'bg-portal-muted' : s.id === nextId ? 'bg-portal-copper' : s.status === 'scheduled' ? 'bg-[#5B82E0]' : 'bg-portal-border';
+        const dot = s.status === 'attended' ? 'bg-portal-muted' : s.id === nextId ? 'bg-portal-copper' : s.status === 'scheduled' ? 'bg-portal-blue' : 'bg-portal-border';
         return (
           <li key={s.id} className="flex items-center gap-3 py-2.5">
             <button onClick={() => onOpen(s)} className="flex items-center gap-3 flex-1 min-w-0 text-left">
@@ -205,7 +205,7 @@ function TasksCard({ loading, tasks, today, locale, className = '' }: { loading:
             const overdue = k.due_date && k.due_date < today;
             return (
               <li key={k.id} className="flex items-start gap-2.5 text-sm">
-                <input type="checkbox" className="mt-1 accent-[#9A4F31]" checked={false}
+                <input type="checkbox" className="mt-1 accent-portal-blue" checked={false}
                   onChange={() => toggle.mutate({ id: k.id, done: true }, { onError: () => toast.error(t.crm_error) })} />
                 <span className="flex-1 min-w-0">
                   <span className="block text-portal-ink">{k.title}</span>
@@ -257,7 +257,7 @@ function Inbox() {
                   <Avatar name={c.name} size={36} />
                   <span className="flex-1 min-w-0">
                     <span className="flex justify-between gap-2"><span className="truncate text-portal-ink text-sm">{c.name}</span><span className="text-xs text-portal-muted shrink-0">{when(c.last_message_at)}</span></span>
-                    <span className="flex items-center gap-2"><span className="block truncate text-xs text-portal-muted flex-1">{c.preview ?? ''}</span>{byConvo.has(c.id) && <span aria-label={t.cmsg_unread} className="w-2 h-2 rounded-full bg-portal-copper shrink-0" />}</span>
+                    <span className="flex items-center gap-2"><span className="block truncate text-xs text-portal-muted flex-1">{c.preview ?? ''}</span>{byConvo.has(c.id) && <span aria-label={t.cmsg_unread} className="w-2 h-2 rounded-full bg-portal-blue shrink-0" />}</span>
                   </span>
                 </Link>
               </li>

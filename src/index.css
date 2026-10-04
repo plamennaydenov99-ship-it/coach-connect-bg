@@ -177,7 +177,7 @@
       transparent 1px 8px
     );
   }
-  /* Verified badge — ink on warm tint, no saturated hue */
+  /* Gold is reserved for verified badges. */
   .badge-verified {
     @apply inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider;
     background: hsl(var(--verified-gold) / 0.18);
@@ -359,3 +359,6 @@ button:not(:disabled):active, .press-feedback:active { transform: scale(.97); }
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   .motion-card:hover, .hover-lift:hover, button:not(:disabled):active, .press-feedback:active { transform: none; }
 }
+
+.coach-portal[role="dialog"], .coach-portal[data-radix-menu-content] { background: hsl(var(--portal-card)); }
+.badge-verified svg { color: hsl(var(--verified-gold)); }
