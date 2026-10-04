@@ -31,10 +31,10 @@ export function MonthGrid({ gridStart, month, tz, sessions, onDay, onSession }: 
                   <button
                     key={s.id}
                     onClick={(e) => { e.stopPropagation(); onSession(s); }}
-                    className={`w-full text-left truncate text-[11px] px-1 rounded-[4px] border flex items-center gap-1 ${s.kind === 'trial' ? 'bg-portal-copper-tint border-portal-copper' : 'bg-portal-selected border-portal-selected-border'} ${s.status === 'cancelled' ? 'opacity-50 line-through' : ''}`}
+                    className={`w-full text-left truncate text-[11px] px-1 rounded-[4px] border flex items-center gap-1 ${s.kind === 'hire' ? 'bg-portal-bg border-portal-ink' : s.kind === 'trial' ? 'bg-portal-copper-tint border-portal-copper' : 'bg-portal-selected border-portal-selected-border'} ${s.status === 'cancelled' ? 'opacity-50 line-through' : ''}`}
                   >
                     {s.series_id && <Repeat className="h-2.5 w-2.5 shrink-0" />}
-                    <span className="truncate" title={s.capacity != null && s.led_by ? t.group_led_by_line.replace('{name}', s.led_by) : undefined}>{toTimeStr(s.starts_at, tz)} {s.capacity != null ? `${s.title || t.group_type} · ${sessionFill(s)}/${s.capacity}` : s.client?.display_name}</span>
+                    <span className="truncate" title={s.capacity != null && s.led_by ? t.group_led_by_line.replace('{name}', s.led_by) : undefined}>{toTimeStr(s.starts_at, tz)} {s.kind === 'hire' ? `${t.hire_short} · ${s.title ?? ''}` : s.capacity != null ? `${s.title || t.group_type} · ${sessionFill(s)}/${s.capacity}` : s.client?.display_name}</span>
                     {s.capacity != null && s.is_public && <span className="shrink-0 text-portal-blue font-medium" aria-label={t.group_trending_marker}>★</span>}
                   </button>
                 ))}

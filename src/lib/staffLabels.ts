@@ -16,7 +16,7 @@ export const clubLabelOverrides: Record<Lang, Partial<Record<Key, string>>> = {
     cal_no_clients: 'No members found.', cal_pick_client: 'Choose a member', cal_open_client: 'Open member',
   },
   bg: {
-    portal_clients: 'Членове', cal_quick_book: 'Нов клас', cal_booked: 'Класът е създаден', group_title: 'Име на класа', group_submit: 'Създай клас', group_type: 'Групов клас', cal_type_one: '1:1 сесия', portal_new_session: 'Нов клас', dash_kpi_active: 'Активни членове', dash_pipeline: 'Етапи на членовете', crm_clients: 'Членове', dash_clients: 'Членове', crm_new_client: 'Нов член',
+    portal_clients: 'Членове', cal_quick_book: 'Нова тренировка', cal_booked: 'Тренировката е създадена', group_title: 'Име на тренировката', group_submit: 'Създай тренировка', group_type: 'Групова тренировка', cal_type_one: '1:1 сесия', portal_new_session: 'Нова тренировка', dash_kpi_active: 'Активни членове', dash_pipeline: 'Етапи на членовете', crm_clients: 'Членове', dash_clients: 'Членове', crm_new_client: 'Нов член',
     crm_empty_title: 'Още нямаш членове', crm_empty_body: 'Добави първия си член, за да следиш тренировки, задачи и бележки.',
     crm_no_match: 'Няма членове, които отговарят на търсенето ти.', crm_create: 'Създай член', crm_archive: 'Архивирай члена',
     crm_unarchive: 'Възстанови члена', crm_delete: 'Изтрий члена', crm_delete_title: 'Да изтрия ли този член?',

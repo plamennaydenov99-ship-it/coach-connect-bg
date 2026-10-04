@@ -1,13 +1,13 @@
 import { useStaffPaths } from '@/context/StaffRoleContext';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Repeat, MapPin, Clock, UserRound } from 'lucide-react';
+import { Repeat, MapPin, Clock, UserRound, Building2 } from 'lucide-react';
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/hooks/useAuth';
 import {
-  findOverlaps, useCancelFollowing, useCoachTz, useReschedule, useSessionStatus, type CalSession,
+  findOverlaps, isResourceConflict, useCancelFollowing, useCoachTz, useReschedule, useSessionStatus, type CalSession,
 } from '@/hooks/coach/useCoachCalendar';
 import { toDateStr, toTimeStr, zonedToUtc } from '@/lib/tz';
 import { fmtDateTime, portalBtnGhost, portalBtnPrimary, portalInput, portalLabel } from '@/components/coach/clients/shared';
@@ -47,7 +47,7 @@ function Body({ s, onClose }: { s: CalSession; onClose: () => void }) {
   const [confirmed, setConfirmed] = useState(false);
   useEffect(() => { setConfirmed(false); setOverlap(0); }, [date, time, duration]);
 
-  const err = () => toast.error(t.crm_error);
+  const err = (e?: unknown) => toast.error(isResourceConflict(e) ? t.cal_resource_conflict : t.crm_error);
   const status = (st: 'attended' | 'no_show' | 'cancelled') =>
     setStatus.mutate({ id: s.id, status: st }, { onSuccess: () => { toast.success(t.cal_updated); onClose(); }, onError: err });
 
@@ -70,7 +70,7 @@ function Body({ s, onClose }: { s: CalSession; onClose: () => void }) {
       await reschedule.mutateAsync({ session: s, date, time, duration, location: location.trim().slice(0, 200), scope });
       toast.success(t.cal_updated);
       onClose();
-    } catch { err(); }
+    } catch (e) { err(e); }
   };
 
   const ScopePicker = ({ value, onChange }: { value: Scope; onChange: (v: Scope) => void }) => (
@@ -91,18 +91,20 @@ function Body({ s, onClose }: { s: CalSession; onClose: () => void }) {
   return (
     <div className="space-y-5 pt-2">
       <div>
-        <SheetTitle className="font-display text-xl uppercase tracking-[0.08em] text-portal-ink">{s.capacity != null ? s.title || t.group_type : s.client?.display_name ?? '—'}</SheetTitle>
+        <SheetTitle className="font-display text-xl uppercase tracking-[0.08em] text-portal-ink">{s.kind === 'hire' ? s.title ?? t.hire_type : s.capacity != null ? s.title || t.group_type : s.client?.display_name ?? '—'}</SheetTitle>
         <SheetDescription className="sr-only">{t.cal_title}</SheetDescription>
         {s.client_id && <Link to={`${peoplePath}/${s.client_id}`} className="text-sm text-portal-blue underline-offset-2 hover:underline">{t.cal_open_client}</Link>}
       </div>
       <div className="space-y-2 text-sm">
         <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-portal-muted" />{fmtDateTime(s.starts_at, lang, tz)} – {toTimeStr(s.ends_at, tz)}</div>
         {s.location && <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-portal-muted" />{s.location}</div>}
+        {s.resource?.name && <div className="flex items-center gap-2"><Building2 className="h-4 w-4 text-portal-muted" />{s.resource.name}</div>}
+        {s.kind === 'hire' && s.note && <p className="text-portal-muted-strong whitespace-pre-wrap">{s.note}</p>}
         {s.series_id && <div className="flex items-center gap-2"><Repeat className="h-4 w-4 text-portal-muted" />{t.cal_repeats}</div>}
         {s.capacity != null && s.led_by && <div className="flex items-center gap-2"><UserRound className="h-4 w-4 text-portal-muted" />{t.group_led_by_line.replace('{name}', s.led_by)}</div>}
         <div className="flex gap-2 pt-1">
-          <span className={`text-[11px] px-1.5 py-0.5 rounded-[4px] border ${s.kind === 'trial' ? 'bg-portal-copper-tint border-portal-copper' : 'bg-portal-selected border-portal-selected-border'}`}>
-            {s.capacity != null ? t.group_type : s.kind === 'trial' ? t.cal_type_trial : t.cal_type_session}
+          <span className={`text-[11px] px-1.5 py-0.5 rounded-[4px] border ${s.kind === 'hire' ? 'bg-portal-bg border-portal-ink' : s.kind === 'trial' ? 'bg-portal-copper-tint border-portal-copper' : 'bg-portal-selected border-portal-selected-border'}`}>
+            {s.kind === 'hire' ? t.hire_type : s.capacity != null ? t.group_type : s.kind === 'trial' ? t.cal_type_trial : t.cal_type_session}
           </span>
           {s.capacity != null && s.is_public && <span className="text-[11px] px-1.5 py-0.5 rounded-[4px] border border-portal-blue text-portal-blue bg-portal-card">{t.group_trending_badge}</span>}
           <span className="text-[11px] px-1.5 py-0.5 rounded-[4px] border border-portal-border">{t[`crm_status_${s.status}` as 'crm_status_scheduled']}</span>
@@ -113,8 +115,8 @@ function Body({ s, onClose }: { s: CalSession; onClose: () => void }) {
 
       {mode === 'view' && s.status !== 'cancelled' && (
         <div className="grid grid-cols-2 gap-2">
-          {s.capacity == null && s.status !== 'attended' && <button className={portalBtnGhost} onClick={() => status('attended')}>{t.cal_mark_attended}</button>}
-          {s.capacity == null && s.status !== 'no_show' && <button className={portalBtnGhost} onClick={() => status('no_show')}>{t.cal_no_show}</button>}
+          {s.capacity == null && s.kind !== 'hire' && s.status !== 'attended' && <button className={portalBtnGhost} onClick={() => status('attended')}>{t.cal_mark_attended}</button>}
+          {s.capacity == null && s.kind !== 'hire' && s.status !== 'no_show' && <button className={portalBtnGhost} onClick={() => status('no_show')}>{t.cal_no_show}</button>}
           <button className={portalBtnGhost} onClick={() => setMode('reschedule')}>{t.cal_reschedule}</button>
           <button className={`${portalBtnGhost} text-portal-coral-text border-portal-copper`} onClick={onCancel}>{t.cal_cancel_session}</button>
         </div>

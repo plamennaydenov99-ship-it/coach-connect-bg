@@ -43,6 +43,13 @@
       "when": 1791076650539,
       "tag": "0005_group_session_public_grants_hardening",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791078424355,
+      "tag": "0006_club_resources_private_hire",
+      "breakpoints": true
     }
   ]
 }

@@ -8,8 +8,11 @@ import { addDays, isoWeekday, startOfWeek, toDateStr, todayStr, zonedToUtc, type
 type T = Database['public']['Tables'];
 export type Series = T['session_series']['Row'];
 export type Attendee = T['session_attendees']['Row'] & { client: { display_name: string } | null };
-export type CalSession = T['coach_sessions']['Row'] & { client: { display_name: string } | null; attendees?: Attendee[] };
-export const SESSION_SELECT = '*, client:coach_clients(display_name), attendees:session_attendees(*, client:coach_clients(display_name))';
+export type CalSession = T['coach_sessions']['Row'] & { client: { display_name: string } | null; resource?: { name: string } | null; attendees?: Attendee[] };
+export const SESSION_SELECT = '*, client:coach_clients(display_name), resource:club_resources(name), attendees:session_attendees(*, client:coach_clients(display_name))';
+
+/** Postgres exclusion-constraint violation: the facility is already booked. */
+export const isResourceConflict = (e: unknown) => (e as { code?: string } | null)?.code === '23P01';
 export const sessionFill = (s: CalSession) => (s.attendees ?? []).filter(a => a.status === 'booked' || a.status === 'attended').length;
 export type OpenSlot = T['availability_slots']['Row'];
 
@@ -78,7 +81,7 @@ export function occurrences(p: { weekday: number; start_time: string; duration_m
 }
 
 /** Insert missing occurrences for one series in [from, until], skipping weeks that already have one. */
-async function fillSeries(series: Series, from: DateStr, until: DateStr, tz: string) {
+async function fillSeries(series: Series, from: DateStr, until: DateStr, tz: string, note: string | null = null) {
   const lo = from < series.starts_on ? series.starts_on : from;
   const hi = series.ends_on && series.ends_on < until ? series.ends_on : until;
   if (lo > hi) return 0;
@@ -90,17 +93,30 @@ async function fillSeries(series: Series, from: DateStr, until: DateStr, tz: str
     .lt('starts_at', zonedToUtc(addDays(hi, 7), '00:00', tz).toISOString());
   if (error) throw error;
   const taken = new Set((existing ?? []).map((e) => weekKey(e.starts_at, tz)));
-  const rows = occurrences(series, lo, hi, tz)
-    .filter((o) => !taken.has(weekKey(o.starts_at, tz)))
+  let candidates = occurrences(series, lo, hi, tz).filter((o) => !taken.has(weekKey(o.starts_at, tz)));
+  // Facility already booked at that time: skip the occurrence instead of failing the whole batch.
+  if (series.resource_id && candidates.length) {
+    const clashes = await findResourceClashes(series.resource_id, candidates);
+    const bad = new Set(clashes.map((c) => c.starts_at));
+    candidates = candidates.filter((c) => !bad.has(c.starts_at));
+  }
+  const rows = candidates
     .map((o) => ({
       coach_id: series.coach_id, client_id: series.client_id, series_id: series.id,
       starts_at: o.starts_at, ends_at: o.ends_at, location: series.location, kind: series.kind,
-      capacity: series.capacity, title: series.title, sport: series.sport, led_by: series.led_by, is_public: series.is_public, resource_id: series.resource_id,
+      capacity: series.capacity, title: series.title, sport: series.sport, led_by: series.led_by, is_public: series.is_public, resource_id: series.resource_id, note,
     }));
   if (!rows.length) return 0;
   const ins = await supabase.from('coach_sessions').insert(rows);
-  if (ins.error) throw ins.error;
-  return rows.length;
+  if (!ins.error) return rows.length;
+  if (!isResourceConflict(ins.error)) throw ins.error;
+  // A clash appeared between the check and the insert: fall back to one row at a time, skipping clashes.
+  let n = 0;
+  for (const r of rows) {
+    const one = await supabase.from('coach_sessions').insert(r);
+    if (!one.error) n++; else if (!isResourceConflict(one.error)) throw one.error;
+  }
+  return n;
 }
 
 /** On calendar load: keep open-ended series topped up 12 weeks ahead (idempotent). */
@@ -138,6 +154,20 @@ export async function findOverlaps(coachId: string, candidates: { starts_at: str
   return candidates.filter((c) => rows.some((r) => r.starts_at < c.ends_at && r.ends_at > c.starts_at)).length;
 }
 
+/** Candidate intervals that collide with a non-cancelled session on the same facility. */
+export async function findResourceClashes<C extends { starts_at: string; ends_at: string }>(resourceId: string, candidates: C[], excludeIds: string[] = []) {
+  if (!candidates.length) return [] as C[];
+  const min = candidates.reduce((a, c) => (c.starts_at < a ? c.starts_at : a), candidates[0].starts_at);
+  const max = candidates.reduce((a, c) => (c.ends_at > a ? c.ends_at : a), candidates[0].ends_at);
+  const { data, error } = await supabase
+    .from('coach_sessions').select('id, starts_at, ends_at')
+    .eq('resource_id', resourceId).neq('status', 'cancelled').lt('starts_at', max).gt('ends_at', min);
+  if (error) throw error;
+  const rows = (data ?? []).filter((r) => !excludeIds.includes(r.id));
+  const ms = (x: string) => Date.parse(x);
+  return candidates.filter((c) => rows.some((r) => ms(r.starts_at) < ms(c.ends_at) && ms(r.ends_at) > ms(c.starts_at)));
+}
+
 export interface BookInput {
   client_id: string | null;
   capacity?: number | null;
@@ -150,7 +180,11 @@ export interface BookInput {
   time: TimeStr;
   duration: number;
   location: string;
-  kind: 'session' | 'trial';
+  kind: 'session' | 'trial' | 'hire';
+  resource_id?: string | null;
+  note?: string;
+  /** Occurrence start instants to leave out (facility clashes the user chose to skip). */
+  skip?: string[];
   repeat: boolean;
   endsOn: DateStr | null;
 }
@@ -172,32 +206,28 @@ export function useBookSession() {
   return useMutation({
     mutationFn: async (v: BookInput) => {
       if (!user) throw new Error('Sign in required');
+      const skip = new Set(v.skip ?? []);
+      const resource_id = v.resource_id || null;
       if (v.capacity != null) {
-        const { data: createdId, error } = await supabase.rpc('book_group_session', { payload: {
+        const { error } = await supabase.rpc('book_group_session', { payload: {
           capacity: v.capacity, title: v.title || null, sport: v.sport || null, is_public: v.is_public ?? false,
+          led_by: v.led_by?.trim().slice(0, 80) || null, resource_id,
           attendee_ids: v.attendee_ids ?? [], repeat: v.repeat, location: v.location || null,
           date: v.date, time: v.time, duration: v.duration, weekday: isoWeekday(v.date), ends_on: v.endsOn,
-          occurrences: bookingCandidates(v, tz),
+          occurrences: bookingCandidates(v, tz).filter((c) => !skip.has(c.starts_at)),
         } });
         if (error) throw error;
-        // The booking RPC predates "Led by"; store it on the new series/occurrences in one follow-up.
-        const ledBy = v.led_by?.trim().slice(0, 80) || null;
-        if (ledBy && createdId) {
-          const id = createdId as string;
-          const r = v.repeat
-            ? await supabase.from('session_series').update({ led_by: ledBy }).eq('id', id).eq('coach_id', user.id)
-            : { error: null };
-          if (r.error) throw r.error;
-          const q = supabase.from('coach_sessions').update({ led_by: ledBy }).eq('coach_id', user.id);
-          const s = await (v.repeat ? q.eq('series_id', id) : q.eq('id', id));
-          if (s.error) throw s.error;
-        }
         return;
       }
-      const base = { coach_id: user.id, client_id: v.client_id, location: v.location || null, kind: v.kind };
+      const hire = v.kind === 'hire';
+      const base = {
+        coach_id: user.id, client_id: hire ? null : v.client_id, location: v.location || null, kind: v.kind,
+        resource_id, title: hire ? (v.title?.trim().slice(0, 120) || null) : null,
+      };
+      const note = v.note?.trim().slice(0, 500) || null;
       if (!v.repeat) {
         const [c] = bookingCandidates(v, tz);
-        const { error } = await supabase.from('coach_sessions').insert({ ...base, starts_at: c.starts_at, ends_at: c.ends_at });
+        const { error } = await supabase.from('coach_sessions').insert({ ...base, note, starts_at: c.starts_at, ends_at: c.ends_at });
         if (error) throw error;
         return;
       }
@@ -206,7 +236,7 @@ export function useBookSession() {
         .insert({ ...base, weekday: isoWeekday(v.date), start_time: v.time, duration_min: v.duration, starts_on: v.date, ends_on: v.endsOn })
         .select().single();
       if (error) throw error;
-      await fillSeries(series, v.date, v.endsOn ?? addDays(v.date, TOPUP_WEEKS * 7), tz);
+      await fillSeries(series, v.date, v.endsOn ?? addDays(v.date, TOPUP_WEEKS * 7), tz, note);
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
   });

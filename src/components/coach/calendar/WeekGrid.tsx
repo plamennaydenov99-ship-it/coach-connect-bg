@@ -6,8 +6,8 @@ import type { CalSession, OpenSlot } from '@/hooks/coach/useCoachCalendar';
 import { addDays, labelDate, minutesOfDay, minutesToTime, toDateStr, toTimeStr, todayStr, type DateStr } from '@/lib/tz';
 import { LOCALES } from '@/components/coach/clients/shared';
 
-const HOUR = 48;
-const MIN_PX = HOUR / 60;
+export const HOUR = 48;
+export const MIN_PX = HOUR / 60;
 
 interface Props {
   start: DateStr;
@@ -22,7 +22,7 @@ interface Props {
 type Block = { top: number; height: number; lane: number; lanes: number };
 
 /** Greedy lane layout so overlapping blocks sit side by side. */
-function layout<T>(items: T[], range: (x: T) => [number, number]): (T & Block)[] {
+export function layout<T>(items: T[], range: (x: T) => [number, number]): (T & Block)[] {
   const sorted = [...items].sort((a, b) => range(a)[0] - range(b)[0]);
   const out: (T & Block)[] = [];
   let cluster: (T & Block)[] = [];
@@ -114,13 +114,14 @@ export function WeekGrid({ start, days, tz, sessions, slots, onEmpty, onSession 
                     })}
                     {daySessions.map((s) => {
                       const trial = s.kind === 'trial';
+                      const hire = s.kind === 'hire';
                       const cancelled = s.status === 'cancelled';
                       return (
                         <button
                           key={s.id}
                           onClick={(e) => { e.stopPropagation(); onSession(s); }}
                           className={`absolute rounded-[4px] border px-1.5 py-0.5 text-left text-[11px] leading-tight overflow-hidden z-10 ${
-                            trial ? 'bg-portal-copper-tint border-portal-copper' : 'bg-portal-selected border-portal-selected-border'
+                            hire ? 'bg-portal-bg border-portal-ink' : trial ? 'bg-portal-copper-tint border-portal-copper' : 'bg-portal-selected border-portal-selected-border'
                           } ${cancelled ? 'opacity-50 line-through' : ''} text-portal-ink hover:brightness-95`}
                           style={{
                             top: s.top, height: s.height,
@@ -135,8 +136,9 @@ export function WeekGrid({ start, days, tz, sessions, slots, onEmpty, onSession 
                             {s.status === 'attended' && <Check className="h-3 w-3 shrink-0" />}
                             {s.status === 'no_show' && <UserX className="h-3 w-3 shrink-0 text-portal-ink" />}
                           </div>
-                          <div className="truncate">{s.capacity != null ? `${s.title || t.group_type} · ${sessionFill(s)}/${s.capacity}` : s.client?.display_name ?? '—'}</div>
+                          <div className="truncate">{hire ? `${t.hire_type} · ${s.title ?? ''}` : s.capacity != null ? `${s.title || t.group_type} · ${sessionFill(s)}/${s.capacity}` : s.client?.display_name ?? '—'}</div>
                           {s.capacity != null && s.led_by && <div className="truncate text-portal-muted-strong">{t.group_led_by_line.replace('{name}', s.led_by)}</div>}
+                          {s.resource?.name && <div className="truncate text-portal-muted-strong">{s.resource.name}</div>}
                           {s.status === 'no_show' && <div className="text-portal-ink">{t.cal_no_show}</div>}
                         </button>
                       );
