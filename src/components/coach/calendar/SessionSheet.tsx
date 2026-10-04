@@ -1,3 +1,4 @@
+import { useStaffPaths } from '@/context/StaffRoleContext';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Repeat, MapPin, Clock } from 'lucide-react';
@@ -28,6 +29,7 @@ export function SessionSheet({ session, onClose }: { session: CalSession | null;
 
 function Body({ s, onClose }: { s: CalSession; onClose: () => void }) {
   const { t, lang } = useLanguage();
+  const { base, peoplePath } = useStaffPaths();
   const tz = useCoachTz();
   const { user } = useAuth();
   const setStatus = useSessionStatus();

@@ -1,3 +1,4 @@
+import { useStaffPaths } from '@/context/StaffRoleContext';
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { LayoutGrid, List, Plus, Search, Users } from 'lucide-react';
@@ -16,6 +17,7 @@ const VIEW_KEY = 'lokka_coach_clients_view';
 
 export default function CoachClients() {
   const { t } = useLanguage();
+  const { base, peoplePath } = useStaffPaths();
   const { id } = useParams();
   const navigate = useNavigate();
   const { data: clients = [], isLoading, error } = useClientList();

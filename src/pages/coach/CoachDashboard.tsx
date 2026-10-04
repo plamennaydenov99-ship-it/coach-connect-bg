@@ -1,3 +1,4 @@
+import { useStaffPaths } from '@/context/StaffRoleContext';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Check, Plus } from 'lucide-react';
@@ -22,6 +23,7 @@ const link = 'text-sm text-portal-blue hover:underline';
 
 export default function CoachDashboard() {
   const { t, lang } = useLanguage();
+  const { base, peoplePath } = useStaffPaths();
   const { profile } = useAuth();
   const tz = useCoachTz();
   const locale = LOCALES[lang];
@@ -143,6 +145,7 @@ function Kpi({ label, value, sub }: { label: string; value: string; sub: string 
 
 function TodayList({ sessions, onOpen }: { sessions: CalSession[]; onOpen: (s: CalSession) => void }) {
   const { t } = useLanguage();
+  const { base, peoplePath } = useStaffPaths();
   const tz = useCoachTz();
   const setStatus = useSessionStatus();
   const now = Date.now();
@@ -187,6 +190,7 @@ function TodayList({ sessions, onOpen }: { sessions: CalSession[]; onOpen: (s: C
 
 function TasksCard({ loading, tasks, today, locale, className = '' }: { loading: boolean; tasks: any[]; today: string; locale: string; className?: string }) {
   const { t } = useLanguage();
+  const { base, peoplePath } = useStaffPaths();
   const toggle = useToggleTask();
   const add = useQuickTask();
   const [draft, setDraft] = useState('');
@@ -230,6 +234,7 @@ function TasksCard({ loading, tasks, today, locale, className = '' }: { loading:
 
 function Inbox() {
   const { t, lang } = useLanguage();
+  const { base, peoplePath } = useStaffPaths();
   const tz = useCoachTz();
   const { data, isLoading } = useCoachInbox();
   const { byConvo } = useUnreadCount();

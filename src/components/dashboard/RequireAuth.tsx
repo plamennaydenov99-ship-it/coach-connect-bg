@@ -7,7 +7,7 @@ import LegacyDashboardRedirect from '@/pages/coach/LegacyDashboardRedirect';
 import { ApplicationReview } from './ApplicationReview';
 import { CoachOnboarding } from './CoachOnboarding';
 
-type Area = 'athlete' | 'staff' | 'coach';
+type Area = 'athlete' | 'staff' | 'coach' | 'club';
 
 export function RequireAuth({ children, area }: { children: React.ReactNode; area?: Area }) {
   const { user, profile, loading, profileLoading, profileError, refreshProfile } = useAuth();
@@ -63,12 +63,18 @@ export function RequireAuth({ children, area }: { children: React.ReactNode; are
   if (area === 'coach' && profile && profile.role !== 'coach') {
     return <Navigate to={homeFor(profile.role)} replace />;
   }
+  if (area === 'club' && profile && profile.role !== 'club') {
+    return <Navigate to={homeFor(profile.role)} replace />;
+  }
   // Coaches now live in the /coach portal; old /dashboard URLs forward there.
   if (area === 'staff' && role === 'coach') {
     return <LegacyDashboardRedirect />;
   }
+  if (area === 'staff' && role === 'club') {
+    return <LegacyDashboardRedirect role="club" />;
+  }
 
-  const gated = area === 'staff' || area === 'coach';
+  const gated = area === 'staff' || area === 'coach' || area === 'club';
   if (gated && role === 'coach' && status === 'draft') {
     return (
       <CoachOnboarding

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { t as translations } from '@/lib/translations';
 
 export type Lang = 'en' | 'bg' | 'fr';
@@ -37,4 +37,11 @@ export function useLanguage() {
   const ctx = useContext(LanguageContext);
   if (!ctx) throw new Error('useLanguage must be used inside LanguageProvider');
   return ctx;
+}
+
+/** Overrides selected strings for a subtree, e.g. club wording in reused staff pages. */
+export function LanguageOverride({ overrides, children }: { overrides: Partial<LanguageContextValue['t']>; children: ReactNode }) {
+  const ctx = useLanguage();
+  const value = useMemo(() => ({ ...ctx, t: { ...ctx.t, ...overrides } }), [ctx, overrides]);
+  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 }

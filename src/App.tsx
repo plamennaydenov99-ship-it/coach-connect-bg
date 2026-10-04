@@ -21,6 +21,9 @@ import Match from "./pages/Match";
 import Start from "./pages/Start";
 import NotFound from "./pages/NotFound";
 import LegacyCoachRedirect from "./pages/LegacyCoachRedirect";
+import LegacyClubRedirect from "./pages/LegacyClubRedirect";
+import ClubFacilities from "./pages/club/ClubFacilities";
+import { StaffLayout } from "./components/coach/StaffLayout";
 
 import { CoachLayout } from "./components/coach/CoachLayout";
 import CoachCalendar from "./pages/coach/CoachCalendar";
@@ -77,7 +80,21 @@ const App = () => (
               </Route>
               {/* Legacy profile links. Register future /coach/* portal paths above this. */}
               <Route path="/coach/:id" element={<LegacyCoachRedirect />} />
-              <Route path="/club/:id" element={<ClubProfile />} />
+              <Route path="/clubs/:id" element={<ClubProfile />} />
+              <Route path="/club" element={<RequireAuth area="club"><StaffLayout role="club" /></RequireAuth>}>
+                <Route index element={<Navigate to="/club/dashboard" replace />} />
+                <Route path="dashboard" element={<CoachDashboard />} />
+                <Route path="members" element={<CoachClients />} />
+                <Route path="members/:id" element={<CoachClients />} />
+                <Route path="clients" element={<Navigate to="/club/members" replace />} />
+                <Route path="calendar" element={<CoachCalendar />} />
+                <Route path="facilities" element={<ClubFacilities />} />
+                <Route path="messages" element={<CoachMessages />} />
+                <Route path="profile" element={<div className="portal-skin"><ProfileEditor /></div>} />
+                <Route path="settings" element={<CoachSettings />} />
+              </Route>
+              {/* Legacy club profile links. Register future /club/* portal paths above this. */}
+              <Route path="/club/:id" element={<LegacyClubRedirect />} />
               <Route path="/login" element={<Navigate to="/start" replace />} />
               <Route path="/register" element={<Navigate to="/start" replace />} />
               <Route path="/for-coaches" element={<ForCoaches />} />
