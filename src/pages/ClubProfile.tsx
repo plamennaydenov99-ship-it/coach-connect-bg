@@ -82,7 +82,7 @@ const ClubProfile = () => {
               {club.sport && (
                 <span className="px-2 py-0.5 text-xs font-semibold rounded-md bg-secondary capitalize">{club.sport}</span>
               )}
-              <span className="badge-verified"><BadgeCheck className="h-3 w-3" /> {t.verified}</span>
+              {club.verified && <span className="badge-verified"><BadgeCheck className="h-3 w-3" /> {t.verified}</span>}
             </div>
             <h1 className="font-display">{club.name}</h1>
             {club.city && (
