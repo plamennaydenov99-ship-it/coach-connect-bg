@@ -104,6 +104,9 @@ export function PublicNav() {
                     <DropdownMenuItem onClick={() => navigate('/admin/users')}>
                       All users
                     </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/admin/trending')}>
+                      {t.tr_nav}
+                    </DropdownMenuItem>
                   </>
                 )}
                 <DropdownMenuItem onClick={logout}>{t.auth_logout}</DropdownMenuItem>

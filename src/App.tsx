@@ -51,6 +51,7 @@ import PersonalInfo from "./pages/dashboard/PersonalInfo";
 import BookmarksPage from "./pages/dashboard/Bookmarks";
 import AdminReview from "./pages/admin/AdminReview";
 import AdminUsers from "./pages/admin/AdminUsers";
+import AdminTrending from "./pages/admin/AdminTrending";
 
 const queryClient = new QueryClient();
 
@@ -133,6 +134,7 @@ const App = () => (
 
               <Route path="/admin/review" element={<AdminReview />} />
               <Route path="/admin/users" element={<AdminUsers />} />
+              <Route path="/admin/trending" element={<AdminTrending />} />
 
               <Route path="*" element={<NotFound />} />
             </Routes>

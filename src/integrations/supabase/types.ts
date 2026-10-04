@@ -1140,6 +1140,82 @@ export type Database = {
           },
         ]
       }
+      trending_items: {
+        Row: {
+          active: boolean
+          blurb: string | null
+          city: string | null
+          created_at: string | null
+          ends_on: string | null
+          id: string
+          image_url: string | null
+          owner_id: string | null
+          rank: number
+          session_id: string | null
+          sponsored: boolean
+          sport: string | null
+          starts_on: string | null
+          title: string
+          type: string
+        }
+        Insert: {
+          active?: boolean
+          blurb?: string | null
+          city?: string | null
+          created_at?: string | null
+          ends_on?: string | null
+          id?: string
+          image_url?: string | null
+          owner_id?: string | null
+          rank?: number
+          session_id?: string | null
+          sponsored?: boolean
+          sport?: string | null
+          starts_on?: string | null
+          title: string
+          type: string
+        }
+        Update: {
+          active?: boolean
+          blurb?: string | null
+          city?: string | null
+          created_at?: string | null
+          ends_on?: string | null
+          id?: string
+          image_url?: string | null
+          owner_id?: string | null
+          rank?: number
+          session_id?: string | null
+          sponsored?: boolean
+          sport?: string | null
+          starts_on?: string | null
+          title?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trending_items_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trending_items_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "coach_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trending_items_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "public_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       public_sessions: {

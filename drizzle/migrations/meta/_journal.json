@@ -64,6 +64,13 @@
       "when": 1791079430776,
       "tag": "0008_spot_requests_public_sessions",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1791079579057,
+      "tag": "0009_trending_items_spot_grants",
+      "breakpoints": true
     }
   ]
 }
