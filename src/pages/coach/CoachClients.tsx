@@ -25,7 +25,7 @@ export default function CoachClients() {
   const [newOpen, setNewOpen] = useState(false);
 
   const setViewPersist = (v: View) => { setView(v); localStorage.setItem(VIEW_KEY, v); };
-  const open = (cid: string) => navigate(`/coach/clients/${cid}`);
+  const open = (cid: string) => navigate(`${peoplePath}/${cid}`);
 
   const filtered = useMemo(() => {
     const s = q.trim().toLowerCase();
@@ -100,7 +100,7 @@ export default function CoachClients() {
       )}
 
       <NewClientDialog open={newOpen} onOpenChange={setNewOpen} onCreated={open} />
-      <ClientDrawer clientId={id} onClose={() => navigate('/coach/clients')} />
+      <ClientDrawer clientId={id} onClose={() => navigate(peoplePath)} />
     </div>
   );
 }

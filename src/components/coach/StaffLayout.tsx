@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { QuickBookDialog } from '@/components/coach/calendar/QuickBookDialog';
 import { NavLink, Link, Outlet, useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard, Users, CalendarDays, MessageSquare, UserCircle2, Settings,
+  LayoutDashboard, Users, CalendarDays, MessageSquare, UserCircle2, Settings, Building2,
   Bell, Plus, LogOut, ExternalLink, Zap, Sun,
 } from 'lucide-react';
 import {
@@ -12,7 +12,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage, type Lang } from '@/context/LanguageContext';
-import { coachProfilePath } from '@/lib/routes';
+import { clubProfilePath, coachProfilePath } from '@/lib/routes';
+import { StaffRoleProvider, staffConfig, useStaffRole as useStaffRoleSafe, type StaffRole } from '@/context/StaffRoleContext';
 import { toast } from 'sonner';
 import { useUnreadCount } from '@/hooks/coach/useUnreadCount';
 import { useCoachInbox } from '@/hooks/coach/useCoachDashboard';
@@ -31,7 +32,11 @@ const navItemClass = ({ isActive }: { isActive: boolean }) =>
       : 'border-transparent text-portal-muted-strong hover:text-portal-ink hover:bg-portal-bg'
   }`;
 
-export function CoachLayout() {
+export function StaffLayout({ role }: { role: StaffRole }) {
+  return <StaffRoleProvider role={role}><StaffShell /></StaffRoleProvider>;
+}
+
+function StaffShell() {
   const { profile, signOut } = useAuth();
   const { t, lang, setLang } = useLanguage();
   const navigate = useNavigate();
@@ -49,35 +54,40 @@ export function CoachLayout() {
   };
 
   const name = (profile as any)?.full_name as string | undefined;
+  const cfg = staffConfig(useStaffRoleSafe());
+  const club = cfg.role === 'club';
+  const b = cfg.base, people = `${b}/${cfg.people}`;
+  const publicPath = club ? clubProfilePath : coachProfilePath;
 
   const main = [
-    { to: '/coach/dashboard', label: t.portal_dashboard, icon: LayoutDashboard },
-    { to: '/coach/clients', label: t.portal_clients, icon: Users },
-    { to: '/coach/calendar', label: t.portal_calendar, icon: CalendarDays },
-    { to: '/coach/messages', label: t.portal_messages, icon: MessageSquare, badge: unread },
+    { to: `${b}/dashboard`, label: t.portal_dashboard, icon: LayoutDashboard },
+    { to: people, label: t.portal_clients, icon: Users },
+    { to: `${b}/calendar`, label: club ? t.portal_classes_calendar : t.portal_calendar, icon: CalendarDays },
+    ...(club ? [{ to: `${b}/facilities`, label: t.portal_facilities, icon: Building2 }] : []),
+    { to: `${b}/messages`, label: t.portal_messages, icon: MessageSquare, badge: unread },
   ];
   const account = [
-    { to: '/coach/profile', label: t.portal_public_profile, icon: UserCircle2 },
-    { to: '/coach/settings', label: t.portal_settings, icon: Settings },
+    { to: `${b}/profile`, label: t.portal_public_profile, icon: UserCircle2 },
+    { to: `${b}/settings`, label: t.portal_settings, icon: Settings },
   ];
   const tabs = [
-    { to: '/coach/dashboard', label: t.portal_today, icon: Sun },
-    { to: '/coach/clients', label: t.portal_clients, icon: Users },
-    { to: '/coach/calendar', label: t.portal_calendar, icon: CalendarDays },
-    { to: '/coach/messages', label: t.portal_messages, icon: MessageSquare, badge: unread },
+    { to: `${b}/dashboard`, label: t.portal_today, icon: Sun },
+    { to: people, label: t.portal_clients, icon: Users },
+    { to: `${b}/calendar`, label: t.portal_calendar, icon: CalendarDays },
+    { to: `${b}/messages`, label: t.portal_messages, icon: MessageSquare, badge: unread },
   ];
 
   return (
     <div className="coach-portal min-h-screen flex flex-col">
       {/* Top bar */}
       <header className="sticky top-0 z-40 h-14 md:h-16 flex items-center gap-3 px-4 md:px-6 bg-portal-card border-b border-portal-border">
-        <Link to="/coach/dashboard" className="flex items-center gap-2 shrink-0">
+        <Link to={`${b}/dashboard`} className="flex items-center gap-2 shrink-0">
           <span className="flex h-8 w-8 items-center justify-center rounded-[4px] bg-portal-ink text-portal-card">
             <Zap className="h-4 w-4" strokeWidth={2.5} />
           </span>
           <span className="font-display text-xl tracking-[0.08em] text-portal-ink">LOKKA</span>
           <span className="font-display text-[11px] tracking-[0.14em] uppercase px-1.5 py-0.5 rounded-[4px] border border-portal-copper text-portal-coral-text">
-            {t.portal_coach_tag}
+            {club ? t.portal_club_tag : t.portal_coach_tag}
           </span>
         </Link>
 
@@ -85,12 +95,12 @@ export function CoachLayout() {
 
         <Button
           variant="portal"
-          aria-label={t.portal_new_session}
+          aria-label={club ? t.portal_new_class : t.portal_new_session}
           onClick={() => setBookingOpen(true)}
           className="inline-flex items-center gap-1.5 h-9 px-3 md:px-4 rounded-[4px] bg-portal-copper hover:bg-portal-copper-hover text-portal-on-copper font-display uppercase tracking-[0.1em] text-sm transition-colors"
         >
           <Plus className="h-4 w-4" />
-          <span className="hidden sm:inline">{t.portal_new_session}</span>
+          <span className="hidden sm:inline">{club ? t.portal_new_class : t.portal_new_session}</span>
         </Button>
 
         <DropdownMenu>
@@ -113,13 +123,13 @@ export function CoachLayout() {
             {unread > 0 ? (
               <>
                 {unreadConvos.map((c) => (
-                  <DropdownMenuItem key={c.id} onClick={() => navigate(`/coach/messages?c=${c.id}`)} className="flex-col items-start gap-0.5">
+                  <DropdownMenuItem key={c.id} onClick={() => navigate(`${b}/messages?c=${c.id}`)} className="flex-col items-start gap-0.5">
                     <span className="text-sm font-medium flex w-full justify-between gap-2"><span className="truncate">{c.name}</span><span className="text-portal-blue text-xs">{c.n}</span></span>
                     <span className="text-xs text-portal-muted truncate w-full">{c.preview}</span>
                   </DropdownMenuItem>
                 ))}
                 <DropdownMenuSeparator className="bg-portal-border" />
-                <DropdownMenuItem onClick={() => navigate('/coach/messages')}>{unread} {t.portal_unread_count}</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate(`${b}/messages`)}>{unread} {t.portal_unread_count}</DropdownMenuItem>
               </>
             ) : (
               <div className="px-2 py-3 text-sm text-portal-muted">{t.portal_no_notifications}</div>
@@ -141,11 +151,11 @@ export function CoachLayout() {
             <DropdownMenuLabel className="text-sm font-medium truncate">{name}</DropdownMenuLabel>
             <DropdownMenuSeparator className="bg-portal-border" />
             {profile?.id && (
-              <DropdownMenuItem onClick={() => navigate(coachProfilePath(profile.id))}>
+              <DropdownMenuItem onClick={() => navigate(publicPath(profile.id))}>
                 <ExternalLink className="h-4 w-4 mr-2" /> {t.portal_view_public}
               </DropdownMenuItem>
             )}
-            <DropdownMenuItem onClick={() => navigate('/coach/settings')}>
+            <DropdownMenuItem onClick={() => navigate(`${b}/settings`)}>
               <Settings className="h-4 w-4 mr-2" /> {t.portal_settings}
             </DropdownMenuItem>
             <DropdownMenuSeparator className="bg-portal-border" />
@@ -206,7 +216,7 @@ export function CoachLayout() {
         </main>
       </div>
 
-      <QuickBookDialog open={bookingOpen} onOpenChange={setBookingOpen} />
+      <QuickBookDialog open={bookingOpen} onOpenChange={setBookingOpen} defaultKind={club ? 'group' : 'session'} />
 
       {/* Mobile bottom tabs */}
       <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 h-16 grid grid-cols-4 bg-portal-card border-t border-portal-border">

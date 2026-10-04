@@ -73,7 +73,7 @@ export default function CoachDashboard() {
           <section className={`${card} lg:col-span-2 hidden md:block`}>
             <div className="flex items-center justify-between mb-3">
               <h2 className={title}>{t.dash_today}</h2>
-              <Link to="/coach/calendar" className={link}>{t.dash_open_calendar} →</Link>
+              <Link to={`${base}/calendar`} className={link}>{t.dash_open_calendar} →</Link>
             </div>
             {isLoading || !data ? <div className="space-y-2"><Skeleton className="h-12" /><Skeleton className="h-12" /></div>
               : data.todaySessions.length === 0 ? <p className="text-sm text-portal-muted py-4">{t.dash_today_empty}</p>
@@ -83,7 +83,7 @@ export default function CoachDashboard() {
           <section className={card}>
             <div className="flex items-center justify-between mb-3">
               <h2 className={title}>{t.dash_pipeline}</h2>
-              <Link to="/coach/clients" className={link}>{t.dash_open_board} →</Link>
+              <Link to={peoplePath} className={link}>{t.dash_open_board} →</Link>
             </div>
             {isLoading || !data ? <Skeleton className="h-32" /> : (
               <div className="space-y-3">
@@ -212,7 +212,7 @@ function TasksCard({ loading, tasks, today, locale, className = '' }: { loading:
                   <span className="text-xs text-portal-muted">
                     {k.due_date && <span className={overdue ? 'text-portal-coral-text' : ''}>{labelDate(k.due_date, locale, { day: '2-digit', month: 'short' })}</span>}
                     {k.due_date && k.client && ' · '}
-                    {k.client && <Link to={`/coach/clients/${k.client.id}`} className="hover:underline">{k.client.display_name}</Link>}
+                    {k.client && <Link to={`${peoplePath}/${k.client.id}`} className="hover:underline">{k.client.display_name}</Link>}
                   </span>
                 </span>
               </li>
@@ -245,7 +245,7 @@ function Inbox() {
     <aside className={`${card} xl:w-[340px] xl:shrink-0 self-start`}>
       <div className="flex items-center justify-between mb-3">
         <h2 className={title}>{t.dash_inbox_title}</h2>
-        <Link to="/coach/messages" className={link}>{t.dash_open_messages} →</Link>
+        <Link to={`${base}/messages`} className={link}>{t.dash_open_messages} →</Link>
       </div>
       {isLoading ? <div className="space-y-3">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-12" />)}</div>
         : !data?.length ? <p className="text-sm text-portal-muted">{t.dash_inbox_empty}</p>
@@ -253,7 +253,7 @@ function Inbox() {
           <ul className="divide-y divide-portal-border">
             {data.map((c) => (
               <li key={c.id}>
-                <Link to={`/coach/messages?c=${c.id}`} className="flex items-center gap-3 py-2.5 hover:bg-portal-bg -mx-2 px-2 rounded-[4px]">
+                <Link to={`${base}/messages?c=${c.id}`} className="flex items-center gap-3 py-2.5 hover:bg-portal-bg -mx-2 px-2 rounded-[4px]">
                   <Avatar name={c.name} size={36} />
                   <span className="flex-1 min-w-0">
                     <span className="flex justify-between gap-2"><span className="truncate text-portal-ink text-sm">{c.name}</span><span className="text-xs text-portal-muted shrink-0">{when(c.last_message_at)}</span></span>
