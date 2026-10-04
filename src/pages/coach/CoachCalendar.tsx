@@ -96,7 +96,7 @@ export default function CoachCalendar() {
         </div>
 
         {role === 'club' && view === 'week' && !isLoading && (() => { const f = classFill(sessions); return (
-          <p className="text-sm text-portal-muted-strong">{t.cal_class_summary.replace('{n}', String(f.classes)).replace('{fill}', String(f.fill))}</p>
+          <p className="text-sm text-portal-muted-strong">{(f.classes === 1 ? t.cal_class_summary_one : t.cal_class_summary).replace('{n}', String(f.classes)).replace('{fill}', String(f.fill))}</p>
         ); })()}
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-1">
