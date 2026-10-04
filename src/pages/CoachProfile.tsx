@@ -11,7 +11,7 @@ import { BadgeCheck, MapPin, Trophy, Calendar, MessageSquare, Clock, ShieldCheck
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { messageOwner } from '@/lib/athleteActions';
+import { guardAthlete, messageOwner } from '@/lib/athleteActions';
 import { getOrCreateConversation } from '@/lib/messaging';
 import { BookmarkButton } from '@/components/BookmarkButton';
 import { useLanguage } from '@/context/LanguageContext';
@@ -121,18 +121,7 @@ const CoachProfile = () => {
   const price = coach.price_per_session ?? 0;
   const finalPrice = coach.discount_pct ? Math.round(price * (1 - coach.discount_pct / 100)) : price;
 
-  const requireAthlete = (): boolean => {
-    if (!user) {
-      toast.error(t.coach_sign_in_required);
-      navigate('/login');
-      return false;
-    }
-    if (profile && profile.role !== 'athlete') {
-      toast.error(t.coach_athlete_only);
-      return false;
-    }
-    return true;
-  };
+  const requireAthlete = () => !!guardAthlete({ userId: user?.id, role: profile?.role, navigate, signInText: t.coach_sign_in_required, athleteOnlyText: t.disc_only_athletes });
 
   const openMessage = () => messageOwner({ userId: user?.id, role: profile?.role, navigate, signInText: t.coach_sign_in_required, athleteOnlyText: t.disc_only_athletes }, coach.id);
 

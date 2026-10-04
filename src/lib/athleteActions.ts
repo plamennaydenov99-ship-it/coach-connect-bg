@@ -43,6 +43,12 @@ export async function requestSpot(ctx: AthleteActionContext, sessionId: string, 
   const existing = await supabase.from('spot_requests').select('id').eq('athlete_id', athleteId).eq('session_id', sessionId).maybeSingle();
   if (existing.error) throw existing.error;
   if (existing.data) return 'requested';
+  if (!content.trim()) throw new Error('A message is required');
+  const available = await supabase.from('public_sessions').select('id, owner_id, spots_left').eq('id', sessionId).maybeSingle();
+  if (available.error) throw available.error;
+  if (!available.data || available.data.owner_id !== ownerId || (available.data.spots_left ?? 0) <= 0) {
+    throw new Error('This session is no longer available');
+  }
   const conversationId = await getOrCreateConversation(athleteId, ownerId);
   const message = await supabase.from('messages').insert({ conversation_id: conversationId, sender_id: athleteId, content: content.trim() });
   if (message.error) throw message.error;

@@ -1,5 +1,7 @@
 export const t = {
   en: {
+    disc_saved: "Saved",
+    disc_retry: "Retry",
     disc_nav: "Discover",
     disc_heading: "Trending in {city}",
     disc_sub: "Picked by the Lokka team · updated weekly",
@@ -10,7 +12,7 @@ export const t = {
     disc_clubs: "Clubs",
     disc_events: "Events",
     disc_sports: "Sports",
-    disc_sessions: "Group sessions this week",
+    disc_sessions: "Group sessions",
     disc_events_camps: "Events & camps",
     disc_empty: "Nothing here yet.",
     disc_for_you_empty: "Your city picks and saved items will appear here.",
@@ -1045,6 +1047,8 @@ export const t = {
   },
 
   bg: {
+    disc_saved: "Запазено",
+    disc_retry: "Опитай пак",
     disc_nav: "Открий",
     disc_heading: "Trending в {city}",
     disc_sub: "Избрано от екипа на Lokka · обновява се всяка седмица",
@@ -1055,7 +1059,7 @@ export const t = {
     disc_clubs: "Клубове",
     disc_events: "Събития",
     disc_sports: "Спортове",
-    disc_sessions: "Групови тренировки тази седмица",
+    disc_sessions: "Групови тренировки",
     disc_events_camps: "Събития и лагери",
     disc_empty: "Все още няма нищо тук.",
     disc_for_you_empty: "Тук ще виждаш предложения за твоя град и запазените си неща.",
@@ -2082,6 +2086,8 @@ export const t = {
   },
 
   fr: {
+    disc_saved: "Enregistré",
+    disc_retry: "Réessayer",
     disc_nav: "Découvrir",
     disc_heading: "Tendances à {city}",
     disc_sub: "Sélection de l’équipe Lokka · mise à jour chaque semaine",
@@ -2092,7 +2098,7 @@ export const t = {
     disc_clubs: "Clubs",
     disc_events: "Événements",
     disc_sports: "Sports",
-    disc_sessions: "Séances de groupe cette semaine",
+    disc_sessions: "Séances de groupe",
     disc_events_camps: "Événements et stages",
     disc_empty: "Rien pour le moment.",
     disc_for_you_empty: "Vos sélections locales et vos favoris apparaîtront ici.",

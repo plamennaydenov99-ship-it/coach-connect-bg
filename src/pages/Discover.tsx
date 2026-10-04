@@ -57,8 +57,16 @@ export default function Discover() {
   });
   const sports = visible.filter(i => i.type === 'sport');
   const sessionItems = visible.filter(i => i.type === 'session');
+  if (tab === 'for-you') {
+    for (const session of sessions) {
+      if (!session.id || !saved.has(`session:${session.id}`) || sessionItems.some(i => i.session_id === session.id)) continue;
+      sessionItems.push({ id: session.id, type: 'session', session_id: session.id, owner_id: session.owner_id,
+        title: session.title || t.group_type, blurb: null, sport: session.sport, city: null, image_url: null,
+        starts_on: null, ends_on: null, rank: 0, active: true, sponsored: false, created_at: null });
+    }
+  }
   const events = visible.filter(i => i.type === 'event');
-  const actionDisabled = loading || profileLoading || (!!user && privateData.isLoading);
+  const actionDisabled = loading || profileLoading || (!!user && profile?.role === 'athlete' && (privateData.isLoading || privateData.isError));
   const save = async (type: 'session' | 'event' | 'club', id: string) => {
     if (busy) return;
     setBusy(`${type}:${id}`);
@@ -68,7 +76,7 @@ export default function Discover() {
     } catch (error) { toast.error((error as { message?: string }).message || t.crm_error); }
     finally { setBusy(null); }
   };
-  const saveButton = (type: 'session' | 'event' | 'club', id: string) => <Button variant="outline" size="sm" disabled={actionDisabled || !!busy} onClick={() => save(type, id)} aria-label={saved.has(`${type}:${id}`) ? t.disc_unsave : t.disc_save} className={saved.has(`${type}:${id}`) ? 'text-portal-blue bg-portal-selected' : ''}><Bookmark className={`h-4 w-4 ${saved.has(`${type}:${id}`) ? 'fill-current' : ''}`} /><span className="ml-1">{t.disc_save}</span></Button>;
+  const saveButton = (type: 'session' | 'event' | 'club', id: string) => <Button variant="outline" size="sm" disabled={actionDisabled || !!busy} onClick={() => save(type, id)} aria-label={saved.has(`${type}:${id}`) ? t.disc_unsave : t.disc_save} className={saved.has(`${type}:${id}`) ? 'text-portal-blue bg-portal-selected' : ''}><Bookmark className={`h-4 w-4 ${saved.has(`${type}:${id}`) ? 'fill-current' : ''}`} /><span className="ml-1">{saved.has(`${type}:${id}`) ? t.disc_saved : t.disc_save}</span></Button>;
   const date = (iso: string, ownerCity?: string | null) => {
     const timeZone = ownerCity === 'Sofia' ? 'Europe/Sofia' : 'Europe/Paris';
     return `${new Date(iso).toLocaleString(locale, { timeZone, weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })} · ${ownerCity === 'Sofia' ? 'Sofia' : 'Paris'}`;
@@ -104,13 +112,13 @@ export default function Discover() {
     {sessionItems.length > 0 && <section className="space-y-4"><h2 className={sectionTitle}>{t.disc_sessions}</h2><div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">{sessionItems.map(liveSessionCard)}</div></section>}
     {events.length > 0 && <section className="space-y-4"><h2 className={sectionTitle}>{t.disc_events_camps}</h2><div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">{events.map(eventCard)}</div></section>}
     {tab === 'for-you' && privateData.data && <section className="space-y-3"><h2 className={sectionTitle}>{t.disc_saved_items}</h2><div className="flex flex-wrap gap-3">{privateData.data.bookmarks.filter(b => b.target_type === 'club' || b.target_type === 'coach').map(b => <Link key={`${b.target_type}:${b.target_id}`} className="text-portal-blue hover:underline" to={`/${b.target_type === 'club' ? 'clubs' : 'coaches'}/${b.target_id}`}>{owner(b.target_id).name}</Link>)}</div></section>}
-    {!visible.length && <p className="text-portal-muted py-8">{tab === 'for-you' ? t.disc_for_you_empty : t.disc_empty}</p>}
+    {!visible.length && !sessionItems.length && <p className="text-portal-muted py-8">{tab === 'for-you' ? t.disc_for_you_empty : t.disc_empty}</p>}
   </div>;
   return <div className="coach-portal min-h-screen bg-portal-bg text-portal-ink">
     <PublicNav /><main className="container py-8 md:py-12 space-y-6">
-      <header className="space-y-4"><h1 className="font-display uppercase text-4xl md:text-5xl">{t.disc_heading.replace('{city}', city === 'all' ? t.disc_all : city)}</h1><p className="text-portal-muted">{t.disc_sub}</p><div className="flex flex-wrap gap-2" role="group" aria-label={t.tr_city}>{['all', ...cities].map(c => <Button key={c} size="sm" variant="outline" aria-pressed={city === c} onClick={() => { setCity(c); setCityChosen(true); }} className={city === c ? 'bg-portal-selected border-portal-selected-border text-portal-blue' : ''}>{c === 'all' ? t.disc_all : c}</Button>)}</div></header>
+      <header className="space-y-4"><h1 className="font-display uppercase text-4xl md:text-5xl break-words">{t.disc_heading.replace('{city}', city === 'all' ? t.disc_all : city)}</h1><p className="text-portal-muted">{t.disc_sub}</p><div className="flex flex-wrap gap-2" role="group" aria-label={t.tr_city}>{['all', ...cities].map(c => <Button key={c} size="sm" variant="outline" aria-pressed={city === c} onClick={() => { setCity(c); setCityChosen(true); }} className={city === c ? 'bg-portal-selected border-portal-selected-border text-portal-blue' : ''}>{c === 'all' ? t.disc_all : c}</Button>)}</div></header>
       <Tabs value={tab} onValueChange={setTab}><TabsList className="flex justify-start overflow-x-auto w-full h-auto bg-transparent border-b border-portal-border rounded-none p-0 gap-2">{[['for-you', t.disc_for_you], ['trending', t.disc_trending], ['coaches', t.disc_coaches], ['clubs', t.disc_clubs], ['events', t.disc_events]].map(([value, label]) => <TabsTrigger key={value} value={value} className="shrink-0 px-4 py-3 rounded-none data-[state=active]:bg-portal-selected data-[state=active]:text-portal-blue data-[state=active]:shadow-none">{label}</TabsTrigger>)}</TabsList>
-        {publicData.isLoading ? <div className="grid md:grid-cols-3 gap-4 py-8">{[1, 2, 3].map(i => <Skeleton key={i} className="h-72" />)}</div> : publicData.isError ? <div className="py-8 space-y-3"><p>{t.crm_error}</p><Button variant="outline" onClick={() => publicData.refetch()}>{t.coach_back_to_search}</Button></div> : <>
+        {publicData.isLoading ? <div className="grid md:grid-cols-3 gap-4 py-8">{[1, 2, 3].map(i => <Skeleton key={i} className="h-72" />)}</div> : publicData.isError ? <div className="py-8 space-y-3"><p>{t.crm_error}</p><Button variant="outline" onClick={() => publicData.refetch()}>{t.disc_retry}</Button></div> : <>
           <TabsContent value="trending" className="mt-8">{content}</TabsContent><TabsContent value="for-you" className="mt-8">{content}{privateData.isError && <p className="text-portal-muted">{t.crm_error}</p>}</TabsContent>
           <TabsContent value="coaches" className="mt-8"><FeaturedCoaches discover={<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">{coaches.filter(c => matchesCity(c.profiles?.city)).map(c => <Link key={c.id} to={`/coaches/${c.id}`} className={panel}>{c.profiles?.avatar_url && <img src={c.profiles.avatar_url} alt={c.profiles.full_name || ''} className="w-full aspect-[4/3] object-cover" />}<div className="p-5"><h3 className="font-display text-2xl flex items-center gap-2">{c.profiles?.full_name}{c.verified && <BadgeCheck className="h-4 w-4 text-gold" />}</h3><p className="text-sm text-portal-muted">{c.sport} · {c.profiles?.city}</p></div></Link>)}</div>} /><Button variant="link" asChild className="text-portal-blue"><Link to="/search">{t.disc_find_coach} →</Link></Button></TabsContent>
           <TabsContent value="clubs" className="mt-8"><div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">{clubs.filter(c => matchesCity(c.city)).map(c => <article key={c.id} className={panel}>{c.profiles?.avatar_url && <img src={c.profiles.avatar_url} alt={c.name} className="w-full aspect-[16/9] object-cover" />}<div className="p-5 space-y-3"><Link to={`/clubs/${c.id}`} className="font-display text-2xl text-portal-blue flex items-center gap-2">{c.name}{c.verified && <BadgeCheck className="h-4 w-4 text-gold" />}</Link><p className="text-sm text-portal-muted">{c.sport} · {c.city}</p><div className="flex flex-wrap gap-2"><Button size="sm" disabled={actionDisabled} onClick={() => messageOwner(ctx, c.id)}>{t.disc_message}</Button>{saveButton('club', c.id)}</div></div></article>)}</div>{!clubs.filter(c => matchesCity(c.city)).length && <p className="text-portal-muted py-8">{t.disc_empty}</p>}</TabsContent>
