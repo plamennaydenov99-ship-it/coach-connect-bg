@@ -1,3 +1,4 @@
+import { useStaffRole } from '@/context/StaffRoleContext';
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, CalendarClock, Inbox, Plus } from 'lucide-react';
@@ -76,7 +77,7 @@ export default function CoachCalendar() {
   );
 
   const form = book && (
-    <QuickBookForm initial={book} onDone={closeBook} onClose={closeBook} />
+    <QuickBookForm initial={{ ...book, kind: role === 'club' ? 'group' : undefined }} onDone={closeBook} onClose={closeBook} />
   );
 
   return (
