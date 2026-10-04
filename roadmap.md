@@ -14,3 +14,5 @@
 - [x] Court blue + coral palette, motion, feedback, booking modal, and visual verification
 
 - [x] Group sessions: schema, booking/rosters, recurrence, dashboard/client integration, security checks and verification
+
+- [ ] Club portal shell, public club route move, role checks and temporary-account QA cleanup
