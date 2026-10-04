@@ -7,7 +7,10 @@ import { addDays, isoWeekday, startOfWeek, toDateStr, todayStr, zonedToUtc, type
 
 type T = Database['public']['Tables'];
 export type Series = T['session_series']['Row'];
-export type CalSession = T['coach_sessions']['Row'] & { client: { display_name: string } | null };
+export type Attendee = T['session_attendees']['Row'] & { client: { display_name: string } | null };
+export type CalSession = T['coach_sessions']['Row'] & { client: { display_name: string } | null; attendees?: Attendee[] };
+export const SESSION_SELECT = '*, client:coach_clients(display_name), attendees:session_attendees(*, client:coach_clients(display_name))';
+export const sessionFill = (s: CalSession) => (s.attendees ?? []).filter(a => a.status === 'booked' || a.status === 'attended').length;
 export type OpenSlot = T['availability_slots']['Row'];
 
 export const TOPUP_WEEKS = 12;
@@ -27,12 +30,13 @@ export function useCalendarRange(from: DateStr, to: DateStr) {
     queryKey: ['coach', uid, 'calendar', from, to, tz],
     enabled: !!uid,
     queryFn: async () => {
+      if (!uid) throw new Error('Sign in required');
       const start = zonedToUtc(from, '00:00', tz).toISOString();
       const end = zonedToUtc(to, '00:00', tz).toISOString();
       const [s, sl, se] = await Promise.all([
-        supabase.from('coach_sessions').select('*, client:coach_clients(display_name)').eq('coach_id', uid!).gte('starts_at', start).lt('starts_at', end).order('starts_at'),
-        supabase.from('availability_slots').select('*').eq('coach_id', uid!).eq('status', 'open').gte('date', from).lt('date', to),
-        supabase.from('session_series').select('*').eq('coach_id', uid!),
+        supabase.from('coach_sessions').select(SESSION_SELECT).eq('coach_id', uid).gte('starts_at', start).lt('starts_at', end).order('starts_at'),
+        supabase.from('availability_slots').select('*').eq('coach_id', uid).eq('status', 'open').gte('date', from).lt('date', to),
+        supabase.from('session_series').select('*').eq('coach_id', uid),
       ]);
       for (const r of [s, sl, se]) if (r.error) throw r.error;
       return {
@@ -50,7 +54,8 @@ export function usePendingRequests() {
     queryKey: ['coach', user?.id, 'pending-requests'],
     enabled: !!user,
     queryFn: async () => {
-      const { count, error } = await supabase.from('bookings').select('id', { count: 'exact', head: true }).eq('coach_id', user!.id).eq('status', 'pending');
+      if (!user) throw new Error('Sign in required');
+      const { count, error } = await supabase.from('bookings').select('id', { count: 'exact', head: true }).eq('coach_id', user.id).eq('status', 'pending');
       if (error) throw error;
       return count ?? 0;
     },
@@ -90,6 +95,7 @@ async function fillSeries(series: Series, from: DateStr, until: DateStr, tz: str
     .map((o) => ({
       coach_id: series.coach_id, client_id: series.client_id, series_id: series.id,
       starts_at: o.starts_at, ends_at: o.ends_at, location: series.location, kind: series.kind,
+      capacity: series.capacity, title: series.title, sport: series.sport, led_by: series.led_by, is_public: series.is_public, resource_id: series.resource_id,
     }));
   if (!rows.length) return 0;
   const ins = await supabase.from('coach_sessions').insert(rows);
@@ -133,7 +139,12 @@ export async function findOverlaps(coachId: string, candidates: { starts_at: str
 }
 
 export interface BookInput {
-  client_id: string;
+  client_id: string | null;
+  capacity?: number | null;
+  title?: string;
+  sport?: string;
+  is_public?: boolean;
+  attendee_ids?: string[];
   date: DateStr;
   time: TimeStr;
   duration: number;
@@ -159,7 +170,18 @@ export function useBookSession() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (v: BookInput) => {
-      const base = { coach_id: user!.id, client_id: v.client_id, location: v.location || null, kind: v.kind };
+      if (!user) throw new Error('Sign in required');
+      if (v.capacity != null) {
+        const { error } = await supabase.rpc('book_group_session', { payload: {
+          capacity: v.capacity, title: v.title || null, sport: v.sport || null, is_public: v.is_public ?? false,
+          attendee_ids: v.attendee_ids ?? [], repeat: v.repeat, location: v.location || null,
+          date: v.date, time: v.time, duration: v.duration, weekday: isoWeekday(v.date), ends_on: v.endsOn,
+          occurrences: bookingCandidates(v, tz),
+        } });
+        if (error) throw error;
+        return;
+      }
+      const base = { coach_id: user.id, client_id: v.client_id, location: v.location || null, kind: v.kind };
       if (!v.repeat) {
         const [c] = bookingCandidates(v, tz);
         const { error } = await supabase.from('coach_sessions').insert({ ...base, starts_at: c.starts_at, ends_at: c.ends_at });
@@ -182,7 +204,8 @@ export function useSessionStatus() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, status }: { id: string; status: 'attended' | 'no_show' | 'cancelled' | 'scheduled' }) => {
-      const { error } = await supabase.from('coach_sessions').update({ status }).eq('id', id).eq('coach_id', user!.id);
+      if (!user) throw new Error('Sign in required');
+      const { error } = await supabase.from('coach_sessions').update({ status }).eq('id', id).eq('coach_id', user.id);
       if (error) throw error;
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
@@ -196,14 +219,14 @@ export function useCancelFollowing() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (s: CalSession) => {
-      if (!s.series_id) return;
+      if (!user || !s.series_id) return;
       const from = new Date(Math.max(Date.now(), new Date(s.starts_at).getTime())).toISOString();
       const fromCur = s.starts_at < from ? s.starts_at : from;
       const up = await supabase.from('coach_sessions').update({ status: 'cancelled' })
-        .eq('coach_id', user!.id).eq('series_id', s.series_id).eq('status', 'scheduled').gte('starts_at', fromCur);
+        .eq('coach_id', user.id).eq('series_id', s.series_id).eq('status', 'scheduled').gte('starts_at', fromCur);
       if (up.error) throw up.error;
       const end = addDays(toDateStr(s.starts_at, tz), -1);
-      const ser = await supabase.from('session_series').update({ ends_on: end }).eq('id', s.series_id).eq('coach_id', user!.id);
+      const ser = await supabase.from('session_series').update({ ends_on: end }).eq('id', s.series_id).eq('coach_id', user.id);
       if (ser.error) throw ser.error;
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
@@ -225,12 +248,13 @@ export function useReschedule() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (v: RescheduleInput) => {
+      if (!user) throw new Error('Sign in required');
       const s = zonedToUtc(v.date, v.time, tz);
       const e = new Date(s.getTime() + v.duration * 60000);
       if (v.scope === 'one' || !v.session.series_id) {
         const { error } = await supabase.from('coach_sessions')
           .update({ starts_at: s.toISOString(), ends_at: e.toISOString(), location: v.location || null })
-          .eq('id', v.session.id).eq('coach_id', user!.id);
+          .eq('id', v.session.id).eq('coach_id', user.id);
         if (error) throw error;
         return;
       }
@@ -238,11 +262,11 @@ export function useReschedule() {
       const sid = v.session.series_id;
       const { data: series, error: se } = await supabase.from('session_series')
         .update({ weekday: isoWeekday(v.date), start_time: v.time, duration_min: v.duration, location: v.location || null })
-        .eq('id', sid).eq('coach_id', user!.id).select().single();
+        .eq('id', sid).eq('coach_id', user.id).select().single();
       if (se) throw se;
       const cutoff = new Date(Math.max(Date.now(), Math.min(new Date(v.session.starts_at).getTime(), s.getTime()))).toISOString();
       const del = await supabase.from('coach_sessions').delete()
-        .eq('coach_id', user!.id).eq('series_id', sid).eq('status', 'scheduled').gte('starts_at', cutoff);
+        .eq('coach_id', user.id).eq('series_id', sid).eq('status', 'scheduled').gte('starts_at', cutoff);
       if (del.error) throw del.error;
       const from = toDateStr(cutoff, tz) > v.date ? toDateStr(cutoff, tz) : v.date;
       await fillSeries(series, from, series.ends_on ?? addDays(todayStr(tz), TOPUP_WEEKS * 7), tz);
