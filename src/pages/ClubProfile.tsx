@@ -13,7 +13,20 @@ import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/hooks/useAuth';
 import { getOrCreateConversation } from '@/lib/messaging';
-...
+
+interface ClubData {
+  id: string;
+  name: string;
+  sport: string | null;
+  city: string | null;
+  about: string | null;
+  hours: string | null;
+  programs: any;
+  verified: boolean;
+}
+
+const ClubProfile = () => {
+  const { id } = useParams<{ id: string }>();
   const { t } = useLanguage();
   const { user, profile } = useAuth();
   const navigate = useNavigate();
