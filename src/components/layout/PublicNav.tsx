@@ -7,6 +7,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { LangSwitcher } from '@/components/layout/LangSwitcher';
 import { useAuth } from '@/hooks/useAuth';
 import { homeFor } from '@/lib/routes';
+import { DEMO_MODE } from '@/lib/demo';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -110,10 +111,10 @@ export function PublicNav() {
                     </DropdownMenuItem>
                   </>
                 )}
-                <DropdownMenuItem onClick={logout}>{t.auth_logout}</DropdownMenuItem>
+                {!DEMO_MODE && <DropdownMenuItem onClick={logout}>{t.auth_logout}</DropdownMenuItem>}
               </DropdownMenuContent>
             </DropdownMenu>
-          ) : (
+          ) : DEMO_MODE ? null : (
             <Link to="/start">
               <Button size="lg" className="h-11 px-6 tracking-[0.12em] font-display uppercase text-sm">
                 {t.nav_login}
@@ -145,11 +146,13 @@ export function PublicNav() {
                 <Link to={homePath} onClick={() => setOpen(false)} className="block">
                   <Button variant="ghost" className="w-full justify-start">{displayName}</Button>
                 </Link>
-                <Button size="lg" onClick={logout} className="w-full font-display uppercase tracking-[0.12em]">
-                  {t.auth_logout}
-                </Button>
+                {!DEMO_MODE && (
+                  <Button size="lg" onClick={logout} className="w-full font-display uppercase tracking-[0.12em]">
+                    {t.auth_logout}
+                  </Button>
+                )}
               </>
-            ) : (
+            ) : DEMO_MODE ? null : (
               <Link to="/start" onClick={() => setOpen(false)} className="block">
                 <Button size="lg" className="w-full font-display uppercase tracking-[0.12em]">{t.nav_login}</Button>
               </Link>

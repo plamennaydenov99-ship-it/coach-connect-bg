@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { DEMO_MODE } from '@/lib/demo';
 import { NavLink, Link, Outlet, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, UserCog, BarChart3, MessageSquare,
@@ -94,9 +95,11 @@ export function DashboardLayout() {
         ))}
       </nav>
       <div className="p-3 border-t border-sidebar-border">
+        {!DEMO_MODE && (
         <Button variant="ghost" size="sm" className="w-full justify-start" onClick={logout}>
           <LogOut className="h-3.5 w-3.5 mr-2" /> {t.auth_logout}
         </Button>
+        )}
       </div>
       {(role === 'coach' || role === 'club') && (
         <div className="p-3 border-t border-sidebar-border">

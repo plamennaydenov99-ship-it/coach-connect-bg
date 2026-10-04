@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { DEMO_MODE } from '@/lib/demo';
 import { Button } from '@/components/ui/button';
 import { QuickBookDialog } from '@/components/coach/calendar/QuickBookDialog';
 import { NavLink, Link, Outlet, useNavigate } from 'react-router-dom';
@@ -178,9 +179,11 @@ function StaffShell() {
               ))}
             </div>
             <DropdownMenuSeparator className="bg-portal-border" />
+            {!DEMO_MODE && (
             <DropdownMenuItem onClick={logout}>
               <LogOut className="h-4 w-4 mr-2" /> {t.portal_logout}
             </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </header>

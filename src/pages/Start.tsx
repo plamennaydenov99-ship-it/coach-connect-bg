@@ -12,6 +12,8 @@ import { lovable } from '@/integrations/lovable/index';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/context/LanguageContext';
 import { homeFor } from '@/lib/routes';
+import { DEMO_MODE } from '@/lib/demo';
+import { DemoRolePicker } from '@/components/DemoSwitcher';
 
 type Mode = 'login' | 'signup';
 type Role = 'athlete' | 'coach' | 'club';
@@ -54,7 +56,7 @@ const Start = () => {
 
   // Already signed in (incl. returning from Google) → reconcile role then route
   useEffect(() => {
-    if (loading || !user || !profile || handled.current) return;
+    if (DEMO_MODE || loading || !user || !profile || handled.current) return;
     handled.current = true;
     (async () => {
       const intended = sessionStorage.getItem(INTENDED_ROLE_KEY) as Role | null;
@@ -175,7 +177,9 @@ const Start = () => {
       <PublicNav />
       <main className="flex-1 container max-w-md py-16">
         <div className="surface p-8">
-          {!role ? (
+          {DEMO_MODE ? (
+            <DemoRolePicker />
+          ) : !role ? (
             <>
               <h1 className="font-display text-2xl uppercase tracking-[0.1em]">{t.entry_choose_title}</h1>
               <p className="text-sm text-muted-foreground mt-2 mb-6">{t.entry_choose_sub}</p>
