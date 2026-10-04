@@ -106,7 +106,7 @@ export default function CoachCalendar() {
               <span className="flex items-center gap-1"><span className="h-3 w-3 rounded-[2px] border bg-portal-selected border-portal-selected-border" />{t.group_type}</span>
               <span className="flex items-center gap-1"><span className="h-3 w-3 rounded-[2px] border bg-portal-selected border-portal-selected-border" />1:1</span>
               <span className="flex items-center gap-1"><span className="h-3 w-3 rounded-[2px] border bg-portal-bg border-portal-ink" />{t.hire_type}</span>
-              <span className="flex items-center gap-1 text-portal-blue font-medium">★ {t.group_trending_marker}</span>
+              <span className="flex items-center gap-1 text-portal-blue font-medium">{t.group_trending_marker}</span>
             </div>
           </div>
         ); })()}
