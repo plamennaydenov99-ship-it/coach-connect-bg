@@ -112,7 +112,7 @@ function CoachResultCard({ coach }: { coach: CoachRow }) {
               {sport.label}
             </span>
           )}
-          <span className="badge-verified"><BadgeCheck className="h-3 w-3" /> {t.verified}</span>
+          {coach.verified && <span className="badge-verified"><BadgeCheck className="h-3 w-3" /> {t.verified}</span>}
         </div>
       </div>
       <div className="p-4 flex flex-col gap-3 flex-1">
