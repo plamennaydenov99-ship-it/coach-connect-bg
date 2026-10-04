@@ -1,7 +1,7 @@
 import { useStaffPaths } from '@/context/StaffRoleContext';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Repeat, MapPin, Clock } from 'lucide-react';
+import { Repeat, MapPin, Clock, UserRound } from 'lucide-react';
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useLanguage } from '@/context/LanguageContext';
@@ -99,10 +99,12 @@ function Body({ s, onClose }: { s: CalSession; onClose: () => void }) {
         <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-portal-muted" />{fmtDateTime(s.starts_at, lang, tz)} – {toTimeStr(s.ends_at, tz)}</div>
         {s.location && <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-portal-muted" />{s.location}</div>}
         {s.series_id && <div className="flex items-center gap-2"><Repeat className="h-4 w-4 text-portal-muted" />{t.cal_repeats}</div>}
+        {s.capacity != null && s.led_by && <div className="flex items-center gap-2"><UserRound className="h-4 w-4 text-portal-muted" />{t.group_led_by_line.replace('{name}', s.led_by)}</div>}
         <div className="flex gap-2 pt-1">
           <span className={`text-[11px] px-1.5 py-0.5 rounded-[4px] border ${s.kind === 'trial' ? 'bg-portal-copper-tint border-portal-copper' : 'bg-portal-selected border-portal-selected-border'}`}>
             {s.capacity != null ? t.group_type : s.kind === 'trial' ? t.cal_type_trial : t.cal_type_session}
           </span>
+          {s.capacity != null && s.is_public && <span className="text-[11px] px-1.5 py-0.5 rounded-[4px] border border-portal-blue text-portal-blue bg-portal-card">{t.group_trending_badge}</span>}
           <span className="text-[11px] px-1.5 py-0.5 rounded-[4px] border border-portal-border">{t[`crm_status_${s.status}` as 'crm_status_scheduled']}</span>
         </div>
       </div>

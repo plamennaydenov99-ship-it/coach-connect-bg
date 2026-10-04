@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { Check, UserX, X, Plus } from 'lucide-react';
+import { Check, UserX, X, Plus, MessageSquare } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { useLanguage } from '@/context/LanguageContext';
@@ -15,11 +17,16 @@ export function GroupRoster({ session }: { session: CalSession }) {
   const actions = useGroupActions(session.id);
   const [capacity, setCapacity] = useState(session.capacity ?? 1);
   const [isPublic, setPublic] = useState(session.is_public);
+  const [title, setTitle] = useState(session.title ?? '');
+  const [ledBy, setLedBy] = useState(session.led_by ?? '');
   const [clientId, setClientId] = useState('');
   const active = roster.filter(a => a.status !== 'cancelled');
   const fill = active.filter(a => a.status === 'booked' || a.status === 'attended').length;
   return <section className="space-y-3 border-t border-portal-border pt-4">
-    <h3 className={portalLabel}>{t.group_attendees} · {fill}/{capacity}</h3>
+    <div className="flex items-center justify-between gap-2">
+      <h3 className={portalLabel}>{t.group_attendees} · {fill}/{session.capacity}</h3>
+      <Tooltip><TooltipTrigger asChild><span tabIndex={0}><Button variant="outline" size="sm" disabled className="gap-1.5"><MessageSquare className="h-4 w-4" />{t.group_message_all}</Button></span></TooltipTrigger><TooltipContent>{t.group_coming_soon}</TooltipContent></Tooltip>
+    </div>
     {isLoading ? <p className="text-sm text-portal-muted">{t.group_loading}</p> : <ul className="space-y-2">
       {active.map(a => <li key={a.id} className="flex flex-wrap items-center gap-2 text-sm">
         <span className="flex-1 min-w-0">{a.client?.display_name ?? '—'}<span className="block text-xs text-portal-muted">{t[`group_status_${a.status}` as 'group_status_booked']}</span></span>
@@ -35,10 +42,13 @@ export function GroupRoster({ session }: { session: CalSession }) {
       </select>
       <Button variant="outline" size="icon" aria-label={t.group_add_attendee} disabled={!clientId || fill >= capacity || actions.isPending || session.status === 'cancelled'} onClick={() => actions.mutate({ type: 'add', client_id: clientId }, { onSuccess: () => setClientId('') })}><Plus className="h-4 w-4" /></Button>
     </div>
-    <form className="space-y-3" onSubmit={e => { e.preventDefault(); actions.mutate({ type: 'settings', capacity, is_public: isPublic }); }}>
-      <label className="block space-y-1"><span className={portalLabel}>{t.group_capacity}</span><input type="number" required min={Math.max(1, fill)} step={1} value={capacity} onChange={e => setCapacity(Number(e.target.value))} className={portalInput} /></label>
-      <label className="flex justify-between items-center text-sm">{t.group_trending}<Switch checked={isPublic} onCheckedChange={setPublic} /></label>
-      <Button type="submit" variant="portal" disabled={actions.isPending || capacity < Math.max(1, fill)}>{t.crm_save}</Button>
+    <form className="space-y-3" onSubmit={e => { e.preventDefault(); if (!Number.isInteger(capacity) || capacity < Math.max(1, fill)) { toast.error(t.group_capacity_below.replace('{n}', String(fill))); return; } actions.mutate({ type: 'settings', capacity, is_public: isPublic, title, led_by: ledBy }); }}>
+      <label className="block space-y-1"><span className={portalLabel}>{t.group_title}</span><input value={title} onChange={e => setTitle(e.target.value)} maxLength={120} className={portalInput} /></label>
+      <label className="block space-y-1"><span className={portalLabel}>{t.group_led_by}</span><input value={ledBy} onChange={e => setLedBy(e.target.value)} maxLength={80} className={portalInput} /></label>
+      <label className="block space-y-1"><span className={portalLabel}>{t.group_capacity}</span><input type="number" required min={1} step={1} value={capacity} onChange={e => setCapacity(Number(e.target.value))} className={portalInput} /></label>
+      <div><label className="flex justify-between items-center text-sm">{t.group_trending}<Switch checked={isPublic} onCheckedChange={setPublic} /></label>
+        <p className="text-xs text-portal-muted mt-1">{t.group_trending_hint}</p></div>
+      <Button type="submit" variant="portal" disabled={actions.isPending}>{t.crm_save}</Button>
     </form>
   </section>;
 }
