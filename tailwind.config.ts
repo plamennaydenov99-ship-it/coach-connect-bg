@@ -19,7 +19,13 @@ export default {
         mono: ['JetBrains Mono', 'monospace'],
       },
       colors: {
+        "accent-hover": "hsl(var(--accent-hover))",
+        "verified-gold": "hsl(var(--verified-gold))",
         portal: {
+          blue: "hsl(var(--portal-blue))",
+          "blue-hover": "hsl(var(--portal-blue-hover))",
+          "coral-text": "hsl(var(--portal-coral-text))",
+          success: "hsl(var(--portal-success))",
           bg: "hsl(var(--portal-bg))",
           card: "hsl(var(--portal-card))",
           ink: "hsl(var(--portal-ink))",
