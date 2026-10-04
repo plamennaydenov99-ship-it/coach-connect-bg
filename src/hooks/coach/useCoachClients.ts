@@ -7,7 +7,7 @@ import type { Database } from '@/integrations/supabase/types';
 
 type T = Database['public']['Tables'];
 export type CoachClient = T['coach_clients']['Row'];
-export type CoachSession = T['coach_sessions']['Row'];
+export type CoachSession = T['coach_sessions']['Row'] & { attendee_id?: string };
 export type CoachTask = T['coach_tasks']['Row'];
 export type ClientEvent = T['client_events']['Row'];
 export type ClientNote = T['client_notes']['Row'];
@@ -37,7 +37,7 @@ export function useClientList() {
     queryFn: async (): Promise<ClientSummary[]> => {
       const [c, s, t] = await Promise.all([
         supabase.from('coach_clients').select('*').eq('coach_id', uid!).order('stage_position'),
-        supabase.from('coach_sessions').select('*').eq('coach_id', uid!).in('status', ['scheduled', 'attended']),
+        supabase.from('coach_sessions').select('*, attendees:session_attendees(id, client_id, status)').eq('coach_id', uid!).neq('status', 'cancelled'),
         supabase.from('coach_tasks').select('id, client_id').eq('coach_id', uid!).eq('done', false),
       ]);
       if (c.error) throw c.error;
@@ -45,7 +45,11 @@ export function useClientList() {
       if (t.error) throw t.error;
       const now = Date.now();
       return (c.data ?? []).map((cl) => {
-        const mine = (s.data ?? []).filter((x) => x.client_id === cl.id);
+        const mine = (s.data ?? []).flatMap(x => {
+          if (x.client_id === cl.id) return [x];
+          const attendee = x.attendees.find(a => a.client_id === cl.id && a.status !== 'cancelled');
+          return attendee ? [{ ...x, status: attendee.status === 'booked' ? 'scheduled' : attendee.status }] : [];
+        });
         const upcoming = mine
           .filter((x) => x.status === 'scheduled' && new Date(x.starts_at).getTime() >= now)
           .sort((a, b) => a.starts_at.localeCompare(b.starts_at));
@@ -178,17 +182,18 @@ export function useClientDetail(id: string | undefined) {
     queryKey: keys.client(uid, id ?? ''),
     enabled: !!uid && !!id,
     queryFn: async () => {
-      const [c, s, t, e, n] = await Promise.all([
+      const [c, s, t, e, n, a] = await Promise.all([
         supabase.from('coach_clients').select('*').eq('coach_id', uid!).eq('id', id!).maybeSingle(),
         supabase.from('coach_sessions').select('*').eq('coach_id', uid!).eq('client_id', id!).order('starts_at', { ascending: false }),
         supabase.from('coach_tasks').select('*').eq('coach_id', uid!).eq('client_id', id!).order('created_at', { ascending: false }),
         supabase.from('client_events').select('*').eq('coach_id', uid!).eq('client_id', id!).eq('type', 'stage_change'),
         supabase.from('client_notes').select('*').eq('relationship_id', id!).order('created_at', { ascending: false }),
+        supabase.from('session_attendees').select('id, status, session:coach_sessions!inner(*)').eq('client_id', id!).eq('session.coach_id', uid!),
       ]);
-      for (const r of [c, s, t, e, n]) if (r.error) throw r.error;
+      for (const r of [c, s, t, e, n, a]) if (r.error) throw r.error;
       return {
         client: c.data as CoachClient | null,
-        sessions: (s.data ?? []) as CoachSession[],
+        sessions: [...(s.data ?? []), ...(a.data ?? []).map(row => ({ ...row.session, attendee_id: row.id, status: row.session.status === 'cancelled' ? 'cancelled' : row.status === 'booked' ? 'scheduled' : row.status }))].sort((x,y) => y.starts_at.localeCompare(x.starts_at)) as CoachSession[],
         tasks: (t.data ?? []) as CoachTask[],
         events: (e.data ?? []) as ClientEvent[],
         notes: (n.data ?? []) as ClientNote[],
@@ -247,8 +252,11 @@ export function useSetSessionStatus() {
   const { t } = useLanguage();
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: 'attended' | 'no_show' }) => {
-      const { error } = await supabase.from('coach_sessions').update({ status }).eq('id', id).eq('coach_id', user!.id);
+    mutationFn: async ({ id, status, attendee_id }: { id: string; status: 'attended' | 'no_show'; attendee_id?: string }) => {
+      if (!user) throw new Error('Sign in required');
+      const { error } = attendee_id
+        ? await supabase.from('session_attendees').update({ status }).eq('id', attendee_id).eq('session_id', id)
+        : await supabase.from('coach_sessions').update({ status }).eq('id', id).eq('coach_id', user.id);
       if (error) throw error;
     },
     onSuccess: () => { toast.success(t.cal_updated); qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
