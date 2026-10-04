@@ -38,7 +38,7 @@ export default function Discover() {
     if (!cityChosen && profile?.role === 'athlete' && profile.city && cities.includes(profile.city)) setCity(profile.city);
   }, [profile, cityChosen]);
   useEffect(() => { setRequested(new Set(privateData.data?.requests.map(r => r.session_id) ?? [])); }, [privateData.data, user?.id]);
-  const ctx = { userId: user?.id, role: profile?.role, navigate, signInText: t.coach_sign_in_required, athleteOnlyText: t.disc_only_athletes };
+  const ctx = { userId: user?.id, role: profile?.role, navigate, signInText: t.coach_sign_in_required, athleteOnlyText: t.disc_only_athletes, unavailableText: t.disc_unavailable };
   const { items = [], sessions = [], coaches = [], clubs = [] } = publicData.data ?? {};
   const locale = lang === 'bg' ? 'bg-BG' : lang === 'fr' ? 'fr-FR' : 'en-GB';
   const saved = new Set(privateData.data?.bookmarks.map(b => `${b.target_type}:${b.target_id}`) ?? []);

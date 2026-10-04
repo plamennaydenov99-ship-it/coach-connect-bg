@@ -1,5 +1,6 @@
 export const t = {
   en: {
+    disc_unavailable: "This session is no longer available",
     disc_saved: "Saved",
     disc_retry: "Retry",
     disc_nav: "Discover",
@@ -1047,6 +1048,7 @@ export const t = {
   },
 
   bg: {
+    disc_unavailable: "Тази тренировка вече не е налична",
     disc_saved: "Запазено",
     disc_retry: "Опитай пак",
     disc_nav: "Открий",
@@ -2086,6 +2088,7 @@ export const t = {
   },
 
   fr: {
+    disc_unavailable: "Cette séance n’est plus disponible",
     disc_saved: "Enregistré",
     disc_retry: "Réessayer",
     disc_nav: "Découvrir",
