@@ -167,6 +167,7 @@ export default function CoachDashboard() {
               </div>
             )}
           </section>
+          )}
         </div>
       </div>
 
