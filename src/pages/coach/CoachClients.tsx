@@ -1,3 +1,4 @@
+import { useStaffPaths } from '@/context/StaffRoleContext';
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { LayoutGrid, List, Plus, Search, Users } from 'lucide-react';
@@ -16,6 +17,7 @@ const VIEW_KEY = 'lokka_coach_clients_view';
 
 export default function CoachClients() {
   const { t } = useLanguage();
+  const { base, peoplePath } = useStaffPaths();
   const { id } = useParams();
   const navigate = useNavigate();
   const { data: clients = [], isLoading, error } = useClientList();
@@ -25,7 +27,7 @@ export default function CoachClients() {
   const [newOpen, setNewOpen] = useState(false);
 
   const setViewPersist = (v: View) => { setView(v); localStorage.setItem(VIEW_KEY, v); };
-  const open = (cid: string) => navigate(`/coach/clients/${cid}`);
+  const open = (cid: string) => navigate(`${peoplePath}/${cid}`);
 
   const filtered = useMemo(() => {
     const s = q.trim().toLowerCase();
@@ -100,7 +102,7 @@ export default function CoachClients() {
       )}
 
       <NewClientDialog open={newOpen} onOpenChange={setNewOpen} onCreated={open} />
-      <ClientDrawer clientId={id} onClose={() => navigate('/coach/clients')} />
+      <ClientDrawer clientId={id} onClose={() => navigate(peoplePath)} />
     </div>
   );
 }

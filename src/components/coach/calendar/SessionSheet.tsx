@@ -1,3 +1,4 @@
+import { useStaffPaths } from '@/context/StaffRoleContext';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Repeat, MapPin, Clock } from 'lucide-react';
@@ -28,6 +29,7 @@ export function SessionSheet({ session, onClose }: { session: CalSession | null;
 
 function Body({ s, onClose }: { s: CalSession; onClose: () => void }) {
   const { t, lang } = useLanguage();
+  const { base, peoplePath } = useStaffPaths();
   const tz = useCoachTz();
   const { user } = useAuth();
   const setStatus = useSessionStatus();
@@ -91,7 +93,7 @@ function Body({ s, onClose }: { s: CalSession; onClose: () => void }) {
       <div>
         <SheetTitle className="font-display text-xl uppercase tracking-[0.08em] text-portal-ink">{s.capacity != null ? s.title || t.group_type : s.client?.display_name ?? '—'}</SheetTitle>
         <SheetDescription className="sr-only">{t.cal_title}</SheetDescription>
-        {s.client_id && <Link to={`/coach/clients/${s.client_id}`} className="text-sm text-portal-blue underline-offset-2 hover:underline">{t.cal_open_client}</Link>}
+        {s.client_id && <Link to={`${peoplePath}/${s.client_id}`} className="text-sm text-portal-blue underline-offset-2 hover:underline">{t.cal_open_client}</Link>}
       </div>
       <div className="space-y-2 text-sm">
         <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-portal-muted" />{fmtDateTime(s.starts_at, lang, tz)} – {toTimeStr(s.ends_at, tz)}</div>

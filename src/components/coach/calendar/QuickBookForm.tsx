@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 const DURATIONS = [30, 45, 60, 90];
 
 export function QuickBookForm({ initial, onDone, onClose }: {
-  initial: { date: DateStr; time: string; clientId?: string };
+  initial: { date: DateStr; time: string; clientId?: string; kind?: 'session' | 'trial' | 'group' };
   onDone: () => void;
   onClose: () => void;
 }) {
@@ -32,7 +32,7 @@ export function QuickBookForm({ initial, onDone, onClose }: {
   const [duration, setDuration] = useState(60);
   const [custom, setCustom] = useState(false);
   const [location, setLocation] = useState('');
-  const [kind, setKind] = useState<'session' | 'trial' | 'group'>('session');
+  const [kind, setKind] = useState<'session' | 'trial' | 'group'>(initial.kind ?? 'session');
   const [title, setTitle] = useState('');
   const [sport, setSport] = useState('');
   const [capacity, setCapacity] = useState(12);

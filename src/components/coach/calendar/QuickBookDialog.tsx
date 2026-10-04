@@ -6,12 +6,12 @@ import { useLanguage } from '@/context/LanguageContext';
 import { todayStr, toTimeStr } from '@/lib/tz';
 import { QuickBookForm } from './QuickBookForm';
 
-export function QuickBookDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+export function QuickBookDialog({ open, onOpenChange, defaultKind = 'session' }: { open: boolean; onOpenChange: (open: boolean) => void; defaultKind?: 'session' | 'group' }) {
   const mobile = useIsMobile();
   const tz = useCoachTz();
   const { t } = useLanguage();
   const close = () => onOpenChange(false);
-  const form = open ? <QuickBookForm initial={{ date: todayStr(tz), time: toTimeStr(new Date(Date.now() + 3600000), tz).slice(0, 2) + ':00' }} onDone={close} onClose={close} /> : null;
+  const form = open ? <QuickBookForm initial={{ date: todayStr(tz), time: toTimeStr(new Date(Date.now() + 3600000), tz).slice(0, 2) + ':00', kind: defaultKind }} onDone={close} onClose={close} /> : null;
   if (mobile) return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="coach-portal bg-portal-card border-portal-border max-h-[92dvh] overflow-y-auto [&>button]:hidden">
