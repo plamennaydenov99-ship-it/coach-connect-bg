@@ -44,7 +44,7 @@ export function MobileTodayCards({ sessions }: { sessions: CalSession[] }) {
                   <p className="font-display text-2xl leading-none text-portal-ink">{toTimeStr(s.starts_at, tz)}–{toTimeStr(s.ends_at, tz)}</p>
                   <p className={`mt-1.5 text-base truncate ${s.status === 'cancelled' ? 'line-through text-portal-muted' : 'text-portal-ink'}`}>{s.capacity != null ? `${s.title || t.group_type} · ${sessionFill(s)}/${s.capacity}` : s.client?.display_name ?? '—'}</p>
                   <p className="text-sm text-portal-muted flex items-center gap-1 truncate">
-                    {s.kind === 'trial' ? t.dash_chip_trial : t.dash_session}
+                    {s.capacity != null ? t.group_type : s.kind === 'trial' ? t.dash_chip_trial : t.dash_session}
                     {s.location && <><span>·</span><MapPin className="h-3.5 w-3.5 shrink-0" />{s.location}</>}
                   </p>
                 </div>

@@ -168,7 +168,7 @@ function TodayList({ sessions, onOpen }: { sessions: CalSession[]; onOpen: (s: C
               <span className={`w-2 h-2 rounded-full ${dot}`} />
               <span className="min-w-0">
                 <span className={`block truncate ${s.status === 'cancelled' ? 'line-through text-portal-muted' : 'text-portal-ink'}`}>{s.capacity != null ? `${s.title || t.group_type} · ${sessionFill(s)}/${s.capacity}` : s.client?.display_name ?? '—'}</span>
-                <span className="block text-xs text-portal-muted truncate">{s.kind === 'trial' ? t.dash_chip_trial : t.dash_session}{s.location ? ` · ${s.location}` : ''}</span>
+                <span className="block text-xs text-portal-muted truncate">{s.capacity != null ? t.group_type : s.kind === 'trial' ? t.dash_chip_trial : t.dash_session}{s.location ? ` · ${s.location}` : ''}</span>
               </span>
             </button>
             {past && s.capacity == null && (
