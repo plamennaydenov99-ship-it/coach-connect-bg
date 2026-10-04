@@ -214,11 +214,11 @@ function TodayList({ sessions, onOpen }: { sessions: CalSession[]; onOpen: (s: C
               <span className="font-display text-lg w-14 text-portal-ink">{toTimeStr(s.starts_at, tz)}</span>
               <span className={`w-2 h-2 rounded-full ${dot}`} />
               <span className="min-w-0">
-                <span className={`block truncate ${s.status === 'cancelled' ? 'line-through text-portal-muted' : 'text-portal-ink'}`}>{s.capacity != null ? `${s.title || t.group_type} · ${sessionFill(s)}/${s.capacity}` : s.client?.display_name ?? '—'}</span>
-                <span className="block text-xs text-portal-muted truncate">{s.capacity != null ? t.group_type : s.kind === 'trial' ? t.dash_chip_trial : t.dash_session}{s.location ? ` · ${s.location}` : ''}</span>
+                <span className={`block truncate ${s.status === 'cancelled' ? 'line-through text-portal-muted' : 'text-portal-ink'}`}>{s.kind === 'hire' ? (s.title || t.hire_type) : s.capacity != null ? `${s.title || t.group_type} · ${sessionFill(s)}/${s.capacity}` : s.client?.display_name ?? '—'}</span>
+                <span className="block text-xs text-portal-muted truncate">{s.kind === 'hire' ? `${t.hire_type}${s.resource?.name ? ` · ${s.resource.name}` : ''}` : s.capacity != null ? t.group_type : s.kind === 'trial' ? t.dash_chip_trial : t.dash_session}{s.kind !== 'hire' && s.location ? ` · ${s.location}` : ''}</span>
               </span>
             </button>
-            {past && s.capacity == null && (
+            {past && s.capacity == null && s.kind !== 'hire' && (
               <button disabled={setStatus.isPending} onClick={() => setStatus.mutate({ id: s.id, status: 'attended' }, { onError: () => toast.error(t.crm_error) })}
                 className="text-xs h-8 px-2.5 border border-portal-border rounded-[4px] hover:bg-portal-bg inline-flex items-center gap-1">
                 <Check className="w-3.5 h-3.5" />{t.dash_mark_attended}
