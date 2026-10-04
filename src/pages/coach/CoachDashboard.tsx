@@ -75,7 +75,14 @@ export default function CoachDashboard() {
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {isLoading || !data ? Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-28" />) : (
+          {isLoading || !data ? Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-28" />) : isClub ? (
+            <>
+              <Kpi label={t.dash_kpi_active} value={String(data.activeClients)} sub={`+${data.activeNewMonth} ${t.dash_this_month}`} />
+              <Kpi label={t.dash_kpi_classes} value={String(classFill(data.weekSessions).classes)} sub={t.dash_kpi_classes_sub.replace('{fill}', String(classFill(data.weekSessions).fill))} />
+              <Kpi label={t.dash_kpi_occupancy} value={avgOcc === null ? '—' : `${avgOcc}%`} sub={t.dash_this_week} />
+              <Kpi label={t.dash_kpi_hires} value={String(clubSummary(data.weekSessions).hires)} sub={t.dash_this_week} />
+            </>
+          ) : (
             <>
               <Kpi label={t.dash_kpi_sessions} value={String(data.sessionsWeek)} sub={`${data.sessionsDelta >= 0 ? '+' : ''}${data.sessionsDelta} ${t.dash_vs_last_week}`} />
               <Kpi label={t.dash_kpi_active} value={String(data.activeClients)} sub={`+${data.activeNewMonth} ${t.dash_this_month}`} />
