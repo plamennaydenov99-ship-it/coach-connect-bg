@@ -1,4 +1,6 @@
-import { useStaffPaths } from '@/context/StaffRoleContext';
+import { useStaffPaths, useStaffRole } from '@/context/StaffRoleContext';
+import { classFill, clubSummary, resourceOccupancy } from '@/lib/sessionMetrics';
+import { useClubResources, useWeekResourceSessions } from '@/hooks/coach/useClubResources';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Check, Plus } from 'lucide-react';
@@ -24,11 +26,18 @@ const link = 'text-sm text-portal-blue hover:underline';
 export default function CoachDashboard() {
   const { t, lang } = useLanguage();
   const { base, peoplePath } = useStaffPaths();
+  const isClub = useStaffRole() === 'club';
   const { profile } = useAuth();
   const tz = useCoachTz();
   const locale = LOCALES[lang];
   const { data, isLoading } = useCoachDashboard();
+  const { data: resources } = useClubResources();
+  const { data: weekRes } = useWeekResourceSessions();
   const [selected, setSelected] = useState<CalSession | null>(null);
+
+  const activeRes = (resources ?? []).filter((r) => r.active);
+  const occRows = activeRes.map((r) => ({ r, occ: weekRes ? resourceOccupancy(r, weekRes.sessions.filter((s) => s.resource_id === r.id), weekRes.start, weekRes.end) : null }));
+  const avgOcc = activeRes.length && weekRes ? Math.round(occRows.reduce((n, o) => n + (o.occ?.percentage ?? 0), 0) / activeRes.length) : null;
 
   const today = todayStr(tz);
   const h = zonedParts(new Date(), tz).h;
@@ -44,7 +53,12 @@ export default function CoachDashboard() {
           <h1 className="font-display uppercase text-3xl tracking-[0.06em] text-portal-ink mt-1">{greet}{first ? `, ${first}` : ''}</h1>
           {isLoading ? <Skeleton className="h-4 w-72 mt-2" /> : data && (
             <p className="text-sm text-portal-muted-strong mt-1">
-              {data.todaySessions.filter((s) => s.status !== 'cancelled').length} {t.dash_sum_sessions} · {data.tasksDue} {t.dash_sum_tasks} · {data.newEnquiries} {t.dash_sum_enquiries}
+              {isClub
+                ? t.dash_sum_club
+                    .replace('{n}', String(clubSummary(data.todaySessions).classes))
+                    .replace('{h}', String(clubSummary(data.todaySessions).hires))
+                    .replace('{e}', String(data.newEnquiries))
+                : `${data.todaySessions.filter((s) => s.status !== 'cancelled').length} ${t.dash_sum_sessions} · ${data.tasksDue} ${t.dash_sum_tasks} · ${data.newEnquiries} ${t.dash_sum_enquiries}`}
             </p>
           )}
         </header>
@@ -61,7 +75,14 @@ export default function CoachDashboard() {
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {isLoading || !data ? Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-28" />) : (
+          {isLoading || !data ? Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-28" />) : isClub ? (
+            <>
+              <Kpi label={t.dash_kpi_active} value={String(data.activeClients)} sub={`+${data.activeNewMonth} ${t.dash_this_month}`} />
+              <Kpi label={t.dash_kpi_classes} value={String(classFill(data.weekSessions).classes)} sub={t.dash_kpi_classes_sub.replace('{fill}', String(classFill(data.weekSessions).fill))} />
+              <Kpi label={t.dash_kpi_occupancy} value={avgOcc === null ? '—' : `${avgOcc}%`} sub={t.dash_this_week} />
+              <Kpi label={t.dash_kpi_hires} value={String(clubSummary(data.weekSessions).hires)} sub={t.dash_this_week} />
+            </>
+          ) : (
             <>
               <Kpi label={t.dash_kpi_sessions} value={String(data.sessionsWeek)} sub={`${data.sessionsDelta >= 0 ? '+' : ''}${data.sessionsDelta} ${t.dash_vs_last_week}`} />
               <Kpi label={t.dash_kpi_active} value={String(data.activeClients)} sub={`+${data.activeNewMonth} ${t.dash_this_month}`} />
@@ -102,8 +123,30 @@ export default function CoachDashboard() {
             )}
           </section>
 
+          {isClub && (
+            <section className={card}>
+              <div className="flex items-center justify-between mb-3">
+                <h2 className={title}>{t.dash_occ_title}</h2>
+                <Link to={`${base}/facilities`} className={link}>{t.dash_occ_link}</Link>
+              </div>
+              {isLoading || !data ? <Skeleton className="h-32" /> : activeRes.length === 0 ? (
+                <p className="text-sm text-portal-muted py-2">{t.fac_empty} <Link to={`${base}/facilities`} className={link}>{t.dash_occ_link}</Link></p>
+              ) : (
+                <div className="space-y-3">
+                  {occRows.map(({ r, occ }) => (
+                    <div key={r.id}>
+                      <div className="flex justify-between text-sm"><span className="truncate">{r.name}</span><span className="font-display">{occ ? `${occ.percentage}%` : '—'}</span></div>
+                      <div className="h-2 bg-portal-bg rounded-[2px] mt-1"><div className="h-2 bg-portal-blue animate-grow-in rounded-[2px]" style={{ width: `${occ?.percentage ?? 0}%` }} /></div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+          )}
+
           <TasksCard className="hidden md:block" loading={isLoading} tasks={data?.tasks ?? []} today={today} locale={locale} />
 
+          {!isClub && (
           <section className={`${card} lg:col-span-2`}>
             <h2 className={`${title} mb-3`}>{t.dash_per_week}</h2>
             {isLoading || !data ? <Skeleton className="h-56" /> : (
@@ -124,6 +167,7 @@ export default function CoachDashboard() {
               </div>
             )}
           </section>
+          )}
         </div>
       </div>
 
@@ -170,11 +214,11 @@ function TodayList({ sessions, onOpen }: { sessions: CalSession[]; onOpen: (s: C
               <span className="font-display text-lg w-14 text-portal-ink">{toTimeStr(s.starts_at, tz)}</span>
               <span className={`w-2 h-2 rounded-full ${dot}`} />
               <span className="min-w-0">
-                <span className={`block truncate ${s.status === 'cancelled' ? 'line-through text-portal-muted' : 'text-portal-ink'}`}>{s.capacity != null ? `${s.title || t.group_type} · ${sessionFill(s)}/${s.capacity}` : s.client?.display_name ?? '—'}</span>
-                <span className="block text-xs text-portal-muted truncate">{s.capacity != null ? t.group_type : s.kind === 'trial' ? t.dash_chip_trial : t.dash_session}{s.location ? ` · ${s.location}` : ''}</span>
+                <span className={`block truncate ${s.status === 'cancelled' ? 'line-through text-portal-muted' : 'text-portal-ink'}`}>{s.kind === 'hire' ? (s.title || t.hire_type) : s.capacity != null ? `${s.title || t.group_type} · ${sessionFill(s)}/${s.capacity}` : s.client?.display_name ?? '—'}</span>
+                <span className="block text-xs text-portal-muted truncate">{s.kind === 'hire' ? `${t.hire_type}${s.resource?.name ? ` · ${s.resource.name}` : ''}` : s.capacity != null ? t.group_type : s.kind === 'trial' ? t.dash_chip_trial : t.dash_session}{s.kind !== 'hire' && s.location ? ` · ${s.location}` : ''}</span>
               </span>
             </button>
-            {past && s.capacity == null && (
+            {past && s.capacity == null && s.kind !== 'hire' && (
               <button disabled={setStatus.isPending} onClick={() => setStatus.mutate({ id: s.id, status: 'attended' }, { onError: () => toast.error(t.crm_error) })}
                 className="text-xs h-8 px-2.5 border border-portal-border rounded-[4px] hover:bg-portal-bg inline-flex items-center gap-1">
                 <Check className="w-3.5 h-3.5" />{t.dash_mark_attended}
