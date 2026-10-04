@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { AlertTriangle, Plus, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/hooks/useAuth';
@@ -31,7 +32,12 @@ export function QuickBookForm({ initial, onDone, onClose }: {
   const [duration, setDuration] = useState(60);
   const [custom, setCustom] = useState(false);
   const [location, setLocation] = useState('');
-  const [kind, setKind] = useState<'session' | 'trial'>('session');
+  const [kind, setKind] = useState<'session' | 'trial' | 'group'>('session');
+  const [title, setTitle] = useState('');
+  const [sport, setSport] = useState('');
+  const [capacity, setCapacity] = useState(12);
+  const [isPublic, setPublic] = useState(false);
+  const [attendeeIds, setAttendees] = useState<string[]>(initial.clientId ? [initial.clientId] : []);
   const [repeat, setRepeat] = useState(false);
   const [endsOn, setEndsOn] = useState(addDays(initial.date, TOPUP_WEEKS * 7));
   const [overlaps, setOverlaps] = useState(0);
@@ -58,10 +64,11 @@ export function QuickBookForm({ initial, onDone, onClose }: {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!clientId) return toast.error(t.cal_pick_client);
+    if (kind !== 'group' && !clientId) return toast.error(t.cal_pick_client);
+    if (kind === 'group' && (!Number.isInteger(capacity) || capacity < 1 || attendeeIds.length > capacity)) return toast.error(t.group_capacity_error);
     if (!user) return;
     if (!date || !/^\d{2}:\d{2}$/.test(time) || duration < 5 || duration > 600) return;
-    const input = { client_id: clientId, date, time, duration, location: location.trim().slice(0, 200), kind, repeat, endsOn: repeat ? endsOn || null : null };
+    const input = { client_id: kind === 'group' ? null : clientId, date, time, duration, location: location.trim().slice(0, 200), kind: kind === 'trial' ? 'trial' as const : 'session' as const, repeat, endsOn: repeat ? endsOn || null : null, capacity: kind === 'group' ? capacity : null, title: title.trim(), sport: sport.trim(), is_public: isPublic, attendee_ids: attendeeIds };
     try {
       if (!confirmed) {
         const n = await findOverlaps(user.id, bookingCandidates(input, tz));
@@ -80,6 +87,30 @@ export function QuickBookForm({ initial, onDone, onClose }: {
         <button type="button" onClick={onClose} aria-label={t.cal_close} className="h-8 w-8 flex items-center justify-center text-portal-muted-strong"><X className="h-4 w-4" /></button>
       </div>
 
+      <div className="space-y-1.5">
+        <span className={portalLabel}>{t.cal_type}</span>
+        <div className="flex gap-1.5">
+          {(['session', 'trial', 'group'] as const).map((k) => (
+            <Button variant="ghost" type="button" key={k} onClick={() => setKind(k)}
+              className={`flex-1 h-9 rounded-[4px] border text-sm ${kind === k ? (k === 'trial' ? 'bg-portal-copper-tint border-portal-copper' : 'bg-portal-selected border-portal-selected-border') : 'border-portal-border text-portal-muted-strong'}`}>
+              {k === 'group' ? t.group_type : k === 'trial' ? t.cal_type_trial : '1:1'}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      {kind === 'group' ? <div className="space-y-3">
+        <label className="block space-y-1"><span className={portalLabel}>{t.group_title}</span><input required value={title} onChange={e => setTitle(e.target.value)} maxLength={120} className={portalInput} /></label>
+        <label className="block space-y-1"><span className={portalLabel}>{t.group_sport}</span><input value={sport} onChange={e => setSport(e.target.value)} maxLength={80} className={portalInput} /></label>
+        <label className="block space-y-1"><span className={portalLabel}>{t.group_capacity}</span><input type="number" required min={1} step={1} value={capacity} onChange={e => setCapacity(Number(e.target.value))} className={portalInput} /></label>
+        <label className="flex justify-between items-center text-sm">{t.group_trending}<Switch checked={isPublic} onCheckedChange={setPublic} /></label>
+        <fieldset className="space-y-2"><legend className={portalLabel}>{t.group_attendees} · {attendeeIds.length}/{capacity}</legend>
+          <input value={q} onChange={e => setQ(e.target.value)} placeholder={t.cal_search_client} className={portalInput} />
+          <div className="max-h-40 overflow-y-auto space-y-2">{active.filter(c => c.display_name.toLowerCase().includes(q.toLowerCase())).map(c => <label key={c.id} className="flex gap-2 items-center text-sm">
+            <input type="checkbox" checked={attendeeIds.includes(c.id)} disabled={!attendeeIds.includes(c.id) && attendeeIds.length >= capacity} onChange={e => setAttendees(ids => e.target.checked ? [...ids, c.id] : ids.filter(id => id !== c.id))} className="accent-portal-blue" />{c.display_name}
+          </label>)}</div>
+        </fieldset>
+      </div> : (
       <div className="space-y-1.5">
         <span className={portalLabel}>{t.cal_client}</span>
         {selected ? (
@@ -116,6 +147,8 @@ export function QuickBookForm({ initial, onDone, onClose }: {
         )}
       </div>
 
+      )}
+
       <div className="grid grid-cols-2 gap-3">
         <label className="space-y-1 block"><span className={portalLabel}>{t.cal_date}</span>
           <input type="date" required value={date} onChange={(e) => setDate(e.target.value)} className={portalInput} /></label>
@@ -140,17 +173,6 @@ export function QuickBookForm({ initial, onDone, onClose }: {
       <label className="space-y-1 block"><span className={portalLabel}>{t.cal_location}</span>
         <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder={t.cal_location_ph} maxLength={200} className={portalInput} /></label>
 
-      <div className="space-y-1.5">
-        <span className={portalLabel}>{t.cal_type}</span>
-        <div className="flex gap-1.5">
-          {(['session', 'trial'] as const).map((k) => (
-            <button type="button" key={k} onClick={() => setKind(k)}
-              className={`flex-1 h-9 rounded-[4px] border text-sm ${kind === k ? (k === 'trial' ? 'bg-portal-copper-tint border-portal-copper' : 'bg-portal-selected border-portal-selected-border') : 'border-portal-border text-portal-muted-strong'}`}>
-              {k === 'trial' ? t.cal_type_trial : t.cal_type_session}
-            </button>
-          ))}
-        </div>
-      </div>
 
       <div className="space-y-2">
         <label className="flex items-center justify-between text-sm"><span>{t.cal_repeat_weekly}</span><Switch checked={repeat} onCheckedChange={setRepeat} /></label>

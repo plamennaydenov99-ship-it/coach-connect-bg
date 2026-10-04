@@ -1,5 +1,6 @@
 import { Repeat } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+import { sessionFill } from '@/hooks/coach/useCoachCalendar';
 import type { CalSession } from '@/hooks/coach/useCoachCalendar';
 import { addDays, labelDate, toDateStr, toTimeStr, todayStr, type DateStr } from '@/lib/tz';
 import { LOCALES } from '@/components/coach/clients/shared';
@@ -33,7 +34,7 @@ export function MonthGrid({ gridStart, month, tz, sessions, onDay, onSession }: 
                     className={`w-full text-left truncate text-[11px] px-1 rounded-[4px] border flex items-center gap-1 ${s.kind === 'trial' ? 'bg-portal-copper-tint border-portal-copper' : 'bg-portal-selected border-portal-selected-border'} ${s.status === 'cancelled' ? 'opacity-50 line-through' : ''}`}
                   >
                     {s.series_id && <Repeat className="h-2.5 w-2.5 shrink-0" />}
-                    <span className="truncate">{toTimeStr(s.starts_at, tz)} {s.client?.display_name}</span>
+                    <span className="truncate">{toTimeStr(s.starts_at, tz)} {s.capacity != null ? `${s.title || t.group_type} · ${sessionFill(s)}/${s.capacity}` : s.client?.display_name}</span>
                   </button>
                 ))}
                 {list.length > 3 && <div className="text-[11px] text-portal-muted">+{list.length - 3} {t.cal_more}</div>}

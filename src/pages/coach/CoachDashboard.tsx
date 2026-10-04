@@ -7,7 +7,7 @@ import { CountUp } from '@/components/CountUp';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/hooks/useAuth';
-import { useCoachTz, useSessionStatus, type CalSession } from '@/hooks/coach/useCoachCalendar';
+import { sessionFill, useCoachTz, useSessionStatus, type CalSession } from '@/hooks/coach/useCoachCalendar';
 import { useToggleTask, BOARD_STAGES } from '@/hooks/coach/useCoachClients';
 import { MobileTodayCards } from '@/components/coach/dashboard/MobileTodayCards';
 import { useCoachDashboard, useCoachInbox, useQuickTask } from '@/hooks/coach/useCoachDashboard';
@@ -167,11 +167,11 @@ function TodayList({ sessions, onOpen }: { sessions: CalSession[]; onOpen: (s: C
               <span className="font-display text-lg w-14 text-portal-ink">{toTimeStr(s.starts_at, tz)}</span>
               <span className={`w-2 h-2 rounded-full ${dot}`} />
               <span className="min-w-0">
-                <span className={`block truncate ${s.status === 'cancelled' ? 'line-through text-portal-muted' : 'text-portal-ink'}`}>{s.client?.display_name ?? '—'}</span>
+                <span className={`block truncate ${s.status === 'cancelled' ? 'line-through text-portal-muted' : 'text-portal-ink'}`}>{s.capacity != null ? `${s.title || t.group_type} · ${sessionFill(s)}/${s.capacity}` : s.client?.display_name ?? '—'}</span>
                 <span className="block text-xs text-portal-muted truncate">{s.kind === 'trial' ? t.dash_chip_trial : t.dash_session}{s.location ? ` · ${s.location}` : ''}</span>
               </span>
             </button>
-            {past && (
+            {past && s.capacity == null && (
               <button disabled={setStatus.isPending} onClick={() => setStatus.mutate({ id: s.id, status: 'attended' }, { onError: () => toast.error(t.crm_error) })}
                 className="text-xs h-8 px-2.5 border border-portal-border rounded-[4px] hover:bg-portal-bg inline-flex items-center gap-1">
                 <Check className="w-3.5 h-3.5" />{t.dash_mark_attended}

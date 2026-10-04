@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Check, UserX, Repeat } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+import { sessionFill } from '@/hooks/coach/useCoachCalendar';
 import type { CalSession, OpenSlot } from '@/hooks/coach/useCoachCalendar';
 import { addDays, labelDate, minutesOfDay, minutesToTime, toDateStr, toTimeStr, todayStr, type DateStr } from '@/lib/tz';
 import { LOCALES } from '@/components/coach/clients/shared';
@@ -133,7 +134,7 @@ export function WeekGrid({ start, days, tz, sessions, slots, onEmpty, onSession 
                             {s.status === 'attended' && <Check className="h-3 w-3 shrink-0" />}
                             {s.status === 'no_show' && <UserX className="h-3 w-3 shrink-0 text-portal-ink" />}
                           </div>
-                          <div className="truncate">{s.client?.display_name ?? '—'}</div>
+                          <div className="truncate">{s.capacity != null ? `${s.title || t.group_type} · ${sessionFill(s)}/${s.capacity}` : s.client?.display_name ?? '—'}</div>
                           {s.status === 'no_show' && <div className="text-portal-ink">{t.cal_no_show}</div>}
                         </button>
                       );
