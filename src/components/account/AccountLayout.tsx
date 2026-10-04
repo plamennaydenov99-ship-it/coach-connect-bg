@@ -1,4 +1,5 @@
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { DEMO_MODE } from '@/lib/demo';
 import { Button } from '@/components/ui/button';
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
@@ -47,7 +48,9 @@ export function AccountLayout() {
               </NavLink>
             ))}
           </nav>
+          {!DEMO_MODE && (
           <Button variant="outline" size="sm" onClick={logout}>{t.auth_logout}</Button>
+          )}
         </div>
       </div>
       <main className="flex-1 container py-10">

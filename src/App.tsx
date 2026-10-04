@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { CanonicalTag } from "@/components/CanonicalTag";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { AuthProvider } from "@/hooks/useAuth";
+import { DemoSwitcher } from "@/components/DemoSwitcher";
 
 import Index from "./pages/Index";
 import Search from "./pages/Search";
@@ -65,6 +66,7 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <CanonicalTag />
+            <DemoSwitcher />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/athlete" element={<Index />} />

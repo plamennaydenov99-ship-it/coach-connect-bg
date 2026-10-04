@@ -12,3 +12,4 @@
 - Coach and club portals share one role-driven StaffLayout and the owner-based coach pages; StaffRoleContext supplies portal paths and club wording overrides, so club screens never duplicate coach files.
 
 - Discover reads public sessions only through the safe public_sessions view; athlete actions share a strict role guard and staff requests use owner-filtered React Query hooks to preserve privacy and consistent navigation.
+- Testing mode (VITE_DEMO_MODE, default 'on' via vite define; DEMO_MODE secret for the demo-login function) swaps sign-in for a one-click role switcher while all auth code stays intact — easy to switch back off.

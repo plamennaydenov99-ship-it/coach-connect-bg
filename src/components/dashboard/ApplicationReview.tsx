@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { DEMO_MODE } from '@/lib/demo';
 import { Clock, XCircle, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -34,9 +35,11 @@ export function ApplicationReview({ status }: { status: 'pending' | 'rejected' }
           <Link to="/">
             <Button className="w-full" size="lg">{t.review_browse}</Button>
           </Link>
+          {!DEMO_MODE && (
           <Button variant="outline" className="w-full" onClick={logout}>
             <LogOut className="h-3.5 w-3.5 mr-2" /> {t.auth_logout}
           </Button>
+          )}
         </div>
       </div>
     </div>
