@@ -36,6 +36,13 @@
       "when": 1791076451323,
       "tag": "0004_group_sessions_and_rosters",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791076650539,
+      "tag": "0005_group_session_public_grants_hardening",
+      "breakpoints": true
     }
   ]
 }
