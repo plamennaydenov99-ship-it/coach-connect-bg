@@ -1,4 +1,6 @@
-import { classFill } from '@/lib/sessionMetrics';
+import { clubSummary } from '@/lib/sessionMetrics';
+import { useClubResources } from '@/hooks/coach/useClubResources';
+import { ResourceDayGrid } from '@/components/coach/calendar/ResourceDayGrid';
 import { useStaffRole } from '@/context/StaffRoleContext';
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -30,9 +32,11 @@ export default function CoachCalendar() {
   const isMobile = useIsMobile();
   const qc = useQueryClient();
   const [params, setParams] = useSearchParams();
-  const [view, setView] = useState<View>(() => (window.innerWidth < 768 ? 'day' : 'week'));
+  const [view, setView] = useState<View>(() => (window.innerWidth < 768 || role === 'club' ? 'day' : 'week'));
   const [anchor, setAnchor] = useState<DateStr>(() => todayStr(tz));
-  const [book, setBook] = useState<{ date: DateStr; time: string; clientId?: string } | null>(null);
+  const [book, setBook] = useState<{ date: DateStr; time: string; clientId?: string; resourceId?: string } | null>(null);
+  const { data: resources = [] } = useClubResources();
+  const activeResources = resources.filter((r) => r.active);
   const [selected, setSelected] = useState<CalSession | null>(null);
   const [availOpen, setAvailOpen] = useState(false);
   const [reqOpen, setReqOpen] = useState(false);
@@ -95,8 +99,16 @@ export default function CoachCalendar() {
           <button className={portalBtnPrimary} onClick={() => setBook({ date: view === 'week' ? todayStr(tz) : anchor, time: '09:00' })}><Plus className="h-4 w-4" />{t.portal_new_session}</button>
         </div>
 
-        {role === 'club' && view === 'week' && !isLoading && (() => { const f = classFill(sessions); return (
-          <p className="text-sm text-portal-muted-strong">{(f.classes === 1 ? t.cal_class_summary_one : t.cal_class_summary).replace('{n}', String(f.classes)).replace('{fill}', String(f.fill))}</p>
+        {role === 'club' && !isLoading && (() => { const f = clubSummary(sessions); return (
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <p className="text-sm text-portal-muted-strong">{t.cal_club_summary.replace('{n}', String(f.classes)).replace('{h}', String(f.hires)).replace('{fill}', String(f.fill))}</p>
+            <div className="flex flex-wrap items-center gap-3 text-xs text-portal-muted-strong" aria-label={t.cal_legend}>
+              <span className="flex items-center gap-1"><span className="h-3 w-3 rounded-[2px] border bg-portal-selected border-portal-selected-border" />{t.group_type}</span>
+              <span className="flex items-center gap-1"><span className="h-3 w-3 rounded-[2px] border bg-portal-selected border-portal-selected-border" />1:1</span>
+              <span className="flex items-center gap-1"><span className="h-3 w-3 rounded-[2px] border bg-portal-bg border-portal-ink" />{t.hire_type}</span>
+              <span className="flex items-center gap-1 text-portal-blue font-medium">★ {t.group_trending_marker}</span>
+            </div>
+          </div>
         ); })()}
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-1">
@@ -116,6 +128,9 @@ export default function CoachCalendar() {
         ) : view === 'month' ? (
           <MonthGrid gridStart={range.start} month={startOfMonth(anchor).slice(0, 7)} tz={tz} sessions={sessions}
             onDay={(d) => { setAnchor(d); setView('day'); }} onSession={setSelected} />
+        ) : view === 'day' && role === 'club' && !isMobile ? (
+          <ResourceDayGrid date={anchor} tz={tz} sessions={sessions} resources={activeResources}
+            onEmpty={(date, time, resourceId) => setBook({ date, time, resourceId })} onSession={setSelected} />
         ) : (
           <>
             {sessions.length === 0 && <p className="text-sm text-portal-muted">{t.cal_empty_week}</p>}
