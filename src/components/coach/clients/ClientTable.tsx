@@ -42,11 +42,11 @@ export function ClientTable({ clients, onOpen }: { clients: ClientSummary[]; onO
         </thead>
         <tbody>
           {rows.map((c) => (
-            <tr key={c.id} onClick={() => onOpen(c.id)} className="border-b border-portal-border last:border-0 cursor-pointer hover:bg-portal-bg">
+            <tr key={c.id} onClick={() => onOpen(c.id)} className="border-b border-portal-border last:border-0 animate-fade-up-in cursor-pointer hover:bg-portal-bg">
               <td className="px-3 py-2.5"><div className="flex items-center gap-2"><Avatar name={c.display_name} size={28} /><span className="font-medium">{c.display_name}</span></div></td>
               <td className="px-3 py-2.5 text-portal-muted-strong">{t[stageKey(c.stage)]}</td>
               <td className="px-3 py-2.5 text-portal-muted-strong max-w-[220px] truncate">{c.goal || '—'}</td>
-              <td className={`px-3 py-2.5 ${c.nextSession && isToday(c.nextSession.starts_at, tz) ? 'text-portal-copper font-medium' : 'text-portal-muted-strong'}`}>
+              <td className={`px-3 py-2.5 ${c.nextSession && isToday(c.nextSession.starts_at, tz) ? 'text-portal-coral-text font-medium' : 'text-portal-muted-strong'}`}>
                 {c.nextSession ? fmtDateTime(c.nextSession.starts_at, lang, tz) : '—'}
               </td>
               <td className="px-3 py-2.5">{c.attendedCount}</td>

@@ -31,7 +31,7 @@ export function ClientCard({ c, onOpen, touch, dragging }: { c: ClientSummary; o
   return (
     <div
       onClick={onOpen}
-      className={`group bg-portal-card border border-portal-border rounded-[4px] p-3 space-y-2 cursor-pointer hover:border-portal-input ${dragging ? 'opacity-90 border-portal-selected-border' : ''}`}
+      className={`group motion-card bg-portal-card border border-portal-border rounded-[4px] p-3 space-y-2 cursor-pointer hover:border-portal-input ${dragging ? 'opacity-90 border-portal-selected-border' : ''}`}
     >
       <div className="flex items-start gap-2">
         <Avatar name={c.display_name} />
@@ -55,7 +55,7 @@ export function ClientCard({ c, onOpen, touch, dragging }: { c: ClientSummary; o
           </DropdownMenu>
         )}
       </div>
-      <div className={`flex items-center gap-1.5 text-xs ${today ? 'text-portal-copper font-medium' : 'text-portal-muted-strong'}`}>
+      <div className={`flex items-center gap-1.5 text-xs ${today ? 'text-portal-coral-text font-medium' : 'text-portal-muted-strong'}`}>
         <CalendarClock className="h-3.5 w-3.5" />
         {c.nextSession ? fmtDateTime(c.nextSession.starts_at, lang, tz) : t.crm_no_upcoming}
       </div>

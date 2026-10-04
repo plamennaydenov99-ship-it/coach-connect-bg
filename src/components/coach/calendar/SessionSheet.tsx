@@ -89,7 +89,7 @@ function Body({ s, onClose }: { s: CalSession; onClose: () => void }) {
       <div>
         <SheetTitle className="font-display text-xl uppercase tracking-[0.08em] text-portal-ink">{s.client?.display_name ?? '—'}</SheetTitle>
         <SheetDescription className="sr-only">{t.cal_title}</SheetDescription>
-        <Link to={`/coach/clients/${s.client_id}`} className="text-sm text-portal-copper underline-offset-2 hover:underline">{t.cal_open_client}</Link>
+        <Link to={`/coach/clients/${s.client_id}`} className="text-sm text-portal-coral-text underline-offset-2 hover:underline">{t.cal_open_client}</Link>
       </div>
       <div className="space-y-2 text-sm">
         <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-portal-muted" />{fmtDateTime(s.starts_at, lang, tz)} – {toTimeStr(s.ends_at, tz)}</div>
@@ -108,7 +108,7 @@ function Body({ s, onClose }: { s: CalSession; onClose: () => void }) {
           {s.status !== 'attended' && <button className={portalBtnGhost} onClick={() => status('attended')}>{t.cal_mark_attended}</button>}
           {s.status !== 'no_show' && <button className={portalBtnGhost} onClick={() => status('no_show')}>{t.cal_no_show}</button>}
           <button className={portalBtnGhost} onClick={() => setMode('reschedule')}>{t.cal_reschedule}</button>
-          <button className={`${portalBtnGhost} text-portal-copper border-portal-copper`} onClick={onCancel}>{t.cal_cancel_session}</button>
+          <button className={`${portalBtnGhost} text-portal-coral-text border-portal-copper`} onClick={onCancel}>{t.cal_cancel_session}</button>
         </div>
       )}
 

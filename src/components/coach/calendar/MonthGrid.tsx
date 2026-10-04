@@ -24,7 +24,7 @@ export function MonthGrid({ gridStart, month, tz, sessions, onDay, onSession }: 
           const inMonth = d.startsWith(month);
           return (
             <div key={d} onClick={() => onDay(d)} className={`min-h-[96px] p-1.5 border-b border-r border-portal-border cursor-pointer hover:bg-portal-bg ${inMonth ? '' : 'opacity-50'}`}>
-              <div className={`text-xs mb-1 ${d === today ? 'text-portal-copper font-semibold' : 'text-portal-muted-strong'}`}>{Number(d.slice(8))}</div>
+              <div className={`text-xs mb-1 ${d === today ? 'text-portal-coral-text font-semibold' : 'text-portal-muted-strong'}`}>{Number(d.slice(8))}</div>
               <div className="space-y-0.5">
                 {list.slice(0, 3).map((s) => (
                   <button

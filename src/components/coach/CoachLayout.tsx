@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { QuickBookDialog } from '@/components/coach/calendar/QuickBookDialog';
 import { NavLink, Link, Outlet, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, CalendarDays, MessageSquare, UserCircle2, Settings,
@@ -32,6 +35,7 @@ export function CoachLayout() {
   const { profile, signOut } = useAuth();
   const { t, lang, setLang } = useLanguage();
   const navigate = useNavigate();
+  const [bookingOpen, setBookingOpen] = useState(false);
   const { count: unread, byConvo } = useUnreadCount();
   const { data: inbox } = useCoachInbox(50);
   const unreadConvos = [...byConvo.entries()].slice(0, 6).map(([id, msgs]) => ({
@@ -72,20 +76,22 @@ export function CoachLayout() {
             <Zap className="h-4 w-4" strokeWidth={2.5} />
           </span>
           <span className="font-display text-xl tracking-[0.08em] text-portal-ink">LOKKA</span>
-          <span className="font-display text-[11px] tracking-[0.14em] uppercase px-1.5 py-0.5 rounded-[4px] border border-portal-copper text-portal-copper">
+          <span className="font-display text-[11px] tracking-[0.14em] uppercase px-1.5 py-0.5 rounded-[4px] border border-portal-copper text-portal-blue">
             {t.portal_coach_tag}
           </span>
         </Link>
 
         <div className="flex-1" />
 
-        <Link
-          to="/coach/calendar?new=1"
+        <Button
+          variant="portal"
+          aria-label={t.portal_new_session}
+          onClick={() => setBookingOpen(true)}
           className="inline-flex items-center gap-1.5 h-9 px-3 md:px-4 rounded-[4px] bg-portal-copper hover:bg-portal-copper-hover text-portal-on-copper font-display uppercase tracking-[0.1em] text-sm transition-colors"
         >
           <Plus className="h-4 w-4" />
           <span className="hidden sm:inline">{t.portal_new_session}</span>
-        </Link>
+        </Button>
 
         <DropdownMenu>
           <DropdownMenuTrigger
@@ -108,7 +114,7 @@ export function CoachLayout() {
               <>
                 {unreadConvos.map((c) => (
                   <DropdownMenuItem key={c.id} onClick={() => navigate(`/coach/messages?c=${c.id}`)} className="flex-col items-start gap-0.5">
-                    <span className="text-sm font-medium flex w-full justify-between gap-2"><span className="truncate">{c.name}</span><span className="text-portal-copper text-xs">{c.n}</span></span>
+                    <span className="text-sm font-medium flex w-full justify-between gap-2"><span className="truncate">{c.name}</span><span className="text-portal-blue text-xs">{c.n}</span></span>
                     <span className="text-xs text-portal-muted truncate w-full">{c.preview}</span>
                   </DropdownMenuItem>
                 ))}
@@ -200,6 +206,8 @@ export function CoachLayout() {
         </main>
       </div>
 
+      <QuickBookDialog open={bookingOpen} onOpenChange={setBookingOpen} />
+
       {/* Mobile bottom tabs */}
       <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 h-16 grid grid-cols-4 bg-portal-card border-t border-portal-border">
         {tabs.map((item) => (
@@ -208,7 +216,7 @@ export function CoachLayout() {
             to={item.to}
             className={({ isActive }) =>
               `relative flex flex-col items-center justify-center gap-1 font-display uppercase tracking-[0.1em] text-[11px] ${
-                isActive ? 'text-portal-copper' : 'text-portal-muted-strong'
+                isActive ? 'text-portal-blue' : 'text-portal-muted-strong'
               }`
             }
           >

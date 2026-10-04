@@ -69,7 +69,7 @@ export function NewClientDialog({ open, onOpenChange, onCreated }: { open: boole
               </select>
             </label>
           </div>
-          {err && <p className="text-sm text-portal-copper">{err}</p>}
+          {err && <p className="text-sm text-portal-coral-text">{err}</p>}
           <div className="flex justify-end gap-2 pt-2">
             <button type="button" className={portalBtnGhost} onClick={() => onOpenChange(false)}>{t.crm_cancel}</button>
             <button type="submit" className={portalBtnPrimary} disabled={create.isPending}>{t.crm_create}</button>
