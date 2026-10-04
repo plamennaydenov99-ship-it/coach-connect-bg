@@ -9,3 +9,4 @@
 
 - Group sessions use null client_id plus capacity; rosters are owner-only. Group booking is transactional via an invoker RPC, and occurrence inserts copy series_members through a trigger so top-up and rescheduling share one roster path.
 - Group attendance is measured per attendee; coached hours count a group's duration once when anyone attended, not once per attendee.
+- Coach and club portals share one role-driven StaffLayout and the owner-based coach pages; StaffRoleContext supplies portal paths and club wording overrides, so club screens never duplicate coach files.
