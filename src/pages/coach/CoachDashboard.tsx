@@ -123,8 +123,30 @@ export default function CoachDashboard() {
             )}
           </section>
 
+          {isClub && (
+            <section className={card}>
+              <div className="flex items-center justify-between mb-3">
+                <h2 className={title}>{t.dash_occ_title}</h2>
+                <Link to={`${base}/facilities`} className={link}>{t.dash_occ_link}</Link>
+              </div>
+              {isLoading || !data ? <Skeleton className="h-32" /> : activeRes.length === 0 ? (
+                <p className="text-sm text-portal-muted py-2">{t.fac_empty} <Link to={`${base}/facilities`} className={link}>{t.dash_occ_link}</Link></p>
+              ) : (
+                <div className="space-y-3">
+                  {occRows.map(({ r, occ }) => (
+                    <div key={r.id}>
+                      <div className="flex justify-between text-sm"><span className="truncate">{r.name}</span><span className="font-display">{occ ? `${occ.percentage}%` : '—'}</span></div>
+                      <div className="h-2 bg-portal-bg rounded-[2px] mt-1"><div className="h-2 bg-portal-blue animate-grow-in rounded-[2px]" style={{ width: `${occ?.percentage ?? 0}%` }} /></div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+          )}
+
           <TasksCard className="hidden md:block" loading={isLoading} tasks={data?.tasks ?? []} today={today} locale={locale} />
 
+          {!isClub && (
           <section className={`${card} lg:col-span-2`}>
             <h2 className={`${title} mb-3`}>{t.dash_per_week}</h2>
             {isLoading || !data ? <Skeleton className="h-56" /> : (
