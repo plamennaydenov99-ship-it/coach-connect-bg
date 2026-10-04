@@ -3,16 +3,12 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BadgeCheck, MapPin, MessageSquare } from 'lucide-react';
-import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/context/LanguageContext';
+import { messageOwner } from '@/lib/athleteActions';
 import { useAuth } from '@/hooks/useAuth';
-import { getOrCreateConversation } from '@/lib/messaging';
 
 interface ClubData {
   id: string;
@@ -32,7 +28,6 @@ const ClubProfile = () => {
   const navigate = useNavigate();
   const [club, setClub] = useState<ClubData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [form, setForm] = useState({ name: '', email: '', message: '' });
 
   useEffect(() => {
     if (!id) return;
@@ -72,23 +67,7 @@ const ClubProfile = () => {
     );
   }
 
-  const openMessage = async () => {
-    if (!user) {
-      toast.error(t.coach_sign_in_required);
-      navigate('/login');
-      return;
-    }
-    if (profile && profile.role !== 'athlete') {
-      toast.error(t.coach_athlete_only);
-      return;
-    }
-    try {
-      const cid = await getOrCreateConversation(user.id, club.id);
-      navigate(`/dashboard/messages?c=${cid}`);
-    } catch (e: any) {
-      toast.error(e.message);
-    }
-  };
+  const openMessage = () => messageOwner({ userId: user?.id, role: profile?.role, navigate, signInText: t.coach_sign_in_required, athleteOnlyText: t.disc_only_athletes }, club.id);
 
   const programs: Array<{ name: string; duration?: string; price?: number }> =
     Array.isArray(club.programs) ? club.programs : [];
@@ -152,11 +131,9 @@ const ClubProfile = () => {
                       <p className="font-display text-lg">{p.name}</p>
                       {p.duration && <p className="text-xs text-muted-foreground mt-1">{p.duration}</p>}
                       {p.price != null && (
-                        <p className="font-display text-2xl text-gold mt-3">€{p.price}</p>
+                        <p className="font-display text-2xl text-foreground mt-3">€{p.price}</p>
                       )}
-                      <Button className="mt-4 w-full" onClick={() => toast.success(t.club_enquiry_sent)}>
-                        {t.club_book}
-                      </Button>
+
                     </div>
                   ))}
                 </div>
@@ -164,37 +141,7 @@ const ClubProfile = () => {
             </TabsContent>
           </Tabs>
 
-          <div className="surface p-6 max-w-2xl">
-            <h2 className="font-display text-2xl">{t.club_enquiry_title}</h2>
-            <form
-              className="mt-5 grid gap-4"
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (!form.name || !form.email || !form.message) {
-                  toast.error(t.club_fill_fields);
-                  return;
-                }
-                toast.success(t.club_enquiry_sent);
-                setForm({ name: '', email: '', message: '' });
-              }}
-            >
-              <div className="grid gap-2 sm:grid-cols-2">
-                <div className="grid gap-2">
-                  <Label htmlFor="cname">{t.club_name_label}</Label>
-                  <Input id="cname" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="cemail">{t.club_email_label}</Label>
-                  <Input id="cemail" type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
-                </div>
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="cmsg">{t.club_message_label}</Label>
-                <Textarea id="cmsg" rows={4} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} />
-              </div>
-              <Button type="submit">{t.club_send_enquiry}</Button>
-            </form>
-          </div>
+
         </section>
       </main>
 

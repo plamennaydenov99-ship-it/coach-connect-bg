@@ -11,7 +11,7 @@ import { useLanguage } from '@/context/LanguageContext';
 
 type BookmarkRow = {
   id: string;
-  target_type: 'coach' | 'event';
+  target_type: 'coach' | 'event' | 'session' | 'club';
   target_id: string;
   created_at: string;
 };
@@ -95,7 +95,7 @@ const Bookmarks = () => {
                     className="h-14 w-14 object-cover"
                   />
                   <div className="flex-1 min-w-0">
-                    <Link to={`/coaches/${b.target_id}`} className="font-display text-lg hover:text-gold transition-colors block truncate">
+                    <Link to={`/coaches/${b.target_id}`} className="font-display text-lg hover:text-primary transition-colors block truncate">
                       {c?.profiles?.full_name || t.dashbookmarks_coach}
                     </Link>
                     <p className="text-sm text-muted-foreground truncate">
@@ -123,7 +123,7 @@ const Bookmarks = () => {
               return (
                 <div key={b.id} className="surface p-4 flex items-center gap-4">
                   <div className="flex-1 min-w-0">
-                    <Link to="/events" className="font-display text-lg hover:text-gold transition-colors block truncate">
+                    <Link to={ev ? "/events" : "/discover"} className="font-display text-lg hover:text-primary transition-colors block truncate">
                       {ev?.name ?? t.dashbookmarks_event}
                     </Link>
                     <div className="mt-1 flex flex-wrap gap-3 text-sm text-muted-foreground">
@@ -139,6 +139,17 @@ const Bookmarks = () => {
             })}
           </div>
         )}
+      </section>
+
+      <section className="space-y-3">
+        {bookmarks.filter(b => b.target_type === 'session' || b.target_type === 'club').map(b => (
+          <div key={b.id} className="surface p-4 flex items-center gap-4">
+            <Link to={b.target_type === 'club' ? `/clubs/${b.target_id}` : '/discover'} className="flex-1 text-primary hover:underline">
+              {b.target_type === 'club' ? t.disc_clubs : t.disc_sessions}
+            </Link>
+            <Button variant="ghost" size="icon" onClick={() => remove(b)} aria-label={t.dashbookmarks_remove_aria}><X className="h-4 w-4" /></Button>
+          </div>
+        ))}
       </section>
 
       {bookmarks.length === 0 && (

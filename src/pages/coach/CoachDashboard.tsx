@@ -7,6 +7,8 @@ import { Check, Plus } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { toast } from 'sonner';
 import { CountUp } from '@/components/CountUp';
+import { useTrendingRequests } from '@/hooks/coach/useTrendingRequests';
+import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/hooks/useAuth';
@@ -171,7 +173,7 @@ export default function CoachDashboard() {
         </div>
       </div>
 
-      <Inbox />
+      <div className="xl:w-[340px] xl:shrink-0 space-y-6"><TrendingRequests /><Inbox /></div>
       <SessionSheet session={selected} onClose={() => setSelected(null)} />
     </div>
   );
@@ -291,7 +293,7 @@ function Inbox() {
   };
   void today;
   return (
-    <aside className={`${card} xl:w-[340px] xl:shrink-0 self-start`}>
+    <aside className={`${card} w-full self-start`}>
       <div className="flex items-center justify-between mb-3">
         <h2 className={title}>{t.dash_inbox_title}</h2>
         <Link to={`${base}/messages`} className={link}>{t.dash_open_messages} →</Link>
@@ -315,4 +317,24 @@ function Inbox() {
         )}
     </aside>
   );
+}
+
+function TrendingRequests() {
+  const { t, lang } = useLanguage();
+  const { base } = useStaffPaths();
+  const tz = useCoachTz();
+  const { data, isLoading, isError, handled } = useTrendingRequests();
+  return <section className={card}>
+    <h2 className={`${title} mb-3`}>{t.disc_requests_title}</h2>
+    {isLoading ? <Skeleton className="h-24" /> : isError ? <p className="text-sm text-portal-muted">{t.crm_error}</p> : !data?.length ? <p className="text-sm text-portal-muted">{t.disc_requests_empty}</p> : <ul className="divide-y divide-portal-border">
+      {data.map(r => <li key={r.id} className="py-3 space-y-2">
+        <p className="text-sm font-semibold">{r.name || '—'}</p>
+        <p className="text-xs text-portal-muted">{r.session?.title || t.group_type}{r.session && ` · ${new Date(r.session.starts_at).toLocaleString(LOCALES[lang], { timeZone: tz, day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}`}</p>
+        <div className="flex flex-wrap gap-2">
+          <Button size="sm" variant="outline" asChild disabled={!r.conversation_id}><Link to={r.conversation_id ? `${base}/messages?c=${r.conversation_id}` : `${base}/messages`}>{t.disc_reply}</Link></Button>
+          <Button size="sm" disabled={handled.isPending} onClick={() => handled.mutate(r.id)}>{t.disc_handled}</Button>
+        </div>
+      </li>)}
+    </ul>}
+  </section>;
 }
