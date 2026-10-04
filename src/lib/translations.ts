@@ -1653,7 +1653,7 @@ export const t = {
     ticker_6_body: 'Следи прогреса си и расти',
 
     portal_club_tag: 'Клуб',
-    portal_new_class: 'Нов клас',
+    portal_new_class: 'Нова тренировка',
     portal_classes_calendar: 'Класове и календар',
     portal_facilities: 'Съоръжения',
     facilities_coming: 'Съоръженията идват със следващото обновяване.',
