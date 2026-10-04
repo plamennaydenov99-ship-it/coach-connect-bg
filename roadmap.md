@@ -11,4 +11,4 @@
 - [x] Coaches can read linked athlete names; public visibility = approved (verified = badge only)
 - [ ] Real contact email for account deletion — waiting on user
 
-- [ ] Court blue + coral palette, motion, feedback, booking modal, and visual verification
+- [x] Court blue + coral palette, motion, feedback, booking modal, and visual verification

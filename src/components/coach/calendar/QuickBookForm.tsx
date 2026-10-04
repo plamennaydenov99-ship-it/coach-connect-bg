@@ -164,7 +164,7 @@ export function QuickBookForm({ initial, onDone, onClose }: {
 
       {confirmed && overlaps > 0 && (
         <div className="flex gap-2 p-3 rounded-[4px] border border-portal-copper bg-portal-copper-tint text-sm">
-          <AlertTriangle className="h-4 w-4 text-portal-coral-text shrink-0 mt-0.5" />
+          <AlertTriangle className="h-4 w-4 text-portal-ink shrink-0 mt-0.5" />
           <span>{t.cal_overlap_warning.replace('{n}', String(overlaps))}</span>
         </div>
       )}
