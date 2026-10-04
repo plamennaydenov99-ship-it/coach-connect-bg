@@ -254,14 +254,14 @@ function SessionsTab({ clientId, sessions }: { clientId: string; sessions: Coach
   const row = (s: CoachSession, isPast: boolean) => (
     <li key={s.id} className="py-2 border-b border-portal-border last:border-0 space-y-1.5">
       <div className="flex items-center gap-2">
-        <span className="text-sm text-portal-ink flex-1">{fmtDateTime(s.starts_at, lang, tz)}{s.kind === 'trial' ? ` · ${t.crm_trial}` : ''}</span>
+        <span className="text-sm text-portal-ink flex-1">{fmtDateTime(s.starts_at, lang, tz)}{s.capacity != null ? ` · ${s.title || t.group_type}` : ''}{s.kind === 'trial' ? ` · ${t.crm_trial}` : ''}</span>
         <span className={`text-[11px] px-1.5 py-0.5 rounded-[4px] border ${statusChip[s.status] ?? ''}`}>{t[`crm_status_${s.status}` as 'crm_status_scheduled']}</span>
       </div>
       {s.location && <div className="text-xs text-portal-muted">{s.location}</div>}
       {isPast && s.status === 'scheduled' && (
         <div className="flex gap-2">
-          <button className={portalBtnGhost} onClick={() => setStatus.mutate({ id: s.id, status: 'attended' }, { onError: () => toast.error(t.crm_error) })}>{t.crm_mark_attended}</button>
-          <button className={portalBtnGhost} onClick={() => setStatus.mutate({ id: s.id, status: 'no_show' }, { onError: () => toast.error(t.crm_error) })}>{t.crm_mark_no_show}</button>
+          <button className={portalBtnGhost} onClick={() => setStatus.mutate({ id: s.id, status: 'attended', attendee_id: s.attendee_id }, { onError: () => toast.error(t.crm_error) })}>{t.crm_mark_attended}</button>
+          <button className={portalBtnGhost} onClick={() => setStatus.mutate({ id: s.id, status: 'no_show', attendee_id: s.attendee_id }, { onError: () => toast.error(t.crm_error) })}>{t.crm_mark_no_show}</button>
         </div>
       )}
     </li>

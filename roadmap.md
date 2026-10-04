@@ -12,3 +12,5 @@
 - [ ] Real contact email for account deletion — waiting on user
 
 - [x] Court blue + coral palette, motion, feedback, booking modal, and visual verification
+
+- [x] Group sessions: schema, booking/rosters, recurrence, dashboard/client integration, security checks and verification

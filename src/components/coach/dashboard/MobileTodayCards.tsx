@@ -3,7 +3,9 @@ import { Check, MapPin, Plus, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet';
 import { useLanguage } from '@/context/LanguageContext';
-import { useCoachTz, useSessionStatus, type CalSession } from '@/hooks/coach/useCoachCalendar';
+import { sessionFill, useCoachTz, useSessionStatus, type CalSession } from '@/hooks/coach/useCoachCalendar';
+import { SessionSheet } from '@/components/coach/calendar/SessionSheet';
+import { Button } from '@/components/ui/button';
 import { useAddNote } from '@/hooks/coach/useCoachClients';
 import { LOCALES, portalBtnPrimary } from '@/components/coach/clients/shared';
 import { labelDate, toDateStr, toTimeStr } from '@/lib/tz';
@@ -13,6 +15,7 @@ export function MobileTodayCards({ sessions }: { sessions: CalSession[] }) {
   const { t } = useLanguage();
   const tz = useCoachTz();
   const setStatus = useSessionStatus();
+  const [groupFor, setGroupFor] = useState<CalSession | null>(null);
   const [noteFor, setNoteFor] = useState<CalSession | null>(null);
   const now = Date.now();
   const nextId = sessions.find((s) => s.status === 'scheduled' && new Date(s.starts_at).getTime() >= now)?.id;
@@ -39,16 +42,16 @@ export function MobileTodayCards({ sessions }: { sessions: CalSession[] }) {
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="font-display text-2xl leading-none text-portal-ink">{toTimeStr(s.starts_at, tz)}–{toTimeStr(s.ends_at, tz)}</p>
-                  <p className={`mt-1.5 text-base truncate ${s.status === 'cancelled' ? 'line-through text-portal-muted' : 'text-portal-ink'}`}>{s.client?.display_name ?? '—'}</p>
+                  <p className={`mt-1.5 text-base truncate ${s.status === 'cancelled' ? 'line-through text-portal-muted' : 'text-portal-ink'}`}>{s.capacity != null ? `${s.title || t.group_type} · ${sessionFill(s)}/${s.capacity}` : s.client?.display_name ?? '—'}</p>
                   <p className="text-sm text-portal-muted flex items-center gap-1 truncate">
-                    {s.kind === 'trial' ? t.dash_chip_trial : t.dash_session}
+                    {s.capacity != null ? t.group_type : s.kind === 'trial' ? t.dash_chip_trial : t.dash_session}
                     {s.location && <><span>·</span><MapPin className="h-3.5 w-3.5 shrink-0" />{s.location}</>}
                   </p>
                 </div>
                 <span className={`shrink-0 text-[11px] font-display uppercase tracking-[0.08em] px-2 py-1 rounded-[4px] ${cls}`}>{label}</span>
               </div>
               <div className="flex gap-2 mt-3">
-                {past && (
+                {past && s.capacity == null && (
                   <>
                     <button disabled={setStatus.isPending} onClick={() => mark(s.id, 'attended')}
                       className="flex-1 h-11 inline-flex items-center justify-center gap-1.5 rounded-[4px] bg-portal-copper hover:bg-portal-copper-hover text-portal-on-copper text-sm font-medium">
@@ -60,15 +63,16 @@ export function MobileTodayCards({ sessions }: { sessions: CalSession[] }) {
                     </button>
                   </>
                 )}
-                <button onClick={() => setNoteFor(s)}
+                {s.capacity != null ? <Button variant="portal" className="flex-1 h-11" onClick={() => setGroupFor(s)}>{t.group_attendees}</Button> : <button onClick={() => setNoteFor(s)}
                   className={`${past ? '' : 'flex-1'} h-11 px-4 inline-flex items-center justify-center gap-1.5 rounded-[4px] border border-portal-border text-portal-ink text-sm`}>
                   <Plus className="h-4 w-4" />{t.dash_note}
-                </button>
+                </button>}
               </div>
             </li>
           );
         })}
       </ul>
+      <SessionSheet session={groupFor} onClose={() => setGroupFor(null)} />
       <Sheet open={!!noteFor} onOpenChange={(o) => !o && setNoteFor(null)}>
         <SheetContent side="bottom" className="coach-portal bg-portal-card border-portal-border">
           {noteFor && <NoteForm key={noteFor.id} session={noteFor} onDone={() => setNoteFor(null)} />}
@@ -81,7 +85,7 @@ export function MobileTodayCards({ sessions }: { sessions: CalSession[] }) {
 function NoteForm({ session, onDone }: { session: CalSession; onDone: () => void }) {
   const { t, lang } = useLanguage();
   const tz = useCoachTz();
-  const add = useAddNote(session.client_id);
+  const add = useAddNote(session.client_id ?? '');
   const [text, setText] = useState('');
   const prefix = labelDate(toDateStr(session.starts_at, tz), LOCALES[lang], { day: '2-digit', month: 'short' }).replace(/\.$/, '');
   const save = (e: React.FormEvent) => {

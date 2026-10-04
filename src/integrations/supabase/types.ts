@@ -509,47 +509,65 @@ export type Database = {
       coach_sessions: {
         Row: {
           booking_id: string | null
-          client_id: string
+          capacity: number | null
+          client_id: string | null
           coach_id: string
           created_at: string
           ends_at: string
           id: string
+          is_public: boolean
           kind: string
+          led_by: string | null
           location: string | null
           note: string | null
+          resource_id: string | null
           series_id: string | null
+          sport: string | null
           starts_at: string
           status: string
+          title: string | null
           updated_at: string
         }
         Insert: {
           booking_id?: string | null
-          client_id: string
+          capacity?: number | null
+          client_id?: string | null
           coach_id: string
           created_at?: string
           ends_at: string
           id?: string
+          is_public?: boolean
           kind?: string
+          led_by?: string | null
           location?: string | null
           note?: string | null
+          resource_id?: string | null
           series_id?: string | null
+          sport?: string | null
           starts_at: string
           status?: string
+          title?: string | null
           updated_at?: string
         }
         Update: {
           booking_id?: string | null
-          client_id?: string
+          capacity?: number | null
+          client_id?: string | null
           coach_id?: string
           created_at?: string
           ends_at?: string
           id?: string
+          is_public?: boolean
           kind?: string
+          led_by?: string | null
           location?: string | null
           note?: string | null
+          resource_id?: string | null
           series_id?: string | null
+          sport?: string | null
           starts_at?: string
           status?: string
+          title?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -803,44 +821,131 @@ export type Database = {
           },
         ]
       }
-      session_series: {
+      series_members: {
         Row: {
           client_id: string
+          series_id: string
+        }
+        Insert: {
+          client_id: string
+          series_id: string
+        }
+        Update: {
+          client_id?: string
+          series_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "series_members_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "coach_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "series_members_series_id_fkey"
+            columns: ["series_id"]
+            isOneToOne: false
+            referencedRelation: "session_series"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      session_attendees: {
+        Row: {
+          client_id: string
+          created_at: string
+          id: string
+          session_id: string
+          status: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          id?: string
+          session_id: string
+          status?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          id?: string
+          session_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "session_attendees_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "coach_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "session_attendees_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "coach_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      session_series: {
+        Row: {
+          capacity: number | null
+          client_id: string | null
           coach_id: string
           created_at: string
           duration_min: number
           ends_on: string | null
           id: string
+          is_public: boolean
           kind: string
+          led_by: string | null
           location: string | null
+          resource_id: string | null
+          sport: string | null
           start_time: string
           starts_on: string
+          title: string | null
           weekday: number
         }
         Insert: {
-          client_id: string
+          capacity?: number | null
+          client_id?: string | null
           coach_id: string
           created_at?: string
           duration_min?: number
           ends_on?: string | null
           id?: string
+          is_public?: boolean
           kind?: string
+          led_by?: string | null
           location?: string | null
+          resource_id?: string | null
+          sport?: string | null
           start_time: string
           starts_on: string
+          title?: string | null
           weekday: number
         }
         Update: {
-          client_id?: string
+          capacity?: number | null
+          client_id?: string | null
           coach_id?: string
           created_at?: string
           duration_min?: number
           ends_on?: string | null
           id?: string
+          is_public?: boolean
           kind?: string
+          led_by?: string | null
           location?: string | null
+          resource_id?: string | null
+          sport?: string | null
           start_time?: string
           starts_on?: string
+          title?: string | null
           weekday?: number
         }
         Relationships: [
@@ -917,11 +1022,13 @@ export type Database = {
           role: Database["public"]["Enums"]["app_role"]
         }[]
       }
+      book_group_session: { Args: { payload: Json }; Returns: string }
       coach_has_athlete: {
         Args: { _athlete: string; _coach: string }
         Returns: boolean
       }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
+      public_session_spots: { Args: { session_id: string }; Returns: number }
     }
     Enums: {
       app_role: "athlete" | "coach" | "club"

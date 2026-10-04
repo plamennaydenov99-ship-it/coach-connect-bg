@@ -3,8 +3,9 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { useCoachTz, type CalSession } from '@/hooks/coach/useCoachCalendar';
+import { SESSION_SELECT, useCoachTz, type CalSession } from '@/hooks/coach/useCoachCalendar';
 import type { CoachTask } from '@/hooks/coach/useCoachClients';
+import { attendanceCounts, coachedHours } from '@/lib/sessionMetrics';
 import { addDays, startOfWeek, todayStr, toDateStr, zonedToUtc } from '@/lib/tz';
 
 export type DashTask = CoachTask & { client: { id: string; display_name: string } | null };
@@ -24,7 +25,7 @@ export function useCoachDashboard() {
       const fromIso = zonedToUtc(from, '00:00', tz).toISOString();
       const toIso = zonedToUtc(addDays(weekStart, 7), '00:00', tz).toISOString();
       const [s, c, t] = await Promise.all([
-        supabase.from('coach_sessions').select('*, client:coach_clients(display_name)').eq('coach_id', uid!).gte('starts_at', fromIso).lt('starts_at', toIso).order('starts_at'),
+        supabase.from('coach_sessions').select(SESSION_SELECT).eq('coach_id', uid!).gte('starts_at', fromIso).lt('starts_at', toIso).order('starts_at'),
         supabase.from('coach_clients').select('id, stage, created_at, display_name').eq('coach_id', uid!),
         supabase.from('coach_tasks').select('*, client:coach_clients(id, display_name)').eq('coach_id', uid!).eq('done', false),
       ]);
@@ -44,14 +45,11 @@ export function useCoachDashboard() {
       const perWeek = weeks.map((w) => ({ week: w, count: live.filter((x) => wk(x.starts_at) === w).length }));
       const thisWeek = live.filter((x) => wk(x.starts_at) === weekStart);
       const lastWeekCount = perWeek[6].count;
-      const hours = thisWeek
-        .filter((x) => x.status === 'attended')
-        .reduce((h, x) => h + (new Date(x.ends_at).getTime() - new Date(x.starts_at).getTime()) / 3600000, 0);
+      const hours = coachedHours(thisWeek);
 
       const since30 = Date.now() - 30 * 86400000;
       const recent = sessions.filter((x) => new Date(x.starts_at).getTime() >= since30 && new Date(x.starts_at).getTime() <= Date.now());
-      const att = recent.filter((x) => x.status === 'attended').length;
-      const ns = recent.filter((x) => x.status === 'no_show').length;
+      const attendance = attendanceCounts(recent).percentage;
 
       const monthStart = today.slice(0, 8) + '01';
       const since7 = Date.now() - 7 * 86400000;
@@ -64,7 +62,7 @@ export function useCoachDashboard() {
         sessionsDelta: thisWeek.length - lastWeekCount,
         activeClients: pipeline.active,
         activeNewMonth: clients.filter((x) => x.stage === 'active' && toDateStr(x.created_at, tz) >= monthStart).length,
-        attendance: att + ns > 0 ? Math.round((att / (att + ns)) * 100) : null,
+        attendance,
         hours: Math.round(hours * 10) / 10,
         newEnquiries: clients.filter((x) => x.stage === 'enquiry' && new Date(x.created_at).getTime() >= since7).length,
         tasksDue: tasks.filter((x) => x.due_date && x.due_date <= today).length,

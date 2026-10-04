@@ -6,3 +6,6 @@
 
 - Shared motion is presentation-only, respects reduced motion, and uses CountUp for numeric KPI labels; toast feedback is centralized in CRM mutations to cover every entry point.
 - The portal top-bar booking action uses a shared QuickBookDialog (dialog on desktop, bottom sheet on mobile); calendar query-driven booking remains unchanged.
+
+- Group sessions use null client_id plus capacity; rosters are owner-only. Group booking is transactional via an invoker RPC, and occurrence inserts copy series_members through a trigger so top-up and rescheduling share one roster path.
+- Group attendance is measured per attendee; coached hours count a group's duration once when anyone attended, not once per attendee.
