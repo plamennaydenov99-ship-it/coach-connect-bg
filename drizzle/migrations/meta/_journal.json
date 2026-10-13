@@ -78,6 +78,13 @@
       "when": 1791929267840,
       "tag": "0010_staff_multi_sports",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1791929425124,
+      "tag": "0011_avatars_storage_policies",
+      "breakpoints": true
     }
   ]
 }
