@@ -1,5 +1,13 @@
 export const t = {
   en: {
+    crm_all_pipelines: 'All pipelines',
+    crm_new_pipeline: 'New pipeline',
+    crm_pipeline: 'Pipeline',
+    crm_pipeline_name: 'Pipeline name',
+    crm_rename: 'Rename',
+    crm_archive_pipeline: 'Archive pipeline',
+    crm_pipeline_has_clients: 'Move its clients first',
+    crm_default_pipeline: 'Main',
     cert_add: 'Add certificate',
     cert_file_required: 'Upload the certificate file',
     cert_pending: 'Pending check',
@@ -1079,6 +1087,14 @@ export const t = {
   },
 
   bg: {
+    crm_all_pipelines: 'Всички фунии',
+    crm_new_pipeline: 'Нова фуния',
+    crm_pipeline: 'Фуния',
+    crm_pipeline_name: 'Име на фунията',
+    crm_rename: 'Преименувай',
+    crm_archive_pipeline: 'Архивирай фунията',
+    crm_pipeline_has_clients: 'Първо премести клиентите',
+    crm_default_pipeline: 'Основна',
     cert_add: 'Добави сертификат',
     cert_file_required: 'Качи файла на сертификата',
     cert_pending: 'Чака проверка',
@@ -2150,6 +2166,14 @@ export const t = {
   },
 
   fr: {
+    crm_all_pipelines: 'Tous les pipelines',
+    crm_new_pipeline: 'Nouveau pipeline',
+    crm_pipeline: 'Pipeline',
+    crm_pipeline_name: 'Nom du pipeline',
+    crm_rename: 'Renommer',
+    crm_archive_pipeline: 'Archiver le pipeline',
+    crm_pipeline_has_clients: 'Déplacez d’abord ses clients',
+    crm_default_pipeline: 'Principal',
     cert_add: 'Ajouter un certificat',
     cert_file_required: 'Ajoutez le fichier du certificat',
     cert_pending: 'En attente de vérification',

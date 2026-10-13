@@ -11,6 +11,21 @@ export type CoachSession = T['coach_sessions']['Row'] & { attendee_id?: string }
 export type CoachTask = T['coach_tasks']['Row'];
 export type ClientEvent = T['client_events']['Row'];
 export type ClientNote = T['client_notes']['Row'];
+export type CrmPipeline = T['crm_pipelines']['Row'];
+export type CrmStage = T['crm_stages']['Row'];
+export interface PipelineWithStages extends CrmPipeline { stages: CrmStage[] }
+
+/** Display name of a stage: custom name, else the translated system name. */
+export function stageLabel(stage: Pick<CrmStage, 'name' | 'system_key' | 'category'> | null | undefined, t: Record<string, string>) {
+  if (!stage) return '—';
+  return stage.name ?? t[`crm_stage_${stage.system_key ?? stage.category}`] ?? stage.category;
+}
+
+/** Display name of a pipeline: the default 'Main' is translated. */
+export function pipelineLabel(p: Pick<CrmPipeline, 'name' | 'is_default'> | null | undefined, t: Record<string, string>) {
+  if (!p) return '—';
+  return p.is_default && p.name === 'Main' ? t.crm_default_pipeline : p.name;
+}
 
 export const BOARD_STAGES = ['enquiry', 'trial', 'active', 'on_hold'] as const;
 export const ALL_STAGES = [...BOARD_STAGES, 'archived'] as const;
@@ -25,7 +40,76 @@ export interface ClientSummary extends CoachClient {
 const keys = {
   list: (uid?: string) => ['coach', uid, 'clients'] as const,
   client: (uid: string | undefined, id: string) => ['coach', uid, 'client', id] as const,
+  pipelines: (uid?: string) => ['coach', uid, 'pipelines'] as const,
 };
+
+/** Active pipelines (default first, then by position) with their stages ordered by position. */
+export function usePipelines() {
+  const { user } = useAuth();
+  const uid = user?.id;
+  return useQuery({
+    queryKey: keys.pipelines(uid),
+    enabled: !!uid,
+    queryFn: async (): Promise<PipelineWithStages[]> => {
+      await supabase.rpc('ensure_default_pipeline', { owner: uid! });
+      const [p, st] = await Promise.all([
+        supabase.from('crm_pipelines').select('*').eq('owner_id', uid!).is('archived_at', null).order('position').order('created_at'),
+        supabase.from('crm_stages').select('*').eq('owner_id', uid!).order('position'),
+      ]);
+      if (p.error) throw p.error;
+      if (st.error) throw st.error;
+      return (p.data ?? [])
+        .sort((a, b) => Number(b.is_default) - Number(a.is_default))
+        .map((pl) => ({ ...pl, stages: (st.data ?? []).filter((x) => x.pipeline_id === pl.id) }));
+    },
+  });
+}
+
+export function useCreatePipeline() {
+  const { user } = useAuth();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (name: string) => {
+      const list = qc.getQueryData<PipelineWithStages[]>(keys.pipelines(user?.id)) ?? [];
+      const position = Math.max(0, ...list.map((p) => p.position)) + 1;
+      const { data, error } = await supabase.from('crm_pipelines')
+        .insert({ owner_id: user!.id, name: name.trim().slice(0, 60), position, is_default: false })
+        .select().single();
+      if (error) throw error;
+      const { error: sErr } = await supabase.from('crm_stages').insert(
+        ALL_STAGES.map((k, i) => ({ pipeline_id: data.id, owner_id: user!.id, name: null, system_key: k, category: k, position: i })),
+      );
+      if (sErr) { await supabase.from('crm_pipelines').delete().eq('id', data.id); throw sErr; }
+      return data;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: keys.pipelines(user?.id) }),
+  });
+}
+
+export function useRenamePipeline() {
+  const { user } = useAuth();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, name }: { id: string; name: string }) => {
+      const { error } = await supabase.from('crm_pipelines').update({ name: name.trim().slice(0, 60) }).eq('id', id).eq('owner_id', user!.id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: keys.pipelines(user?.id) }),
+  });
+}
+
+export function useArchivePipeline() {
+  const { user } = useAuth();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('crm_pipelines').update({ archived_at: new Date().toISOString() })
+        .eq('id', id).eq('owner_id', user!.id).eq('is_default', false);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: keys.pipelines(user?.id) }),
+  });
+}
 
 /** All clients for the current coach with derived next session / counts. */
 export function useClientList() {
@@ -69,9 +153,9 @@ export function useCreateClient() {
   const { t } = useLanguage();
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (v: { display_name: string; phone?: string; email?: string; goal?: string; source?: string; stage: Stage }) => {
+    mutationFn: async (v: { display_name: string; phone?: string; email?: string; goal?: string; source?: string; stage: Stage; stage_id?: string }) => {
       const list = qc.getQueryData<ClientSummary[]>(keys.list(user?.id)) ?? [];
-      const maxPos = Math.max(-1, ...list.filter((c) => c.stage === v.stage).map((c) => c.stage_position));
+      const maxPos = Math.max(-1, ...list.filter((c) => (v.stage_id ? c.stage_id === v.stage_id : c.stage === v.stage)).map((c) => c.stage_position));
       const { data, error } = await supabase
         .from('coach_clients')
         .insert({
@@ -82,6 +166,7 @@ export function useCreateClient() {
           goal: v.goal || null,
           source: v.source || null,
           stage: v.stage,
+          ...(v.stage_id ? { stage_id: v.stage_id } : {}),
           stage_position: maxPos + 1,
         })
         .select()
@@ -93,6 +178,9 @@ export function useCreateClient() {
   });
 }
 
+/** A board change: `stage_id` in a pipeline view, or just the `stage` category in the All view. */
+export type ReorderChange = { id: string; stage: string; stage_id?: string; pipeline_id?: string; stage_position: number };
+
 /** Persist a new ordering for the board (optimistic, rolls back on error). */
 export function useReorderClients() {
   const { user } = useAuth();
@@ -100,12 +188,12 @@ export function useReorderClients() {
   const qc = useQueryClient();
   const key = keys.list(user?.id);
   return useMutation({
-    mutationFn: async (changes: { id: string; stage: string; stage_position: number }[]) => {
+    mutationFn: async (changes: ReorderChange[]) => {
       const results = await Promise.all(
         changes.map((c) =>
           supabase
             .from('coach_clients')
-            .update({ stage: c.stage, stage_position: c.stage_position })
+            .update(c.stage_id ? { stage_id: c.stage_id, stage_position: c.stage_position } : { stage: c.stage, stage_position: c.stage_position })
             .eq('id', c.id)
             .eq('coach_id', user!.id),
         ),
@@ -146,6 +234,12 @@ export function useMoveClient() {
       const list = qc.getQueryData<ClientSummary[]>(keys.list(user?.id)) ?? [];
       const maxPos = Math.max(-1, ...list.filter((c) => c.stage === stage && c.id !== id).map((c) => c.stage_position));
       return reorder.mutateAsync([{ id, stage, stage_position: maxPos + 1 }]);
+    },
+    /** Move to a specific stage (any pipeline); appended at the end of that column. */
+    moveToStage: (id: string, st: Pick<CrmStage, 'id' | 'category' | 'pipeline_id'>) => {
+      const list = qc.getQueryData<ClientSummary[]>(keys.list(user?.id)) ?? [];
+      const maxPos = Math.max(-1, ...list.filter((c) => c.stage_id === st.id && c.id !== id).map((c) => c.stage_position));
+      return reorder.mutateAsync([{ id, stage: st.category, stage_id: st.id, pipeline_id: st.pipeline_id, stage_position: maxPos + 1 }]);
     },
   };
 }
