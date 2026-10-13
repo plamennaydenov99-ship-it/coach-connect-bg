@@ -23,7 +23,6 @@ interface CoachData {
   specialisms: string[];
   certifications: string[];
   price_per_session: number | null;
-  discount_pct: number;
   years_experience: number | null;
   gallery: string[];
   verified: boolean;
@@ -55,7 +54,7 @@ const CoachProfile = () => {
       setLoading(true);
       const { data } = await supabase
         .from('coach_profiles')
-        .select('id, bio, sport, specialisms, certifications, price_per_session, discount_pct, years_experience, gallery, verified, level, profiles!coach_profiles_id_fkey(full_name, avatar_url, city)')
+        .select('id, bio, sport, specialisms, certifications, price_per_session, years_experience, gallery, verified, level, profiles!coach_profiles_id_fkey(full_name, avatar_url, city)')
         .eq('id', id)
         .eq('application_status', 'approved')
         .maybeSingle();
@@ -119,7 +118,6 @@ const CoachProfile = () => {
   const avatar = coach.profiles?.avatar_url || `https://i.pravatar.cc/300?u=${coach.id}`;
   const city = coach.profiles?.city ?? '';
   const price = coach.price_per_session ?? 0;
-  const finalPrice = coach.discount_pct ? Math.round(price * (1 - coach.discount_pct / 100)) : price;
 
   const requireAthlete = () => !!guardAthlete({ userId: user?.id, role: profile?.role, navigate, signInText: t.coach_sign_in_required, athleteOnlyText: t.disc_only_athletes });
 
@@ -141,7 +139,7 @@ const CoachProfile = () => {
       coach_id: coach.id,
       status: 'pending',
       note: note.trim() || null,
-      price: finalPrice,
+      price,
     });
     if (bookErr) {
       await supabase.from('availability_slots').update({ status: 'open' }).eq('id', selectedSlot.id);
@@ -175,9 +173,6 @@ const CoachProfile = () => {
                   </span>
                 )}
                 {coach.verified && <span className="badge-verified"><BadgeCheck className="h-3 w-3" /> {t.verified}</span>}
-                {coach.discount_pct ? (
-                  <span className="badge-discount">-{coach.discount_pct}% {t.coach_platform_rate}</span>
-                ) : null}
               </div>
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <h1 className="font-display">{name}</h1>
@@ -245,7 +240,7 @@ const CoachProfile = () => {
                         <p className="text-sm text-muted-foreground flex items-center gap-1.5 mt-1">
                           <Clock className="h-3.5 w-3.5" /> {s.start_time.slice(0,5)} – {s.end_time.slice(0,5)}
                         </p>
-                        <p className="text-sm text-primary mt-2">{t.coach_request} · €{finalPrice}</p>
+                        <p className="text-sm text-primary mt-2">{t.coach_request} · €{price}</p>
                       </button>
                     </li>
                   ))}
@@ -270,14 +265,7 @@ const CoachProfile = () => {
             <div className="surface p-6">
               <p className="text-sm text-muted-foreground">{t.coach_per_session}</p>
               <div className="mt-1 flex items-baseline gap-3">
-                {coach.discount_pct ? (
-                  <>
-                    <span className="font-display text-3xl">€{finalPrice}</span>
-                    <span className="text-muted-foreground line-through">€{price}</span>
-                  </>
-                ) : (
-                  <span className="font-display text-3xl">€{price}</span>
-                )}
+                <span className="font-display text-3xl">€{price}</span>
               </div>
 
               <Button size="lg" className="w-full mt-5" onClick={openMessage}>
