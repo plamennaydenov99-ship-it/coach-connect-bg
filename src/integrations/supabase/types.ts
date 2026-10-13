@@ -446,8 +446,10 @@ export type Database = {
           goal: string | null
           id: string
           phone: string | null
+          pipeline_id: string | null
           source: string | null
           stage: string
+          stage_id: string
           stage_position: number
           updated_at: string
         }
@@ -460,8 +462,10 @@ export type Database = {
           goal?: string | null
           id?: string
           phone?: string | null
+          pipeline_id?: string | null
           source?: string | null
           stage?: string
+          stage_id: string
           stage_position?: number
           updated_at?: string
         }
@@ -474,8 +478,10 @@ export type Database = {
           goal?: string | null
           id?: string
           phone?: string | null
+          pipeline_id?: string | null
           source?: string | null
           stage?: string
+          stage_id?: string
           stage_position?: number
           updated_at?: string
         }
@@ -492,6 +498,20 @@ export type Database = {
             columns: ["coach_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coach_clients_pipeline_id_fkey"
+            columns: ["pipeline_id"]
+            isOneToOne: false
+            referencedRelation: "crm_pipelines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coach_clients_stage_id_fkey"
+            columns: ["stage_id"]
+            isOneToOne: false
+            referencedRelation: "crm_stages"
             referencedColumns: ["id"]
           },
         ]
@@ -788,6 +808,85 @@ export type Database = {
           last_message_at?: string
         }
         Relationships: []
+      }
+      crm_pipelines: {
+        Row: {
+          archived_at: string | null
+          created_at: string
+          id: string
+          is_default: boolean
+          name: string
+          owner_id: string
+          position: number
+        }
+        Insert: {
+          archived_at?: string | null
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          name: string
+          owner_id: string
+          position?: number
+        }
+        Update: {
+          archived_at?: string | null
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          name?: string
+          owner_id?: string
+          position?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_pipelines_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crm_stages: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          name: string | null
+          owner_id: string
+          pipeline_id: string
+          position: number
+          system_key: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: string
+          name?: string | null
+          owner_id: string
+          pipeline_id: string
+          position?: number
+          system_key?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          name?: string | null
+          owner_id?: string
+          pipeline_id?: string
+          position?: number
+          system_key?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_stages_pipeline_id_fkey"
+            columns: ["pipeline_id"]
+            isOneToOne: false
+            referencedRelation: "crm_pipelines"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       messages: {
         Row: {
@@ -1374,6 +1473,7 @@ export type Database = {
         Args: { _athlete: string; _coach: string }
         Returns: boolean
       }
+      ensure_default_pipeline: { Args: { owner: string }; Returns: string }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {

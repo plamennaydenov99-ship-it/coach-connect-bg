@@ -92,6 +92,13 @@
       "when": 1791929699560,
       "tag": "0012_coach_certificates",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1791930109773,
+      "tag": "0013_crm_pipelines",
+      "breakpoints": true
     }
   ]
 }
