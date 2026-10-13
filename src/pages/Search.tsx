@@ -22,7 +22,6 @@ interface CoachRow {
   bio: string | null;
   sport: string | null;
   price_per_session: number | null;
-  discount_pct: number;
   years_experience: number | null;
   gallery: string[];
   verified: boolean;
@@ -94,9 +93,6 @@ function CoachResultCard({ coach }: { coach: CoachRow }) {
   const avatar = coach.profiles?.avatar_url || `https://i.pravatar.cc/300?u=${coach.id}`;
   const cover = coach.gallery?.[0] || `https://picsum.photos/seed/${coach.id}/800/500`;
   const price = coach.price_per_session ?? 0;
-  const finalPrice = coach.discount_pct
-    ? Math.round(price * (1 - coach.discount_pct / 100))
-    : price;
 
   return (
     <Link
@@ -129,14 +125,7 @@ function CoachResultCard({ coach }: { coach: CoachRow }) {
         </div>
         <div className="mt-auto pt-2 flex items-end justify-between border-t border-border">
           <div>
-            {coach.discount_pct ? (
-              <>
-                <p className="text-xs text-muted-foreground line-through">€{price}</p>
-                <p className="font-semibold text-gold">€{finalPrice}<span className="text-xs text-muted-foreground font-normal">{t.search_per_session}</span></p>
-              </>
-            ) : (
-              <p className="font-semibold">€{price}<span className="text-xs text-muted-foreground font-normal">{t.search_per_session}</span></p>
-            )}
+            <p className="font-semibold">€{price}<span className="text-xs text-muted-foreground font-normal">{t.search_per_session}</span></p>
           </div>
           <span className="text-xs font-medium text-gold group-hover:underline">{t.search_view_profile} →</span>
         </div>
@@ -165,7 +154,7 @@ const Search = () => {
       setLoading(true);
       const { data, error } = await supabase
         .from('coach_profiles')
-        .select('id, bio, sport, price_per_session, discount_pct, years_experience, gallery, verified, created_at, profiles!coach_profiles_id_fkey(full_name, avatar_url, city)')
+        .select('id, bio, sport, price_per_session, years_experience, gallery, verified, created_at, profiles!coach_profiles_id_fkey(full_name, avatar_url, city)')
         .eq('application_status', 'approved');
       if (!error && data) setCoaches(data as any);
       setLoading(false);

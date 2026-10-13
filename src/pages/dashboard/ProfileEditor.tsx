@@ -3,8 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Slider } from '@/components/ui/slider';
 import { SPORTS } from '@/lib/mockData';
 import { BadgeCheck, ShieldAlert, Plus } from 'lucide-react';
 import { toast } from 'sonner';
@@ -27,8 +25,6 @@ const ProfileEditor = () => {
   const [bio, setBio] = useState('');
   const [sport, setSport] = useState('');
   const [pricePerSession, setPricePerSession] = useState(60);
-  const [discountOn, setDiscountOn] = useState(false);
-  const [discount, setDiscount] = useState<number[]>([10]);
   const [yearsExperience, setYearsExperience] = useState<number>(0);
   const [specialisms, setSpecialisms] = useState<string[]>([]);
   const [newSpec, setNewSpec] = useState('');
@@ -58,8 +54,6 @@ const ProfileEditor = () => {
           setBio(data.bio ?? '');
           setSport(data.sport ?? '');
           setPricePerSession(data.price_per_session ?? 60);
-          setDiscount([data.discount_pct ?? 0]);
-          setDiscountOn((data.discount_pct ?? 0) > 0);
           setYearsExperience(data.years_experience ?? 0);
           setSpecialisms(data.specialisms ?? []);
           setCertifications(data.certifications ?? []);
@@ -98,7 +92,6 @@ const ProfileEditor = () => {
         bio,
         sport: sport || null,
         price_per_session: pricePerSession,
-        discount_pct: discountOn ? discount[0] : 0,
         years_experience: yearsExperience,
         specialisms,
         certifications,
@@ -214,6 +207,7 @@ const ProfileEditor = () => {
 
             <div>
               <Label className="mb-2 block">{t.profileed_specialisms}</Label>
+              <p className="text-xs text-muted-foreground -mt-1 mb-2">{t.profileed_disciplines_hint}</p>
               <div className="flex flex-wrap gap-2 mb-3">
                 {specialisms.map((s, i) => (
                   <span key={i} className="px-3 py-1.5 rounded-md bg-secondary text-sm flex items-center gap-2">
@@ -251,26 +245,10 @@ const ProfileEditor = () => {
 
           <section className="surface p-6 space-y-4">
             <h2 className="font-display text-xl">{t.profileed_pricing}</h2>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="grid gap-2">
-                <Label htmlFor="price">{t.profileed_price_session}</Label>
-                <Input id="price" type="number" value={pricePerSession}
-                  onChange={e => setPricePerSession(Number(e.target.value))} />
-              </div>
-              <div className="surface-2 p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <Label htmlFor="discount-toggle" className="text-sm font-medium">{t.profileed_platform_discount}</Label>
-                  <Switch id="discount-toggle" checked={discountOn} onCheckedChange={setDiscountOn} />
-                </div>
-                {discountOn && (
-                  <>
-                    <Slider value={discount} min={0} max={20} step={1} onValueChange={setDiscount} />
-                    <div className="mt-2 flex justify-between text-xs text-muted-foreground">
-                      <span>0%</span><span className="font-semibold text-gold">-{discount[0]}%</span><span>20%</span>
-                    </div>
-                  </>
-                )}
-              </div>
+            <div className="grid gap-2 max-w-xs">
+              <Label htmlFor="price">{t.profileed_price_session}</Label>
+              <Input id="price" type="number" value={pricePerSession}
+                onChange={e => setPricePerSession(Number(e.target.value))} />
             </div>
           </section>
         </>
