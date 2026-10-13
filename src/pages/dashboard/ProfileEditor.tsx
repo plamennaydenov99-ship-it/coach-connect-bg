@@ -23,7 +23,13 @@ const ProfileEditor = () => {
 
   // Coach-specific
   const [bio, setBio] = useState('');
-  const [sport, setSport] = useState('');
+  const [sports, setSports] = useState<string[]>([]);
+  const toggleSport = (slug: string) => {
+    if (sports.includes(slug)) return setSports(sports.filter(x => x !== slug));
+    if (sports.length >= 3) return toast.error(t.onb_sport_max);
+    setSports([...sports, slug]);
+  };
+
   const [pricePerSession, setPricePerSession] = useState(60);
   const [yearsExperience, setYearsExperience] = useState<number>(0);
   const [specialisms, setSpecialisms] = useState<string[]>([]);
@@ -52,7 +58,7 @@ const ProfileEditor = () => {
         const { data } = await supabase.from('coach_profiles').select('*').eq('id', user.id).maybeSingle();
         if (data) {
           setBio(data.bio ?? '');
-          setSport(data.sport ?? '');
+          setSports(data.sports ?? []);
           setPricePerSession(data.price_per_session ?? 60);
           setYearsExperience(data.years_experience ?? 0);
           setSpecialisms(data.specialisms ?? []);
@@ -65,7 +71,7 @@ const ProfileEditor = () => {
           setClubName(data.name ?? '');
           setClubAbout(data.about ?? '');
           setClubHours(data.hours ?? '');
-          setSport(data.sport ?? '');
+          setSports(data.sports ?? []);
           setVerified(data.verified);
         }
       }
@@ -90,7 +96,7 @@ const ProfileEditor = () => {
     if (profile.role === 'coach') {
       const { error } = await supabase.from('coach_profiles').update({
         bio,
-        sport: sport || null,
+        sports,
         price_per_session: pricePerSession,
         years_experience: yearsExperience,
         specialisms,
@@ -102,7 +108,7 @@ const ProfileEditor = () => {
         name: clubName,
         about: clubAbout,
         hours: clubHours,
-        sport: sport || null,
+        sports,
       }).eq('id', user.id);
       if (error) { toast.error(error.message); setSaving(false); return; }
     }
@@ -189,14 +195,18 @@ const ProfileEditor = () => {
               <Label htmlFor="bio">{t.profileed_bio}</Label>
               <Textarea id="bio" rows={5} value={bio} onChange={e => setBio(e.target.value)} />
             </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="grid gap-2">
+            <div className="grid gap-2">
                 <Label>{t.profileed_sport}</Label>
-                <select className="h-10 rounded-md border border-input bg-background px-3 text-sm"
-                  value={sport} onChange={e => setSport(e.target.value)}>
-                  <option value="">{t.profileed_select_sport}</option>
-                  {SPORTS.map(s => <option key={s.slug} value={s.slug}>{s.label}</option>)}
-                </select>
+                <div className="flex flex-wrap gap-2">
+                  {SPORTS.map(s => (
+                    <Button key={s.slug} type="button" size="sm"
+                      variant={sports.includes(s.slug) ? 'default' : 'outline'}
+                      onClick={() => toggleSport(s.slug)}>
+                      {s.label}
+                    </Button>
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground">{t.onb_sport_count.replace('{n}', String(sports.length))}{sports[0] ? ` · ${t.profileed_primary_sport}: ${SPORTS.find(x => x.slug === sports[0])?.label ?? sports[0]}` : ''}</p>
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="years">{t.profileed_years}</Label>
@@ -263,11 +273,16 @@ const ProfileEditor = () => {
           </div>
           <div className="grid gap-2">
             <Label>{t.profileed_primary_sport}</Label>
-            <select className="h-10 rounded-md border border-input bg-background px-3 text-sm"
-              value={sport} onChange={e => setSport(e.target.value)}>
-              <option value="">{t.profileed_select_sport}</option>
-              {SPORTS.map(s => <option key={s.slug} value={s.slug}>{s.label}</option>)}
-            </select>
+            <div className="flex flex-wrap gap-2">
+                  {SPORTS.map(s => (
+                    <Button key={s.slug} type="button" size="sm"
+                      variant={sports.includes(s.slug) ? 'default' : 'outline'}
+                      onClick={() => toggleSport(s.slug)}>
+                      {s.label}
+                    </Button>
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground">{t.onb_sport_count.replace('{n}', String(sports.length))}{sports[0] ? ` · ${t.profileed_primary_sport}: ${SPORTS.find(x => x.slug === sports[0])?.label ?? sports[0]}` : ''}</p>
           </div>
           <div className="grid gap-2">
             <Label htmlFor="about">{t.profileed_about}</Label>

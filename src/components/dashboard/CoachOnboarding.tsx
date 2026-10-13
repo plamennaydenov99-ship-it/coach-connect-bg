@@ -22,7 +22,13 @@ export function CoachOnboarding({ onSubmitted }: { onSubmitted: () => void }) {
   const [done, setDone] = useState(false);
 
   const [fullName, setFullName] = useState('');
-  const [sport, setSport] = useState('');
+  const [sports, setSports] = useState<string[]>([]);
+  const toggleSport = (slug: string) => {
+    if (sports.includes(slug)) return setSports(sports.filter(x => x !== slug));
+    if (sports.length >= 3) return toast.error(t.onb_sport_max);
+    setSports([...sports, slug]);
+  };
+
   const [city, setCity] = useState('');
   const [bio, setBio] = useState('');
   const [certs, setCerts] = useState<string[]>([]);
@@ -38,11 +44,11 @@ export function CoachOnboarding({ onSubmitted }: { onSubmitted: () => void }) {
     (async () => {
       const { data } = await supabase
         .from('coach_profiles')
-        .select('sport, bio, certifications, social_links, price_per_session, price_per_group_session')
+        .select('sports, bio, certifications, social_links, price_per_session, price_per_group_session')
         .eq('id', user.id)
         .maybeSingle();
       if (!data) return;
-      setSport(data.sport ?? '');
+      setSports(data.sports ?? []);
       setBio(data.bio ?? '');
       setCerts(data.certifications ?? []);
       const s = (data.social_links ?? {}) as Record<string, string>;
@@ -64,7 +70,7 @@ export function CoachOnboarding({ onSubmitted }: { onSubmitted: () => void }) {
     await supabase
       .from('coach_profiles')
       .update({
-        sport: sport || null,
+        sports,
         bio: bio || null,
         certifications: certs,
         social_links: social,
@@ -76,7 +82,7 @@ export function CoachOnboarding({ onSubmitted }: { onSubmitted: () => void }) {
 
   const next = async () => {
     if (step === 1 && !fullName.trim()) return toast.error(t.onb_name_required);
-    if (step === 2 && !sport) return toast.error(t.onb_sport_required);
+    if (step === 2 && sports.length === 0) return toast.error(t.onb_sport_required);
     setBusy(true);
     await saveStep();
     setBusy(false);
@@ -154,13 +160,14 @@ export function CoachOnboarding({ onSubmitted }: { onSubmitted: () => void }) {
                 <Button
                   key={s.slug}
                   type="button"
-                  variant={sport === s.slug ? 'default' : 'outline'}
-                  onClick={() => setSport(s.slug)}
+                  variant={sports.includes(s.slug) ? 'default' : 'outline'}
+                  onClick={() => toggleSport(s.slug)}
                 >
                   {s.label}
                 </Button>
               ))}
             </div>
+            <p className="text-xs text-muted-foreground">{t.onb_sport_count.replace('{n}', String(sports.length))}</p>
           </div>
         )}
 
