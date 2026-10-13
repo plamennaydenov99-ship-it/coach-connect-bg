@@ -357,3 +357,79 @@ export function useSetSessionStatus() {
     onSuccess: () => { toast.success(t.cal_updated); qc.invalidateQueries({ queryKey: ['coach', user?.id] }); },
   });
 }
+
+export interface StageDraft { id?: string; name: string | null; category: string; position: number }
+
+/** Save names, categories and positions for a pipeline's stages (optimistic, rolls back on error). */
+export function useSaveStages(pipelineId: string) {
+  const { user } = useAuth();
+  const { t } = useLanguage();
+  const qc = useQueryClient();
+  const key = keys.pipelines(user?.id);
+  return useMutation({
+    mutationFn: async (stages: StageDraft[]) => {
+      const existing = stages.filter((s) => s.id);
+      const prev = qc.getQueryData<PipelineWithStages[]>(key)?.find((p) => p.id === pipelineId)?.stages ?? [];
+      // Inserts first, then updates that move INTO enquiry/active, so guards never see zero of a required type.
+      const fresh = stages.filter((s) => !s.id);
+      if (fresh.length) {
+        const { error } = await supabase.from('crm_stages').insert(fresh.map((s) => ({
+          pipeline_id: pipelineId, owner_id: user!.id, name: s.name, system_key: null, category: s.category, position: s.position,
+        })));
+        if (error) throw error;
+      }
+      const rank = (s: StageDraft) => (s.category === 'enquiry' || s.category === 'active' ? 0 : 1);
+      const recategorised: string[] = [];
+      for (const s of [...existing].sort((a, b) => rank(a) - rank(b))) {
+        const old = prev.find((p) => p.id === s.id);
+        if (old && old.category !== s.category) recategorised.push(s.id!);
+        const { error } = await supabase.from('crm_stages')
+          .update({ name: s.name, category: s.category, position: s.position })
+          .eq('id', s.id!).eq('owner_id', user!.id);
+        if (error) throw error;
+      }
+      // Re-sync clients' stage category for stages whose type changed.
+      for (const id of recategorised) {
+        const { error } = await supabase.from('coach_clients').update({ stage_id: id }).eq('stage_id', id).eq('coach_id', user!.id);
+        if (error) throw error;
+      }
+    },
+    onMutate: async (stages) => {
+      await qc.cancelQueries({ queryKey: key });
+      const prev = qc.getQueryData<PipelineWithStages[]>(key);
+      if (prev) {
+        qc.setQueryData<PipelineWithStages[]>(key, prev.map((p) => p.id !== pipelineId ? p : {
+          ...p,
+          stages: [
+            ...stages.filter((s) => s.id).map((s) => ({ ...p.stages.find((x) => x.id === s.id)!, name: s.name, category: s.category, position: s.position })),
+            ...p.stages.filter((x) => x.category === 'archived'),
+          ].sort((a, b) => a.position - b.position),
+        }));
+      }
+      return { prev };
+    },
+    onSuccess: () => toast.success(t.crm_stages_saved),
+    onError: (_e, _v, ctx) => { if (ctx?.prev) qc.setQueryData(key, ctx.prev); toast.error(t.crm_error); },
+    onSettled: () => qc.invalidateQueries({ queryKey: ['coach', user?.id] }),
+  });
+}
+
+/** Delete a stage, first moving its clients to another stage of the same pipeline. */
+export function useDeleteStage() {
+  const { user } = useAuth();
+  const { t } = useLanguage();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ stageId, moveToStageId }: { stageId: string; moveToStageId?: string }) => {
+      if (moveToStageId) {
+        const { error } = await supabase.from('coach_clients').update({ stage_id: moveToStageId })
+          .eq('stage_id', stageId).eq('coach_id', user!.id);
+        if (error) throw error;
+      }
+      const { error } = await supabase.from('crm_stages').delete().eq('id', stageId).eq('owner_id', user!.id);
+      if (error) throw error;
+    },
+    onError: () => toast.error(t.crm_error),
+    onSettled: () => qc.invalidateQueries({ queryKey: ['coach', user?.id] }),
+  });
+}
