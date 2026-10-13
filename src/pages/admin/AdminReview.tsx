@@ -6,12 +6,83 @@ import { useAuth } from '@/hooks/useAuth';
 import { PublicNav } from '@/components/layout/PublicNav';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { Input } from '@/components/ui/input';
+import { useLanguage } from '@/context/LanguageContext';
+import { openCertificate } from '@/components/CertificatesManager';
+
+type PendingCert = { id: string; title: string; issuer: string | null; file_path: string; coach: string | null };
+
+function DocumentsToCheck({ reviewerId }: { reviewerId: string }) {
+  const { t } = useLanguage();
+  const { toast } = useToast();
+  const [certs, setCerts] = useState<PendingCert[]>([]);
+  const [rejecting, setRejecting] = useState<string | null>(null);
+  const [reason, setReason] = useState('');
+  const [busy, setBusy] = useState<string | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase.from('coach_certificates')
+        .select('id, title, issuer, file_path, profiles!coach_certificates_owner_id_fkey(full_name)')
+        .eq('status', 'pending').order('created_at', { ascending: true });
+      setCerts((data ?? []).map((r: any) => ({ id: r.id, title: r.title, issuer: r.issuer, file_path: r.file_path, coach: r.profiles?.full_name ?? null })));
+    })();
+  }, []);
+
+  const review = async (id: string, status: 'approved' | 'rejected') => {
+    if (status === 'rejected' && !reason.trim()) {
+      toast({ title: t.cert_reason_required, variant: 'destructive' });
+      return;
+    }
+    setBusy(id);
+    const { error } = await supabase.from('coach_certificates').update({
+      status, reviewed_by: reviewerId, reviewed_at: new Date().toISOString(),
+      rejection_reason: status === 'rejected' ? reason.trim() : null,
+    }).eq('id', id);
+    setBusy(null);
+    if (error) { toast({ title: t.cert_error, description: error.message, variant: 'destructive' }); return; }
+    setCerts(list => list.filter(c => c.id !== id));
+    setRejecting(null); setReason('');
+  };
+
+  return (
+    <section className="mt-14">
+      <h2 className="font-display text-2xl uppercase tracking-[0.08em] font-semibold">{t.cert_admin_title}</h2>
+      {certs.length === 0 ? (
+        <p className="mt-3 text-sm text-foreground-muted">{t.cert_admin_empty}</p>
+      ) : (
+        <ul className="mt-6 space-y-3">
+          {certs.map(c => (
+            <li key={c.id} className="rounded-sm border border-border bg-card p-4">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="font-semibold">{c.coach || '—'}</p>
+                  <p className="text-sm text-foreground-muted">{[c.title, c.issuer].filter(Boolean).join(' · ')}</p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button size="sm" variant="outline" onClick={() => openCertificate(c.file_path, t.cert_error)}>{t.cert_view}</Button>
+                  <Button size="sm" disabled={busy === c.id} onClick={() => review(c.id, 'approved')}><Check className="mr-1 h-4 w-4" />{t.cert_approve}</Button>
+                  <Button size="sm" variant="outline" disabled={busy === c.id} onClick={() => { setRejecting(c.id); setReason(''); }}><X className="mr-1 h-4 w-4" />{t.cert_reject}</Button>
+                </div>
+              </div>
+              {rejecting === c.id && (
+                <div className="mt-3 flex gap-2">
+                  <Input value={reason} onChange={e => setReason(e.target.value)} placeholder={t.cert_reason_ph} />
+                  <Button size="sm" variant="destructive" disabled={busy === c.id || !reason.trim()} onClick={() => review(c.id, 'rejected')}>{t.cert_reject}</Button>
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
 
 interface PendingCoach {
   id: string;
   sport: string | null;
   bio: string | null;
-  certifications: string[];
   created_at: string;
   full_name: string | null;
   city: string | null;
@@ -46,7 +117,6 @@ export default function AdminReview() {
             id: row.id,
             sport: row.sport,
             bio: row.bio,
-            certifications: row.certifications ?? [],
             created_at: row.created_at,
             full_name: row.profiles?.full_name ?? null,
             city: row.profiles?.city ?? null,
@@ -136,22 +206,12 @@ export default function AdminReview() {
                   </div>
                 </div>
                 {c.bio && <p className="mt-4 text-sm leading-relaxed">{c.bio}</p>}
-                {c.certifications.length > 0 && (
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {c.certifications.map(cert => (
-                      <span
-                        key={cert}
-                        className="rounded-sm border border-border px-2 py-1 text-xs text-foreground-muted"
-                      >
-                        {cert}
-                      </span>
-                    ))}
-                  </div>
-                )}
               </li>
             ))}
           </ul>
         )}
+
+        <DocumentsToCheck reviewerId={user.id} />
       </main>
     </div>
   );
