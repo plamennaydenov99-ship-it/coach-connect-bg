@@ -383,6 +383,59 @@ export type Database = {
           },
         ]
       }
+      coach_certificates: {
+        Row: {
+          created_at: string
+          file_name: string | null
+          file_path: string
+          id: string
+          issued_on: string | null
+          issuer: string | null
+          owner_id: string
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          file_name?: string | null
+          file_path: string
+          id?: string
+          issued_on?: string | null
+          issuer?: string | null
+          owner_id: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          file_name?: string | null
+          file_path?: string
+          id?: string
+          issued_on?: string | null
+          issuer?: string | null
+          owner_id?: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coach_certificates_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coach_clients: {
         Row: {
           athlete_id: string | null
@@ -1224,6 +1277,35 @@ export type Database = {
       }
     }
     Views: {
+      public_certificates: {
+        Row: {
+          issued_on: string | null
+          issuer: string | null
+          owner_id: string | null
+          title: string | null
+        }
+        Insert: {
+          issued_on?: string | null
+          issuer?: string | null
+          owner_id?: string | null
+          title?: string | null
+        }
+        Update: {
+          issued_on?: string | null
+          issuer?: string | null
+          owner_id?: string | null
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coach_certificates_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       public_sessions: {
         Row: {
           capacity: number | null
