@@ -9,21 +9,31 @@ import { CalendarClock, CheckSquare, MoreHorizontal, Activity } from 'lucide-rea
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCoachTz } from '@/hooks/coach/useCoachCalendar';
-import { BOARD_STAGES, useMoveClient, useReorderClients, type ClientSummary } from '@/hooks/coach/useCoachClients';
+import { BOARD_STAGES, useMoveClient, useReorderClients, type ClientSummary, type CrmStage, type ReorderChange } from '@/hooks/coach/useCoachClients';
 import { Avatar, fmtDateTime, isToday, stageKey, useCoarsePointer } from './shared';
 import { toast } from 'sonner';
 
 type Columns = Record<string, string[]>;
 
-function buildColumns(clients: ClientSummary[]): Columns {
-  const cols: Columns = Object.fromEntries(BOARD_STAGES.map((s) => [s, [] as string[]]));
+/** A board column: a stage category (All view) or a concrete pipeline stage (pipeline view). */
+export interface BoardColumn { key: string; label: string; category: string; stage?: Pick<CrmStage, 'id' | 'category' | 'pipeline_id'> }
+
+export function categoryColumns(t: Record<string, string>): BoardColumn[] {
+  return BOARD_STAGES.map((s) => ({ key: s, label: t[stageKey(s)], category: s }));
+}
+
+const colKeyOf = (c: ClientSummary, byStage: boolean) => (byStage ? c.stage_id : c.stage);
+
+function buildColumns(clients: ClientSummary[], columns: BoardColumn[]): Columns {
+  const byStage = columns.some((c) => c.stage);
+  const cols: Columns = Object.fromEntries(columns.map((c) => [c.key, [] as string[]]));
   [...clients]
     .sort((a, b) => a.stage_position - b.stage_position)
-    .forEach((c) => cols[c.stage]?.push(c.id));
+    .forEach((c) => cols[colKeyOf(c, byStage)]?.push(c.id));
   return cols;
 }
 
-export function ClientCard({ c, onOpen, touch, dragging }: { c: ClientSummary; onOpen?: () => void; touch?: boolean; dragging?: boolean }) {
+export function ClientCard({ c, onOpen, touch, dragging, columns = [] }: { c: ClientSummary; onOpen?: () => void; touch?: boolean; dragging?: boolean; columns?: BoardColumn[] }) {
   const { t, lang } = useLanguage();
   const tz = useCoachTz();
   const move = useMoveClient();
@@ -46,9 +56,9 @@ export function ClientCard({ c, onOpen, touch, dragging }: { c: ClientSummary; o
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="coach-portal bg-portal-card border-portal-border text-portal-ink" onClick={(e) => e.stopPropagation()}>
               <DropdownMenuLabel className="text-xs text-portal-muted">{t.crm_move_to}</DropdownMenuLabel>
-              {BOARD_STAGES.filter((s) => s !== c.stage).map((s) => (
-                <DropdownMenuItem key={s} onClick={() => move.move(c.id, s).catch(() => toast.error(t.crm_error))}>
-                  {t[stageKey(s)]}
+              {columns.filter((col) => (col.stage ? col.stage.id !== c.stage_id : col.category !== c.stage)).map((col) => (
+                <DropdownMenuItem key={col.key} onClick={() => (col.stage ? move.moveToStage(c.id, col.stage) : move.move(c.id, col.category)).catch(() => toast.error(t.crm_error))}>
+                  {col.label}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
@@ -81,18 +91,17 @@ function SortableCard({ c, onOpen }: { c: ClientSummary; onOpen: () => void }) {
   );
 }
 
-function Column({ stage, ids, byId, onOpen, touch }: { stage: string; ids: string[]; byId: Map<string, ClientSummary>; onOpen: (id: string) => void; touch: boolean }) {
-  const { t } = useLanguage();
-  const { setNodeRef, isOver } = useDroppable({ id: `col:${stage}` });
+function Column({ col, columns, ids, byId, onOpen, touch }: { col: BoardColumn; columns: BoardColumn[]; ids: string[]; byId: Map<string, ClientSummary>; onOpen: (id: string) => void; touch: boolean }) {
+  const { setNodeRef, isOver } = useDroppable({ id: `col:${col.key}` });
   return (
     <div className="w-[272px] md:w-auto md:flex-1 md:min-w-[220px] shrink-0 flex flex-col">
       <div className="flex items-center justify-between px-1 pb-2">
-        <span className="font-display uppercase tracking-[0.14em] text-xs text-portal-muted-strong">{t[stageKey(stage)]}</span>
+        <span className="font-display uppercase tracking-[0.14em] text-xs text-portal-muted-strong">{col.label}</span>
         <span className="text-xs text-portal-muted">{ids.length}</span>
       </div>
       <div ref={setNodeRef} className={`flex-1 min-h-[160px] space-y-2 p-2 rounded-[4px] border ${isOver ? 'border-portal-selected-border bg-portal-selected/40' : 'border-portal-border bg-portal-bg'}`}>
         {touch ? (
-          ids.map((id) => <ClientCard key={id} c={byId.get(id)!} touch onOpen={() => onOpen(id)} />)
+          ids.map((id) => <ClientCard key={id} c={byId.get(id)!} touch columns={columns} onOpen={() => onOpen(id)} />)
         ) : (
           <SortableContext items={ids} strategy={verticalListSortingStrategy}>
             {ids.map((id) => <SortableCard key={id} c={byId.get(id)!} onOpen={() => onOpen(id)} />)}
@@ -103,17 +112,18 @@ function Column({ stage, ids, byId, onOpen, touch }: { stage: string; ids: strin
   );
 }
 
-export function ClientBoard({ clients, onOpen }: { clients: ClientSummary[]; onOpen: (id: string) => void }) {
+export function ClientBoard({ clients, columns, onOpen }: { clients: ClientSummary[]; columns: BoardColumn[]; onOpen: (id: string) => void }) {
   const { t } = useLanguage();
   const touch = useCoarsePointer();
   const reorder = useReorderClients();
   const byId = useMemo(() => new Map(clients.map((c) => [c.id, c])), [clients]);
-  const [cols, setCols] = useState<Columns>(() => buildColumns(clients));
+  const [cols, setCols] = useState<Columns>(() => buildColumns(clients, columns));
   const [activeId, setActiveId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!activeId) setCols(buildColumns(clients));
-  }, [clients, activeId]);
+    if (!activeId) setCols(buildColumns(clients, columns));
+  }, [clients, columns, activeId]);
+  const colByKey = useMemo(() => new Map(columns.map((c) => [c.key, c])), [columns]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
@@ -152,11 +162,19 @@ export function ClientBoard({ clients, onOpen }: { clients: ClientSummary[]; onO
     }
     setCols(next);
     setActiveId(null);
-    const changes: { id: string; stage: string; stage_position: number }[] = [];
-    for (const [stage, ids] of Object.entries(next)) {
+    const changes: ReorderChange[] = [];
+    for (const [key, ids] of Object.entries(next)) {
+      const col = colByKey.get(key);
+      if (!col) continue;
       ids.forEach((cid, i) => {
         const c = byId.get(cid);
-        if (c && (c.stage !== stage || c.stage_position !== i)) changes.push({ id: cid, stage, stage_position: i });
+        if (!c) return;
+        if (col.stage) {
+          if (c.stage_id !== col.stage.id || c.stage_position !== i)
+            changes.push({ id: cid, stage: col.category, stage_id: col.stage.id, pipeline_id: col.stage.pipeline_id, stage_position: i });
+        } else if (c.stage !== col.category || c.stage_position !== i) {
+          changes.push({ id: cid, stage: col.category, stage_position: i });
+        }
       });
     }
     if (changes.length) reorder.mutate(changes, { onError: () => toast.error(t.crm_error) });
@@ -164,15 +182,15 @@ export function ClientBoard({ clients, onOpen }: { clients: ClientSummary[]; onO
 
   const board = (
     <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0">
-      {BOARD_STAGES.map((s) => (
-        <Column key={s} stage={s} ids={cols[s] ?? []} byId={byId} onOpen={onOpen} touch={touch} />
+      {columns.map((col) => (
+        <Column key={col.key} col={col} columns={columns} ids={cols[col.key] ?? []} byId={byId} onOpen={onOpen} touch={touch} />
       ))}
     </div>
   );
 
   if (touch) return board;
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={onDragStart} onDragOver={onDragOver} onDragEnd={onDragEnd} onDragCancel={() => { setActiveId(null); setCols(buildColumns(clients)); }}>
+    <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={onDragStart} onDragOver={onDragOver} onDragEnd={onDragEnd} onDragCancel={() => { setActiveId(null); setCols(buildColumns(clients, columns)); }}>
       {board}
       <DragOverlay>{activeId && byId.get(activeId) ? <ClientCard c={byId.get(activeId)!} dragging /> : null}</DragOverlay>
     </DndContext>
