@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { findSport } from '@/lib/mockData';
-import { BadgeCheck, MapPin, Trophy, Calendar, MessageSquare, Clock, ShieldCheck, ShieldCheck } from 'lucide-react';
+import { BadgeCheck, MapPin, Trophy, Calendar, MessageSquare, Clock, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import { AvatarUpload, initialsOf } from '@/components/AvatarUpload';
 import { supabase } from '@/integrations/supabase/client';
