@@ -44,13 +44,11 @@ export function PipelineEditor({ pipeline, clients, open, onOpenChange }: {
     const next = [...rs]; const [x] = next.splice(from, 1); next.splice(to, 0, x); return next;
   });
 
-  const archivedPos = pipeline.stages.find((s) => s.category === 'archived')?.position ?? 0;
   const submit = () => {
     if (!valid) return;
     const drafts: StageDraft[] = rows.map((r, i) => ({
       id: r.id, name: (r.name ?? '').trim() || (r.id ? null : (r.name ?? '').trim()), category: r.category, position: i,
     }));
-    void archivedPos;
     save.mutate(drafts, { onSuccess: () => onOpenChange(false) });
   };
 
