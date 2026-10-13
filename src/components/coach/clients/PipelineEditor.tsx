@@ -118,7 +118,7 @@ export function PipelineEditor({ pipeline, clients, open, onOpenChange }: {
                     </select>
                     <div className="flex justify-end gap-2">
                       <button type="button" className={portalBtnGhost} onClick={() => setDeleting(null)}>{t.crm_cancel}</button>
-                      <button type="button" className={portalBtnPrimary} disabled={!deleting.target || del.isPending} onClick={() => confirmDelete(r)}>{t.crm_delete ?? 'OK'}</button>
+                      <button type="button" className={portalBtnPrimary} disabled={!deleting.target || del.isPending} onClick={() => confirmDelete(r)}>{t.crm_move_clients_to}</button>
                     </div>
                   </div>
                 )}
@@ -132,7 +132,7 @@ export function PipelineEditor({ pipeline, clients, open, onOpenChange }: {
         </TooltipProvider>
         <div className="p-4 border-t border-portal-border flex justify-end gap-2">
           <button type="button" className={portalBtnGhost} onClick={() => onOpenChange(false)}>{t.crm_cancel}</button>
-          <button type="button" className={portalBtnPrimary} disabled={!valid || save.isPending} onClick={submit}>{t.crm_save ?? t.crm_stages_saved}</button>
+          <button type="button" className={portalBtnPrimary} disabled={!valid || save.isPending} onClick={submit}>{t.crm_save}</button>
         </div>
       </SheetContent>
     </Sheet>
