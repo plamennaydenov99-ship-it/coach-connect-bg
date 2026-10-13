@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, CheckCircle2, X } from 'lucide-react';
 import { toast } from 'sonner';
+import { CertificatesManager } from '@/components/CertificatesManager';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/context/LanguageContext';
@@ -31,8 +32,6 @@ export function CoachOnboarding({ onSubmitted }: { onSubmitted: () => void }) {
 
   const [city, setCity] = useState('');
   const [bio, setBio] = useState('');
-  const [certs, setCerts] = useState<string[]>([]);
-  const [certDraft, setCertDraft] = useState('');
   const [social, setSocial] = useState({ instagram: '', facebook: '', website: '', strava: '' });
   const [priceSolo, setPriceSolo] = useState('');
   const [priceGroup, setPriceGroup] = useState('');
@@ -44,13 +43,12 @@ export function CoachOnboarding({ onSubmitted }: { onSubmitted: () => void }) {
     (async () => {
       const { data } = await supabase
         .from('coach_profiles')
-        .select('sports, bio, certifications, social_links, price_per_session, price_per_group_session')
+        .select('sports, bio, social_links, price_per_session, price_per_group_session')
         .eq('id', user.id)
         .maybeSingle();
       if (!data) return;
       setSports(data.sports ?? []);
       setBio(data.bio ?? '');
-      setCerts(data.certifications ?? []);
       const s = (data.social_links ?? {}) as Record<string, string>;
       setSocial({
         instagram: s.instagram ?? '',
@@ -72,7 +70,6 @@ export function CoachOnboarding({ onSubmitted }: { onSubmitted: () => void }) {
       .update({
         sports,
         bio: bio || null,
-        certifications: certs,
         social_links: social,
         price_per_session: priceSolo ? Number(priceSolo) : null,
         price_per_group_session: priceGroup ? Number(priceGroup) : null,
@@ -111,12 +108,6 @@ export function CoachOnboarding({ onSubmitted }: { onSubmitted: () => void }) {
     setDone(true);
   };
 
-  const addCert = () => {
-    const v = certDraft.trim();
-    if (!v) return;
-    setCerts(c => [...c, v]);
-    setCertDraft('');
-  };
 
   if (done) {
     return (
@@ -191,25 +182,7 @@ export function CoachOnboarding({ onSubmitted }: { onSubmitted: () => void }) {
           <div className="space-y-4">
             <h2 className="font-display text-2xl uppercase tracking-[0.08em]">{t.onb_cert_title}</h2>
             <p className="text-sm text-muted-foreground">{t.onb_cert_sub}</p>
-            <div className="flex gap-2">
-              <Input
-                value={certDraft}
-                onChange={e => setCertDraft(e.target.value)}
-                placeholder={t.onb_cert_ph}
-                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCert(); } }}
-              />
-              <Button type="button" variant="outline" onClick={addCert}>{t.onb_cert_add}</Button>
-            </div>
-            <ul className="space-y-2">
-              {certs.map((c, i) => (
-                <li key={`${c}-${i}`} className="flex items-center justify-between border border-border px-3 py-2 text-sm">
-                  <span className="truncate">{c}</span>
-                  <button type="button" onClick={() => setCerts(list => list.filter((_, idx) => idx !== i))}>
-                    <X className="h-4 w-4" />
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <CertificatesManager />
             <p className="text-xs text-muted-foreground">{t.onb_optional_note}</p>
           </div>
         )}
