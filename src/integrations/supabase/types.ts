@@ -280,6 +280,7 @@ export type Database = {
           reviewed_at: string | null
           reviewed_by: string | null
           sport: string | null
+          sports: string[]
           updated_at: string
           verified: boolean
         }
@@ -295,6 +296,7 @@ export type Database = {
           reviewed_at?: string | null
           reviewed_by?: string | null
           sport?: string | null
+          sports?: string[]
           updated_at?: string
           verified?: boolean
         }
@@ -310,6 +312,7 @@ export type Database = {
           reviewed_at?: string | null
           reviewed_by?: string | null
           sport?: string | null
+          sports?: string[]
           updated_at?: string
           verified?: boolean
         }
@@ -495,6 +498,7 @@ export type Database = {
           social_links: Json
           specialisms: string[]
           sport: string | null
+          sports: string[]
           updated_at: string
           verified: boolean
           years_experience: number | null
@@ -515,6 +519,7 @@ export type Database = {
           social_links?: Json
           specialisms?: string[]
           sport?: string | null
+          sports?: string[]
           updated_at?: string
           verified?: boolean
           years_experience?: number | null
@@ -535,6 +540,7 @@ export type Database = {
           social_links?: Json
           specialisms?: string[]
           sport?: string | null
+          sports?: string[]
           updated_at?: string
           verified?: boolean
           years_experience?: number | null
