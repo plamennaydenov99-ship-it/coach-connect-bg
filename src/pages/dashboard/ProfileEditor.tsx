@@ -195,7 +195,8 @@ const ProfileEditor = () => {
               <Label htmlFor="bio">{t.profileed_bio}</Label>
               <Textarea id="bio" rows={5} value={bio} onChange={e => setBio(e.target.value)} />
             </div>
-            <div className="grid gap-2">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-2 sm:col-span-2">
                 <Label>{t.profileed_sport}</Label>
                 <div className="flex flex-wrap gap-2">
                   {SPORTS.map(s => (
