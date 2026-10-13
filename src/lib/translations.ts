@@ -1,5 +1,10 @@
 export const t = {
   en: {
+    avatar_upload: 'Upload photo',
+    avatar_remove: 'Remove',
+    avatar_hint: 'PNG, JPG or WEBP. Square works best.',
+    avatar_saved: 'Photo updated',
+    avatar_error: 'Upload failed, try again',
     disc_unavailable: "This session is no longer available",
     disc_saved: "Saved",
     disc_retry: "Retry",
@@ -1052,6 +1057,11 @@ export const t = {
   },
 
   bg: {
+    avatar_upload: 'Качи снимка',
+    avatar_remove: 'Премахни',
+    avatar_hint: 'PNG, JPG или WEBP. Най-добре квадратна.',
+    avatar_saved: 'Снимката е обновена',
+    avatar_error: 'Качването не успя, опитай пак',
     disc_unavailable: "Тази тренировка вече не е налична",
     disc_saved: "Запазено",
     disc_retry: "Опитай пак",
@@ -2096,6 +2106,11 @@ export const t = {
   },
 
   fr: {
+    avatar_upload: 'Importer une photo',
+    avatar_remove: 'Supprimer',
+    avatar_hint: 'PNG, JPG ou WEBP. Format carré conseillé.',
+    avatar_saved: 'Photo mise à jour',
+    avatar_error: 'Échec de l’import, réessayez',
     disc_unavailable: "Cette séance n’est plus disponible",
     disc_saved: "Enregistré",
     disc_retry: "Réessayer",

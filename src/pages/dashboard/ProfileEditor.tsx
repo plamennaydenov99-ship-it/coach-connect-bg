@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { SPORTS } from '@/lib/mockData';
 import { BadgeCheck, ShieldAlert, Plus } from 'lucide-react';
 import { toast } from 'sonner';
+import { AvatarUpload } from '@/components/AvatarUpload';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +20,6 @@ const ProfileEditor = () => {
   const [saving, setSaving] = useState(false);
   const [fullName, setFullName] = useState('');
   const [city, setCity] = useState('');
-  const [avatarUrl, setAvatarUrl] = useState('');
 
   // Coach-specific
   const [bio, setBio] = useState('');
@@ -51,7 +51,6 @@ const ProfileEditor = () => {
     if (!profile || !user) return;
     setFullName(profile.full_name ?? '');
     setCity(profile.city ?? '');
-    setAvatarUrl(profile.avatar_url ?? '');
 
     (async () => {
       if (profile.role === 'coach') {
@@ -84,7 +83,7 @@ const ProfileEditor = () => {
 
     const { error: pErr } = await supabase
       .from('profiles')
-      .update({ full_name: fullName, city, avatar_url: avatarUrl || null })
+      .update({ full_name: fullName, city })
       .eq('id', user.id);
 
     if (pErr) {
@@ -181,8 +180,8 @@ const ProfileEditor = () => {
             <Input id="city" value={city} onChange={e => setCity(e.target.value)} placeholder={t.profileed_city_ph} />
           </div>
           <div className="grid gap-2 sm:col-span-2">
-            <Label htmlFor="avatar">{t.profileed_avatar}</Label>
-            <Input id="avatar" value={avatarUrl} onChange={e => setAvatarUrl(e.target.value)} placeholder="https://…" />
+            <Label>{t.profileed_avatar}</Label>
+            <AvatarUpload />
           </div>
         </div>
       </section>

@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { findSport } from '@/lib/mockData';
 import { BadgeCheck, MapPin, Trophy, Calendar, MessageSquare, Clock, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
+import { AvatarUpload, initialsOf } from '@/components/AvatarUpload';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { guardAthlete, messageOwner } from '@/lib/athleteActions';
@@ -116,7 +117,7 @@ const CoachProfile = () => {
   const sportList = (coach.sports?.length ? coach.sports : coach.sport ? [coach.sport] : []).map(s => ({ slug: s, label: findSport(s as any)?.label ?? s }));
   const name = coach.profiles?.full_name || 'Coach';
   const firstName = name.split(' ')[0];
-  const avatar = coach.profiles?.avatar_url || `https://i.pravatar.cc/300?u=${coach.id}`;
+  const avatar = coach.profiles?.avatar_url || null;
   const city = coach.profiles?.city ?? '';
   const price = coach.price_per_session ?? 0;
 
@@ -165,7 +166,7 @@ const CoachProfile = () => {
       <main className="flex-1">
         <section className="border-b border-border bg-card/40">
           <div className="container py-10 grid gap-8 md:grid-cols-[auto_1fr] items-center">
-            <img src={avatar} alt={name} className="h-28 w-28 md:h-36 md:w-36 rounded-2xl object-cover border border-border" />
+            {avatar ? <img src={avatar} alt={name} className="h-28 w-28 md:h-36 md:w-36 rounded-2xl text-4xl object-cover border border-border" /> : <div aria-label={name} className="h-28 w-28 md:h-36 md:w-36 rounded-2xl text-4xl border border-border bg-secondary text-foreground flex items-center justify-center font-display shrink-0">{initialsOf(name)}</div>}
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-3">
                 {sportList.map(s => (
