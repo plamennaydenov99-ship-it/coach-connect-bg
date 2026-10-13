@@ -21,6 +21,7 @@ interface CoachRow {
   id: string;
   bio: string | null;
   sport: string | null;
+  sports: string[] | null;
   price_per_session: number | null;
   years_experience: number | null;
   gallery: string[];
@@ -88,7 +89,7 @@ function FilterPanel({
 
 function CoachResultCard({ coach }: { coach: CoachRow }) {
   const { t } = useLanguage();
-  const sport = coach.sport ? findSport(coach.sport as any) : null;
+  const sportList = (coach.sports?.length ? coach.sports : coach.sport ? [coach.sport] : []).slice(0, 3).map(s => ({ slug: s, label: findSport(s as any)?.label ?? s }));
   const name = coach.profiles?.full_name || 'Coach';
   const avatar = coach.profiles?.avatar_url || `https://i.pravatar.cc/300?u=${coach.id}`;
   const cover = coach.gallery?.[0] || `https://picsum.photos/seed/${coach.id}/800/500`;
@@ -102,12 +103,12 @@ function CoachResultCard({ coach }: { coach: CoachRow }) {
       <div className="relative aspect-[4/3] overflow-hidden bg-muted">
         <img src={cover} alt={name} loading="lazy"
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
-        <div className="absolute top-3 left-3 flex gap-2">
-          {sport && (
-            <span className="px-2 py-0.5 text-xs font-semibold rounded-md bg-background/85 backdrop-blur capitalize">
-              {sport.label}
+        <div className="absolute top-3 left-3 right-3 flex flex-wrap gap-2">
+          {sportList.map(s => (
+            <span key={s.slug} className="px-2 py-0.5 text-xs font-semibold rounded-md bg-background/85 backdrop-blur capitalize">
+              {s.label}
             </span>
-          )}
+          ))}
           {coach.verified && <span className="badge-verified"><BadgeCheck className="h-3 w-3" /> {t.verified}</span>}
         </div>
       </div>
@@ -154,7 +155,7 @@ const Search = () => {
       setLoading(true);
       const { data, error } = await supabase
         .from('coach_profiles')
-        .select('id, bio, sport, price_per_session, years_experience, gallery, verified, created_at, profiles!coach_profiles_id_fkey(full_name, avatar_url, city)')
+        .select('id, bio, sport, sports, price_per_session, years_experience, gallery, verified, created_at, profiles!coach_profiles_id_fkey(full_name, avatar_url, city)')
         .eq('application_status', 'approved');
       if (!error && data) setCoaches(data as any);
       setLoading(false);
@@ -163,7 +164,7 @@ const Search = () => {
 
   const results = useMemo(() => {
     let list = [...coaches];
-    if (selectedSports.length) list = list.filter(c => c.sport && selectedSports.includes(c.sport));
+    if (selectedSports.length) list = list.filter(c => (c.sports?.length ? c.sports : c.sport ? [c.sport] : []).some(s => selectedSports.includes(s)));
     if (city.trim()) list = list.filter(c => c.profiles?.city?.toLowerCase().includes(city.toLowerCase()));
     list = list.filter(c => {
       const p = c.price_per_session ?? 0;
