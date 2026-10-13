@@ -286,7 +286,7 @@ const CoachProfile = () => {
           <DialogHeader>
             <DialogTitle>{t.coach_request_dialog_title}</DialogTitle>
             <DialogDescription>
-              {selectedSlot && `${new Date(selectedSlot.date + 'T00:00').toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })} · ${selectedSlot.start_time.slice(0,5)} – ${selectedSlot.end_time.slice(0,5)} · €${finalPrice}`}
+              {selectedSlot && `${new Date(selectedSlot.date + 'T00:00').toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })} · ${selectedSlot.start_time.slice(0,5)} – ${selectedSlot.end_time.slice(0,5)} · €${price}`}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3">
