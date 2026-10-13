@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { SPORTS, findSport } from '@/lib/mockData';
 import { SlidersHorizontal, MapPin, BadgeCheck } from 'lucide-react';
+import { AvatarUpload, initialsOf } from '@/components/AvatarUpload';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/context/LanguageContext';
 
@@ -91,7 +92,7 @@ function CoachResultCard({ coach }: { coach: CoachRow }) {
   const { t } = useLanguage();
   const sportList = (coach.sports?.length ? coach.sports : coach.sport ? [coach.sport] : []).slice(0, 3).map(s => ({ slug: s, label: findSport(s as any)?.label ?? s }));
   const name = coach.profiles?.full_name || 'Coach';
-  const avatar = coach.profiles?.avatar_url || `https://i.pravatar.cc/300?u=${coach.id}`;
+  const avatar = coach.profiles?.avatar_url || null;
   const cover = coach.gallery?.[0] || `https://picsum.photos/seed/${coach.id}/800/500`;
   const price = coach.price_per_session ?? 0;
 
@@ -114,7 +115,7 @@ function CoachResultCard({ coach }: { coach: CoachRow }) {
       </div>
       <div className="p-4 flex flex-col gap-3 flex-1">
         <div className="flex items-start gap-3">
-          <img src={avatar} alt={name} className="h-10 w-10 rounded-full object-cover border border-border" />
+          {avatar ? <img src={avatar} alt={name} className="h-10 w-10 rounded-full text-sm object-cover border border-border" /> : <div aria-label={name} className="h-10 w-10 rounded-full text-sm border border-border bg-secondary text-foreground flex items-center justify-center font-display shrink-0">{initialsOf(name)}</div>}
           <div className="min-w-0 flex-1">
             <h3 className="font-display text-lg leading-tight truncate">{name}</h3>
             {coach.profiles?.city && (

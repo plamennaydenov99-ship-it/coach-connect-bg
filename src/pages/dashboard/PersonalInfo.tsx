@@ -9,6 +9,7 @@ import { SPORTS } from '@/lib/mockData';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { AvatarUpload } from '@/components/AvatarUpload';
 import { useLanguage } from '@/context/LanguageContext';
 
 
@@ -69,6 +70,7 @@ const PersonalInfo = () => {
 
   return (
     <div className="max-w-3xl space-y-6">
+      <AvatarUpload />
       <div>
         <h1 className="font-display text-3xl">{t.personalinfo_title}</h1>
         <p className="text-muted-foreground mt-1">{t.personalinfo_sub}</p>
