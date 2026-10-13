@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { z } from 'zod';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useLanguage } from '@/context/LanguageContext';
-import { ALL_STAGES, BOARD_STAGES, useCreateClient, type Stage } from '@/hooks/coach/useCoachClients';
-import { portalBtnGhost, portalBtnPrimary, portalInput, portalLabel, stageKey } from './shared';
+import { useEffect } from 'react';
+import { ALL_STAGES, pipelineLabel, stageLabel, useCreateClient, usePipelines } from '@/hooks/coach/useCoachClients';
+import { portalBtnGhost, portalBtnPrimary, portalInput, portalLabel } from './shared';
 import { toast } from 'sonner';
 
 const schema = z.object({
@@ -14,12 +15,27 @@ const schema = z.object({
   source: z.string().trim().max(120),
 });
 
-export function NewClientDialog({ open, onOpenChange, onCreated }: { open: boolean; onOpenChange: (o: boolean) => void; onCreated?: (id: string) => void }) {
+export function NewClientDialog({ open, onOpenChange, onCreated, pipelineId }: { open: boolean; onOpenChange: (o: boolean) => void; onCreated?: (id: string) => void; pipelineId?: string | null }) {
   const { t } = useLanguage();
   const create = useCreateClient();
   const empty = { display_name: '', phone: '', email: '', goal: '', source: '' };
   const [v, setV] = useState(empty);
-  const [stage, setStage] = useState<Stage>('enquiry');
+  const { data: pipelines = [] } = usePipelines();
+  const [pid, setPid] = useState<string>('');
+  const [stageId, setStageId] = useState<string>('');
+  const pipeline = pipelines.find((p) => p.id === pid);
+  const boardStages = (pipeline?.stages ?? []).filter((s) => s.category !== 'archived');
+  useEffect(() => {
+    if (!open || !pipelines.length) return;
+    const p = pipelines.find((x) => x.id === pipelineId) ?? pipelines.find((x) => x.is_default) ?? pipelines[0];
+    setPid(p.id);
+    setStageId((p.stages.find((s) => s.category === 'enquiry') ?? p.stages[0])?.id ?? '');
+  }, [open, pipelineId, pipelines]);
+  const pickPipeline = (id: string) => {
+    const p = pipelines.find((x) => x.id === id);
+    setPid(id);
+    setStageId((p?.stages.find((s) => s.category !== 'archived'))?.id ?? '');
+  };
   const [err, setErr] = useState<string | null>(null);
 
   const submit = async (e: React.FormEvent) => {
@@ -30,8 +46,9 @@ export function NewClientDialog({ open, onOpenChange, onCreated }: { open: boole
       return;
     }
     try {
-      const row = await create.mutateAsync({ ...parsed.data, stage } as any);
-      setV(empty); setStage('enquiry'); setErr(null);
+      const st = boardStages.find((s) => s.id === stageId);
+      const row = await create.mutateAsync({ ...parsed.data, stage: (st?.category ?? 'enquiry') as any, stage_id: st?.id } as any);
+      setV(empty); setErr(null);
       onOpenChange(false);
       onCreated?.(row.id);
     } catch {
@@ -60,12 +77,18 @@ export function NewClientDialog({ open, onOpenChange, onCreated }: { open: boole
           </div>
           <p className="text-xs text-portal-muted">{t.crm_private_helper}</p>
           {field('goal', t.crm_goal)}
+          {field('source', t.crm_source, 'text', t.crm_source_ph)}
           <div className="grid grid-cols-2 gap-3">
-            {field('source', t.crm_source, 'text', t.crm_source_ph)}
+            <label className="block space-y-1">
+              <span className={portalLabel}>{t.crm_pipeline}</span>
+              <select className={portalInput} value={pid} onChange={(e) => pickPipeline(e.target.value)}>
+                {pipelines.map((p) => <option key={p.id} value={p.id}>{pipelineLabel(p, t)}</option>)}
+              </select>
+            </label>
             <label className="block space-y-1">
               <span className={portalLabel}>{t.crm_stage}</span>
-              <select className={portalInput} value={stage} onChange={(e) => setStage(e.target.value as Stage)}>
-                {BOARD_STAGES.map((s) => <option key={s} value={s}>{t[stageKey(s)]}</option>)}
+              <select className={portalInput} value={stageId} onChange={(e) => setStageId(e.target.value)}>
+                {boardStages.map((s) => <option key={s.id} value={s.id}>{stageLabel(s, t)}</option>)}
               </select>
             </label>
           </div>

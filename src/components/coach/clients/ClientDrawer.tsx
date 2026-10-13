@@ -13,6 +13,7 @@ import { useCoachTz } from '@/hooks/coach/useCoachCalendar';
 import {
   ALL_STAGES, useAddNote, useAddTask, useClientDetail, useDeleteClient, useMoveClient,
   useSetSessionStatus, useToggleTask, useUpdateClient, type CoachSession,
+  usePipelines, stageLabel, pipelineLabel,
 } from '@/hooks/coach/useCoachClients';
 import { Avatar, fmtDate, fmtDateTime, portalBtnGhost, portalBtnPrimary, portalInput, portalLabel, stageKey } from './shared';
 import { toast } from 'sonner';
@@ -69,9 +70,18 @@ function DrawerBody({ data, onDeleted }: { data: NonNullable<ReturnType<typeof u
     update.mutate({ id: c.id, goal: goal.trim().slice(0, 300) || null }, { onError: () => toast.error(t.crm_error) });
   };
 
-  const changeStage = (stage: string) => {
-    if (stage === c.stage) return;
-    move.move(c.id, stage).catch(() => toast.error(t.crm_error));
+  const { data: pipelines = [] } = usePipelines();
+  const myPipeline = pipelines.find((p) => p.id === c.pipeline_id);
+  const changeStage = (stageId: string) => {
+    const st = myPipeline?.stages.find((s) => s.id === stageId);
+    if (!st || stageId === c.stage_id) return;
+    move.moveToStage(c.id, st).catch(() => toast.error(t.crm_error));
+  };
+  const changePipeline = (pipelineId: string) => {
+    const p = pipelines.find((x) => x.id === pipelineId);
+    if (!p || pipelineId === c.pipeline_id) return;
+    const st = p.stages.find((s) => s.category === c.stage) ?? p.stages[0];
+    if (st) move.moveToStage(c.id, st).catch(() => toast.error(t.crm_error));
   };
 
   return (
@@ -83,10 +93,19 @@ function DrawerBody({ data, onDeleted }: { data: NonNullable<ReturnType<typeof u
             <div className="font-display text-xl uppercase tracking-[0.06em] text-portal-ink truncate">{c.display_name}</div>
             <div className="text-xs text-portal-muted">{t.crm_since} {fmtDate(c.created_at, lang, tz)}</div>
           </div>
-          <select value={c.stage} onChange={(e) => changeStage(e.target.value)} className="h-8 px-2 rounded-[4px] border border-portal-selected-border bg-portal-selected text-portal-ink text-sm" aria-label={t.crm_stage}>
-            {ALL_STAGES.map((s) => <option key={s} value={s}>{t[stageKey(s)]}</option>)}
+          <select value={c.stage_id} onChange={(e) => changeStage(e.target.value)} className="h-8 px-2 rounded-[4px] border border-portal-selected-border bg-portal-selected text-portal-ink text-sm" aria-label={t.crm_stage}>
+            {(myPipeline?.stages ?? []).map((s) => <option key={s.id} value={s.id}>{stageLabel(s, t)}</option>)}
+            {!myPipeline && <option value={c.stage_id}>{t[stageKey(c.stage) as 'crm_stage_active']}</option>}
           </select>
         </div>
+        {pipelines.length > 1 && (
+          <label className="flex items-center gap-2 text-xs text-portal-muted">
+            {t.crm_pipeline}
+            <select value={c.pipeline_id ?? ''} onChange={(e) => changePipeline(e.target.value)} className="h-8 px-2 rounded-[4px] border border-portal-border bg-portal-card text-portal-ink text-sm" aria-label={t.crm_pipeline}>
+              {pipelines.map((p) => <option key={p.id} value={p.id}>{pipelineLabel(p, t)}</option>)}
+            </select>
+          </label>
+        )}
         <input
           value={goal}
           onChange={(e) => setGoal(e.target.value)}
@@ -155,8 +174,9 @@ function TimelineTab({ data }: { data: NonNullable<ReturnType<typeof useClientDe
       if (k.done && k.done_at) out.push({ id: `td${k.id}`, at: k.done_at, label: t.crm_type_task_done, text: k.title });
     });
     data.events.forEach((e) => {
-      const p = (e.payload ?? {}) as { from?: string; to?: string };
-      out.push({ id: `e${e.id}`, at: e.created_at, label: t.crm_type_stage, text: `${p.from ? t[stageKey(p.from) as 'crm_stage_enquiry'] : '—'} → ${p.to ? t[stageKey(p.to) as 'crm_stage_enquiry'] : '—'}` });
+      const p = (e.payload ?? {}) as { from?: string; to?: string; from_name?: string | null; to_name?: string | null; from_system_key?: string | null; to_system_key?: string | null };
+      const lbl = (name?: string | null, key?: string | null, cat?: string) => name || ((key || cat) ? t[stageKey((key || cat)!) as 'crm_stage_enquiry'] : '—');
+      out.push({ id: `e${e.id}`, at: e.created_at, label: t.crm_type_stage, text: `${lbl(p.from_name, p.from_system_key, p.from)} → ${lbl(p.to_name, p.to_system_key, p.to)}` });
     });
     return out.sort((a, b) => b.at.localeCompare(a.at));
   }, [data, t, lang]);
