@@ -166,7 +166,8 @@ export function useCreateClient() {
           goal: v.goal || null,
           source: v.source || null,
           stage: v.stage,
-          ...(v.stage_id ? { stage_id: v.stage_id } : {}),
+          // stage_id is filled by the DB trigger from `stage` when omitted
+          stage_id: (v.stage_id ?? null) as unknown as string,
           stage_position: maxPos + 1,
         })
         .select()
