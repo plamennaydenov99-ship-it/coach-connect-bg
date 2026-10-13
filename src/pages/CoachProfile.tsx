@@ -20,6 +20,7 @@ interface CoachData {
   id: string;
   bio: string | null;
   sport: string | null;
+  sports: string[] | null;
   specialisms: string[];
   certifications: string[];
   price_per_session: number | null;
@@ -54,7 +55,7 @@ const CoachProfile = () => {
       setLoading(true);
       const { data } = await supabase
         .from('coach_profiles')
-        .select('id, bio, sport, specialisms, certifications, price_per_session, years_experience, gallery, verified, level, profiles!coach_profiles_id_fkey(full_name, avatar_url, city)')
+        .select('id, bio, sport, sports, specialisms, certifications, price_per_session, years_experience, gallery, verified, level, profiles!coach_profiles_id_fkey(full_name, avatar_url, city)')
         .eq('id', id)
         .eq('application_status', 'approved')
         .maybeSingle();
@@ -112,7 +113,7 @@ const CoachProfile = () => {
     );
   }
 
-  const sport = coach.sport ? findSport(coach.sport as any) : null;
+  const sportList = (coach.sports?.length ? coach.sports : coach.sport ? [coach.sport] : []).map(s => ({ slug: s, label: findSport(s as any)?.label ?? s }));
   const name = coach.profiles?.full_name || 'Coach';
   const firstName = name.split(' ')[0];
   const avatar = coach.profiles?.avatar_url || `https://i.pravatar.cc/300?u=${coach.id}`;
@@ -167,11 +168,11 @@ const CoachProfile = () => {
             <img src={avatar} alt={name} className="h-28 w-28 md:h-36 md:w-36 rounded-2xl object-cover border border-border" />
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-3">
-                {sport && (
-                  <span className="px-2 py-0.5 text-xs font-semibold rounded-md bg-secondary text-foreground capitalize">
-                    {sport.label}
+                {sportList.map(s => (
+                  <span key={s.slug} className="px-2 py-0.5 text-xs font-semibold rounded-md bg-secondary text-foreground capitalize">
+                    {s.label}
                   </span>
-                )}
+                ))}
                 {coach.verified && <span className="badge-verified"><BadgeCheck className="h-3 w-3" /> {t.verified}</span>}
               </div>
               <div className="flex flex-wrap items-start justify-between gap-3">

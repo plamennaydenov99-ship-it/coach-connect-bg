@@ -14,6 +14,7 @@ interface ClubData {
   id: string;
   name: string;
   sport: string | null;
+  sports: string[] | null;
   city: string | null;
   about: string | null;
   hours: string | null;
@@ -80,9 +81,9 @@ const ClubProfile = () => {
         <section className="border-b border-border bg-card/40">
           <div className="container py-10">
             <div className="flex flex-wrap items-center gap-2 mb-3">
-              {club.sport && (
-                <span className="px-2 py-0.5 text-xs font-semibold rounded-md bg-secondary capitalize">{club.sport}</span>
-              )}
+              {(club.sports?.length ? club.sports : club.sport ? [club.sport] : []).map(s => (
+                <span key={s} className="px-2 py-0.5 text-xs font-semibold rounded-md bg-secondary capitalize">{s}</span>
+              ))}
               {club.verified && <span className="badge-verified"><BadgeCheck className="h-3 w-3" /> {t.verified}</span>}
             </div>
             <h1 className="font-display">{club.name}</h1>
