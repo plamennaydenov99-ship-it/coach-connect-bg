@@ -13,6 +13,7 @@ import { pipelineLabel, stageLabel, useArchivePipeline, useClientList, useCreate
 import { ClientBoard, categoryColumns, type BoardColumn } from '@/components/coach/clients/ClientBoard';
 import { ClientTable } from '@/components/coach/clients/ClientTable';
 import { ClientDrawer } from '@/components/coach/clients/ClientDrawer';
+import { PipelineEditor } from '@/components/coach/clients/PipelineEditor';
 import { NewClientDialog } from '@/components/coach/clients/NewClientDialog';
 import { portalBtnGhost, portalBtnPrimary, portalInput, portalLabel } from '@/components/coach/clients/shared';
 
@@ -41,6 +42,7 @@ export default function CoachClients() {
   const [view, setView] = useState<View>(() => (localStorage.getItem(VIEW_KEY) as View) || 'board');
   const [showArchived, setShowArchived] = useState(false);
   const [newOpen, setNewOpen] = useState(false);
+  const [editStages, setEditStages] = useState(false);
 
   const setViewPersist = (v: View) => { setView(v); localStorage.setItem(VIEW_KEY, v); };
   const open = (cid: string) => navigate(`${peoplePath}/${cid}`);
@@ -123,6 +125,7 @@ export default function CoachClients() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="coach-portal bg-portal-card border-portal-border text-portal-ink">
               <DropdownMenuItem onClick={() => setNameDialog({ mode: 'rename', id: current.id, name: pipelineLabel(current, t) })}>{t.crm_rename}</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setEditStages(true)}>{t.crm_edit_stages}</DropdownMenuItem>
               {!current.is_default && <DropdownMenuItem onClick={() => archive(current.id)}>{t.crm_archive_pipeline}</DropdownMenuItem>}
             </DropdownMenuContent>
           </DropdownMenu>
@@ -192,6 +195,7 @@ export default function CoachClients() {
           </form>
         </DialogContent>
       </Dialog>
+      {current && <PipelineEditor pipeline={current} clients={clients} open={editStages} onOpenChange={setEditStages} />}
       <ClientDrawer clientId={id} onClose={() => navigate(peoplePath)} />
     </div>
   );

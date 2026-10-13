@@ -99,6 +99,13 @@
       "when": 1791930109773,
       "tag": "0013_crm_pipelines",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1791933394171,
+      "tag": "0014_crm_stage_guards",
+      "breakpoints": true
     }
   ]
 }
