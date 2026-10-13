@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { findSport } from '@/lib/mockData';
-import { BadgeCheck, MapPin, Trophy, Calendar, MessageSquare, Clock, ShieldCheck } from 'lucide-react';
+import { BadgeCheck, MapPin, Trophy, Calendar, MessageSquare, Clock, ShieldCheck, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import { AvatarUpload, initialsOf } from '@/components/AvatarUpload';
 import { supabase } from '@/integrations/supabase/client';
@@ -23,7 +23,7 @@ interface CoachData {
   sport: string | null;
   sports: string[] | null;
   specialisms: string[];
-  certifications: string[];
+  certs?: { title: string; issuer: string | null; issued_on: string | null }[];
   price_per_session: number | null;
   years_experience: number | null;
   gallery: string[];
@@ -56,11 +56,14 @@ const CoachProfile = () => {
       setLoading(true);
       const { data } = await supabase
         .from('coach_profiles')
-        .select('id, bio, sport, sports, specialisms, certifications, price_per_session, years_experience, gallery, verified, level, profiles!coach_profiles_id_fkey(full_name, avatar_url, city)')
+        .select('id, bio, sport, sports, specialisms, price_per_session, years_experience, gallery, verified, level, profiles!coach_profiles_id_fkey(full_name, avatar_url, city)')
         .eq('id', id)
         .eq('application_status', 'approved')
         .maybeSingle();
-      setCoach(data as any);
+      const { data: certs } = data
+        ? await supabase.from('public_certificates').select('title, issuer, issued_on').eq('owner_id', id).order('issued_on', { ascending: false })
+        : { data: [] };
+      setCoach(data ? ({ ...(data as any), certs: certs ?? [] }) : null);
       setLoading(false);
     })();
   }, [id]);
@@ -206,16 +209,19 @@ const CoachProfile = () => {
                     </div>
                   </div>
                 ) : null}
-                {coach.certifications?.length ? (
+                {coach.certs?.length ? (
                   <div className="mt-5">
                     <p className="text-xs uppercase tracking-[0.1em] text-muted-foreground mb-2">{t.coach_certifications}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {coach.certifications.map(c => (
-                        <span key={c} className="px-3 py-1 rounded-md border border-border text-primary text-sm flex items-center gap-1.5">
-                          <BadgeCheck className="h-3.5 w-3.5" /> {c}
-                        </span>
+                    <ul className="space-y-1.5">
+                      {coach.certs.map((c, i) => (
+                        <li key={`${c.title}-${i}`} className="text-sm flex flex-wrap items-center gap-2">
+                          <span>{[c.title, c.issuer, c.issued_on?.slice(0, 4)].filter(Boolean).join(' · ')}</span>
+                          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground border border-border rounded-md px-1.5 py-0.5">
+                            <ShieldCheck className="h-3 w-3" /> {t.cert_approved}
+                          </span>
+                        </li>
                       ))}
-                    </div>
+                    </ul>
                   </div>
                 ) : null}
               </div>
