@@ -29,6 +29,7 @@ import { StaffLayout } from "./components/coach/StaffLayout";
 
 import { CoachLayout } from "./components/coach/CoachLayout";
 import CoachCalendar from "./pages/coach/CoachCalendar";
+import CoachInvoicing from "./pages/coach/CoachInvoicing";
 import CoachClients from "./pages/coach/CoachClients";
 import CoachDashboard from "./pages/coach/CoachDashboard";
 import CoachMessages from "./pages/coach/CoachMessages";
@@ -79,6 +80,7 @@ const App = () => (
                 <Route path="clients" element={<CoachClients />} />
                 <Route path="clients/:id" element={<CoachClients />} />
                 <Route path="calendar" element={<CoachCalendar />} />
+                <Route path="invoicing" element={<CoachInvoicing />} />
                 <Route path="messages" element={<CoachMessages />} />
                 <Route path="profile" element={<div className="portal-skin"><ProfileEditor /></div>} />
                 <Route path="settings" element={<CoachSettings />} />
@@ -93,6 +95,7 @@ const App = () => (
                 <Route path="members/:id" element={<CoachClients />} />
                 <Route path="clients" element={<Navigate to="/club/members" replace />} />
                 <Route path="calendar" element={<CoachCalendar />} />
+                <Route path="invoicing" element={<CoachInvoicing />} />
                 <Route path="facilities" element={<ClubFacilities />} />
                 <Route path="messages" element={<CoachMessages />} />
                 <Route path="profile" element={<div className="portal-skin"><ProfileEditor /></div>} />

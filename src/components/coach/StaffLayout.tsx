@@ -5,7 +5,7 @@ import { QuickBookDialog } from '@/components/coach/calendar/QuickBookDialog';
 import { NavLink, Link, Outlet, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, CalendarDays, MessageSquare, UserCircle2, Settings, Building2,
-  Bell, Plus, LogOut, ExternalLink, Zap, Sun,
+  Bell, Plus, LogOut, ExternalLink, Zap, Sun, Receipt,
 } from 'lucide-react';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
@@ -64,6 +64,7 @@ function StaffShell() {
     { to: `${b}/dashboard`, label: t.portal_dashboard, icon: LayoutDashboard },
     { to: people, label: t.portal_clients, icon: Users },
     { to: `${b}/calendar`, label: club ? t.portal_classes_calendar : t.portal_calendar, icon: CalendarDays },
+    { to: `${b}/invoicing`, label: t.inv_section, icon: Receipt },
     ...(club ? [{ to: `${b}/facilities`, label: t.portal_facilities, icon: Building2 }] : []),
     { to: `${b}/messages`, label: t.portal_messages, icon: MessageSquare, badge: unread },
   ];
@@ -156,6 +157,9 @@ function StaffShell() {
                 <ExternalLink className="h-4 w-4 mr-2" /> {t.portal_view_public}
               </DropdownMenuItem>
             )}
+            <DropdownMenuItem className="md:hidden" onClick={() => navigate(`${b}/invoicing`)}>
+              <Receipt className="h-4 w-4 mr-2" /> {t.inv_section}
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate(`${b}/settings`)}>
               <Settings className="h-4 w-4 mr-2" /> {t.portal_settings}
             </DropdownMenuItem>

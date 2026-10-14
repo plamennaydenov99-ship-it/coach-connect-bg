@@ -40,7 +40,7 @@ export interface RevInput {
 }
 
 /** One earned/expected money line, attributed to a client. */
-export interface RevItem { date: DateStr; amount: number; clientId: string; type: RevType; future: boolean }
+export interface RevItem { date: DateStr; amount: number; clientId: string; type: RevType; future: boolean; sessionId?: string; fee?: 'weekly' | 'monthly' }
 
 export interface Breakdown<K extends string = string> { key: K; amount: number }
 export interface RevSummary {
@@ -68,7 +68,7 @@ function sessionItems(inp: RevInput, byId: Map<string, RevClient>): RevItem[] {
         const counts = future
           ? a.status === 'booked'
           : a.status === 'attended' || (inp.chargeNoShows && a.status === 'no_show');
-        if (counts && byId.has(a.client_id)) out.push({ date, amount: price, clientId: a.client_id, type: 'group', future });
+        if (counts && byId.has(a.client_id)) out.push({ date, amount: price, clientId: a.client_id, type: 'group', future, sessionId: s.id });
       }
       continue;
     }
@@ -81,7 +81,7 @@ function sessionItems(inp: RevInput, byId: Map<string, RevClient>): RevItem[] {
     if (!counts) continue;
     const trial = s.kind === 'trial';
     const amount = price ?? (!trial && c.billing_type === 'per_session' ? num(c.rate) ?? 0 : 0);
-    if (amount > 0) out.push({ date, amount, clientId: c.id, type: trial ? 'trial' : 'session', future });
+    if (amount > 0) out.push({ date, amount, clientId: c.id, type: trial ? 'trial' : 'session', future, sessionId: s.id });
   }
   return out;
 }
@@ -98,13 +98,13 @@ function feeItems(inp: RevInput, from: DateStr, to: DateStr, today: DateStr): Re
       if (w < start) w = addDays(w, 7);
       if (w < startOfWeek(from)) w = startOfWeek(from);
       for (; w <= to; w = addDays(w, 7)) {
-        if (w >= from && w >= start) out.push({ date: w, amount: rate, clientId: c.id, type: 'fees', future: w > today });
+        if (w >= from && w >= start) out.push({ date: w, amount: rate, clientId: c.id, type: 'fees', future: w > today, fee: 'weekly' });
       }
     } else if (c.billing_type === 'monthly') {
       let m = startOfMonth(start);
       if (m < startOfMonth(from)) m = startOfMonth(from);
       for (; m <= to; m = addMonths(m, 1)) {
-        if (m >= from) out.push({ date: m, amount: rate, clientId: c.id, type: 'fees', future: m > today });
+        if (m >= from) out.push({ date: m, amount: rate, clientId: c.id, type: 'fees', future: m > today, fee: 'monthly' });
       }
     }
   }
@@ -199,4 +199,28 @@ export function revenueReport(inp: RevInput): RevenueReport {
 /** True when nothing can produce revenue yet (no client rate, no session price). */
 export function hasRevenueInputs(clients: Pick<RevClient, 'rate' | 'billing_type'>[], sessions: Pick<RevSession, 'price'>[]) {
   return clients.some((c) => num(c.rate) && c.billing_type !== 'none') || sessions.some((s) => num(s.price));
+}
+
+export type LineKind = 'session' | 'group' | 'trial' | 'fee' | 'custom';
+export interface BillableLine { session_id: string | null; kind: LineKind; description: string; qty: number; unit_price: number; date: DateStr }
+export interface LineLabels { session: string; group: string; trial: string; weekly: string; monthly: string }
+const DEFAULT_LABELS: LineLabels = { session: 'Session', group: 'Group session', trial: 'Trial', weekly: 'Weekly fee', monthly: 'Monthly fee' };
+
+/**
+ * Lines for a payment request: the same rules as `earned` (completed only), for one client and period,
+ * leaving out sessions already on a non-void request.
+ */
+export function billableLines(
+  inp: RevInput, clientId: string, from: DateStr, to: DateStr,
+  billedSessionIds: Iterable<string> = [], labels: LineLabels = DEFAULT_LABELS,
+): BillableLine[] {
+  const billed = new Set(billedSessionIds);
+  return allItems(inp, from, to)
+    .filter((i) => !i.future && i.clientId === clientId && !(i.sessionId && billed.has(i.sessionId)))
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .map((i) => {
+      const kind: LineKind = i.type === 'fees' ? 'fee' : i.type;
+      const label = i.fee ? labels[i.fee] : labels[i.type as 'session' | 'group' | 'trial'];
+      return { session_id: i.sessionId ?? null, kind, description: `${label} · ${i.date}`.slice(0, 200), qty: 1, unit_price: i.amount, date: i.date };
+    });
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { earned, revenueReport, type RevClient, type RevInput, type RevSession } from './revenue';
+import { billableLines, earned, revenueReport, type RevClient, type RevInput, type RevSession } from './revenue';
 
 const TZ = 'Europe/Sofia';
 const client = (p: Partial<RevClient> = {}): RevClient => ({
@@ -67,5 +67,30 @@ describe('revenue estimate', () => {
     expect(r.lastMonthToDate.total).toBe(30);
     expect(r.lastMonth.total).toBe(60);
     expect(r.deltaPct).toBe(100);
+  });
+
+  it('billable lines follow the earned rules and skip billed sessions', () => {
+    const clients = [client(), client({ id: 'c2' })];
+    const sessions = [
+      session({ id: 'x1' }), session({ id: 'x2', status: 'no_show' }), session({ id: 'x3', kind: 'trial' }),
+      session({ id: 'x4', starts_at: '2026-10-20T08:00:00Z', status: 'scheduled' }), // future
+      session({ id: 'x5' }),
+      session({ id: 'g1', client_id: null, capacity: 6, price: 12, attendees: [{ client_id: 'c1', status: 'attended' }, { client_id: 'c2', status: 'attended' }] }),
+    ];
+    const lines = billableLines(input({ clients, sessions }), 'c1', ...OCT, ['x5']);
+    expect(lines.map((l) => [l.session_id, l.kind, l.unit_price])).toEqual(
+      expect.arrayContaining([['x1', 'session', 30], ['g1', 'group', 12]]),
+    );
+    expect(lines).toHaveLength(2);
+    expect(billableLines(input({ clients, sessions, chargeNoShows: true }), 'c1', ...OCT, ['x5'])).toHaveLength(3);
+  });
+  it('billable lines add one line per weekly / monthly fee', () => {
+    const w = client({ billing_type: 'weekly', rate: 50, billing_start: '2026-09-01' });
+    const sep = billableLines(input({ clients: [w] }), 'c1', '2026-09-01', '2026-09-30');
+    expect(sep.map((l) => l.date)).toEqual(['2026-09-07', '2026-09-14', '2026-09-21', '2026-09-28']);
+    const m = client({ billing_type: 'monthly', rate: 200, billing_start: '2026-09-15' });
+    expect(billableLines(input({ clients: [m] }), 'c1', '2026-09-01', '2026-09-30')).toEqual([
+      expect.objectContaining({ kind: 'fee', unit_price: 200, session_id: null }),
+    ]);
   });
 });

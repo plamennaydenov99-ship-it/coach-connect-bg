@@ -15,8 +15,10 @@ import {
   useSetSessionStatus, useToggleTask, useUpdateClient, type CoachSession,
   usePipelines, stageLabel, pipelineLabel,
 } from '@/hooks/coach/useCoachClients';
-import { Avatar, fmtDate, fmtDateTime, portalBtnGhost, portalBtnPrimary, portalInput, portalLabel, stageKey } from './shared';
+import { Avatar, LOCALES, fmtDate, fmtDateTime, portalBtnGhost, portalBtnPrimary, portalInput, portalLabel, stageKey } from './shared';
 import { toast } from 'sonner';
+import { useStaffPaths } from '@/context/StaffRoleContext';
+import { remaining, usePaymentRequests } from '@/hooks/coach/usePaymentRequests';
 
 type TimelineItem = { id: string; at: string; label: string; text: string };
 
@@ -378,6 +380,11 @@ function BillingSection({ client }: { client: NonNullable<NonNullable<ReturnType
   const [start, setStart] = useState(client.billing_start ?? '');
   const src = client.acquired_via;
   const lokka = src === 'lokka_trending' || src === 'lokka_discover';
+  const { base } = useStaffPaths();
+  const { lang } = useLanguage();
+  const { data: billing } = usePaymentRequests();
+  const owed = (billing?.requests ?? []).filter((r) => r.client_id === client.id).reduce((s, r) => s + remaining(r), 0);
+  const eur = new Intl.NumberFormat(LOCALES[lang], { style: 'currency', currency: 'EUR' }).format(owed);
 
   const save = (e: React.FormEvent) => {
     e.preventDefault();
@@ -413,7 +420,12 @@ function BillingSection({ client }: { client: NonNullable<NonNullable<ReturnType
           <input type="date" value={start} onChange={(e) => setStart(e.target.value)} className={portalInput} />
         </label>
       </div>
-      <button type="submit" className={portalBtnPrimary} disabled={update.isPending}>{t.crm_save}</button>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <button type="submit" className={portalBtnPrimary} disabled={update.isPending}>{t.crm_save}</button>
+        <span className="text-sm text-portal-muted-strong">
+          {t.inv_outstanding_client.replace('{amount}', eur)} · <Link to={`${base}/invoicing?client=${client.id}`} className="text-portal-blue hover:underline">{t.inv_section}</Link>
+        </span>
+      </div>
     </form>
   );
 }
