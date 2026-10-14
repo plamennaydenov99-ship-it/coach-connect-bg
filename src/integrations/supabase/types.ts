@@ -85,6 +85,38 @@ export type Database = {
         }
         Relationships: []
       }
+      billing_settings: {
+        Row: {
+          charge_no_shows: boolean
+          created_at: string
+          currency: string
+          owner_id: string
+          updated_at: string
+        }
+        Insert: {
+          charge_no_shows?: boolean
+          created_at?: string
+          currency?: string
+          owner_id: string
+          updated_at?: string
+        }
+        Update: {
+          charge_no_shows?: boolean
+          created_at?: string
+          currency?: string
+          owner_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_settings_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bookings: {
         Row: {
           athlete_id: string
@@ -438,15 +470,20 @@ export type Database = {
       }
       coach_clients: {
         Row: {
+          acquired_via: string
           athlete_id: string | null
+          billing_start: string | null
+          billing_type: string
           coach_id: string
           created_at: string
+          currency: string
           display_name: string
           email: string | null
           goal: string | null
           id: string
           phone: string | null
           pipeline_id: string | null
+          rate: number | null
           source: string | null
           stage: string
           stage_id: string
@@ -454,15 +491,20 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          acquired_via?: string
           athlete_id?: string | null
+          billing_start?: string | null
+          billing_type?: string
           coach_id: string
           created_at?: string
+          currency?: string
           display_name?: string
           email?: string | null
           goal?: string | null
           id?: string
           phone?: string | null
           pipeline_id?: string | null
+          rate?: number | null
           source?: string | null
           stage?: string
           stage_id: string
@@ -470,15 +512,20 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          acquired_via?: string
           athlete_id?: string | null
+          billing_start?: string | null
+          billing_type?: string
           coach_id?: string
           created_at?: string
+          currency?: string
           display_name?: string
           email?: string | null
           goal?: string | null
           id?: string
           phone?: string | null
           pipeline_id?: string | null
+          rate?: number | null
           source?: string | null
           stage?: string
           stage_id?: string
@@ -649,6 +696,7 @@ export type Database = {
           led_by: string | null
           location: string | null
           note: string | null
+          price: number | null
           resource_id: string | null
           series_id: string | null
           sport: string | null
@@ -670,6 +718,7 @@ export type Database = {
           led_by?: string | null
           location?: string | null
           note?: string | null
+          price?: number | null
           resource_id?: string | null
           series_id?: string | null
           sport?: string | null
@@ -691,6 +740,7 @@ export type Database = {
           led_by?: string | null
           location?: string | null
           note?: string | null
+          price?: number | null
           resource_id?: string | null
           series_id?: string | null
           sport?: string | null
@@ -1125,6 +1175,7 @@ export type Database = {
           kind: string
           led_by: string | null
           location: string | null
+          price: number | null
           resource_id: string | null
           sport: string | null
           start_time: string
@@ -1144,6 +1195,7 @@ export type Database = {
           kind?: string
           led_by?: string | null
           location?: string | null
+          price?: number | null
           resource_id?: string | null
           sport?: string | null
           start_time: string
@@ -1163,6 +1215,7 @@ export type Database = {
           kind?: string
           led_by?: string | null
           location?: string | null
+          price?: number | null
           resource_id?: string | null
           sport?: string | null
           start_time?: string
@@ -1472,6 +1525,10 @@ export type Database = {
       coach_has_athlete: {
         Args: { _athlete: string; _coach: string }
         Returns: boolean
+      }
+      derive_acquired_via: {
+        Args: { _athlete: string; _coach: string; _keep_invite: boolean }
+        Returns: string
       }
       ensure_default_pipeline: { Args: { owner: string }; Returns: string }
       is_admin: { Args: { _user_id: string }; Returns: boolean }

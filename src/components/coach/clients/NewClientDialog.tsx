@@ -3,9 +3,11 @@ import { z } from 'zod';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useLanguage } from '@/context/LanguageContext';
 import { useEffect } from 'react';
-import { ALL_STAGES, pipelineLabel, stageLabel, useCreateClient, usePipelines } from '@/hooks/coach/useCoachClients';
+import { ALL_STAGES, pipelineLabel, stageLabel, useCreateClient, usePipelines, useUpdateClient } from '@/hooks/coach/useCoachClients';
 import { portalBtnGhost, portalBtnPrimary, portalInput, portalLabel } from './shared';
 import { toast } from 'sonner';
+
+export const BILL_TYPES = ['none', 'per_session', 'weekly', 'monthly'] as const;
 
 const schema = z.object({
   display_name: z.string().trim().min(1).max(120),
@@ -18,6 +20,7 @@ const schema = z.object({
 export function NewClientDialog({ open, onOpenChange, onCreated, pipelineId }: { open: boolean; onOpenChange: (o: boolean) => void; onCreated?: (id: string) => void; pipelineId?: string | null }) {
   const { t } = useLanguage();
   const create = useCreateClient();
+  const update = useUpdateClient();
   const empty = { display_name: '', phone: '', email: '', goal: '', source: '' };
   const [v, setV] = useState(empty);
   const { data: pipelines = [] } = usePipelines();
@@ -36,6 +39,8 @@ export function NewClientDialog({ open, onOpenChange, onCreated, pipelineId }: {
     setPid(id);
     setStageId((p?.stages.find((s) => s.category !== 'archived'))?.id ?? '');
   };
+  const [billType, setBillType] = useState('none');
+  const [rate, setRate] = useState('');
   const [err, setErr] = useState<string | null>(null);
 
   const submit = async (e: React.FormEvent) => {
@@ -48,6 +53,8 @@ export function NewClientDialog({ open, onOpenChange, onCreated, pipelineId }: {
     try {
       const st = boardStages.find((s) => s.id === stageId);
       const row = await create.mutateAsync({ ...parsed.data, stage: (st?.category ?? 'enquiry') as any, stage_id: st?.id } as any);
+      if (billType !== 'none' || rate.trim()) await update.mutateAsync({ id: row.id, billing_type: billType, rate: rate.trim() && Number(rate) >= 0 ? Math.round(Number(rate) * 100) / 100 : null });
+      setBillType('none'); setRate('');
       setV(empty); setErr(null);
       onOpenChange(false);
       onCreated?.(row.id);
@@ -90,6 +97,18 @@ export function NewClientDialog({ open, onOpenChange, onCreated, pipelineId }: {
               <select className={portalInput} value={stageId} onChange={(e) => setStageId(e.target.value)}>
                 {boardStages.map((s) => <option key={s.id} value={s.id}>{stageLabel(s, t)}</option>)}
               </select>
+            </label>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <label className="block space-y-1">
+              <span className={portalLabel}>{t.bill_type}</span>
+              <select className={portalInput} value={billType} onChange={(e) => setBillType(e.target.value)}>
+                {BILL_TYPES.map((b) => <option key={b} value={b}>{t[`bill_${b}`]}</option>)}
+              </select>
+            </label>
+            <label className="block space-y-1">
+              <span className={portalLabel}>{t.bill_rate}</span>
+              <input type="number" min={0} step="0.01" className={portalInput} value={rate} onChange={(e) => setRate(e.target.value)} />
             </label>
           </div>
           {err && <p className="text-sm text-portal-coral-text">{err}</p>}

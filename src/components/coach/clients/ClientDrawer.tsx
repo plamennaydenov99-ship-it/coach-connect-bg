@@ -340,6 +340,7 @@ function DetailsTab({ client, onDeleted }: { client: NonNullable<NonNullable<Ret
         {f('source', t.crm_source)}
         <button type="submit" className={portalBtnPrimary} disabled={update.isPending}>{t.crm_save}</button>
       </form>
+      <BillingSection client={client} />
       <div className="pt-4 border-t border-portal-border flex flex-wrap gap-2">
         <button className={portalBtnGhost} onClick={() => move.move(client.id, archived ? 'enquiry' : 'archived').catch(() => toast.error(t.crm_error))}>
           {archived ? t.crm_unarchive : t.crm_archive}
@@ -364,5 +365,55 @@ function DetailsTab({ client, onDeleted }: { client: NonNullable<NonNullable<Ret
         </AlertDialogContent>
       </AlertDialog>
     </div>
+  );
+}
+
+const BILLING_TYPES = ['none', 'per_session', 'weekly', 'monthly'] as const;
+
+function BillingSection({ client }: { client: NonNullable<NonNullable<ReturnType<typeof useClientDetail>['data']>['client']> }) {
+  const { t } = useLanguage();
+  const update = useUpdateClient();
+  const [type, setType] = useState(client.billing_type);
+  const [rate, setRate] = useState(client.rate != null ? Number(client.rate).toFixed(2) : '');
+  const [start, setStart] = useState(client.billing_start ?? '');
+  const src = client.acquired_via;
+  const lokka = src === 'lokka_trending' || src === 'lokka_discover';
+
+  const save = (e: React.FormEvent) => {
+    e.preventDefault();
+    const r = rate.trim() === '' ? null : Number(rate);
+    if (r != null && (!Number.isFinite(r) || r < 0)) return toast.error(t.crm_error);
+    update.mutate(
+      { id: client.id, billing_type: type, rate: r == null ? null : Math.round(r * 100) / 100, billing_start: start || null },
+      { onSuccess: () => toast.success(t.crm_saved), onError: () => toast.error(t.crm_error) },
+    );
+  };
+
+  return (
+    <form onSubmit={save} className="space-y-3 pt-4 border-t border-portal-border">
+      <div className="flex items-center justify-between gap-2">
+        <h3 className="font-display uppercase tracking-[0.1em] text-portal-ink">{t.bill_section}</h3>
+        <span className={`text-xs px-2 py-0.5 rounded-[4px] border ${lokka ? 'bg-portal-selected border-portal-selected-border text-portal-blue' : 'border-portal-border text-portal-muted-strong'}`}>
+          {t[`src_${src}`] ?? t.src_own}
+        </span>
+      </div>
+      <label className="block space-y-1">
+        <span className={portalLabel}>{t.bill_type}</span>
+        <select value={type} onChange={(e) => setType(e.target.value)} className={portalInput}>
+          {BILLING_TYPES.map((b) => <option key={b} value={b}>{t[`bill_${b}`]}</option>)}
+        </select>
+      </label>
+      <div className="grid grid-cols-2 gap-3">
+        <label className="block space-y-1">
+          <span className={portalLabel}>{t.bill_rate}</span>
+          <input type="number" min={0} step="0.01" value={rate} onChange={(e) => setRate(e.target.value)} className={portalInput} />
+        </label>
+        <label className="block space-y-1">
+          <span className={portalLabel}>{t.bill_start}</span>
+          <input type="date" value={start} onChange={(e) => setStart(e.target.value)} className={portalInput} />
+        </label>
+      </div>
+      <button type="submit" className={portalBtnPrimary} disabled={update.isPending}>{t.crm_save}</button>
+    </form>
   );
 }

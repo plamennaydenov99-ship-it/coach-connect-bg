@@ -11,6 +11,7 @@ import { useClubResources } from '@/hooks/coach/useClubResources';
 import { addDays, type DateStr } from '@/lib/tz';
 import { Avatar, fmtDateTime, portalBtnGhost, portalBtnPrimary, portalInput, portalLabel } from '@/components/coach/clients/shared';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 const DURATIONS = [30, 45, 60, 90];
 
@@ -46,6 +47,12 @@ export function QuickBookForm({ initial, onDone, onClose }: {
   const [ledBy, setLedBy] = useState('');
   const [capacity, setCapacity] = useState(12);
   const [isPublic, setPublic] = useState(false);
+  const [price, setPrice] = useState('');
+  useEffect(() => {
+    if (!user || club) return;
+    supabase.from('coach_profiles').select('price_per_group_session').eq('id', user.id).maybeSingle()
+      .then(({ data }) => { if (data?.price_per_group_session != null) setPrice((p) => p || String(data.price_per_group_session)); });
+  }, [user, club]);
   const [attendeeIds, setAttendees] = useState<string[]>(initial.clientId ? [initial.clientId] : []);
   const [repeat, setRepeat] = useState(false);
   const [endsOn, setEndsOn] = useState(addDays(initial.date, TOPUP_WEEKS * 7));
@@ -80,7 +87,7 @@ export function QuickBookForm({ initial, onDone, onClose }: {
     if (kind === 'group' && (!Number.isInteger(capacity) || capacity < 1 || attendeeIds.length > capacity)) return toast.error(t.group_capacity_error);
     if (!user) return;
     if (!date || !/^\d{2}:\d{2}$/.test(time) || duration < 5 || duration > 600) return;
-    const input = { resource_id: resourceId || null, note: kind === 'hire' ? note : '', skip: [] as string[], client_id: kind === 'group' || kind === 'hire' ? null : clientId, date, time, duration, location: location.trim().slice(0, 200), kind: kind === 'trial' ? 'trial' as const : kind === 'hire' ? 'hire' as const : 'session' as const, repeat, endsOn: repeat ? endsOn || null : null, capacity: kind === 'group' ? capacity : null, title: title.trim(), sport: sport.trim(), led_by: ledBy.trim(), is_public: isPublic, attendee_ids: attendeeIds };
+    const input = { resource_id: resourceId || null, note: kind === 'hire' ? note : '', skip: [] as string[], client_id: kind === 'group' || kind === 'hire' ? null : clientId, date, time, duration, location: location.trim().slice(0, 200), kind: kind === 'trial' ? 'trial' as const : kind === 'hire' ? 'hire' as const : 'session' as const, repeat, endsOn: repeat ? endsOn || null : null, capacity: kind === 'group' ? capacity : null, title: title.trim(), sport: sport.trim(), led_by: ledBy.trim(), is_public: isPublic, attendee_ids: attendeeIds, price: kind === 'group' && price.trim() !== '' && Number(price) >= 0 ? Math.round(Number(price) * 100) / 100 : null };
     try {
       if (input.resource_id) {
         const cands = bookingCandidates(input, tz);
@@ -124,6 +131,7 @@ export function QuickBookForm({ initial, onDone, onClose }: {
         <label className="block space-y-1"><span className={portalLabel}>{t.group_sport}</span><input value={sport} onChange={e => setSport(e.target.value)} maxLength={80} className={portalInput} /></label>
         <label className="block space-y-1"><span className={portalLabel}>{t.group_led_by}</span><input value={ledBy} onChange={e => setLedBy(e.target.value)} maxLength={80} className={portalInput} /></label>
         <label className="block space-y-1"><span className={portalLabel}>{t.group_capacity}</span><input type="number" required min={1} step={1} value={capacity} onChange={e => setCapacity(Number(e.target.value))} className={portalInput} /></label>
+        <label className="block space-y-1"><span className={portalLabel}>{t.grp_price}</span><input type="number" min={0} step="0.01" value={price} onChange={e => setPrice(e.target.value)} className={portalInput} /></label>
         <div><label className="flex justify-between items-center text-sm">{t.group_trending}<Switch checked={isPublic} onCheckedChange={setPublic} /></label>
           <p className="text-xs text-portal-muted mt-1">{t.group_trending_hint}</p></div>
         <fieldset className="space-y-2"><legend className={portalLabel}>{t.group_attendees} · {attendeeIds.length}/{capacity}</legend>
