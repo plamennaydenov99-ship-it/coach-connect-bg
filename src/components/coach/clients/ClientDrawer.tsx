@@ -340,6 +340,7 @@ function DetailsTab({ client, onDeleted }: { client: NonNullable<NonNullable<Ret
         {f('source', t.crm_source)}
         <button type="submit" className={portalBtnPrimary} disabled={update.isPending}>{t.crm_save}</button>
       </form>
+      <BillingSection client={client} />
       <div className="pt-4 border-t border-portal-border flex flex-wrap gap-2">
         <button className={portalBtnGhost} onClick={() => move.move(client.id, archived ? 'enquiry' : 'archived').catch(() => toast.error(t.crm_error))}>
           {archived ? t.crm_unarchive : t.crm_archive}
