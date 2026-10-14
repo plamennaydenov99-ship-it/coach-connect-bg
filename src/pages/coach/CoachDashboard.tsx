@@ -14,6 +14,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/hooks/useAuth';
 import { sessionFill, useCoachTz, useSessionStatus, type CalSession } from '@/hooks/coach/useCoachCalendar';
 import { useToggleTask, BOARD_STAGES } from '@/hooks/coach/useCoachClients';
+import { RevenueCard } from '@/components/coach/dashboard/RevenueCard';
 import { MobileTodayCards } from '@/components/coach/dashboard/MobileTodayCards';
 import { useCoachDashboard, useCoachInbox, useQuickTask } from '@/hooks/coach/useCoachDashboard';
 import { useUnreadCount } from '@/hooks/coach/useUnreadCount';
@@ -93,6 +94,8 @@ export default function CoachDashboard() {
             </>
           )}
         </div>
+
+        <RevenueCard />
 
         <div className="grid lg:grid-cols-2 gap-6">
           <section className={`${card} lg:col-span-2 hidden md:block`}>

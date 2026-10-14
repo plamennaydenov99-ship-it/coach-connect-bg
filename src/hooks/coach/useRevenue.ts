@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useCoachTz } from '@/hooks/coach/useCoachCalendar';
 import { addDays, addMonths, startOfWeek, todayStr, zonedToUtc } from '@/lib/tz';
-import { earned, hasRevenueInputs, revenueReport, type RevClient, type RevInput, type RevSession } from '@/lib/revenue';
+import { hasRevenueInputs, revenueReport, type RevClient, type RevInput, type RevSession } from '@/lib/revenue';
 
 /** Revenue estimate for the staff dashboard: this month, last month and a 12-week series. */
 export function useRevenue() {
@@ -35,7 +35,6 @@ export function useRevenue() {
         ...revenueReport(input),
         hasInputs: hasRevenueInputs(clients, sessions),
         pipelines: p.data ?? [],
-        _earned: (fromD: string, toD: string) => earned(input, fromD, toD),
       };
     },
   });
