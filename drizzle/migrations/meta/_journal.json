@@ -120,6 +120,13 @@
       "when": 1792011262348,
       "tag": "0016_acquired_via_bookings",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1792011563253,
+      "tag": "0017_payment_requests",
+      "breakpoints": true
     }
   ]
 }

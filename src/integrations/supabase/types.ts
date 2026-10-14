@@ -90,21 +90,33 @@ export type Database = {
           charge_no_shows: boolean
           created_at: string
           currency: string
+          default_due_days: number
+          iban: string | null
           owner_id: string
+          payment_link: string | null
+          request_prefix: string
           updated_at: string
         }
         Insert: {
           charge_no_shows?: boolean
           created_at?: string
           currency?: string
+          default_due_days?: number
+          iban?: string | null
           owner_id: string
+          payment_link?: string | null
+          request_prefix?: string
           updated_at?: string
         }
         Update: {
           charge_no_shows?: boolean
           created_at?: string
           currency?: string
+          default_due_days?: number
+          iban?: string | null
           owner_id?: string
+          payment_link?: string | null
+          request_prefix?: string
           updated_at?: string
         }
         Relationships: [
@@ -969,6 +981,186 @@ export type Database = {
             columns: ["conversation_id"]
             isOneToOne: false
             referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_request_lines: {
+        Row: {
+          amount: number | null
+          description: string
+          id: string
+          kind: string
+          owner_id: string
+          position: number
+          qty: number
+          request_id: string
+          session_id: string | null
+          unit_price: number
+        }
+        Insert: {
+          amount?: number | null
+          description: string
+          id?: string
+          kind: string
+          owner_id: string
+          position?: number
+          qty?: number
+          request_id: string
+          session_id?: string | null
+          unit_price?: number
+        }
+        Update: {
+          amount?: number | null
+          description?: string
+          id?: string
+          kind?: string
+          owner_id?: string
+          position?: number
+          qty?: number
+          request_id?: string
+          session_id?: string | null
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_request_lines_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "payment_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_request_lines_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "coach_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_request_lines_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "public_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_requests: {
+        Row: {
+          client_id: string
+          created_at: string
+          currency: string | null
+          due_date: string | null
+          id: string
+          issue_date: string | null
+          notes: string | null
+          number: string | null
+          owner_id: string
+          paid_amount: number
+          paid_at: string | null
+          period_end: string | null
+          period_start: string | null
+          sent_at: string | null
+          status: string
+          total: number
+          updated_at: string
+          voided_at: string | null
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          currency?: string | null
+          due_date?: string | null
+          id?: string
+          issue_date?: string | null
+          notes?: string | null
+          number?: string | null
+          owner_id: string
+          paid_amount?: number
+          paid_at?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          sent_at?: string | null
+          status?: string
+          total?: number
+          updated_at?: string
+          voided_at?: string | null
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          currency?: string | null
+          due_date?: string | null
+          id?: string
+          issue_date?: string | null
+          notes?: string | null
+          number?: string | null
+          owner_id?: string
+          paid_amount?: number
+          paid_at?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          sent_at?: string | null
+          status?: string
+          total?: number
+          updated_at?: string
+          voided_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_requests_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "coach_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_requests_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payments: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          method: string
+          note: string | null
+          owner_id: string
+          paid_on: string
+          request_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          method?: string
+          note?: string | null
+          owner_id: string
+          paid_on?: string
+          request_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          method?: string
+          note?: string | null
+          owner_id?: string
+          paid_on?: string
+          request_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "payment_requests"
             referencedColumns: ["id"]
           },
         ]
