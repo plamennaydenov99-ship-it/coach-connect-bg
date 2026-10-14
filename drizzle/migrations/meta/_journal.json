@@ -113,6 +113,13 @@
       "when": 1792011027794,
       "tag": "0015_billing_inputs",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1792011262348,
+      "tag": "0016_acquired_via_bookings",
+      "breakpoints": true
     }
   ]
 }
