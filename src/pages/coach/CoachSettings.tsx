@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Switch } from '@/components/ui/switch';
+import { useSaveBillingSettings } from '@/hooks/coach/usePaymentRequests';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
@@ -94,6 +95,7 @@ export default function CoachSettings() {
           </span>
           <Switch checked={!!billing?.charge_no_shows} onCheckedChange={setChargeNoShows} aria-label={t.set_charge_noshow} />
         </label>
+        <BillingDetails key={billing ? 'loaded' : 'empty'} initial={billing ?? null} />
       </section>
 
       <section className={card}>
@@ -113,5 +115,39 @@ export default function CoachSettings() {
         <p className="text-sm text-portal-muted">{t.cset_delete_contact.replace('{email}', CONTACT_EMAIL)}</p>
       </section>
     </div>
+  );
+}
+
+function BillingDetails({ initial }: { initial: { payment_link: string | null; iban: string | null; default_due_days: number; request_prefix: string } | null }) {
+  const { t } = useLanguage();
+  const save = useSaveBillingSettings();
+  const [link, setLink] = useState(initial?.payment_link ?? '');
+  const [iban, setIban] = useState(initial?.iban ?? '');
+  const [days, setDays] = useState(String(initial?.default_due_days ?? 14));
+  const [prefix, setPrefix] = useState(initial?.request_prefix ?? 'LK');
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const l = link.trim(), d = Number(days), pre = prefix.trim().toUpperCase();
+    if (l && (!/^https:\/\//.test(l) || l.length > 300)) return toast.error(t.set_payment_link_error);
+    if (!Number.isInteger(d) || d < 0 || d > 90) return toast.error(t.set_due_days_error);
+    if (!/^[A-Z0-9]{1,8}$/.test(pre)) return toast.error(t.set_prefix_error);
+    save.mutate(
+      { payment_link: l || null, iban: iban.replace(/\s+/g, ' ').trim().slice(0, 40) || null, default_due_days: d, request_prefix: pre },
+      { onSuccess: () => toast.success(t.dashsettings_saved), onError: () => toast.error(t.crm_error) },
+    );
+  };
+  return (
+    <form onSubmit={submit} className="grid sm:grid-cols-2 gap-3 pt-4 border-t border-portal-border">
+      <label className="grid gap-1.5 sm:col-span-2"><span className={portalLabel}>{t.set_payment_link}</span>
+        <input type="url" value={link} maxLength={300} placeholder="https://" onChange={(e) => setLink(e.target.value)} className={portalInput} /></label>
+      <label className="grid gap-1.5 sm:col-span-2"><span className={portalLabel}>IBAN</span>
+        <input value={iban} maxLength={40} onChange={(e) => setIban(e.target.value)} className={`${portalInput} font-mono`} /></label>
+      <label className="grid gap-1.5"><span className={portalLabel}>{t.set_due_days}</span>
+        <input type="number" min={0} max={90} step={1} value={days} onChange={(e) => setDays(e.target.value)} className={portalInput} /></label>
+      <label className="grid gap-1.5"><span className={portalLabel}>{t.set_request_prefix}</span>
+        <input value={prefix} maxLength={8} onChange={(e) => setPrefix(e.target.value.toUpperCase())} className={`${portalInput} font-mono`} /></label>
+      <p className="text-xs text-portal-muted sm:col-span-2">{t.set_billing_details_sub}</p>
+      <div className="sm:col-span-2"><button type="submit" disabled={save.isPending} className={portalBtnPrimary}>{t.dashsettings_save}</button></div>
+    </form>
   );
 }
