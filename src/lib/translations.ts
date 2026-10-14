@@ -1,5 +1,6 @@
 export const t = {
   en: {
+    bill_section: 'Billing', bill_type: 'Billing', bill_none: 'Not set', bill_per_session: 'Per session', bill_weekly: 'Weekly', bill_monthly: 'Monthly', bill_rate: 'Rate (€)', bill_start: 'Billing from', src_lokka_trending: 'From Lokka · Trending', src_lokka_discover: 'From Lokka · Discover', src_invite: 'Invited', src_own: 'Own client', grp_price: 'Price per person (€)', msg_add_client: 'Add to clients', msg_new_client: 'New client', msg_link_client: 'Link to existing client', msg_open_client: 'Open client card', set_charge_noshow: 'Charge no-shows', set_charge_noshow_sub: 'Missed sessions count toward revenue',
     crm_all_pipelines: 'All pipelines',
     crm_new_pipeline: 'New pipeline',
     crm_pipeline: 'Pipeline',
@@ -1088,6 +1089,7 @@ export const t = {
   },
 
   bg: {
+    bill_section: 'Плащане', bill_type: 'Начин на плащане', bill_none: 'Не е зададено', bill_per_session: 'На тренировка', bill_weekly: 'Седмично', bill_monthly: 'Месечно', bill_rate: 'Цена (€)', bill_start: 'Плаща от', src_lokka_trending: 'От Lokka · Trending', src_lokka_discover: 'От Lokka · Открий', src_invite: 'Поканен', src_own: 'Твой клиент', grp_price: 'Цена на човек (€)', msg_add_client: 'Добави в клиенти', msg_new_client: 'Нов клиент', msg_link_client: 'Свържи със съществуващ клиент', msg_open_client: 'Отвори картата', set_charge_noshow: 'Таксувай неявили се', set_charge_noshow_sub: 'Пропуснатите тренировки влизат в приходите',
     crm_all_pipelines: 'Всички фунии',
     crm_new_pipeline: 'Нова фуния',
     crm_pipeline: 'Фуния',
@@ -2168,6 +2170,7 @@ export const t = {
   },
 
   fr: {
+    bill_section: 'Facturation', bill_type: 'Mode de facturation', bill_none: 'Non défini', bill_per_session: 'Par séance', bill_weekly: 'Hebdomadaire', bill_monthly: 'Mensuel', bill_rate: 'Tarif (€)', bill_start: 'Facturé depuis', src_lokka_trending: 'Via Lokka · Tendances', src_lokka_discover: 'Via Lokka · Découvrir', src_invite: 'Invité', src_own: 'Client personnel', grp_price: 'Prix par personne (€)', msg_add_client: 'Ajouter aux clients', msg_new_client: 'Nouveau client', msg_link_client: 'Lier à un client existant', msg_open_client: 'Ouvrir la fiche client', set_charge_noshow: 'Facturer les absences', set_charge_noshow_sub: 'Les séances manquées comptent dans le chiffre d’affaires',
     crm_all_pipelines: 'Tous les pipelines',
     crm_new_pipeline: 'Nouveau pipeline',
     crm_pipeline: 'Pipeline',

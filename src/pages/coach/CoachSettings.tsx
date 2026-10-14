@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
@@ -30,6 +31,24 @@ export default function CoachSettings() {
   const qc = useQueryClient();
   const [tz, setTz] = useState<string>((profile as any)?.timezone || 'Europe/Sofia');
   const [saving, setSaving] = useState(false);
+
+  const billingKey = ['coach', user?.id, 'billing_settings'];
+  const { data: billing } = useQuery({
+    queryKey: billingKey,
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await supabase.from('billing_settings').select('*').eq('owner_id', user!.id).maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
+  const setChargeNoShows = async (on: boolean) => {
+    if (!user) return;
+    const { error } = await supabase.from('billing_settings').upsert({ owner_id: user.id, charge_no_shows: on }, { onConflict: 'owner_id' });
+    if (error) { toast.error(t.crm_error); return; }
+    qc.invalidateQueries({ queryKey: billingKey });
+    toast.success(t.dashsettings_saved);
+  };
 
   const saveTz = async () => {
     if (!user || !TIMEZONES.some((z) => z.value === tz)) return;
@@ -64,6 +83,17 @@ export default function CoachSettings() {
           </select>
           <button onClick={saveTz} disabled={saving} className={portalBtnPrimary}>{t.dashsettings_save}</button>
         </div>
+      </section>
+
+      <section className={card}>
+        <h2 className={h2}>{t.bill_section}</h2>
+        <label className="flex items-center justify-between gap-4">
+          <span>
+            <span className="block text-sm text-portal-ink">{t.set_charge_noshow}</span>
+            <span className="block text-sm text-portal-muted">{t.set_charge_noshow_sub}</span>
+          </span>
+          <Switch checked={!!billing?.charge_no_shows} onCheckedChange={setChargeNoShows} aria-label={t.set_charge_noshow} />
+        </label>
       </section>
 
       <section className={card}>

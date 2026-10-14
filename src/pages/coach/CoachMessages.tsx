@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { useStaffPaths } from '@/context/StaffRoleContext';
+import { portalBtnGhost, portalBtnPrimary, portalInput } from '@/components/coach/clients/shared';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, Inbox, Send, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
@@ -128,7 +132,8 @@ function Thread({ id, name, onBack }: { id: string; name: string; onBack: () => 
       <div className="h-14 px-3 md:px-4 flex items-center gap-3 border-b border-portal-border">
         <button onClick={onBack} aria-label={t.cmsg_back} className="md:hidden h-9 w-9 flex items-center justify-center rounded-[4px] hover:bg-portal-bg"><ArrowLeft className="h-4 w-4" /></button>
         <Avatar name={name} size={32} />
-        <span className="font-medium text-portal-ink truncate">{name}</span>
+        <span className="font-medium text-portal-ink truncate flex-1">{name}</span>
+        <ClientLink conversationId={id} name={name} />
       </div>
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3 bg-portal-bg">
         {isLoading ? <Skeleton className="h-16 w-2/3" /> : messages.map((m) => {
@@ -156,6 +161,89 @@ function Thread({ id, name, onBack }: { id: string; name: string; onBack: () => 
           <Send className="h-4 w-4" />{t.cmsg_send}
         </button>
       </form>
+    </>
+  );
+}
+
+function ClientLink({ conversationId, name }: { conversationId: string; name: string }) {
+  const { t } = useLanguage();
+  const { user } = useAuth();
+  const { peoplePath } = useStaffPaths();
+  const qc = useQueryClient();
+  const [linkOpen, setLinkOpen] = useState(false);
+  const [pick, setPick] = useState('');
+  const [busy, setBusy] = useState(false);
+
+  const { data } = useQuery({
+    queryKey: ['coach', user?.id, 'thread-client', conversationId],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data: conv, error } = await supabase.from('conversations').select('athlete_id, coach_id').eq('id', conversationId).maybeSingle();
+      if (error) throw error;
+      if (!conv || conv.coach_id !== user!.id) return null;
+      const { data: prof } = await supabase.from('profiles').select('role').eq('id', conv.athlete_id).maybeSingle();
+      if (prof && prof.role !== 'athlete') return null;
+      const [linked, unlinked] = await Promise.all([
+        supabase.from('coach_clients').select('id').eq('coach_id', user!.id).eq('athlete_id', conv.athlete_id).maybeSingle(),
+        supabase.from('coach_clients').select('id, display_name').eq('coach_id', user!.id).is('athlete_id', null).neq('stage', 'archived').order('display_name'),
+      ]);
+      return { athleteId: conv.athlete_id, clientId: linked.data?.id ?? null, unlinked: unlinked.data ?? [] };
+    },
+  });
+  if (!data) return null;
+
+  const done = () => qc.invalidateQueries({ queryKey: ['coach', user?.id] });
+  if (data.clientId) {
+    return <Link to={`${peoplePath}/${data.clientId}`} className={`${portalBtnGhost} shrink-0`}>{t.msg_open_client}</Link>;
+  }
+
+  const createNew = async () => {
+    if (!user || busy) return;
+    setBusy(true);
+    const { error } = await supabase.from('coach_clients').insert({
+      coach_id: user.id, athlete_id: data.athleteId, display_name: (name && name !== '—' ? name : t.msg_new_client).slice(0, 120),
+      stage: 'enquiry', stage_id: null as unknown as string,
+    });
+    setBusy(false);
+    if (error) { toast.error(error.message.includes('contacted') ? error.message : t.crm_error); return; }
+    toast.success(t.crm_client_created);
+    done();
+  };
+
+  const link = async () => {
+    if (!user || !pick || busy) return;
+    setBusy(true);
+    const { error } = await supabase.from('coach_clients').update({ athlete_id: data.athleteId }).eq('id', pick).eq('coach_id', user.id).is('athlete_id', null);
+    setBusy(false);
+    if (error) { toast.error(t.crm_error); return; }
+    toast.success(t.crm_saved);
+    setLinkOpen(false);
+    done();
+  };
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button className={`${portalBtnGhost} shrink-0`} disabled={busy}>{t.msg_add_client}</button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="coach-portal">
+          <DropdownMenuItem onSelect={createNew}>{t.msg_new_client}</DropdownMenuItem>
+          <DropdownMenuItem disabled={!data.unlinked.length} onSelect={() => { setPick(data.unlinked[0]?.id ?? ''); setLinkOpen(true); }}>{t.msg_link_client}</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <Dialog open={linkOpen} onOpenChange={setLinkOpen}>
+        <DialogContent className="coach-portal bg-portal-card border-portal-border rounded-[4px] max-w-sm">
+          <DialogHeader><DialogTitle className="font-display uppercase tracking-[0.1em] text-portal-ink">{t.msg_link_client}</DialogTitle></DialogHeader>
+          <select value={pick} onChange={(e) => setPick(e.target.value)} className={portalInput} aria-label={t.msg_link_client}>
+            {data.unlinked.map((c) => <option key={c.id} value={c.id}>{c.display_name}</option>)}
+          </select>
+          <div className="flex justify-end gap-2">
+            <button className={portalBtnGhost} onClick={() => setLinkOpen(false)}>{t.crm_cancel}</button>
+            <button className={portalBtnPrimary} onClick={link} disabled={!pick || busy}>{t.crm_save}</button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
