@@ -104,7 +104,7 @@ async function fillSeries(series: Series, from: DateStr, until: DateStr, tz: str
     .map((o) => ({
       coach_id: series.coach_id, client_id: series.client_id, series_id: series.id,
       starts_at: o.starts_at, ends_at: o.ends_at, location: series.location, kind: series.kind,
-      capacity: series.capacity, title: series.title, sport: series.sport, led_by: series.led_by, is_public: series.is_public, resource_id: series.resource_id, note,
+      capacity: series.capacity, title: series.title, sport: series.sport, led_by: series.led_by, is_public: series.is_public, resource_id: series.resource_id, price: series.price, note,
     }));
   if (!rows.length) return 0;
   const ins = await supabase.from('coach_sessions').insert(rows);
@@ -175,6 +175,7 @@ export interface BookInput {
   led_by?: string;
   sport?: string;
   is_public?: boolean;
+  price?: number | null;
   attendee_ids?: string[];
   date: DateStr;
   time: TimeStr;
@@ -211,7 +212,7 @@ export function useBookSession() {
       if (v.capacity != null) {
         const { error } = await supabase.rpc('book_group_session', { payload: {
           capacity: v.capacity, title: v.title || null, sport: v.sport || null, is_public: v.is_public ?? false,
-          led_by: v.led_by?.trim().slice(0, 80) || null, resource_id,
+          led_by: v.led_by?.trim().slice(0, 80) || null, resource_id, price: v.price ?? null,
           attendee_ids: v.attendee_ids ?? [], repeat: v.repeat, location: v.location || null,
           date: v.date, time: v.time, duration: v.duration, weekday: isoWeekday(v.date), ends_on: v.endsOn,
           occurrences: bookingCandidates(v, tz).filter((c) => !skip.has(c.starts_at)),
