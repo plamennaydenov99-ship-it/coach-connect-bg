@@ -41,7 +41,7 @@ export function ClientCard({ c, onOpen, touch, dragging, columns = [] }: { c: Cl
   return (
     <div
       onClick={onOpen}
-      className={`group motion-card bg-portal-card border border-portal-border rounded-[4px] p-3 space-y-2 cursor-pointer hover:border-portal-input ${dragging ? 'opacity-90 border-portal-selected-border' : ''}`}
+      className={`group motion-card bg-portal-card border border-portal-border rounded-none p-3 space-y-2 cursor-pointer hover:border-portal-input ${dragging ? 'opacity-90 border-portal-selected-border' : ''}`}
     >
       <div className="flex items-start gap-2">
         <Avatar name={c.display_name} />
@@ -51,7 +51,7 @@ export function ClientCard({ c, onOpen, touch, dragging, columns = [] }: { c: Cl
         </div>
         {touch && (
           <DropdownMenu>
-            <DropdownMenuTrigger onClick={(e) => e.stopPropagation()} className="h-8 w-8 flex items-center justify-center rounded-[4px] text-portal-muted-strong" aria-label={t.crm_move_to}>
+            <DropdownMenuTrigger onClick={(e) => e.stopPropagation()} className="h-8 w-8 flex items-center justify-center rounded-none text-portal-muted-strong" aria-label={t.crm_move_to}>
               <MoreHorizontal className="h-4 w-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="coach-portal bg-portal-card border-portal-border text-portal-ink" onClick={(e) => e.stopPropagation()}>
@@ -73,7 +73,7 @@ export function ClientCard({ c, onOpen, touch, dragging, columns = [] }: { c: Cl
         <span className="inline-flex items-center gap-1" title={t.crm_attended}><Activity className="h-3.5 w-3.5" />{c.attendedCount}</span>
         <span className="inline-flex items-center gap-1" title={t.crm_open_tasks}><CheckSquare className="h-3.5 w-3.5" />{c.openTasks}</span>
         {c.athlete_id && (
-          <span className="ml-auto font-display uppercase tracking-[0.1em] text-[10px] px-1.5 py-0.5 rounded-[4px] border border-portal-selected-border bg-portal-selected text-portal-ink">
+          <span className="ml-auto font-display uppercase tracking-[0.02em] text-[10px] px-1.5 py-0.5 rounded-none border border-portal-selected-border bg-portal-selected text-portal-ink">
             {t.crm_member}
           </span>
         )}
@@ -96,10 +96,10 @@ function Column({ col, columns, ids, byId, onOpen, touch }: { col: BoardColumn; 
   return (
     <div className="w-[272px] md:w-auto md:flex-1 md:min-w-[220px] shrink-0 flex flex-col">
       <div className="flex items-center justify-between px-1 pb-2">
-        <span className="font-display uppercase tracking-[0.14em] text-xs text-portal-muted-strong">{col.label}</span>
+        <span className="font-display uppercase tracking-[0.02em] text-xs text-portal-muted-strong">{col.label}</span>
         <span className="text-xs text-portal-muted">{ids.length}</span>
       </div>
-      <div ref={setNodeRef} className={`flex-1 min-h-[160px] space-y-2 p-2 rounded-[4px] border ${isOver ? 'border-portal-selected-border bg-portal-selected/40' : 'border-portal-border bg-portal-bg'}`}>
+      <div ref={setNodeRef} className={`flex-1 min-h-[160px] space-y-2 p-2 rounded-none border ${isOver ? 'border-portal-selected-border bg-portal-selected/40' : 'border-portal-border bg-portal-bg'}`}>
         {touch ? (
           ids.map((id) => <ClientCard key={id} c={byId.get(id)!} touch columns={columns} onOpen={() => onOpen(id)} />)
         ) : (

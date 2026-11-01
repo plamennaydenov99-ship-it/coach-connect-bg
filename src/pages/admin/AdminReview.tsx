@@ -47,7 +47,7 @@ function DocumentsToCheck({ reviewerId }: { reviewerId: string }) {
 
   return (
     <section className="mt-14">
-      <h2 className="font-display text-2xl uppercase tracking-[0.08em] font-semibold">{t.cert_admin_title}</h2>
+      <h2 className="font-display text-2xl uppercase tracking-[0.02em] font-semibold">{t.cert_admin_title}</h2>
       {certs.length === 0 ? (
         <p className="mt-3 text-sm text-foreground-muted">{t.cert_admin_empty}</p>
       ) : (
@@ -153,7 +153,7 @@ export default function AdminReview() {
     <div className="min-h-screen bg-background">
       <PublicNav />
       <main className="container max-w-3xl py-12">
-        <h1 className="font-display text-4xl uppercase tracking-[0.08em] font-semibold">
+        <h1 className="text-5xl md:text-6xl">
           Coach applications
         </h1>
         <p className="mt-2 text-foreground-muted">
@@ -166,7 +166,7 @@ export default function AdminReview() {
           </div>
         ) : items.length === 0 ? (
           <div className="mt-10 rounded-sm border border-border bg-card p-10 text-center">
-            <p className="font-display uppercase tracking-[0.1em] text-lg">All caught up</p>
+            <p className="font-display uppercase tracking-[0.02em] text-lg">All caught up</p>
             <p className="mt-1 text-sm text-foreground-muted">
               There are no coach applications waiting for review right now.
             </p>
@@ -177,7 +177,7 @@ export default function AdminReview() {
               <li key={c.id} className="rounded-sm border border-border bg-card p-6">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div>
-                    <p className="font-display uppercase tracking-[0.08em] text-xl font-semibold">
+                    <p className="font-display uppercase tracking-[0.02em] text-xl font-semibold">
                       {c.full_name || 'Unnamed coach'}
                     </p>
                     <p className="mt-1 text-sm text-foreground-muted">

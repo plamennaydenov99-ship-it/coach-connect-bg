@@ -110,7 +110,7 @@ export function QuickBookForm({ initial, onDone, onClose }: {
   return (
     <form onSubmit={submit} className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="font-display text-lg uppercase tracking-[0.1em]">{t.cal_quick_book}</h2>
+        <h2 className="font-display text-lg uppercase tracking-[0.02em]">{t.cal_quick_book}</h2>
         <button type="button" onClick={onClose} aria-label={t.cal_close} className="h-8 w-8 flex items-center justify-center text-portal-muted-strong"><X className="h-4 w-4" /></button>
       </div>
 
@@ -119,7 +119,7 @@ export function QuickBookForm({ initial, onDone, onClose }: {
         <div className="flex gap-1.5">
           {(club ? ['group', 'session', 'hire'] as const : ['session', 'trial', 'group'] as const).map((k) => (
             <Button variant="ghost" type="button" key={k} onClick={() => setKind(k)}
-              className={`flex-1 h-9 rounded-[4px] border text-sm ${kind === k ? (k === 'trial' ? 'bg-portal-copper-tint border-portal-copper' : 'bg-portal-selected border-portal-selected-border') : 'border-portal-border text-portal-muted-strong'}`}>
+              className={`flex-1 h-9 rounded-none border text-sm ${kind === k ? (k === 'trial' ? 'bg-portal-copper-tint border-portal-copper' : 'bg-portal-selected border-portal-selected-border') : 'border-portal-border text-portal-muted-strong'}`}>
               {k === 'group' ? t.group_type : k === 'hire' ? t.hire_type : k === 'trial' ? t.cal_type_trial : t.cal_type_one}
             </Button>
           ))}
@@ -147,13 +147,13 @@ export function QuickBookForm({ initial, onDone, onClose }: {
       <div className="space-y-1.5">
         <span className={portalLabel}>{t.cal_client}</span>
         {selected ? (
-          <div className="flex items-center gap-2 p-2 rounded-[4px] border border-portal-selected-border bg-portal-selected">
+          <div className="flex items-center gap-2 p-2 rounded-none border border-portal-selected-border bg-portal-selected">
             <Avatar name={selected.display_name} size={28} />
             <span className="flex-1 text-sm">{selected.display_name}</span>
             <button type="button" onClick={() => setClientId('')} className="text-portal-muted-strong"><X className="h-4 w-4" /></button>
           </div>
         ) : (
-          <div className="rounded-[4px] border border-portal-border">
+          <div className="rounded-none border border-portal-border">
             <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t.cal_search_client} className={`${portalInput} border-0 border-b border-portal-border rounded-b-none`} />
             <ul className="max-h-48 overflow-y-auto">
               {matches.map((c) => (
@@ -194,11 +194,11 @@ export function QuickBookForm({ initial, onDone, onClose }: {
         <div className="flex flex-wrap gap-1.5">
           {DURATIONS.map((d) => (
             <button type="button" key={d} onClick={() => { setDuration(d); setCustom(false); }}
-              className={`h-8 px-3 rounded-[4px] border text-sm ${!custom && duration === d ? 'bg-portal-selected border-portal-selected-border' : 'border-portal-border text-portal-muted-strong'}`}>
+              className={`h-8 px-3 rounded-none border text-sm ${!custom && duration === d ? 'bg-portal-selected border-portal-selected-border' : 'border-portal-border text-portal-muted-strong'}`}>
               {d} {t.cal_minutes}
             </button>
           ))}
-          <button type="button" onClick={() => setCustom(true)} className={`h-8 px-3 rounded-[4px] border text-sm ${custom ? 'bg-portal-selected border-portal-selected-border' : 'border-portal-border text-portal-muted-strong'}`}>{t.cal_custom}</button>
+          <button type="button" onClick={() => setCustom(true)} className={`h-8 px-3 rounded-none border text-sm ${custom ? 'bg-portal-selected border-portal-selected-border' : 'border-portal-border text-portal-muted-strong'}`}>{t.cal_custom}</button>
         </div>
         {custom && <input type="number" min={5} max={600} step={5} value={duration} onChange={(e) => setDuration(Number(e.target.value))} className={`${portalInput} w-28`} />}
       </div>
@@ -228,7 +228,7 @@ export function QuickBookForm({ initial, onDone, onClose }: {
       </div>
 
       {clashes.length > 0 && (
-        <div role="alert" className="space-y-2 p-3 rounded-[4px] border border-portal-ink bg-portal-bg text-sm">
+        <div role="alert" className="space-y-2 p-3 rounded-none border border-portal-ink bg-portal-bg text-sm">
           <div className="flex gap-2"><AlertTriangle className="h-4 w-4 text-portal-ink shrink-0 mt-0.5" /><span className="font-medium">{t.cal_resource_clash}</span></div>
           <ul className="list-disc pl-6 max-h-28 overflow-y-auto">{clashes.map((c) => <li key={c.starts_at}>{fmtDateTime(c.starts_at, lang, tz)}</li>)}</ul>
           <p className="text-portal-muted-strong">{t.cal_clash_change}</p>
@@ -239,7 +239,7 @@ export function QuickBookForm({ initial, onDone, onClose }: {
       )}
 
       {confirmed && overlaps > 0 && (
-        <div className="flex gap-2 p-3 rounded-[4px] border border-portal-copper bg-portal-copper-tint text-sm">
+        <div className="flex gap-2 p-3 rounded-none border border-portal-copper bg-portal-copper-tint text-sm">
           <AlertTriangle className="h-4 w-4 text-portal-ink shrink-0 mt-0.5" />
           <span>{t.cal_overlap_warning.replace('{n}', String(overlaps))}</span>
         </div>

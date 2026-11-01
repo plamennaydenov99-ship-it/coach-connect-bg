@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, MapPin, Calendar, Users, Award } from 'lucide-react';
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
+import { PageHeader } from '@/components/layout/PageHeader';
 import { findCamp, campImage } from '@/lib/camps';
 import { useLanguage } from '@/context/LanguageContext';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -18,7 +19,7 @@ export default function CampDetail() {
         <PublicNav />
         <main className="flex-1 container py-20 text-center">
           <h1 className="font-display text-4xl">Camp not found</h1>
-          <Link to="/camps" className="mt-4 inline-block text-gold">← Back to camps</Link>
+          <Link to="/camps" className="mt-4 inline-block font-semibold text-primary underline">← Back to camps</Link>
         </main>
         <PublicFooter />
       </div>
@@ -42,39 +43,30 @@ export default function CampDetail() {
       <PublicNav />
 
       <main className="flex-1">
-        <section className="relative h-[400px] overflow-hidden">
-          <img src={campImage(camp.image)} alt={camp.name} className="absolute inset-0 h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/30" />
-          <div className="container relative h-full flex flex-col justify-between py-6">
-            <Link to="/camps" className="self-start inline-flex items-center gap-2 px-3 py-2 bg-background/60 backdrop-blur border border-border text-foreground font-display uppercase tracking-[0.12em] text-[12px] rounded-sm hover:border-gold transition-colors">
-              <ArrowLeft className="h-4 w-4" /> Back
-            </Link>
-            <div>
-              <span className="px-2 py-1 bg-background/85 backdrop-blur font-display uppercase tracking-[0.12em] text-[11px] text-gold rounded-sm">
-                {camp.sport}
-              </span>
-              <h1 className="font-display text-4xl md:text-6xl text-foreground mt-3">{camp.name}</h1>
-            </div>
+        <PageHeader title={camp.name} tone="ink" image={campImage(camp.image)}>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link to="/camps" className="inline-flex h-11 items-center gap-2 bg-[#F3EDE2]/15 px-4 font-display text-base font-bold uppercase text-[#F3EDE2] transition-colors hover:bg-[#F3EDE2]/28"><ArrowLeft className="h-4 w-4" /> Back</Link>
+            <span className="bg-[#F3EDE2] px-2.5 py-1 text-sm font-semibold text-foreground">{camp.sport}</span>
           </div>
-        </section>
+        </PageHeader>
 
-        <section className="container py-12 grid gap-10 lg:grid-cols-[2fr_1fr]">
+        <section className="container grid gap-10 py-12 md:py-16 lg:grid-cols-[2fr_1fr]">
           <div className="flex flex-col gap-10">
             <div>
-              <span className="label-eyebrow text-gold">About this camp</span>
-              <p className="mt-3 text-foreground-muted font-body text-[15px] leading-relaxed normal-case">
+              <h2 className="text-4xl">About this camp</h2>
+              <p className="mt-4 max-w-[62ch] text-lg leading-relaxed text-foreground-muted">
                 Join {camp.coach} for an intensive {camp.duration.toLowerCase()} experience in {camp.city}. This camp is designed for {camp.ageGroup.toLowerCase()} at {camp.level.toLowerCase()} level — combining technical drills, tactical sessions and live match play. Limited to a small group to ensure personal attention and rapid progress.
               </p>
             </div>
 
             <div>
-              <span className="label-eyebrow text-gold">Daily schedule</span>
-              <Accordion type="single" collapsible className="mt-3 border border-border rounded-sm">
+              <h2 className="text-4xl">Daily schedule</h2>
+              <Accordion type="single" collapsible className="mt-4 bg-background-secondary">
                 {schedule.map((d, i) => (
-                  <AccordionItem key={i} value={`d-${i}`} className="border-b border-border last:border-b-0 px-4">
-                    <AccordionTrigger className="font-display uppercase tracking-[0.1em] text-[14px]">{d.day}</AccordionTrigger>
+                  <AccordionItem key={i} value={`d-${i}`} className="px-5">
+                    <AccordionTrigger className="font-display text-xl font-bold uppercase">{d.day}</AccordionTrigger>
                     <AccordionContent>
-                      <ul className="space-y-1.5 text-[14px] text-foreground-muted font-body">
+                      <ul className="space-y-1.5 text-base text-foreground-muted">
                         {d.items.map((it, j) => <li key={j}>{it}</li>)}
                       </ul>
                     </AccordionContent>
@@ -83,40 +75,40 @@ export default function CampDetail() {
               </Accordion>
             </div>
 
-            <div className="border border-border bg-card p-5 rounded-sm">
-              <span className="label-eyebrow text-gold">Hosted by</span>
-              <div className="mt-3 flex items-center gap-4">
-                <div className="h-14 w-14 bg-background-tertiary border border-border rounded-sm flex items-center justify-center font-display text-xl text-gold">
+            <div className="surface p-6">
+              <h2 className="text-3xl">Hosted by</h2>
+              <div className="mt-4 flex items-center gap-4">
+                <div className="flex h-14 w-14 items-center justify-center bg-foreground font-display text-2xl font-extrabold text-background">
                   {camp.coach.split(' ').slice(-1)[0][0]}
                 </div>
                 <div>
-                  <p className="font-display text-[18px] text-foreground">{camp.coach}</p>
-                  <p className="text-[13px] text-foreground-muted">Verified host on Atleta · Based in {camp.city}</p>
+                  <p className="text-lg font-semibold">{camp.coach}</p>
+                  <p className="text-sm text-foreground-muted">Verified host on Lokka · Based in {camp.city}</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <aside className="lg:sticky lg:top-24 self-start border border-border bg-card p-6 rounded-sm flex flex-col gap-4">
+          <aside className="surface flex flex-col gap-4 self-start p-6 lg:sticky lg:top-24">
             <div>
-              <p className="font-display text-[32px] text-foreground leading-none">{camp.price}</p>
-              <p className="text-[12px] text-foreground-muted mt-1">per person</p>
+              <p className="font-display text-6xl font-extrabold leading-none">{camp.price}</p>
+              <p className="mt-1.5 text-sm text-foreground-muted">per person</p>
             </div>
 
-            <ul className="flex flex-col gap-2.5 text-[13px] text-foreground-muted border-t border-b border-border py-4">
+            <ul className="flex flex-col gap-2.5 py-2 text-base text-foreground-muted">
               <li className="flex items-center gap-2"><Calendar className="h-3.5 w-3.5" /> {camp.dates}</li>
               <li className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5" /> {camp.city}</li>
               <li className="flex items-center gap-2"><Users className="h-3.5 w-3.5" /> {camp.ageGroup}</li>
               <li className="flex items-center gap-2"><Award className="h-3.5 w-3.5" /> {camp.level}</li>
-              <li className={`flex items-center gap-2 ${camp.spotsLeft < 10 ? 'text-gold' : ''}`}>
-                <span className="h-1.5 w-1.5 bg-current rounded-full" /> {camp.spotsLeft} {t.spots_left}
+              <li className={`flex items-center gap-2 ${camp.spotsLeft < 10 ? 'font-semibold text-accent' : ''}`}>
+                <span className="h-2 w-2 rounded-full bg-current" /> {camp.spotsLeft} {t.spots_left}
               </li>
             </ul>
 
-            <button className="w-full px-4 py-3 bg-navy text-primary-foreground font-display uppercase tracking-[0.12em] text-[13px] rounded-sm hover:bg-navy-hover transition-colors">
+            <button className="h-12 w-full bg-primary font-display text-base font-bold uppercase text-primary-foreground transition-colors hover:bg-primary-hover">
               {t.apply_camp}
             </button>
-            <button className="w-full px-4 py-3 border border-border-hover text-foreground font-display uppercase tracking-[0.12em] text-[13px] rounded-sm hover:border-gold transition-colors">
+            <button className="h-12 w-full bg-background font-display text-base font-bold uppercase transition-colors hover:bg-card">
               {t.ask_question}
             </button>
           </aside>

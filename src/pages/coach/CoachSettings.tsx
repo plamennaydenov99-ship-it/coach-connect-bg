@@ -23,8 +23,8 @@ const LANGS: { value: Lang; label: string }[] = [
 /** Placeholder until a real support address is provided. */
 const CONTACT_EMAIL = '[CONTACT EMAIL]';
 
-const card = 'bg-portal-card border border-portal-border rounded-[4px] p-6 space-y-4';
-const h2 = 'font-display uppercase tracking-[0.1em] text-lg text-portal-ink';
+const card = 'bg-portal-card border border-portal-border rounded-none p-6 space-y-4';
+const h2 = 'font-display uppercase tracking-[0.02em] text-lg text-portal-ink';
 
 export default function CoachSettings() {
   const { t, lang, setLang } = useLanguage();
@@ -65,7 +65,7 @@ export default function CoachSettings() {
   return (
     <div className="max-w-3xl space-y-6">
       <div>
-        <h1 className="font-display uppercase text-3xl tracking-[0.06em] text-portal-ink">{t.dashsettings_title}</h1>
+        <h1 className="text-5xl md:text-6xl">{t.dashsettings_title}</h1>
         <p className="text-portal-muted-strong mt-1">{t.cset_sub}</p>
       </div>
 
@@ -103,7 +103,7 @@ export default function CoachSettings() {
         <div className="flex gap-2">
           {LANGS.map((l) => (
             <button key={l.value} onClick={() => setLang(l.value)}
-              className={`h-10 px-4 rounded-[4px] border text-sm ${lang === l.value ? 'bg-portal-selected border-portal-selected-border text-portal-ink' : 'border-portal-border text-portal-muted-strong hover:text-portal-ink'}`}>
+              className={`h-10 px-4 rounded-none border text-sm ${lang === l.value ? 'bg-portal-selected border-portal-selected-border text-portal-ink' : 'border-portal-border text-portal-muted-strong hover:text-portal-ink'}`}>
               {l.label}
             </button>
           ))}

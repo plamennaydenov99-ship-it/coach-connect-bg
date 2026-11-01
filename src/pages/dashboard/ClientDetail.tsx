@@ -119,7 +119,7 @@ const ClientDetail = () => {
             </div>
           )}
           <div>
-            <h1 className="font-display text-3xl">{athlete?.full_name ?? t.clients_unnamed}</h1>
+            <h1 className="text-5xl md:text-6xl">{athlete?.full_name ?? t.clients_unnamed}</h1>
             {athlete?.city && <p className="text-sm text-muted-foreground">{athlete.city}</p>}
           </div>
         </div>

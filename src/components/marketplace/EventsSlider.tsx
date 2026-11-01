@@ -52,12 +52,12 @@ export function EventsSlider() {
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
-                <span className="absolute right-4 top-4 bg-background-tertiary px-2 py-0.5 text-[10px] uppercase tracking-[0.15em] font-display text-foreground-muted rounded-sm">
+                <span className="absolute right-4 top-4 bg-background-tertiary px-2 py-0.5 text-[10px] uppercase tracking-[0.02em] font-display text-foreground-muted rounded-sm">
                   {t.events_sponsored}
                 </span>
 
                 <div className="absolute inset-x-0 bottom-0 p-6 md:p-10">
-                  <Badge className="bg-navy text-gold hover:bg-navy-hover uppercase tracking-[0.12em] font-display rounded-sm">
+                  <Badge className="bg-navy text-gold hover:bg-navy-hover uppercase tracking-[0.02em] font-display rounded-sm">
                     {ev.sport}
                   </Badge>
                   <h3 className="mt-3 font-display text-2xl md:text-4xl text-foreground">{ev.name}</h3>

@@ -52,7 +52,7 @@ export function DemoSwitcher() {
   return (
     <div className="coach-portal fixed bottom-16 md:bottom-3 left-1/2 -translate-x-1/2 z-[60] max-w-[calc(100vw-1rem)]">
       <div className="flex items-center gap-1 rounded-md border border-portal-border bg-portal-card px-2 py-1 font-body text-portal-ink">
-        <span className="hidden sm:inline font-display uppercase tracking-[0.1em] text-[11px] text-portal-muted pr-1 whitespace-nowrap">
+        <span className="hidden sm:inline font-display uppercase tracking-[0.02em] text-[11px] text-portal-muted pr-1 whitespace-nowrap">
           {s.t.demo_bar}
         </span>
         {DEMO_ROLES.map((r) => {
@@ -65,7 +65,7 @@ export function DemoSwitcher() {
               onClick={() => s.switchTo(r)}
               aria-pressed={active}
               className={cn(
-                'flex items-center gap-1 rounded-sm border px-2 py-1 font-display uppercase tracking-[0.08em] text-xs transition-colors disabled:opacity-60',
+                'flex items-center gap-1 rounded-sm border px-2 py-1 font-display uppercase tracking-[0.02em] text-xs transition-colors disabled:opacity-60',
                 active
                   ? 'border-portal-selected-border bg-portal-selected text-portal-ink'
                   : 'border-transparent text-portal-muted-strong hover:text-portal-blue',
@@ -86,7 +86,7 @@ export function DemoRolePicker() {
   const s = useDemoSwitch();
   return (
     <>
-      <h1 className="font-display text-2xl uppercase tracking-[0.1em]">{s.t.demo_start_title}</h1>
+      <h1 className="font-display text-2xl uppercase tracking-[0.02em]">{s.t.demo_start_title}</h1>
       <p className="text-sm text-muted-foreground mt-2 mb-6">{s.t.demo_start_sub}</p>
       <div className="space-y-3">
         {DEMO_ROLES.map((r) => (
@@ -95,7 +95,7 @@ export function DemoRolePicker() {
             type="button"
             disabled={!!s.busy}
             onClick={() => s.switchTo(r)}
-            className="w-full text-left border border-border p-4 flex items-center justify-between hover:border-foreground transition-colors disabled:opacity-60 font-display uppercase tracking-[0.08em]"
+            className="w-full text-left border border-border p-4 flex items-center justify-between hover:border-foreground transition-colors disabled:opacity-60 font-display uppercase tracking-[0.02em]"
           >
             {s.label(r)}
             {s.busy === r && <Loader2 className="h-4 w-4 animate-spin" />}

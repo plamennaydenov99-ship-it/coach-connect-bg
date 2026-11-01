@@ -30,17 +30,17 @@ export function AccountLayout() {
   return (
     <div className="min-h-screen flex flex-col">
       <PublicNav />
-      <div className="border-b border-border">
-        <div className="container flex items-center justify-between gap-4 h-14 overflow-x-auto">
-          <nav className="flex items-center gap-5">
+      <div className="bg-background-secondary">
+        <div className="container flex h-16 items-center justify-between gap-4 overflow-x-auto">
+          <nav className="flex items-center gap-1.5">
             {links.map(l => (
               <NavLink
                 key={l.to}
                 to={l.to}
                 end={l.end}
                 className={({ isActive }) =>
-                  `whitespace-nowrap font-display uppercase tracking-[0.1em] text-xs transition-colors ${
-                    isActive ? 'text-gold' : 'text-foreground-subtle hover:text-foreground'
+                  `inline-flex h-11 items-center whitespace-nowrap px-4 font-display text-base font-bold uppercase transition-colors ${
+                    isActive ? 'bg-foreground text-background' : 'bg-background text-foreground hover:bg-card'
                   }`
                 }
               >
@@ -53,7 +53,7 @@ export function AccountLayout() {
           )}
         </div>
       </div>
-      <main className="flex-1 container py-10">
+      <main className="container flex-1 py-12 md:py-16">
         <Outlet />
       </main>
       <PublicFooter />

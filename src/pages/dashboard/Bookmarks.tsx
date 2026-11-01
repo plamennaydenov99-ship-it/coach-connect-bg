@@ -75,12 +75,12 @@ const Bookmarks = () => {
   return (
     <div className="max-w-5xl space-y-8">
       <div>
-        <h1 className="font-display text-3xl">{t.dashbookmarks_title}</h1>
+        <h1 className="text-5xl md:text-6xl">{t.dashbookmarks_title}</h1>
         <p className="text-muted-foreground mt-1">{t.dashbookmarks_sub}</p>
       </div>
 
       <section className="space-y-3">
-        <h2 className="font-display text-xl uppercase tracking-[0.1em]">{t.dashbookmarks_coaches}</h2>
+        <h2 className="font-display text-xl uppercase tracking-[0.02em]">{t.dashbookmarks_coaches}</h2>
         {coachBookmarks.length === 0 ? (
           <p className="text-sm text-muted-foreground">{t.dashbookmarks_no_coaches}</p>
         ) : (
@@ -113,7 +113,7 @@ const Bookmarks = () => {
       </section>
 
       <section className="space-y-3">
-        <h2 className="font-display text-xl uppercase tracking-[0.1em]">{t.dashbookmarks_events}</h2>
+        <h2 className="font-display text-xl uppercase tracking-[0.02em]">{t.dashbookmarks_events}</h2>
         {eventBookmarks.length === 0 ? (
           <p className="text-sm text-muted-foreground">{t.dashbookmarks_no_events}</p>
         ) : (

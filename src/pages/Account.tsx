@@ -15,21 +15,21 @@ const Account = () => {
   ];
 
   return (
-    <div className="max-w-3xl">
-      <h1 className="font-display text-4xl uppercase tracking-[0.08em]">{t.account_title}</h1>
-      <p className="mt-2 text-muted-foreground font-body">
+    <div>
+      <h1 className="text-5xl md:text-6xl">{t.account_title}</h1>
+      <p className="mt-3 text-xl text-muted-foreground">
         {t.account_welcome}{profile?.full_name ? `, ${profile.full_name}` : ''}.
       </p>
 
-      <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2">
         {tiles.map(tile => (
           <Link
             key={tile.to}
             to={tile.to}
-            className="surface p-6 flex items-center gap-3 hover:border-gold transition-colors"
+            className="surface group flex min-h-[160px] flex-col justify-between p-6 transition-transform duration-500 hover:-translate-y-2"
           >
-            <tile.icon className="h-5 w-5 text-gold" />
-            <span className="font-display uppercase tracking-[0.1em] text-sm">{tile.label}</span>
+            <tile.icon className="h-6 w-6 text-primary" />
+            <span className="font-display text-4xl font-extrabold uppercase leading-[0.95]">{tile.label}</span>
           </Link>
         ))}
       </div>

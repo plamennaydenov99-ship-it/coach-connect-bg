@@ -78,7 +78,7 @@ const BookingRequests = () => {
     <div className="max-w-5xl space-y-6">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl">{t.requests_title}</h1>
+          <h1 className="text-5xl md:text-6xl">{t.requests_title}</h1>
           <p className="text-muted-foreground mt-1">{t.requests_sub}</p>
         </div>
         <div className="flex gap-2">

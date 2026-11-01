@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { lift } from '@/lib/ui';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -99,14 +101,14 @@ function CoachResultCard({ coach }: { coach: CoachRow }) {
   return (
     <Link
       to={`/coaches/${coach.id}`}
-      className="group surface overflow-hidden flex flex-col transition-all hover:border-gold/50"
+      className={`group surface flex flex-col overflow-hidden ${lift}`}
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-muted">
         <img src={cover} alt={name} loading="lazy"
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
         <div className="absolute top-3 left-3 right-3 flex flex-wrap gap-2">
           {sportList.map(s => (
-            <span key={s.slug} className="px-2 py-0.5 text-xs font-semibold rounded-md bg-background/85 backdrop-blur capitalize">
+            <span key={s.slug} className="bg-background px-2.5 py-1 text-sm font-semibold capitalize">
               {s.label}
             </span>
           ))}
@@ -117,7 +119,7 @@ function CoachResultCard({ coach }: { coach: CoachRow }) {
         <div className="flex items-start gap-3">
           {avatar ? <img src={avatar} alt={name} className="h-10 w-10 rounded-full text-sm object-cover border border-border" /> : <div aria-label={name} className="h-10 w-10 rounded-full text-sm border border-border bg-secondary text-foreground flex items-center justify-center font-display shrink-0">{initialsOf(name)}</div>}
           <div className="min-w-0 flex-1">
-            <h3 className="font-display text-lg leading-tight truncate">{name}</h3>
+            <h3 className="t-plain truncate text-lg">{name}</h3>
             {coach.profiles?.city && (
               <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
                 <MapPin className="h-3 w-3" /> {coach.profiles.city}
@@ -125,7 +127,7 @@ function CoachResultCard({ coach }: { coach: CoachRow }) {
             )}
           </div>
         </div>
-        <div className="mt-auto pt-2 flex items-end justify-between border-t border-border">
+        <div className="mt-auto flex items-end justify-between pt-2">
           <div>
             <p className="font-semibold">€{price}<span className="text-xs text-muted-foreground font-normal">{t.search_per_session}</span></p>
           </div>
@@ -189,16 +191,9 @@ const Search = () => {
     <div className="min-h-screen flex flex-col">
       <PublicNav />
 
-      <main className="flex-1 container py-8">
-        <div className="flex items-end justify-between mb-6 gap-4 flex-wrap">
-          <div>
-            <h1 className="font-display text-3xl md:text-4xl">{t.search_coaches}</h1>
-            <p className="text-muted-foreground mt-1 text-sm">
-              {loading ? t.coach_loading : `${results.length} ${t.search_results}`}
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2">
+      <main className="flex-1">
+        <PageHeader title={t.search_coaches} sub={loading ? t.coach_loading : `${results.length} ${t.search_results}`} tone="blue">
+          <div className="flex flex-wrap items-center gap-2">
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline" size="sm" className="md:hidden">
@@ -212,7 +207,7 @@ const Search = () => {
             </Sheet>
 
             <Select value={sort} onValueChange={(v: SortKey) => setSort(v)}>
-              <SelectTrigger className="w-[170px]"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-[190px] border-0 bg-background text-foreground"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="relevance">{t.search_sort_relevance}</SelectItem>
                 <SelectItem value="price">{t.search_sort_price}</SelectItem>
@@ -220,10 +215,11 @@ const Search = () => {
               </SelectContent>
             </Select>
           </div>
-        </div>
+        </PageHeader>
 
+        <div className="container py-10 md:py-14">
         <div className="grid gap-8 md:grid-cols-[260px_1fr]">
-          <aside className="hidden md:block surface p-5 h-fit sticky top-20">
+          <aside className="surface sticky top-24 hidden h-fit p-6 md:block">
             <FilterPanel {...filterProps} />
           </aside>
 
@@ -243,6 +239,7 @@ const Search = () => {
               </div>
             )}
           </div>
+        </div>
         </div>
       </main>
 

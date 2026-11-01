@@ -1,6 +1,8 @@
 import { useState, useMemo } from 'react';
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { chip, lift } from '@/lib/ui';
 import { CampCard } from '@/components/camps/CampCard';
 import { CAMPS } from '@/lib/camps';
 import { useLanguage } from '@/context/LanguageContext';
@@ -29,29 +31,18 @@ export default function Camps() {
       <PublicNav />
 
       <main className="flex-1">
-        <section className="border-b border-border bg-background py-16 md:py-20">
-          <div className="container">
-            <h1 className="font-display text-5xl md:text-6xl text-foreground">{t.camps_hero_title}</h1>
-            <p className="mt-4 max-w-2xl text-[16px] text-foreground-muted font-body normal-case">{t.camps_hero_sub}</p>
-            <p className="mt-4 text-[13px] text-foreground-muted font-body normal-case border border-border bg-background-secondary/60 px-3 py-2 inline-block rounded-sm">
-              {t.camps_demo_note}
-            </p>
+        <PageHeader title={t.camps_hero_title} sub={t.camps_hero_sub} tone="blue">
+          <p className="inline-block bg-[#F3EDE2]/15 px-3 py-2 text-sm">{t.camps_demo_note}</p>
+        </PageHeader>
 
-          </div>
-        </section>
-
-        <section className="border-b border-border bg-background-secondary/40 py-6">
+        <section className="bg-background-secondary py-6">
           <div className="container flex flex-col gap-4">
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5">
               {SPORTS.map(s => (
                 <button
                   key={s}
                   onClick={() => setSport(s)}
-                  className={`px-3 py-1.5 border font-display uppercase tracking-[0.12em] text-[12px] rounded-sm transition-colors ${
-                    sport === s
-                      ? 'border-copper text-gold'
-                      : 'border-border text-foreground-muted hover:text-foreground'
-                  }`}
+                  className={chip(sport === s)}
                 >
                   {s}
                 </button>
@@ -63,11 +54,7 @@ export default function Camps() {
                   <button
                     key={d.label}
                     onClick={() => setDuration(i)}
-                    className={`px-3 py-1.5 border font-display uppercase tracking-[0.12em] text-[11px] rounded-sm transition-colors ${
-                      duration === i
-                        ? 'border-copper text-gold'
-                        : 'border-border text-foreground-muted hover:text-foreground'
-                    }`}
+                    className={chip(duration === i)}
                   >
                     {d.label}
                   </button>

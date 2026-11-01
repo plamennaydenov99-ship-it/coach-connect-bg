@@ -163,7 +163,7 @@ export default function AdminTrending() {
       <main className="container max-w-4xl py-12">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="font-display text-4xl uppercase tracking-[0.08em] font-semibold">{t.tr_page_title}</h1>
+            <h1 className="text-5xl md:text-6xl">{t.tr_page_title}</h1>
             <p className="mt-2 text-portal-muted">{t.tr_page_sub}</p>
           </div>
           <Button onClick={openNew} className="bg-portal-copper text-portal-on-copper hover:bg-portal-copper-hover">
@@ -175,7 +175,7 @@ export default function AdminTrending() {
           <div className="flex justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-portal-muted" /></div>
         ) : items.length === 0 ? (
           <div className="mt-10 rounded-sm border border-portal-border bg-portal-card p-10 text-center">
-            <p className="font-display uppercase tracking-[0.1em] text-lg">{t.tr_empty}</p>
+            <p className="font-display uppercase tracking-[0.02em] text-lg">{t.tr_empty}</p>
           </div>
         ) : (
           <ul className="mt-10 space-y-3">
@@ -186,7 +186,7 @@ export default function AdminTrending() {
                   <Button size="icon" variant="ghost" className="h-7 w-7" aria-label={t.tr_move_down} disabled={idx === items.length - 1} onClick={() => move(idx, 1)}><ArrowDown className="h-4 w-4" /></Button>
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs font-condensed uppercase tracking-[0.12em] text-portal-muted">{typeLabel(it.type)} · {it.city ?? t.tr_city_all}</p>
+                  <p className="text-xs font-condensed uppercase tracking-[0.02em] text-portal-muted">{typeLabel(it.type)} · {it.city ?? t.tr_city_all}</p>
                   <p className="font-display text-xl font-semibold truncate">{it.title}</p>
                   <p className="text-xs text-portal-muted">
                     {it.starts_on || it.ends_on ? `${it.starts_on ? fmtDate(it.starts_on) : '…'} – ${it.ends_on ? fmtDate(it.ends_on) : '…'}` : t.tr_no_dates}

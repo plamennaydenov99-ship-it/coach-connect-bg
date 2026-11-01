@@ -78,7 +78,7 @@ export default function AdminUsers() {
     <div className="min-h-screen bg-background">
       <PublicNav />
       <main className="container max-w-5xl py-12">
-        <h1 className="font-display text-4xl uppercase tracking-[0.08em] font-semibold">All users</h1>
+        <h1 className="text-5xl md:text-6xl">All users</h1>
         <p className="mt-2 text-foreground-muted">
           Everyone registered, confirmed or not.
         </p>
@@ -103,18 +103,18 @@ export default function AdminUsers() {
           </div>
         ) : visible.length === 0 ? (
           <div className="mt-10 rounded-sm border border-border bg-card p-10 text-center">
-            <p className="font-display uppercase tracking-[0.1em] text-lg">No users</p>
+            <p className="font-display uppercase tracking-[0.02em] text-lg">No users</p>
           </div>
         ) : (
           <div className="mt-8 overflow-x-auto rounded-sm border border-border bg-card">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border text-left">
-                  <th className="px-4 py-3 font-display uppercase tracking-[0.08em] text-xs">Name</th>
-                  <th className="px-4 py-3 font-display uppercase tracking-[0.08em] text-xs">Email</th>
-                  <th className="px-4 py-3 font-display uppercase tracking-[0.08em] text-xs">Status</th>
-                  <th className="px-4 py-3 font-display uppercase tracking-[0.08em] text-xs">Role</th>
-                  <th className="px-4 py-3 font-display uppercase tracking-[0.08em] text-xs">Application</th>
+                  <th className="px-4 py-3 font-display uppercase tracking-[0.02em] text-xs">Name</th>
+                  <th className="px-4 py-3 font-display uppercase tracking-[0.02em] text-xs">Email</th>
+                  <th className="px-4 py-3 font-display uppercase tracking-[0.02em] text-xs">Status</th>
+                  <th className="px-4 py-3 font-display uppercase tracking-[0.02em] text-xs">Role</th>
+                  <th className="px-4 py-3 font-display uppercase tracking-[0.02em] text-xs">Application</th>
                   <th className="px-4 py-3" />
                 </tr>
               </thead>

@@ -26,10 +26,10 @@ export function ClientTable({ clients, onOpen }: { clients: ClientSummary[]; onO
   }, [clients, sort]);
 
   const toggle = (key: SortKey) => setSort((s) => ({ key, dir: s.key === key ? ((-s.dir) as 1 | -1) : 1 }));
-  const th = 'text-left font-display uppercase tracking-[0.12em] text-[11px] text-portal-muted font-normal px-3 py-2';
+  const th = 'text-left font-display uppercase tracking-[0.02em] text-[11px] text-portal-muted font-normal px-3 py-2';
 
   return (
-    <div className="overflow-x-auto bg-portal-card border border-portal-border rounded-[4px]">
+    <div className="overflow-x-auto bg-portal-card border border-portal-border rounded-none">
       <table className="w-full text-sm min-w-[760px]">
         <thead className="border-b border-portal-border">
           <tr>

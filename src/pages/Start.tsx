@@ -175,13 +175,19 @@ const Start = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <PublicNav />
-      <main className="flex-1 container max-w-md py-16">
-        <div className="surface p-8">
+      <main className="grid flex-1 lg:grid-cols-2">
+        <div className="relative hidden overflow-hidden bg-foreground text-[#F3EDE2] lg:block">
+          <img src="/images/sofia-borisova.jpg" alt="" className="absolute inset-0 h-full w-full animate-[kb_34s_ease-in-out_infinite_alternate] object-cover" />
+          <div className="absolute inset-0 bg-foreground/50" />
+          <p className="absolute bottom-10 left-10 right-10 font-display font-extrabold uppercase leading-[0.9]" style={{ fontSize: 'clamp(48px, 5vw, 84px)', color: '#F3EDE2' }}>{t.tn_footer_line}</p>
+        </div>
+        <div className="flex items-center justify-center px-4 py-16">
+        <div className="surface w-full max-w-md p-8">
           {DEMO_MODE ? (
             <DemoRolePicker />
           ) : !role ? (
             <>
-              <h1 className="font-display text-2xl uppercase tracking-[0.1em]">{t.entry_choose_title}</h1>
+              <h1 className="text-5xl">{t.entry_choose_title}</h1>
               <p className="text-sm text-muted-foreground mt-2 mb-6">{t.entry_choose_sub}</p>
               <div className="space-y-3">
                 {ROLES.map(r => (
@@ -190,11 +196,11 @@ const Start = () => {
                     type="button"
                     disabled={busy}
                     onClick={() => pickRole(r.key)}
-                    className="w-full text-left border border-border p-4 flex items-start gap-3 hover:border-foreground transition-colors disabled:opacity-60"
+                    className="flex w-full items-start gap-3 bg-background p-4 text-left transition-colors hover:bg-card disabled:opacity-60"
                   >
                     <r.icon className="h-5 w-5 mt-0.5 shrink-0" />
                     <span>
-                      <span className="block font-display uppercase tracking-[0.08em]">
+                      <span className="block font-display text-lg font-bold uppercase">
                         {t.entry_continue_as} {r.label}
                       </span>
                       <span className="block text-sm text-muted-foreground mt-1">{r.desc}</span>
@@ -214,15 +220,15 @@ const Start = () => {
               </button>
 
               <div className="flex items-center gap-2 mb-6">
-                <div className="flex h-9 w-9 items-center justify-center rounded-sm bg-primary text-primary-foreground">
+                <div className="flex h-9 w-9 items-center justify-center bg-primary text-primary-foreground">
                   <Zap className="h-5 w-5" strokeWidth={2.5} />
                 </div>
-                <span className="font-display text-xl uppercase tracking-[0.1em]">
+                <span className="font-display text-3xl font-extrabold uppercase">
                   {mode === 'login' ? t.auth_welcome_back : t.auth_create_account_heading}
                 </span>
               </div>
 
-              <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground mb-4">
+              <p className="text-xs uppercase tracking-[0.02em] text-muted-foreground mb-4">
                 {t.entry_continue_as} {ROLES.find(r => r.key === role)!.label}
               </p>
 
@@ -264,7 +270,7 @@ const Start = () => {
                 </Button>
               </form>
 
-              <div className="my-6 flex items-center gap-3 text-xs uppercase tracking-[0.12em] text-muted-foreground">
+              <div className="my-6 flex items-center gap-3 text-xs uppercase tracking-[0.02em] text-muted-foreground">
                 <span className="h-px flex-1 bg-border" />
                 {t.auth_or}
                 <span className="h-px flex-1 bg-border" />
@@ -279,6 +285,7 @@ const Start = () => {
               )}
             </>
           )}
+        </div>
         </div>
       </main>
       <PublicFooter />

@@ -40,7 +40,7 @@
     --accent: 18.54 51.46% 46.86%; /* #B5603A clay, used sparingly */
     --accent-foreground: 0 0% 100%;
 
-    --border: 41.25 29.09% 78.43%; /* #D8CEB8 */
+    --border: 41 30% 85%; /* soft rule */
     --border-hover: 41.54 24.84% 69.22%;
     --input: 42.16 26.24% 72.35%;
     --ring: 202.89 55.07% 27.06%;
@@ -166,13 +166,13 @@
     line-height: 1.2;
   }
   .surface {
-    background: hsl(var(--card));
-    border: 1px solid hsl(var(--border));
+    background: hsl(var(--background-secondary));
+    border: 0;
     border-radius: 0;
   }
   .surface-2 {
     background: hsl(var(--background-tertiary));
-    border: 1px solid hsl(var(--border));
+    border: 0;
     border-radius: 0;
   }
   .texture-diagonal {
@@ -293,6 +293,10 @@
     to { transform: translateX(-50%); }
   }
 }
+
+/* Tool screens keep light cards with a fine rule so dense data stays readable. */
+.coach-portal .surface { background: hsl(var(--card)); border: 1px solid hsl(var(--border)); }
+.coach-portal .surface-2 { background: hsl(var(--background-secondary)); border: 1px solid hsl(var(--border)); }
 
 /* Portal skin: remaps shared shadcn tokens so reused dashboard pages (e.g. ProfileEditor)
    render in the coach-portal look without forking them. Only used inside .coach-portal. */

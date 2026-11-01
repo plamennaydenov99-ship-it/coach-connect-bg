@@ -12,8 +12,8 @@ import { LOCALES, portalBtnGhost } from '@/components/coach/clients/shared';
 import { labelDate } from '@/lib/tz';
 import type { RevSummary } from '@/lib/revenue';
 
-const card = 'animate-fade-up-in bg-portal-card border border-portal-border rounded-[4px] p-5';
-const title = 'font-display uppercase tracking-[0.1em] text-base text-portal-ink';
+const card = 'animate-fade-up-in bg-portal-card border border-portal-border rounded-none p-5';
+const title = 'font-display uppercase tracking-[0.02em] text-base text-portal-ink';
 
 export function RevenueCard() {
   const { t, lang } = useLanguage();
@@ -54,8 +54,8 @@ export function RevenueCard() {
             </p>
           )}
         </div>
-        <div className="rounded-[4px] border border-portal-selected-border bg-portal-selected p-4 md:min-w-[200px]">
-          <div className="font-display uppercase tracking-[0.1em] text-xs text-portal-blue">{t.rev_from_lokka}</div>
+        <div className="rounded-none border border-portal-selected-border bg-portal-selected p-4 md:min-w-[200px]">
+          <div className="font-display uppercase tracking-[0.02em] text-xs text-portal-blue">{t.rev_from_lokka}</div>
           <div className="font-display text-3xl text-portal-ink mt-1">{eur(lokka)}</div>
           <div className="text-sm text-portal-muted-strong">{t.rev_of_earned.replace('{pct}', String(lokkaPct))}</div>
         </div>
@@ -68,7 +68,7 @@ export function RevenueCard() {
             <XAxis dataKey="label" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: 'hsl(var(--portal-muted))' }} />
             <YAxis allowDecimals={false} domain={[0, 'auto']} tickLine={false} axisLine={false} width={40} tick={{ fontSize: 11, fill: 'hsl(var(--portal-muted))' }} />
             <Tooltip cursor={{ fill: 'hsl(var(--portal-bg))' }} content={({ active, payload }) => active && payload?.length ? (
-              <div className="bg-portal-card border border-portal-border rounded-[4px] px-2 py-1 text-xs space-y-0.5">
+              <div className="bg-portal-card border border-portal-border rounded-none px-2 py-1 text-xs space-y-0.5">
                 <div className="text-portal-muted">{(payload[0].payload as { label: string }).label}</div>
                 <div className="text-portal-ink">{t.rev_lokka}: {eur((payload[0].payload as { lokka: number }).lokka)}</div>
                 <div className="text-portal-ink">{t.rev_own}: {eur((payload[0].payload as { own: number }).own)}</div>
@@ -102,13 +102,13 @@ function BreakdownSheet({ open, onOpenChange, thisMonth, lastMonth, pipelines, e
 
   const List = ({ heading, rows }: { heading: string; rows: { label: string; amount: number }[] }) => (
     <div className="space-y-2">
-      <h3 className="font-display uppercase tracking-[0.1em] text-sm text-portal-ink">{heading}</h3>
+      <h3 className="font-display uppercase tracking-[0.02em] text-sm text-portal-ink">{heading}</h3>
       {!rows.length ? <p className="text-sm text-portal-muted">{t.rev_nothing}</p> : rows.map((r) => {
         const pct = s.total > 0 ? Math.round((r.amount / s.total) * 100) : 0;
         return (
           <div key={r.label} className="text-sm">
             <div className="flex justify-between gap-2"><span className="text-portal-ink truncate">{r.label}</span><span className="text-portal-muted-strong shrink-0">{eur(r.amount)} · {pct}%</span></div>
-            <div className="h-1.5 mt-1 bg-portal-bg rounded-[4px] overflow-hidden"><div className="h-full bg-portal-blue" style={{ width: `${pct}%` }} /></div>
+            <div className="h-1.5 mt-1 bg-portal-bg rounded-none overflow-hidden"><div className="h-full bg-portal-blue" style={{ width: `${pct}%` }} /></div>
           </div>
         );
       })}
@@ -118,12 +118,12 @@ function BreakdownSheet({ open, onOpenChange, thisMonth, lastMonth, pipelines, e
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side={mobile ? 'bottom' : 'right'} className={`coach-portal bg-portal-card border-portal-border overflow-y-auto ${mobile ? 'max-h-[85vh]' : 'w-full sm:max-w-md'}`}>
-        <SheetTitle className="font-display uppercase tracking-[0.1em] text-portal-ink">{t.rev_breakdown}</SheetTitle>
+        <SheetTitle className="font-display uppercase tracking-[0.02em] text-portal-ink">{t.rev_breakdown}</SheetTitle>
         <SheetDescription className="text-xs text-portal-muted">{t.rev_footnote}</SheetDescription>
         <div className="flex gap-2 my-4">
           {(['this', 'last'] as const).map((k) => (
             <button key={k} onClick={() => setWhich(k)}
-              className={`h-9 px-3 rounded-[4px] border text-sm ${which === k ? 'bg-portal-selected border-portal-selected-border text-portal-ink' : 'border-portal-border text-portal-muted-strong'}`}>
+              className={`h-9 px-3 rounded-none border text-sm ${which === k ? 'bg-portal-selected border-portal-selected-border text-portal-ink' : 'border-portal-border text-portal-muted-strong'}`}>
               {k === 'this' ? t.rev_this_month : t.rev_last_month}
             </button>
           ))}

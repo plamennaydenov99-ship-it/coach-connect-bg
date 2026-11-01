@@ -32,7 +32,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 2,
     name: 'Boxing Club Gloves 12oz',
-    club: 'Plovdiv Fight Academy',
+    club: 'Sofia Fight Academy',
     clubSlug: 'plovdiv-fight-academy',
     category: 'Equipment',
     price: 89,
@@ -52,7 +52,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 4,
     name: 'Algarve Yoga Mat',
-    club: 'Burgas Yoga Retreat',
+    club: 'Sofia Yoga Studio',
     clubSlug: 'burgas-yoga-retreat',
     category: 'Equipment',
     price: 39,
@@ -72,7 +72,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 6,
     name: 'Whey Protein 1kg',
-    club: 'Plovdiv Fight Academy',
+    club: 'Sofia Fight Academy',
     clubSlug: 'plovdiv-fight-academy',
     category: 'Nutrition',
     price: 35,
@@ -92,7 +92,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 8,
     name: 'Hand Wraps (pair)',
-    club: 'Plovdiv Fight Academy',
+    club: 'Sofia Fight Academy',
     clubSlug: 'plovdiv-fight-academy',
     category: 'Accessories',
     price: 14,
@@ -102,7 +102,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 9,
     name: 'Yoga Block Set',
-    club: 'Burgas Yoga Retreat',
+    club: 'Sofia Yoga Studio',
     clubSlug: 'burgas-yoga-retreat',
     category: 'Equipment',
     price: 22,
@@ -112,7 +112,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 10,
     name: 'Recovery Tea Blend',
-    club: 'Burgas Yoga Retreat',
+    club: 'Sofia Yoga Studio',
     clubSlug: 'burgas-yoga-retreat',
     category: 'Nutrition',
     price: 18,
@@ -132,7 +132,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 12,
     name: 'Energy Bar Box (12)',
-    club: 'Plovdiv Fight Academy',
+    club: 'Sofia Fight Academy',
     clubSlug: 'plovdiv-fight-academy',
     category: 'Nutrition',
     price: 24,

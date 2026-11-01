@@ -25,7 +25,7 @@ export function ApplicationReview({ status }: { status: 'pending' | 'rejected' }
         <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center border border-border">
           {pending ? <Clock className="h-6 w-6" /> : <XCircle className="h-6 w-6" />}
         </div>
-        <h1 className="font-display text-2xl uppercase tracking-[0.1em]">
+        <h1 className="font-display text-2xl uppercase tracking-[0.02em]">
           {pending ? t.review_pending_title : t.review_rejected_title}
         </h1>
         <p className="text-sm text-muted-foreground mt-3">

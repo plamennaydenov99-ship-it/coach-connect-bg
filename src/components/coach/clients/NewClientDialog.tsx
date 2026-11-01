@@ -72,9 +72,9 @@ export function NewClientDialog({ open, onOpenChange, onCreated, pipelineId }: {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="coach-portal bg-portal-card border-portal-border rounded-[4px] max-w-md">
+      <DialogContent className="coach-portal bg-portal-card border-portal-border rounded-none max-w-md">
         <DialogHeader>
-          <DialogTitle className="font-display uppercase tracking-[0.1em] text-portal-ink">{t.crm_new_client}</DialogTitle>
+          <DialogTitle className="font-display uppercase tracking-[0.02em] text-portal-ink">{t.crm_new_client}</DialogTitle>
         </DialogHeader>
         <form onSubmit={submit} className="space-y-3">
           {field('display_name', `${t.crm_name} *`)}

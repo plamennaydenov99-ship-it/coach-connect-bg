@@ -55,15 +55,15 @@ export default function ClubFacilities() {
   return (
     <div className="max-w-4xl space-y-6">
       <div className="flex items-center gap-3">
-        <h1 className="font-display uppercase tracking-[0.08em] text-3xl text-portal-ink">{t.portal_facilities}</h1>
+        <h1 className="text-5xl md:text-6xl">{t.portal_facilities}</h1>
         <div className="flex-1" />
         {resources.length > 0 && <button className={portalBtnPrimary} onClick={() => setDraft(blank)}><Plus className="h-4 w-4" />{t.fac_add}</button>}
       </div>
 
       {isLoading ? <Skeleton className="h-40 w-full" /> : resources.length === 0 ? (
-        <div className="bg-portal-card border border-portal-border rounded-[4px] p-8 text-center space-y-3">
+        <div className="bg-portal-card border border-portal-border rounded-none p-8 text-center space-y-3">
           <Building2 className="h-6 w-6 text-portal-blue mx-auto" />
-          <p className="font-display uppercase tracking-[0.08em] text-xl">{t.fac_empty}</p>
+          <p className="font-display uppercase tracking-[0.02em] text-xl">{t.fac_empty}</p>
           <p className="text-sm text-portal-muted-strong">{t.fac_empty_body}</p>
           <button className={portalBtnPrimary} onClick={() => setDraft(blank)}><Plus className="h-4 w-4" />{t.fac_add}</button>
         </div>
@@ -72,10 +72,10 @@ export default function ClubFacilities() {
           {resources.map((r) => {
             const occ = week ? resourceOccupancy(r, week.sessions.filter((s) => s.resource_id === r.id), week.start, week.end) : null;
             return (
-              <li key={r.id} className={`bg-portal-card border border-portal-border rounded-[4px] p-4 space-y-3 ${r.active ? '' : 'opacity-70'}`}>
+              <li key={r.id} className={`bg-portal-card border border-portal-border rounded-none p-4 space-y-3 ${r.active ? '' : 'opacity-70'}`}>
                 <div className="flex flex-wrap items-start gap-3">
                   <div className="flex-1 min-w-[180px]">
-                    <p className="font-display uppercase tracking-[0.06em] text-lg">{r.name}</p>
+                    <p className="font-display uppercase tracking-[0.02em] text-lg">{r.name}</p>
                     <p className="text-sm text-portal-muted-strong">
                       {[kindLabel(r.kind), r.sport, r.capacity ? `${t.fac_capacity}: ${r.capacity}` : null, `${r.open_time.slice(0, 5)}–${r.close_time.slice(0, 5)}`].filter(Boolean).join(' · ')}
                     </p>
@@ -86,7 +86,7 @@ export default function ClubFacilities() {
                 </div>
                 <div className="space-y-1">
                   <div className="flex justify-between text-sm"><span className={portalLabel}>{t.fac_occupancy}</span><span className="font-medium">{occ ? `${occ.percentage}%` : '—'}</span></div>
-                  <div className="h-2 rounded-[4px] bg-portal-bg overflow-hidden" role="progressbar" aria-valuenow={occ?.percentage ?? 0} aria-valuemin={0} aria-valuemax={100} aria-label={t.fac_occupancy}>
+                  <div className="h-2 rounded-none bg-portal-bg overflow-hidden" role="progressbar" aria-valuenow={occ?.percentage ?? 0} aria-valuemin={0} aria-valuemax={100} aria-label={t.fac_occupancy}>
                     <div className="h-full bg-portal-blue" style={{ width: `${occ?.percentage ?? 0}%` }} />
                   </div>
                   <p className="text-xs text-portal-muted">{t.fac_occupancy_caption}{occ ? ` · ${+occ.bookedHours.toFixed(1)} / ${+occ.openHours.toFixed(1)} h` : ''}</p>
@@ -98,8 +98,8 @@ export default function ClubFacilities() {
       )}
 
       <Dialog open={!!draft} onOpenChange={(o) => !o && setDraft(null)}>
-        <DialogContent className="coach-portal bg-portal-card border-portal-border rounded-[4px] max-w-md">
-          <DialogTitle className="font-display uppercase tracking-[0.1em]">{draft?.id ? t.fac_edit : t.fac_add}</DialogTitle>
+        <DialogContent className="coach-portal bg-portal-card border-portal-border rounded-none max-w-md">
+          <DialogTitle className="font-display uppercase tracking-[0.02em]">{draft?.id ? t.fac_edit : t.fac_add}</DialogTitle>
           {draft && <form onSubmit={submit} className="space-y-3">
             <label className="block space-y-1"><span className={portalLabel}>{t.fac_name}</span>
               <input required maxLength={60} value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} className={portalInput} /></label>
@@ -127,8 +127,8 @@ export default function ClubFacilities() {
       </Dialog>
 
       <Dialog open={!!inUse} onOpenChange={(o) => !o && setInUse(null)}>
-        <DialogContent className="coach-portal bg-portal-card border-portal-border rounded-[4px] max-w-sm">
-          <DialogTitle className="font-display uppercase tracking-[0.1em]">{t.fac_delete}</DialogTitle>
+        <DialogContent className="coach-portal bg-portal-card border-portal-border rounded-none max-w-sm">
+          <DialogTitle className="font-display uppercase tracking-[0.02em]">{t.fac_delete}</DialogTitle>
           <p className="text-sm text-portal-muted-strong">{t.fac_in_use}</p>
           <div className="flex justify-end gap-2">
             <button className={portalBtnGhost} onClick={() => setInUse(null)}>{t.crm_cancel}</button>

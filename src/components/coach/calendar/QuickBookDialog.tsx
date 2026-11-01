@@ -23,7 +23,7 @@ export function QuickBookDialog({ open, onOpenChange, defaultKind = 'session' }:
   );
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="coach-portal bg-portal-card border-portal-border rounded-[4px] max-w-md max-h-[90vh] overflow-y-auto [&>button]:hidden">
+      <DialogContent className="coach-portal bg-portal-card border-portal-border rounded-none max-w-md max-h-[90vh] overflow-y-auto [&>button]:hidden">
         <DialogTitle className="sr-only">{t.cal_quick_book}</DialogTitle>
         <DialogDescription className="sr-only">{t.cal_quick_book}</DialogDescription>
         {form}

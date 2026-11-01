@@ -79,7 +79,7 @@ const MyProgram = () => {
   return (
     <div className="max-w-3xl space-y-8">
       <div>
-        <h1 className="font-display text-3xl">{t.myprogram_title}</h1>
+        <h1 className="text-5xl md:text-6xl">{t.myprogram_title}</h1>
         <p className="text-sm text-muted-foreground mt-1">{t.myprogram_sub}</p>
       </div>
 

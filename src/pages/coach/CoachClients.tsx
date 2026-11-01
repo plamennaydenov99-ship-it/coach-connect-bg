@@ -88,7 +88,7 @@ export default function CoachClients() {
 
   const chip = (id: string, label: string) => (
     <button key={id} onClick={() => selectPipeline(id)}
-      className={`h-8 px-3 text-sm border rounded-[4px] whitespace-nowrap ${selected === id || (id === 'all' && !current) ? 'bg-portal-selected border-portal-selected-border text-portal-ink' : 'border-portal-border bg-portal-card text-portal-muted-strong hover:text-portal-ink'}`}>
+      className={`h-8 px-3 text-sm border rounded-none whitespace-nowrap ${selected === id || (id === 'all' && !current) ? 'bg-portal-selected border-portal-selected-border text-portal-ink' : 'border-portal-border bg-portal-card text-portal-muted-strong hover:text-portal-ink'}`}>
       {label}
     </button>
   );
@@ -97,7 +97,7 @@ export default function CoachClients() {
   const toggleBtn = (v: View, Icon: typeof List, label: string) => (
     <button
       onClick={() => setViewPersist(v)}
-      className={`inline-flex items-center gap-1.5 h-9 px-3 text-sm border rounded-[4px] ${view === v ? 'bg-portal-selected border-portal-selected-border text-portal-ink' : 'border-transparent text-portal-muted-strong hover:text-portal-ink'}`}
+      className={`inline-flex items-center gap-1.5 h-9 px-3 text-sm border rounded-none ${view === v ? 'bg-portal-selected border-portal-selected-border text-portal-ink' : 'border-transparent text-portal-muted-strong hover:text-portal-ink'}`}
     >
       <Icon className="h-4 w-4" />{label}
     </button>
@@ -106,7 +106,7 @@ export default function CoachClients() {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center gap-3">
-        <h1 className="font-display text-3xl uppercase tracking-[0.08em] text-portal-ink">{t.crm_clients}</h1>
+        <h1 className="text-5xl md:text-6xl">{t.crm_clients}</h1>
         <span className="text-sm text-portal-muted">{active.length} {t.crm_total}</span>
         <div className="flex-1" />
         <button className={portalBtnPrimary} onClick={() => setNewOpen(true)}><Plus className="h-4 w-4" />{t.crm_new_client}</button>
@@ -120,7 +120,7 @@ export default function CoachClients() {
         </button>
         {current && (
           <DropdownMenu>
-            <DropdownMenuTrigger className="h-8 w-8 flex items-center justify-center rounded-[4px] text-portal-muted-strong hover:text-portal-ink" aria-label={t.crm_pipeline}>
+            <DropdownMenuTrigger className="h-8 w-8 flex items-center justify-center rounded-none text-portal-muted-strong hover:text-portal-ink" aria-label={t.crm_pipeline}>
               <MoreHorizontal className="h-4 w-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="coach-portal bg-portal-card border-portal-border text-portal-ink">
@@ -137,7 +137,7 @@ export default function CoachClients() {
           <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-portal-muted" />
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t.crm_search_ph} className={`${portalInput} pl-9`} />
         </div>
-        <div className="flex gap-1 p-0.5 rounded-[4px] border border-portal-border bg-portal-card">
+        <div className="flex gap-1 p-0.5 rounded-none border border-portal-border bg-portal-card">
           {toggleBtn('board', LayoutGrid, t.crm_view_board)}
           {toggleBtn('table', List, t.crm_view_table)}
         </div>
@@ -160,9 +160,9 @@ export default function CoachClients() {
       ) : error ? (
         <p className="text-sm text-portal-coral-text">{t.crm_error}</p>
       ) : clients.length === 0 ? (
-        <div className="bg-portal-card border border-portal-border rounded-[4px] p-10 text-center space-y-3">
+        <div className="bg-portal-card border border-portal-border rounded-none p-10 text-center space-y-3">
           <Users className="h-8 w-8 mx-auto text-portal-muted" />
-          <h2 className="font-display text-xl uppercase tracking-[0.08em]">{t.crm_empty_title}</h2>
+          <h2 className="font-display text-xl uppercase tracking-[0.02em]">{t.crm_empty_title}</h2>
           <p className="text-sm text-portal-muted max-w-sm mx-auto">{t.crm_empty_body}</p>
           <button className={portalBtnPrimary} onClick={() => setNewOpen(true)}><Plus className="h-4 w-4" />{t.crm_new_client}</button>
         </div>
@@ -179,9 +179,9 @@ export default function CoachClients() {
 
       <NewClientDialog open={newOpen} onOpenChange={setNewOpen} onCreated={open} pipelineId={current?.id ?? null} />
       <Dialog open={!!nameDialog} onOpenChange={(o) => !o && setNameDialog(null)}>
-        <DialogContent className="coach-portal bg-portal-card border-portal-border rounded-[4px] max-w-sm">
+        <DialogContent className="coach-portal bg-portal-card border-portal-border rounded-none max-w-sm">
           <DialogHeader>
-            <DialogTitle className="font-display uppercase tracking-[0.1em] text-portal-ink">{nameDialog?.mode === 'rename' ? t.crm_rename : t.crm_new_pipeline}</DialogTitle>
+            <DialogTitle className="font-display uppercase tracking-[0.02em] text-portal-ink">{nameDialog?.mode === 'rename' ? t.crm_rename : t.crm_new_pipeline}</DialogTitle>
           </DialogHeader>
           <form onSubmit={submitName} className="space-y-3">
             <label className="block space-y-1">

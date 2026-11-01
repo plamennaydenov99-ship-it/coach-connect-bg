@@ -18,8 +18,8 @@ import { LOCALES, fmtDate, portalBtnGhost, portalBtnPrimary, portalInput, portal
 import { addDays, addMonths, startOfMonth, todayStr, type DateStr } from '@/lib/tz';
 import type { LineLabels } from '@/lib/revenue';
 
-const card = 'bg-portal-card border border-portal-border rounded-[4px]';
-const h1 = 'font-display uppercase text-3xl tracking-[0.06em] text-portal-ink';
+const card = 'bg-portal-card border border-portal-border rounded-none';
+const h1 = 'font-display uppercase text-3xl tracking-[0.02em] text-portal-ink';
 type Tab = 'outstanding' | 'drafts' | 'paid' | 'all';
 type Age = 'not_due' | 'd1_30' | 'd31_60' | 'd60';
 const ageOf = (r: PaymentRequest, today: DateStr): Age => {
@@ -77,7 +77,7 @@ export default function CoachInvoicing() {
   const Chip = ({ r }: { r: PaymentRequest }) => {
     const over = isOverdue(r, today);
     return (
-      <span className={`text-xs px-2 py-0.5 rounded-[4px] border border-portal-border ${over ? 'text-portal-coral-text' : r.status === 'paid' ? 'text-portal-success' : 'text-portal-muted-strong'}`}>
+      <span className={`text-xs px-2 py-0.5 rounded-none border border-portal-border ${over ? 'text-portal-coral-text' : r.status === 'paid' ? 'text-portal-success' : 'text-portal-muted-strong'}`}>
         {over ? t.inv_overdue : t[`inv_status_${r.status}`]}
       </span>
     );
@@ -98,7 +98,7 @@ export default function CoachInvoicing() {
       </div>
 
       {filterName && (
-        <div className="inline-flex items-center gap-2 text-sm px-3 h-9 rounded-[4px] border border-portal-selected-border bg-portal-selected text-portal-ink">
+        <div className="inline-flex items-center gap-2 text-sm px-3 h-9 rounded-none border border-portal-selected-border bg-portal-selected text-portal-ink">
           {filterName}
           <button aria-label={t.crm_cancel} onClick={() => { params.delete('client'); setParams(params); }}><X className="h-4 w-4" /></button>
         </div>
@@ -121,7 +121,7 @@ export default function CoachInvoicing() {
       <div className={`${card} p-2 grid grid-cols-2 md:grid-cols-4 gap-2`}>
         {aging.map(({ a, amount }) => (
           <button key={a} onClick={() => { setTab('outstanding'); setAge(age === a ? null : a); }}
-            className={`text-left px-3 py-2 rounded-[4px] border ${age === a ? 'bg-portal-selected border-portal-selected-border' : 'border-transparent hover:bg-portal-bg'}`}>
+            className={`text-left px-3 py-2 rounded-none border ${age === a ? 'bg-portal-selected border-portal-selected-border' : 'border-transparent hover:bg-portal-bg'}`}>
             <div className={portalLabel}>{t[`inv_age_${a}`]}</div>
             <div className={`text-sm ${a !== 'not_due' && amount > 0 ? 'text-portal-coral-text' : 'text-portal-ink'}`}>{eur(amount)}</div>
           </button>
@@ -131,7 +131,7 @@ export default function CoachInvoicing() {
       <div className="flex gap-2 flex-wrap">
         {(['outstanding', 'drafts', 'paid', 'all'] as Tab[]).map((x) => (
           <button key={x} onClick={() => { setTab(x); if (x !== 'outstanding') setAge(null); }}
-            className={`h-9 px-3 rounded-[4px] border text-sm ${tab === x ? 'bg-portal-selected border-portal-selected-border text-portal-ink' : 'border-portal-border text-portal-muted-strong hover:text-portal-ink'}`}>
+            className={`h-9 px-3 rounded-none border text-sm ${tab === x ? 'bg-portal-selected border-portal-selected-border text-portal-ink' : 'border-portal-border text-portal-muted-strong hover:text-portal-ink'}`}>
             {t[`inv_tab_${x}`]}
           </button>
         ))}
@@ -201,8 +201,8 @@ function PeriodDialog({ open, onOpenChange, today }: { open: boolean; onOpenChan
   };
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="coach-portal bg-portal-card border-portal-border rounded-[4px] max-w-sm">
-        <DialogHeader><DialogTitle className="font-display uppercase tracking-[0.1em] text-portal-ink">{t.inv_create_period}</DialogTitle></DialogHeader>
+      <DialogContent className="coach-portal bg-portal-card border-portal-border rounded-none max-w-sm">
+        <DialogHeader><DialogTitle className="font-display uppercase tracking-[0.02em] text-portal-ink">{t.inv_create_period}</DialogTitle></DialogHeader>
         <p className="text-sm text-portal-muted-strong">{t.inv_create_period_sub}</p>
         <div className="grid grid-cols-2 gap-3">
           <label className="space-y-1"><span className={portalLabel}>{t.inv_from}</span><input type="date" className={portalInput} value={p.from} onChange={(e) => setP({ ...p, from: e.target.value })} /></label>
@@ -237,8 +237,8 @@ function NewRequestDialog({ open, onOpenChange, today, defaultClient, onCreated 
   };
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="coach-portal bg-portal-card border-portal-border rounded-[4px] max-w-sm">
-        <DialogHeader><DialogTitle className="font-display uppercase tracking-[0.1em] text-portal-ink">{t.inv_new}</DialogTitle></DialogHeader>
+      <DialogContent className="coach-portal bg-portal-card border-portal-border rounded-none max-w-sm">
+        <DialogHeader><DialogTitle className="font-display uppercase tracking-[0.02em] text-portal-ink">{t.inv_new}</DialogTitle></DialogHeader>
         <label className="space-y-1 block"><span className={portalLabel}>{t.inv_client}</span>
           <select className={portalInput} value={cid} onChange={(e) => setClientId(e.target.value)}>
             <option value="">—</option>
@@ -273,12 +273,12 @@ function RequestSheet({ id, onClose, today }: { id: string | null; onClose: () =
   return (
     <Sheet open={!!id} onOpenChange={(o) => !o && onClose()}>
       <SheetContent side={mobile ? 'bottom' : 'right'} className={`coach-portal bg-portal-card border-portal-border overflow-y-auto ${mobile ? 'max-h-[90vh]' : 'w-full sm:max-w-lg'}`}>
-        <SheetTitle className="font-display uppercase tracking-[0.1em] text-portal-ink">{t.inv_document}{r?.number ? ` · ${r.number}` : ''}</SheetTitle>
+        <SheetTitle className="font-display uppercase tracking-[0.02em] text-portal-ink">{t.inv_document}{r?.number ? ` · ${r.number}` : ''}</SheetTitle>
         <SheetDescription className="text-portal-muted-strong">{r?.client?.display_name ?? ''}</SheetDescription>
         {!r ? <Skeleton className="h-40 mt-4" /> : (
           <div key={r.id + r.updated_at} className="space-y-5 mt-4">
             <div className="flex flex-wrap gap-2 items-center text-sm">
-              <span className={`px-2 py-0.5 rounded-[4px] border border-portal-border ${isOverdue(r, today) ? 'text-portal-coral-text' : 'text-portal-muted-strong'}`}>
+              <span className={`px-2 py-0.5 rounded-none border border-portal-border ${isOverdue(r, today) ? 'text-portal-coral-text' : 'text-portal-muted-strong'}`}>
                 {isOverdue(r, today) ? t.inv_overdue : t[`inv_status_${r.status}`]}
               </span>
               {r.period_start && r.period_end && <span className="text-portal-muted">{fmtDate(r.period_start, lang)} – {fmtDate(r.period_end, lang)}</span>}
@@ -294,7 +294,7 @@ function RequestSheet({ id, onClose, today }: { id: string | null; onClose: () =
             {!draft && r.status !== 'void' && <Payments requestId={r.id} payments={data!.payments} rem={rem} />}
 
             {(settings?.payment_link || settings?.iban) && (
-              <div className="rounded-[4px] border border-portal-border p-3 text-sm space-y-1">
+              <div className="rounded-none border border-portal-border p-3 text-sm space-y-1">
                 <div className={portalLabel}>{t.inv_how_to_pay}</div>
                 {settings.payment_link && <a href={settings.payment_link} target="_blank" rel="noopener noreferrer" className="block text-portal-blue hover:underline break-all">{settings.payment_link}</a>}
                 {settings.iban && <div className="text-portal-ink">IBAN: <span className="font-mono">{settings.iban}</span></div>}
@@ -410,7 +410,7 @@ function Payments({ requestId, payments, rem }: { requestId: string; payments: {
         </div>
       ))}
       {rem > 0 && (
-        <form onSubmit={submit} className="grid grid-cols-2 gap-2 rounded-[4px] border border-portal-border p-3">
+        <form onSubmit={submit} className="grid grid-cols-2 gap-2 rounded-none border border-portal-border p-3">
           <label className="space-y-1"><span className={portalLabel}>{t.inv_amount}</span><input type="number" min={0.01} step="0.01" max={rem} className={portalInput} value={amount} onChange={(e) => setAmount(e.target.value)} /></label>
           <label className="space-y-1"><span className={portalLabel}>{t.inv_paid_on}</span><input type="date" className={portalInput} value={date} onChange={(e) => setDate(e.target.value)} /></label>
           <label className="space-y-1 col-span-2"><span className={portalLabel}>{t.inv_method}</span>

@@ -150,7 +150,7 @@ const Register = () => {
 
             {role === 'coach' && (
               <div className="space-y-4 pt-2 border-t border-border">
-                <p className="font-display text-sm uppercase tracking-[0.1em] text-muted-foreground">{t.auth_coach_details}</p>
+                <p className="font-display text-sm uppercase tracking-[0.02em] text-muted-foreground">{t.auth_coach_details}</p>
                 <div className="grid gap-2">
                   <Label>{t.auth_primary_sport}</Label>
                   <select
@@ -195,7 +195,7 @@ const Register = () => {
 
             {role === 'club' && (
               <div className="space-y-4 pt-2 border-t border-border">
-                <p className="font-display text-sm uppercase tracking-[0.1em] text-muted-foreground">{t.auth_club_details}</p>
+                <p className="font-display text-sm uppercase tracking-[0.02em] text-muted-foreground">{t.auth_club_details}</p>
                 <div className="grid gap-2">
                   <Label>{t.auth_primary_sport}</Label>
                   <select

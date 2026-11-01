@@ -48,7 +48,7 @@ const MyBookings = () => {
     <div className="max-w-4xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-3xl">My bookings</h1>
+          <h1 className="text-5xl md:text-6xl">My bookings</h1>
           <p className="text-muted-foreground mt-1">Track your session requests and their status.</p>
         </div>
         <Link to="/search"><Button variant="outline">Find a coach</Button></Link>

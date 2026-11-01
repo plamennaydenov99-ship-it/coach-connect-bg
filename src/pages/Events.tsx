@@ -4,6 +4,8 @@ import { Calendar, MapPin } from 'lucide-react';
 
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { chip, lift } from '@/lib/ui';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { EVENTS } from '@/lib/events';
@@ -35,19 +37,15 @@ export default function Events() {
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <PublicNav />
 
-      <main className="flex-1 container py-10 md:py-14">
-        <header className="mb-8 md:mb-10">
-          <h1 className="font-display text-4xl md:text-5xl">{t.events_page_title}</h1>
-          <p className="mt-2 text-muted-foreground">
-            {t.events_page_sub}
-          </p>
-        </header>
+      <main className="flex-1">
+        <PageHeader title={t.events_page_title} sub={t.events_page_sub} tone="clay" />
+        <div className="container py-12 md:py-16">
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {EVENTS.map(ev => (
             <article
               key={ev.id}
-              className="surface overflow-hidden transition hover:border-gold/50"
+              className={`surface overflow-hidden ${lift}`}
             >
               <div className="relative aspect-[16/9] overflow-hidden">
                 <img
@@ -64,7 +62,7 @@ export default function Events() {
                   </Badge>
                   <BookmarkButton targetType="event" targetId={String(ev.id)} variant="icon" />
                 </div>
-                <h2 className="mt-3 font-display text-xl">{ev.name}</h2>
+                <h2 className="t-plain mt-3 text-xl">{ev.name}</h2>
                 <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                   <span className="inline-flex items-center gap-1.5">
                     <Calendar className="h-4 w-4" /> {ev.date}
@@ -84,11 +82,11 @@ export default function Events() {
 
         {coachEvents.length > 0 && (
           <section className="mt-14">
-            <h2 className="font-display text-2xl md:text-3xl mb-6">{t.events_by_coaches}</h2>
+            <h2 className="mb-6 text-4xl md:text-5xl">{t.events_by_coaches}</h2>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {coachEvents.map(ev => (
                 <article key={ev.id} className="surface p-5">
-                  <h3 className="font-display text-xl">{ev.title}</h3>
+                  <h3 className="t-plain text-xl">{ev.title}</h3>
                   <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                     <span className="inline-flex items-center gap-1.5">
                       <Calendar className="h-4 w-4" /> {new Date(ev.event_date).toLocaleDateString()}
@@ -105,8 +103,8 @@ export default function Events() {
             </div>
           </section>
         )}
+        </div>
       </main>
-
 
       <PublicFooter />
     </div>

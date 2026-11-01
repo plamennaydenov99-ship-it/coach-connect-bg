@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react';
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { chip, lift } from '@/lib/ui';
 import { ProductCard } from '@/components/marketplace/ProductCard';
 import { FloatingCartButton } from '@/components/marketplace/FloatingCartButton';
 import { PRODUCTS, PRODUCT_CATEGORIES, type ProductCategory } from '@/lib/products';
-import { cn } from '@/lib/utils';
 import { useLanguage } from '@/context/LanguageContext';
 
 type Filter = 'All' | ProductCategory;
@@ -25,25 +26,15 @@ export default function Marketplace() {
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <PublicNav />
 
-      <main className="flex-1 container py-10 md:py-14">
-        <header className="mb-8">
-          <h1 className="font-display text-4xl md:text-5xl">{t.shop_title}</h1>
-          <p className="mt-2 text-muted-foreground">
-            {t.shop_sub}
-          </p>
-        </header>
-
-        <div className="flex flex-wrap gap-2 mb-8 border-b border-border pb-4">
+      <main className="flex-1">
+        <PageHeader title={t.shop_title} sub={t.shop_sub} tone="sand" />
+        <div className="container py-12 md:py-16">
+        <div className="mb-8 flex flex-wrap gap-1.5">
           {filters.map(f => (
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={cn(
-                'px-4 py-2 rounded-full text-sm font-medium transition-colors',
-                filter === f
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-secondary text-muted-foreground hover:text-foreground',
-              )}
+              className={chip(filter === f)}
             >
               {label(f)}
             </button>
@@ -54,6 +45,7 @@ export default function Marketplace() {
           {filtered.map(p => (
             <ProductCard key={p.id} product={p} />
           ))}
+        </div>
         </div>
       </main>
 

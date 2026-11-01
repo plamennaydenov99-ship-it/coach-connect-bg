@@ -62,7 +62,7 @@ const Clients = () => {
   return (
     <div className="max-w-5xl space-y-6">
       <div>
-        <h1 className="font-display text-3xl">{t.clients_title}</h1>
+        <h1 className="text-5xl md:text-6xl">{t.clients_title}</h1>
         <p className="text-muted-foreground text-sm mt-1">{t.clients_sub}</p>
       </div>
 

@@ -22,8 +22,8 @@ import { SessionSheet } from '@/components/coach/calendar/SessionSheet';
 import { Avatar, LOCALES, portalInput, portalLabel, stageKey } from '@/components/coach/clients/shared';
 import { labelDate, todayStr, toTimeStr, zonedParts } from '@/lib/tz';
 
-const card = 'animate-fade-up-in bg-portal-card border border-portal-border rounded-[4px] p-5';
-const title = 'font-display uppercase tracking-[0.1em] text-base text-portal-ink';
+const card = 'animate-fade-up-in bg-portal-card border border-portal-border rounded-none p-5';
+const title = 'font-display uppercase tracking-[0.02em] text-base text-portal-ink';
 const link = 'text-sm text-portal-blue hover:underline';
 
 export default function CoachDashboard() {
@@ -53,7 +53,7 @@ export default function CoachDashboard() {
       <div className="flex-1 min-w-0 space-y-6">
         <header className="hidden md:block">
           <p className={portalLabel}>{dateLine}</p>
-          <h1 className="font-display uppercase text-3xl tracking-[0.06em] text-portal-ink mt-1">{greet}{first ? `, ${first}` : ''}</h1>
+          <h1 className="text-5xl md:text-6xl">{greet}{first ? `, ${first}` : ''}</h1>
           {isLoading ? <Skeleton className="h-4 w-72 mt-2" /> : data && (
             <p className="text-sm text-portal-muted-strong mt-1">
               {isClub
@@ -69,10 +69,10 @@ export default function CoachDashboard() {
         <div className="md:hidden space-y-6">
           <div>
             <p className={portalLabel}>{dateLine}</p>
-            <h1 className="font-display uppercase text-2xl tracking-[0.06em] text-portal-ink mt-1">{t.dash_today}</h1>
+            <h1 className="text-5xl md:text-6xl">{t.dash_today}</h1>
           </div>
           {isLoading || !data ? <div className="space-y-3"><Skeleton className="h-32" /><Skeleton className="h-32" /></div>
-            : data.todaySessions.length === 0 ? <p className="text-sm text-portal-muted bg-portal-card border border-portal-border rounded-[4px] p-5">{t.dash_today_empty}</p>
+            : data.todaySessions.length === 0 ? <p className="text-sm text-portal-muted bg-portal-card border border-portal-border rounded-none p-5">{t.dash_today_empty}</p>
             : <MobileTodayCards sessions={data.todaySessions} />}
           <TasksCard loading={isLoading} tasks={data?.tasks ?? []} today={today} locale={locale} />
         </div>
@@ -120,7 +120,7 @@ export default function CoachDashboard() {
                   return (
                     <div key={s}>
                       <div className="flex justify-between text-sm"><span>{t[stageKey(s)]}</span><span className="font-display">{data.pipeline[s]}</span></div>
-                      <div className="h-2 bg-portal-bg rounded-[2px] mt-1"><div className="h-2 bg-portal-blue animate-grow-in rounded-[2px]" style={{ width: `${(data.pipeline[s] / max) * 100}%` }} /></div>
+                      <div className="h-2 bg-portal-bg rounded-none mt-1"><div className="h-2 bg-portal-blue animate-grow-in rounded-none" style={{ width: `${(data.pipeline[s] / max) * 100}%` }} /></div>
                     </div>
                   );
                 })}
@@ -141,7 +141,7 @@ export default function CoachDashboard() {
                   {occRows.map(({ r, occ }) => (
                     <div key={r.id}>
                       <div className="flex justify-between text-sm"><span className="truncate">{r.name}</span><span className="font-display">{occ ? `${occ.percentage}%` : '—'}</span></div>
-                      <div className="h-2 bg-portal-bg rounded-[2px] mt-1"><div className="h-2 bg-portal-blue animate-grow-in rounded-[2px]" style={{ width: `${occ?.percentage ?? 0}%` }} /></div>
+                      <div className="h-2 bg-portal-bg rounded-none mt-1"><div className="h-2 bg-portal-blue animate-grow-in rounded-none" style={{ width: `${occ?.percentage ?? 0}%` }} /></div>
                     </div>
                   ))}
                 </div>
@@ -162,7 +162,7 @@ export default function CoachDashboard() {
                     <XAxis dataKey="label" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: 'hsl(var(--portal-muted))' }} />
                     <YAxis allowDecimals={false} domain={[0, 'auto']} tickLine={false} axisLine={false} width={28} tick={{ fontSize: 11, fill: 'hsl(var(--portal-muted))' }} />
                     <Tooltip cursor={{ fill: 'hsl(var(--portal-bg))' }} content={({ active, payload }) => active && payload?.length ? (
-                      <div className="bg-portal-card border border-portal-border rounded-[4px] px-2 py-1 text-xs">
+                      <div className="bg-portal-card border border-portal-border rounded-none px-2 py-1 text-xs">
                         {t.dash_tooltip.replace('{date}', (payload[0].payload as any).label).replace('{n}', String(payload[0].value))}
                       </div>
                     ) : null} />
@@ -184,7 +184,7 @@ export default function CoachDashboard() {
 
 function Kpi({ label, value, sub }: { label: string; value: string; sub: string }) {
   return (
-    <div className="motion-card bg-portal-card border border-portal-border rounded-[4px] p-4">
+    <div className="motion-card bg-portal-card border border-portal-border rounded-none p-4">
       <p className={portalLabel}>{label}</p>
       <p className="font-display text-4xl text-portal-ink mt-1 leading-none"><CountUp value={value} /></p>
       <p className="text-xs text-portal-muted mt-2">{sub}</p>
@@ -225,11 +225,11 @@ function TodayList({ sessions, onOpen }: { sessions: CalSession[]; onOpen: (s: C
             </button>
             {past && s.capacity == null && s.kind !== 'hire' && (
               <button disabled={setStatus.isPending} onClick={() => setStatus.mutate({ id: s.id, status: 'attended' }, { onError: () => toast.error(t.crm_error) })}
-                className="text-xs h-8 px-2.5 border border-portal-border rounded-[4px] hover:bg-portal-bg inline-flex items-center gap-1">
+                className="text-xs h-8 px-2.5 border border-portal-border rounded-none hover:bg-portal-bg inline-flex items-center gap-1">
                 <Check className="w-3.5 h-3.5" />{t.dash_mark_attended}
               </button>
             )}
-            {label && <span className={`text-[11px] font-display uppercase tracking-[0.08em] px-2 py-0.5 rounded-[4px] ${cls}`}>{label}</span>}
+            {label && <span className={`text-[11px] font-display uppercase tracking-[0.02em] px-2 py-0.5 rounded-none ${cls}`}>{label}</span>}
           </li>
         );
       })}
@@ -275,7 +275,7 @@ function TasksCard({ loading, tasks, today, locale, className = '' }: { loading:
       )}
       <form onSubmit={submit} className="flex gap-2 mt-3">
         <input value={draft} onChange={(e) => setDraft(e.target.value)} placeholder={t.dash_add_task} className={`${portalInput} flex-1`} maxLength={200} />
-        <button type="submit" aria-label={t.dash_add_task} disabled={add.isPending} className="h-10 w-10 inline-flex items-center justify-center border border-portal-border rounded-[4px] hover:bg-portal-bg"><Plus className="w-4 h-4" /></button>
+        <button type="submit" aria-label={t.dash_add_task} disabled={add.isPending} className="h-10 w-10 inline-flex items-center justify-center border border-portal-border rounded-none hover:bg-portal-bg"><Plus className="w-4 h-4" /></button>
       </form>
     </section>
   );
@@ -307,7 +307,7 @@ function Inbox() {
           <ul className="divide-y divide-portal-border">
             {data.map((c) => (
               <li key={c.id}>
-                <Link to={`${base}/messages?c=${c.id}`} className="flex items-center gap-3 py-2.5 hover:bg-portal-bg -mx-2 px-2 rounded-[4px]">
+                <Link to={`${base}/messages?c=${c.id}`} className="flex items-center gap-3 py-2.5 hover:bg-portal-bg -mx-2 px-2 rounded-none">
                   <Avatar name={c.name} size={36} />
                   <span className="flex-1 min-w-0">
                     <span className="flex justify-between gap-2"><span className="truncate text-portal-ink text-sm">{c.name}</span><span className="text-xs text-portal-muted shrink-0">{when(c.last_message_at)}</span></span>

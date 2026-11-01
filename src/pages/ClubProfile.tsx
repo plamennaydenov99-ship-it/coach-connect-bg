@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
+import { PageHeader } from '@/components/layout/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BadgeCheck, MapPin, MessageSquare } from 'lucide-react';
@@ -78,27 +79,22 @@ const ClubProfile = () => {
       <PublicNav />
 
       <main className="flex-1">
-        <section className="border-b border-border bg-card/40">
-          <div className="container py-10">
-            <div className="flex flex-wrap items-center gap-2 mb-3">
+        <PageHeader title={club.name} tone="blue">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+            <div className="flex flex-wrap items-center gap-1.5">
               {(club.sports?.length ? club.sports : club.sport ? [club.sport] : []).map(s => (
-                <span key={s} className="px-2 py-0.5 text-xs font-semibold rounded-md bg-secondary capitalize">{s}</span>
+                <span key={s} className="bg-[#F3EDE2] px-2.5 py-1 text-sm font-semibold capitalize text-foreground">{s}</span>
               ))}
-              {club.verified && <span className="badge-verified"><BadgeCheck className="h-3 w-3" /> {t.verified}</span>}
+              {club.verified && <span className="inline-flex items-center gap-1 bg-[#F3EDE2] px-2.5 py-1 text-sm font-semibold text-foreground"><BadgeCheck className="h-4 w-4 text-primary" /> {t.verified}</span>}
             </div>
-            <h1 className="font-display">{club.name}</h1>
-            {club.city && (
-              <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
-                <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {club.city}</span>
-              </div>
-            )}
-            <Button size="lg" className="mt-5" onClick={openMessage}>
-              <MessageSquare className="h-4 w-4 mr-2" /> {t.coach_message} {club.name}
-            </Button>
+            {club.city && <span className="flex items-center gap-1.5 text-base"><MapPin className="h-4 w-4" /> {club.city}</span>}
+            <button type="button" onClick={openMessage} className="inline-flex h-12 items-center gap-2 bg-[#F3EDE2] px-6 font-display text-base font-bold uppercase text-foreground transition-colors hover:bg-white">
+              <MessageSquare className="h-4 w-4" /> {t.coach_message} {club.name}
+            </button>
           </div>
-        </section>
+        </PageHeader>
 
-        <section className="container py-10 space-y-10">
+        <section className="container space-y-10 py-12 md:py-16">
           <Tabs defaultValue="about" className="w-full">
             <TabsList className="flex flex-wrap h-auto">
               <TabsTrigger value="about">{t.club_about}</TabsTrigger>
@@ -108,14 +104,14 @@ const ClubProfile = () => {
             <TabsContent value="about" className="mt-6">
               <div className="grid gap-8 md:grid-cols-2">
                 <div className="surface p-6">
-                  <h2 className="font-display text-2xl mb-3">{t.club_about}</h2>
+                  <h2 className="mb-4 text-4xl">{t.club_about}</h2>
                   <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
                     {club.about || t.club_no_desc}
                   </p>
                 </div>
                 {club.hours && (
                   <div className="surface p-6">
-                    <h3 className="font-display text-lg mb-3">{t.club_hours}</h3>
+                    <h3 className="mb-3 text-3xl">{t.club_hours}</h3>
                     <p className="text-sm text-muted-foreground whitespace-pre-line">{club.hours}</p>
                   </div>
                 )}
@@ -129,10 +125,10 @@ const ClubProfile = () => {
                 <div className="grid gap-3 md:grid-cols-3">
                   {programs.map((p, i) => (
                     <div key={i} className="surface p-5 flex flex-col">
-                      <p className="font-display text-lg">{p.name}</p>
+                      <p className="t-plain text-xl">{p.name}</p>
                       {p.duration && <p className="text-xs text-muted-foreground mt-1">{p.duration}</p>}
                       {p.price != null && (
-                        <p className="font-display text-2xl text-foreground mt-3">€{p.price}</p>
+                        <p className="mt-3 font-display text-5xl font-extrabold leading-none">€{p.price}</p>
                       )}
 
                     </div>

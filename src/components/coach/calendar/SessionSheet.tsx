@@ -79,7 +79,7 @@ function Body({ s, onClose }: { s: CalSession; onClose: () => void }) {
       <div className="flex gap-1.5">
         {(['one', 'following'] as const).map((k) => (
           <button type="button" key={k} onClick={() => onChange(k)}
-            className={`flex-1 h-9 rounded-[4px] border text-sm ${value === k ? 'bg-portal-selected border-portal-selected-border' : 'border-portal-border text-portal-muted-strong'}`}>
+            className={`flex-1 h-9 rounded-none border text-sm ${value === k ? 'bg-portal-selected border-portal-selected-border' : 'border-portal-border text-portal-muted-strong'}`}>
             {k === 'one' ? t.cal_scope_one : t.cal_scope_following}
           </button>
         ))}
@@ -91,7 +91,7 @@ function Body({ s, onClose }: { s: CalSession; onClose: () => void }) {
   return (
     <div className="space-y-5 pt-2">
       <div>
-        <SheetTitle className="font-display text-xl uppercase tracking-[0.08em] text-portal-ink">{s.kind === 'hire' ? s.title ?? t.hire_type : s.capacity != null ? s.title || t.group_type : s.client?.display_name ?? '—'}</SheetTitle>
+        <SheetTitle className="font-display text-xl uppercase tracking-[0.02em] text-portal-ink">{s.kind === 'hire' ? s.title ?? t.hire_type : s.capacity != null ? s.title || t.group_type : s.client?.display_name ?? '—'}</SheetTitle>
         <SheetDescription className="sr-only">{t.cal_title}</SheetDescription>
         {s.client_id && <Link to={`${peoplePath}/${s.client_id}`} className="text-sm text-portal-blue underline-offset-2 hover:underline">{t.cal_open_client}</Link>}
       </div>
@@ -103,11 +103,11 @@ function Body({ s, onClose }: { s: CalSession; onClose: () => void }) {
         {s.series_id && <div className="flex items-center gap-2"><Repeat className="h-4 w-4 text-portal-muted" />{t.cal_repeats}</div>}
         {s.capacity != null && s.led_by && <div className="flex items-center gap-2"><UserRound className="h-4 w-4 text-portal-muted" />{t.group_led_by_line.replace('{name}', s.led_by)}</div>}
         <div className="flex gap-2 pt-1">
-          <span className={`text-[11px] px-1.5 py-0.5 rounded-[4px] border ${s.kind === 'hire' ? 'bg-portal-bg border-portal-ink' : s.kind === 'trial' ? 'bg-portal-copper-tint border-portal-copper' : 'bg-portal-selected border-portal-selected-border'}`}>
+          <span className={`text-[11px] px-1.5 py-0.5 rounded-none border ${s.kind === 'hire' ? 'bg-portal-bg border-portal-ink' : s.kind === 'trial' ? 'bg-portal-copper-tint border-portal-copper' : 'bg-portal-selected border-portal-selected-border'}`}>
             {s.kind === 'hire' ? t.hire_type : s.capacity != null ? t.group_type : s.kind === 'trial' ? t.cal_type_trial : t.cal_type_session}
           </span>
-          {s.capacity != null && s.is_public && <span className="text-[11px] px-1.5 py-0.5 rounded-[4px] border border-portal-blue text-portal-blue bg-portal-card">{t.group_trending_badge}</span>}
-          <span className="text-[11px] px-1.5 py-0.5 rounded-[4px] border border-portal-border">{t[`crm_status_${s.status}` as 'crm_status_scheduled']}</span>
+          {s.capacity != null && s.is_public && <span className="text-[11px] px-1.5 py-0.5 rounded-none border border-portal-blue text-portal-blue bg-portal-card">{t.group_trending_badge}</span>}
+          <span className="text-[11px] px-1.5 py-0.5 rounded-none border border-portal-border">{t[`crm_status_${s.status}` as 'crm_status_scheduled']}</span>
         </div>
       </div>
 
@@ -147,7 +147,7 @@ function Body({ s, onClose }: { s: CalSession; onClose: () => void }) {
             <input value={location} maxLength={200} onChange={(e) => setLocation(e.target.value)} className={portalInput} /></label>
           {s.series_id && <ScopePicker value={scope} onChange={setScope} />}
           {confirmed && overlap > 0 && (
-            <p className="text-sm p-2 rounded-[4px] border border-portal-copper bg-portal-copper-tint">{t.cal_overlap_warning.replace('{n}', String(overlap))}</p>
+            <p className="text-sm p-2 rounded-none border border-portal-copper bg-portal-copper-tint">{t.cal_overlap_warning.replace('{n}', String(overlap))}</p>
           )}
           <div className="flex justify-end gap-2">
             <button type="button" className={portalBtnGhost} onClick={() => setMode('view')}>{t.crm_cancel}</button>

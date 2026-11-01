@@ -34,9 +34,9 @@ export default function CoachMessages() {
       : new Date(iso).toLocaleDateString(LOCALES[lang], { timeZone: tz, day: '2-digit', month: 'short' });
 
   return (
-    <div className="bg-portal-card border border-portal-border rounded-[4px] grid md:grid-cols-[320px_1fr] h-[calc(100vh-11rem)] md:h-[calc(100vh-8rem)] overflow-hidden">
+    <div className="bg-portal-card border border-portal-border rounded-none grid md:grid-cols-[320px_1fr] h-[calc(100vh-11rem)] md:h-[calc(100vh-8rem)] overflow-hidden">
       <div className={`${activeId ? 'hidden md:flex' : 'flex'} flex-col border-r border-portal-border min-h-0`}>
-        <div className="px-4 h-14 flex items-center border-b border-portal-border font-display uppercase tracking-[0.1em] text-portal-ink">{t.portal_messages}</div>
+        <div className="px-4 h-14 flex items-center border-b border-portal-border font-display uppercase tracking-[0.02em] text-portal-ink">{t.portal_messages}</div>
         <div className="overflow-y-auto flex-1">
           {isLoading ? <div className="p-4 space-y-3">{[0, 1, 2].map((i) => <Skeleton key={i} className="h-12" />)}</div>
             : !convos?.length ? (
@@ -130,7 +130,7 @@ function Thread({ id, name, onBack }: { id: string; name: string; onBack: () => 
   return (
     <>
       <div className="h-14 px-3 md:px-4 flex items-center gap-3 border-b border-portal-border">
-        <button onClick={onBack} aria-label={t.cmsg_back} className="md:hidden h-9 w-9 flex items-center justify-center rounded-[4px] hover:bg-portal-bg"><ArrowLeft className="h-4 w-4" /></button>
+        <button onClick={onBack} aria-label={t.cmsg_back} className="md:hidden h-9 w-9 flex items-center justify-center rounded-none hover:bg-portal-bg"><ArrowLeft className="h-4 w-4" /></button>
         <Avatar name={name} size={32} />
         <span className="font-medium text-portal-ink truncate flex-1">{name}</span>
         <ClientLink conversationId={id} name={name} />
@@ -140,7 +140,7 @@ function Thread({ id, name, onBack }: { id: string; name: string; onBack: () => 
           const mine = m.sender_id === user?.id;
           return (
             <div key={m.id} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-[75%] px-3.5 py-2 text-sm rounded-[4px] border ${mine ? 'bg-portal-selected border-portal-selected-border' : 'bg-portal-card border-portal-border'} text-portal-ink`}>
+              <div className={`max-w-[75%] px-3.5 py-2 text-sm rounded-none border ${mine ? 'bg-portal-selected border-portal-selected-border' : 'bg-portal-card border-portal-border'} text-portal-ink`}>
                 <p className="whitespace-pre-wrap break-words">{m.content}</p>
                 <p className="text-[10px] mt-1 text-portal-muted">{toTimeStr(m.created_at, tz)}</p>
               </div>
@@ -155,9 +155,9 @@ function Thread({ id, name, onBack }: { id: string; name: string; onBack: () => 
         <textarea value={draft} onChange={(e) => setDraft(e.target.value)} rows={2} maxLength={4000}
           onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }}
           placeholder={t.dashmsg_reply_ph}
-          className="flex-1 resize-none rounded-[4px] border border-portal-input bg-portal-card px-3 py-2 text-sm text-portal-ink focus:outline-none focus:border-portal-copper" />
+          className="flex-1 resize-none rounded-none border border-portal-input bg-portal-card px-3 py-2 text-sm text-portal-ink focus:outline-none focus:border-portal-copper" />
         <button type="submit" disabled={sending || !draft.trim()}
-          className="h-10 px-4 inline-flex items-center gap-1.5 rounded-[4px] bg-portal-copper hover:bg-portal-copper-hover text-portal-on-copper font-display uppercase tracking-[0.1em] text-sm disabled:opacity-50">
+          className="h-10 px-4 inline-flex items-center gap-1.5 rounded-none bg-portal-copper hover:bg-portal-copper-hover text-portal-on-copper font-display uppercase tracking-[0.02em] text-sm disabled:opacity-50">
           <Send className="h-4 w-4" />{t.cmsg_send}
         </button>
       </form>
@@ -233,8 +233,8 @@ function ClientLink({ conversationId, name }: { conversationId: string; name: st
         </DropdownMenuContent>
       </DropdownMenu>
       <Dialog open={linkOpen} onOpenChange={setLinkOpen}>
-        <DialogContent className="coach-portal bg-portal-card border-portal-border rounded-[4px] max-w-sm">
-          <DialogHeader><DialogTitle className="font-display uppercase tracking-[0.1em] text-portal-ink">{t.msg_link_client}</DialogTitle></DialogHeader>
+        <DialogContent className="coach-portal bg-portal-card border-portal-border rounded-none max-w-sm">
+          <DialogHeader><DialogTitle className="font-display uppercase tracking-[0.02em] text-portal-ink">{t.msg_link_client}</DialogTitle></DialogHeader>
           <select value={pick} onChange={(e) => setPick(e.target.value)} className={portalInput} aria-label={t.msg_link_client}>
             {data.unlinked.map((c) => <option key={c.id} value={c.id}>{c.display_name}</option>)}
           </select>

@@ -55,14 +55,14 @@ export function WeekGrid({ start, days, tz, sessions, slots, onEmpty, onSession 
   const nowMin = minutesOfDay(new Date(), tz);
 
   return (
-    <div className="bg-portal-card border border-portal-border rounded-[4px] overflow-hidden">
+    <div className="bg-portal-card border border-portal-border rounded-none overflow-hidden">
       <div className="overflow-x-auto">
         <div style={{ minWidth: days > 1 ? 760 : undefined }}>
           <div className="grid border-b border-portal-border" style={{ gridTemplateColumns: `52px repeat(${days}, 1fr)` }}>
             <div />
             {dates.map((d) => (
               <div key={d} className={`px-2 py-2 text-center border-l border-portal-border ${d === today ? 'bg-portal-selected' : ''}`}>
-                <div className="font-display uppercase tracking-[0.12em] text-[11px] text-portal-muted">{labelDate(d, LOCALES[lang], { weekday: 'short' })}</div>
+                <div className="font-display uppercase tracking-[0.02em] text-[11px] text-portal-muted">{labelDate(d, LOCALES[lang], { weekday: 'short' })}</div>
                 <div className={`font-display text-lg ${d === today ? 'text-portal-ink' : 'text-portal-ink'}`}>{labelDate(d, LOCALES[lang], { day: 'numeric' })}</div>
               </div>
             ))}
@@ -105,7 +105,7 @@ export function WeekGrid({ start, days, tz, sessions, slots, onEmpty, onSession 
                         <div
                           key={sl.id}
                           onClick={(e) => { e.stopPropagation(); onEmpty(d, sl.start_time.slice(0, 5)); }}
-                          className="absolute inset-x-1 rounded-[4px] border border-dashed border-portal-input bg-portal-card/60 px-1.5 py-0.5 text-[11px] text-portal-muted-strong overflow-hidden z-0"
+                          className="absolute inset-x-1 rounded-none border border-dashed border-portal-input bg-portal-card/60 px-1.5 py-0.5 text-[11px] text-portal-muted-strong overflow-hidden z-0"
                           style={{ top: a * MIN_PX, height: Math.max((b - a) * MIN_PX, 18) }}
                         >
                           {sl.start_time.slice(0, 5)} · {t.cal_open_slot}
@@ -120,7 +120,7 @@ export function WeekGrid({ start, days, tz, sessions, slots, onEmpty, onSession 
                         <button
                           key={s.id}
                           onClick={(e) => { e.stopPropagation(); onSession(s); }}
-                          className={`absolute rounded-[4px] border px-1.5 py-0.5 text-left text-[11px] leading-tight overflow-hidden z-10 ${
+                          className={`absolute rounded-none border px-1.5 py-0.5 text-left text-[11px] leading-tight overflow-hidden z-10 ${
                             hire ? 'bg-portal-bg border-portal-ink' : trial ? 'bg-portal-copper-tint border-portal-copper' : 'bg-portal-selected border-portal-selected-border'
                           } ${cancelled ? 'opacity-50 line-through' : ''} text-portal-ink hover:brightness-95`}
                           style={{

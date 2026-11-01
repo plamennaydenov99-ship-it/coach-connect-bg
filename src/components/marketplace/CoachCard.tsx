@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Star, MapPin, BadgeCheck } from 'lucide-react';
 import type { Coach } from '@/lib/mockData';
 import { discountedPrice, findSport } from '@/lib/mockData';
+import { lift } from '@/lib/ui';
 
 export function CoachCard({ coach }: { coach: Coach }) {
   const sport = findSport(coach.sport);
@@ -10,7 +11,7 @@ export function CoachCard({ coach }: { coach: Coach }) {
   return (
     <Link
       to={`/coaches/${coach.slug}`}
-      className="group surface overflow-hidden flex flex-col transition-all hover:border-gold/50"
+      className={`group surface flex flex-col overflow-hidden ${lift}`}
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-muted">
         <img
@@ -20,7 +21,7 @@ export function CoachCard({ coach }: { coach: Coach }) {
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         <div className="absolute top-3 left-3 flex gap-2">
-          <span className="px-2 py-0.5 text-xs font-semibold rounded-md bg-background/85 backdrop-blur text-foreground capitalize">
+          <span className="bg-background px-2.5 py-1 text-sm font-semibold capitalize text-foreground">
             {sport?.label}
           </span>
           {coach.verified && (
@@ -45,7 +46,7 @@ export function CoachCard({ coach }: { coach: Coach }) {
             loading="lazy"
           />
           <div className="min-w-0 flex-1">
-            <h3 className="font-display text-lg leading-tight truncate">{coach.name}</h3>
+            <h3 className="t-plain truncate text-lg">{coach.name}</h3>
             <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
               <MapPin className="h-3 w-3" /> {coach.city}
             </p>
@@ -58,7 +59,7 @@ export function CoachCard({ coach }: { coach: Coach }) {
           <span className="text-muted-foreground">({coach.reviewCount})</span>
         </div>
 
-        <div className="mt-auto pt-2 flex items-end justify-between border-t border-border">
+        <div className="mt-auto flex items-end justify-between pt-2">
           <div>
             {coach.discountPct ? (
               <>

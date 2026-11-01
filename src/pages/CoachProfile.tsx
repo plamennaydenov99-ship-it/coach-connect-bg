@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
+import { PageHeader } from '@/components/layout/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -167,51 +168,40 @@ const CoachProfile = () => {
       <PublicNav />
 
       <main className="flex-1">
-        <section className="border-b border-border bg-card/40">
-          <div className="container py-10 grid gap-8 md:grid-cols-[auto_1fr] items-center">
-            {avatar ? <img src={avatar} alt={name} className="h-28 w-28 md:h-36 md:w-36 rounded-2xl text-4xl object-cover border border-border" /> : <div aria-label={name} className="h-28 w-28 md:h-36 md:w-36 rounded-2xl text-4xl border border-border bg-secondary text-foreground flex items-center justify-center font-display shrink-0">{initialsOf(name)}</div>}
-            <div>
-              <div className="flex flex-wrap items-center gap-2 mb-3">
-                {sportList.map(s => (
-                  <span key={s.slug} className="px-2 py-0.5 text-xs font-semibold rounded-md bg-secondary text-foreground capitalize">
-                    {s.label}
-                  </span>
-                ))}
-                {coach.verified && <span className="badge-verified"><BadgeCheck className="h-3 w-3" /> {t.verified}</span>}
-              </div>
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <h1 className="font-display">{name}</h1>
-                <BookmarkButton targetType="coach" targetId={coach.id} />
-              </div>
-              <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
-                {city && <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {city}</span>}
-                {coach.years_experience != null && (
-                  <span className="flex items-center gap-1.5"><Trophy className="h-4 w-4" /> {coach.years_experience} {t.coach_yrs_exp}</span>
-                )}
-              </div>
+        <PageHeader title={name} tone="ink" image={coach.gallery?.[0]}>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+            {avatar ? <img src={avatar} alt={name} className="h-16 w-16 object-cover" /> : <div aria-label={name} className="grid h-16 w-16 shrink-0 place-items-center bg-[#F3EDE2] font-display text-2xl font-extrabold text-foreground">{initialsOf(name)}</div>}
+            <div className="flex flex-wrap items-center gap-1.5">
+              {sportList.map(s => <span key={s.slug} className="bg-[#F3EDE2] px-2.5 py-1 text-sm font-semibold capitalize text-foreground">{s.label}</span>)}
+              {coach.verified && <span className="inline-flex items-center gap-1 bg-[#F3EDE2] px-2.5 py-1 text-sm font-semibold text-foreground"><BadgeCheck className="h-4 w-4 text-primary" /> {t.verified}</span>}
             </div>
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-base">
+              {city && <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {city}</span>}
+              {coach.years_experience != null && <span className="flex items-center gap-1.5"><Trophy className="h-4 w-4" /> {coach.years_experience} {t.coach_yrs_exp}</span>}
+            </div>
+            <BookmarkButton targetType="coach" targetId={coach.id} />
           </div>
-        </section>
+        </PageHeader>
 
-        <section className="container pb-20 pt-8 grid gap-8 md:grid-cols-[1fr_340px]">
+        <section className="container grid gap-8 py-12 md:grid-cols-[1fr_360px] md:py-16">
           <div className="space-y-8">
             {coach.bio && (
               <div className="surface p-6">
-                <h2 className="font-display text-2xl mb-3">{t.coach_about}</h2>
+                <h2 className="mb-4 text-4xl">{t.coach_about}</h2>
                 <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{coach.bio}</p>
                 {coach.specialisms?.length ? (
                   <div className="mt-5">
-                    <p className="text-xs uppercase tracking-[0.1em] text-muted-foreground mb-2">{t.coach_specialisms}</p>
+                    <p className="text-xs uppercase tracking-[0.02em] text-muted-foreground mb-2">{t.coach_specialisms}</p>
                     <div className="flex flex-wrap gap-2">
                       {coach.specialisms.map(s => (
-                        <span key={s} className="px-3 py-1 rounded-md bg-secondary text-sm">{s}</span>
+                        <span key={s} className="bg-background px-3 py-1 text-sm">{s}</span>
                       ))}
                     </div>
                   </div>
                 ) : null}
                 {coach.certs?.length ? (
                   <div className="mt-5">
-                    <p className="text-xs uppercase tracking-[0.1em] text-muted-foreground mb-2">{t.coach_certifications}</p>
+                    <p className="text-xs uppercase tracking-[0.02em] text-muted-foreground mb-2">{t.coach_certifications}</p>
                     <ul className="space-y-1.5">
                       {coach.certs.map((c, i) => (
                         <li key={`${c.title}-${i}`} className="text-sm flex flex-wrap items-center gap-2">
@@ -230,7 +220,7 @@ const CoachProfile = () => {
             <div className="surface p-6">
               <div className="flex items-center gap-2 mb-4">
                 <Calendar className="h-5 w-5 text-primary" />
-                <h2 className="font-display text-2xl">{t.coach_available_sessions}</h2>
+                <h2 className="text-4xl">{t.coach_available_sessions}</h2>
               </div>
               {slots.length === 0 ? (
                 <p className="text-muted-foreground text-sm">{t.coach_no_slots.replace('{name}', firstName)}</p>
@@ -240,7 +230,7 @@ const CoachProfile = () => {
                     <li key={s.id}>
                       <button
                         onClick={() => { if (requireAthlete()) setSelectedSlot(s); }}
-                        className="w-full text-left border border-border p-4 hover:border-primary transition-colors"
+                        className="w-full bg-background p-4 text-left transition-colors hover:bg-card"
                       >
                         <p className="font-medium">
                           {new Date(s.date + 'T00:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
@@ -258,22 +248,22 @@ const CoachProfile = () => {
 
             {coach.gallery?.length ? (
               <div>
-                <h2 className="font-display text-2xl mb-4">{t.coach_gallery}</h2>
+                <h2 className="mb-4 text-4xl">{t.coach_gallery}</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {coach.gallery.map((g, i) => (
                     <img key={i} src={g} alt={`${name} session ${i + 1}`} loading="lazy"
-                      className="aspect-[4/3] rounded-xl object-cover border border-border" />
+                      className="aspect-[4/3] object-cover" />
                   ))}
                 </div>
               </div>
             ) : null}
           </div>
 
-          <aside className="md:sticky md:top-20 h-fit">
+          <aside className="h-fit md:sticky md:top-24">
             <div className="surface p-6">
               <p className="text-sm text-muted-foreground">{t.coach_per_session}</p>
               <div className="mt-1 flex items-baseline gap-3">
-                <span className="font-display text-3xl">€{price}</span>
+                <span className="font-display text-6xl font-extrabold leading-none">€{price}</span>
               </div>
 
               <Button size="lg" className="w-full mt-5" onClick={openMessage}>

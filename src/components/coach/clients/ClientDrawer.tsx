@@ -92,10 +92,10 @@ function DrawerBody({ data, onDeleted }: { data: NonNullable<ReturnType<typeof u
         <div className="flex items-center gap-3">
           <Avatar name={c.display_name} size={44} />
           <div className="min-w-0 flex-1">
-            <div className="font-display text-xl uppercase tracking-[0.06em] text-portal-ink truncate">{c.display_name}</div>
+            <div className="font-display text-xl uppercase tracking-[0.02em] text-portal-ink truncate">{c.display_name}</div>
             <div className="text-xs text-portal-muted">{t.crm_since} {fmtDate(c.created_at, lang, tz)}</div>
           </div>
-          <select value={c.stage_id} onChange={(e) => changeStage(e.target.value)} className="h-8 px-2 rounded-[4px] border border-portal-selected-border bg-portal-selected text-portal-ink text-sm" aria-label={t.crm_stage}>
+          <select value={c.stage_id} onChange={(e) => changeStage(e.target.value)} className="h-8 px-2 rounded-none border border-portal-selected-border bg-portal-selected text-portal-ink text-sm" aria-label={t.crm_stage}>
             {(myPipeline?.stages ?? []).map((s) => <option key={s.id} value={s.id}>{stageLabel(s, t)}</option>)}
             {!myPipeline && <option value={c.stage_id}>{t[stageKey(c.stage) as 'crm_stage_active']}</option>}
           </select>
@@ -103,7 +103,7 @@ function DrawerBody({ data, onDeleted }: { data: NonNullable<ReturnType<typeof u
         {pipelines.length > 1 && (
           <label className="flex items-center gap-2 text-xs text-portal-muted">
             {t.crm_pipeline}
-            <select value={c.pipeline_id ?? ''} onChange={(e) => changePipeline(e.target.value)} className="h-8 px-2 rounded-[4px] border border-portal-border bg-portal-card text-portal-ink text-sm" aria-label={t.crm_pipeline}>
+            <select value={c.pipeline_id ?? ''} onChange={(e) => changePipeline(e.target.value)} className="h-8 px-2 rounded-none border border-portal-border bg-portal-card text-portal-ink text-sm" aria-label={t.crm_pipeline}>
               {pipelines.map((p) => <option key={p.id} value={p.id}>{pipelineLabel(p, t)}</option>)}
             </select>
           </label>
@@ -115,7 +115,7 @@ function DrawerBody({ data, onDeleted }: { data: NonNullable<ReturnType<typeof u
           onKeyDown={(e) => e.key === 'Enter' && (e.target as HTMLInputElement).blur()}
           placeholder={t.crm_goal_ph}
           aria-label={t.crm_goal}
-          className="w-full text-sm bg-transparent border border-transparent hover:border-portal-border focus:border-portal-copper focus:outline-none rounded-[4px] px-2 py-1 -mx-2 text-portal-ink placeholder:text-portal-muted"
+          className="w-full text-sm bg-transparent border border-transparent hover:border-portal-border focus:border-portal-copper focus:outline-none rounded-none px-2 py-1 -mx-2 text-portal-ink placeholder:text-portal-muted"
         />
         <div className="grid grid-cols-3 gap-2">
           <Stat label={t.crm_sessions} value={String(data.sessions.length)} />
@@ -123,7 +123,7 @@ function DrawerBody({ data, onDeleted }: { data: NonNullable<ReturnType<typeof u
           <Stat label={t.crm_next_session} value={next ? fmtDateTime(next.starts_at, lang, tz) : '—'} small />
         </div>
         {(c.phone || c.email) && (
-          <div className="rounded-[4px] border border-portal-border bg-portal-bg p-3 space-y-1.5">
+          <div className="rounded-none border border-portal-border bg-portal-bg p-3 space-y-1.5">
             <div className={`${portalLabel} inline-flex items-center gap-1`}><Lock className="h-3 w-3" />{t.crm_private_only_you}</div>
             {c.phone && <a href={`tel:${c.phone}`} className="flex items-center gap-2 text-sm text-portal-ink"><Phone className="h-3.5 w-3.5 text-portal-muted" />{c.phone}</a>}
             {c.email && <a href={`mailto:${c.email}`} className="flex items-center gap-2 text-sm text-portal-ink break-all"><Mail className="h-3.5 w-3.5 text-portal-muted" />{c.email}</a>}
@@ -132,9 +132,9 @@ function DrawerBody({ data, onDeleted }: { data: NonNullable<ReturnType<typeof u
       </div>
 
       <Tabs defaultValue="timeline" className="flex-1 flex flex-col min-h-0">
-        <TabsList className="mx-5 mt-3 grid grid-cols-4 bg-portal-bg rounded-[4px] h-9 p-0.5">
+        <TabsList className="mx-5 mt-3 grid grid-cols-4 bg-portal-bg rounded-none h-9 p-0.5">
           {(['timeline', 'tasks', 'sessions', 'details'] as const).map((k) => (
-            <TabsTrigger key={k} value={k} className="rounded-[4px] text-xs font-display uppercase tracking-[0.08em] text-portal-muted-strong data-[state=active]:bg-portal-card data-[state=active]:text-portal-ink data-[state=active]:shadow-none">
+            <TabsTrigger key={k} value={k} className="rounded-none text-xs font-display uppercase tracking-[0.02em] text-portal-muted-strong data-[state=active]:bg-portal-card data-[state=active]:text-portal-ink data-[state=active]:shadow-none">
               {t[`crm_tab_${k}` as const]}
             </TabsTrigger>
           ))}
@@ -152,7 +152,7 @@ function DrawerBody({ data, onDeleted }: { data: NonNullable<ReturnType<typeof u
 
 function Stat({ label, value, small }: { label: string; value: string; small?: boolean }) {
   return (
-    <div className="rounded-[4px] border border-portal-border p-2">
+    <div className="rounded-none border border-portal-border p-2">
       <div className={portalLabel}>{label}</div>
       <div className={`${small ? 'text-xs' : 'text-lg font-display'} text-portal-ink mt-0.5`}>{value}</div>
     </div>
@@ -277,7 +277,7 @@ function SessionsTab({ clientId, sessions }: { clientId: string; sessions: Coach
     <li key={s.id} className="py-2 border-b border-portal-border last:border-0 space-y-1.5">
       <div className="flex items-center gap-2">
         <span className="text-sm text-portal-ink flex-1">{fmtDateTime(s.starts_at, lang, tz)}{s.capacity != null ? ` · ${s.title || t.group_type}` : ''}{s.kind === 'trial' ? ` · ${t.crm_trial}` : ''}</span>
-        <span className={`text-[11px] px-1.5 py-0.5 rounded-[4px] border ${statusChip[s.status] ?? ''}`}>{t[`crm_status_${s.status}` as 'crm_status_scheduled']}</span>
+        <span className={`text-[11px] px-1.5 py-0.5 rounded-none border ${statusChip[s.status] ?? ''}`}>{t[`crm_status_${s.status}` as 'crm_status_scheduled']}</span>
       </div>
       {s.location && <div className="text-xs text-portal-muted">{s.location}</div>}
       {isPast && s.status === 'scheduled' && (
@@ -350,15 +350,15 @@ function DetailsTab({ client, onDeleted }: { client: NonNullable<NonNullable<Ret
         <button className={`${portalBtnGhost} text-portal-coral-text border-portal-copper`} onClick={() => setConfirm(true)}>{t.crm_delete}</button>
       </div>
       <AlertDialog open={confirm} onOpenChange={setConfirm}>
-        <AlertDialogContent className="coach-portal bg-portal-card border-portal-border rounded-[4px]">
+        <AlertDialogContent className="coach-portal bg-portal-card border-portal-border rounded-none">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-portal-ink">{t.crm_delete_title}</AlertDialogTitle>
             <AlertDialogDescription className="text-portal-muted-strong">{t.crm_delete_body}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="rounded-[4px]">{t.crm_cancel}</AlertDialogCancel>
+            <AlertDialogCancel className="rounded-none">{t.crm_cancel}</AlertDialogCancel>
             <AlertDialogAction
-              className="rounded-[4px] bg-portal-copper hover:bg-portal-copper-hover text-portal-on-copper"
+              className="rounded-none bg-portal-copper hover:bg-portal-copper-hover text-portal-on-copper"
               onClick={() => del.mutate(client.id, { onSuccess: onDeleted, onError: () => toast.error(t.crm_error) })}
             >
               {t.crm_delete}
@@ -399,8 +399,8 @@ function BillingSection({ client }: { client: NonNullable<NonNullable<ReturnType
   return (
     <form onSubmit={save} className="space-y-3 pt-4 border-t border-portal-border">
       <div className="flex items-center justify-between gap-2">
-        <h3 className="font-display uppercase tracking-[0.1em] text-portal-ink">{t.bill_section}</h3>
-        <span className={`text-xs px-2 py-0.5 rounded-[4px] border ${lokka ? 'bg-portal-selected border-portal-selected-border text-portal-blue' : 'border-portal-border text-portal-muted-strong'}`}>
+        <h3 className="font-display uppercase tracking-[0.02em] text-portal-ink">{t.bill_section}</h3>
+        <span className={`text-xs px-2 py-0.5 rounded-none border ${lokka ? 'bg-portal-selected border-portal-selected-border text-portal-blue' : 'border-portal-border text-portal-muted-strong'}`}>
           {t[`src_${src}`] ?? t.src_own}
         </span>
       </div>

@@ -21,12 +21,12 @@ export function ResourceDayGrid({ date, tz, sessions, resources, onEmpty, onSess
   const nowMin = minutesOfDay(new Date(), tz);
 
   return (
-    <div className="bg-portal-card border border-portal-border rounded-[4px] overflow-hidden">
+    <div className="bg-portal-card border border-portal-border rounded-none overflow-hidden">
       <div className="overflow-x-auto">
         <div style={{ minWidth: 52 + cols.length * 150 }}>
           <div className="grid border-b border-portal-border" style={{ gridTemplateColumns: `52px repeat(${cols.length}, 1fr)` }}>
             <div />
-            {cols.map((c) => <div key={c.id ?? 'none'} className="px-2 py-2 text-center border-l border-portal-border font-display uppercase tracking-[0.1em] text-xs truncate">{c.name}</div>)}
+            {cols.map((c) => <div key={c.id ?? 'none'} className="px-2 py-2 text-center border-l border-portal-border font-display uppercase tracking-[0.02em] text-xs truncate">{c.name}</div>)}
           </div>
           <div ref={scroller} className="relative grid overflow-y-auto max-h-[640px]" style={{ gridTemplateColumns: `52px repeat(${cols.length}, 1fr)`, height: 24 * HOUR }}>
             <div className="relative" style={{ height: 24 * HOUR }}>
@@ -52,7 +52,7 @@ export function ResourceDayGrid({ date, tz, sessions, resources, onEmpty, onSess
                     const hire = s.kind === 'hire';
                     return (
                       <button key={s.id} onClick={(e) => { e.stopPropagation(); onSession(s); }}
-                        className={`absolute rounded-[4px] border px-1.5 py-0.5 text-left text-[11px] leading-tight overflow-hidden z-10 text-portal-ink hover:brightness-95 ${hire ? 'bg-portal-bg border-portal-ink' : s.kind === 'trial' ? 'bg-portal-copper-tint border-portal-copper' : 'bg-portal-selected border-portal-selected-border'} ${s.status === 'cancelled' ? 'opacity-50 line-through' : ''}`}
+                        className={`absolute rounded-none border px-1.5 py-0.5 text-left text-[11px] leading-tight overflow-hidden z-10 text-portal-ink hover:brightness-95 ${hire ? 'bg-portal-bg border-portal-ink' : s.kind === 'trial' ? 'bg-portal-copper-tint border-portal-copper' : 'bg-portal-selected border-portal-selected-border'} ${s.status === 'cancelled' ? 'opacity-50 line-through' : ''}`}
                         style={{ top: s.top, height: s.height, left: `calc(${(s.lane / s.lanes) * 100}% + 2px)`, width: `calc(${100 / s.lanes}% - 4px)` }}>
                         <div className="flex items-center gap-1 font-medium">
                           <span>{toTimeStr(s.starts_at, tz)}–{toTimeStr(s.ends_at, tz)}</span>

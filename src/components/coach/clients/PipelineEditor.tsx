@@ -72,7 +72,7 @@ export function PipelineEditor({ pipeline, clients, open, onOpenChange }: {
       <SheetContent side={isMobile ? 'bottom' : 'right'}
         className={`coach-portal p-0 bg-portal-card border-portal-border flex flex-col gap-0 ${isMobile ? 'max-h-[90vh] rounded-t-[4px]' : 'w-full sm:max-w-[480px]'}`}>
         <div className="p-5 border-b border-portal-border">
-          <SheetTitle className="font-display text-xl uppercase tracking-[0.08em] text-portal-ink">{t.crm_edit_stages}</SheetTitle>
+          <SheetTitle className="font-display text-xl uppercase tracking-[0.02em] text-portal-ink">{t.crm_edit_stages}</SheetTitle>
           <SheetDescription className="text-sm text-portal-muted">{pipelineLabel(pipeline, t)}</SheetDescription>
         </div>
         <TooltipProvider>
@@ -83,7 +83,7 @@ export function PipelineEditor({ pipeline, clients, open, onOpenChange }: {
                 onDragStart={() => setDragKey(r.key)}
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={() => { if (dragKey) move(rows.findIndex((x) => x.key === dragKey), i); setDragKey(null); }}
-                className={`border border-portal-border rounded-[4px] p-3 space-y-2 bg-portal-card ${dragKey === r.key ? 'opacity-50' : ''}`}>
+                className={`border border-portal-border rounded-none p-3 space-y-2 bg-portal-card ${dragKey === r.key ? 'opacity-50' : ''}`}>
                 <div className="flex items-center gap-2">
                   {isMobile ? (
                     <div className="flex flex-col">

@@ -77,7 +77,7 @@ const DashboardHome = () => {
     return (
       <div className="space-y-6 max-w-6xl">
         <div>
-          <h1 className="font-display text-3xl">{t.dashhome_welcome}, {firstName}</h1>
+          <h1 className="text-5xl md:text-6xl">{t.dashhome_welcome}, {firstName}</h1>
           <p className="text-muted-foreground mt-1">{t.dashhome_sub_athlete}</p>
         </div>
 
@@ -139,7 +139,7 @@ const DashboardHome = () => {
   return (
     <div className="space-y-6 max-w-6xl">
       <div>
-        <h1 className="font-display text-3xl">{t.dashhome_welcome}, {firstName}</h1>
+        <h1 className="text-5xl md:text-6xl">{t.dashhome_welcome}, {firstName}</h1>
         <p className="text-muted-foreground mt-1">{t.dashhome_sub_coach}</p>
       </div>
 

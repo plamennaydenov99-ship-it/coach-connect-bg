@@ -114,7 +114,7 @@ export function CoachOnboarding({ onSubmitted }: { onSubmitted: () => void }) {
       <div className="min-h-screen flex items-center justify-center p-6">
         <div className="surface max-w-md w-full p-8 text-center">
           <CheckCircle2 className="h-10 w-10 mx-auto mb-4" />
-          <h1 className="font-display text-2xl uppercase tracking-[0.1em]">{t.onb_done_title}</h1>
+          <h1 className="font-display text-2xl uppercase tracking-[0.02em]">{t.onb_done_title}</h1>
           <p className="text-sm text-muted-foreground mt-3">{t.onb_done_body}</p>
           <Button className="w-full mt-7" size="lg" onClick={onSubmitted}>{t.onb_done_cta}</Button>
         </div>
@@ -125,7 +125,7 @@ export function CoachOnboarding({ onSubmitted }: { onSubmitted: () => void }) {
   return (
     <div className="min-h-screen flex items-center justify-center p-6">
       <div className="surface max-w-lg w-full p-8">
-        <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">{t.onb_title}</p>
+        <p className="text-xs uppercase tracking-[0.02em] text-muted-foreground">{t.onb_title}</p>
         <div className="mt-3 mb-6">
           <Progress value={(step / TOTAL) * 100} />
           <p className="text-xs text-muted-foreground mt-2">{t.onb_step} {step} {t.onb_of} {TOTAL}</p>
@@ -133,7 +133,7 @@ export function CoachOnboarding({ onSubmitted }: { onSubmitted: () => void }) {
 
         {step === 1 && (
           <div className="space-y-4">
-            <h2 className="font-display text-2xl uppercase tracking-[0.08em]">{t.onb_name_title}</h2>
+            <h2 className="font-display text-2xl uppercase tracking-[0.02em]">{t.onb_name_title}</h2>
             <p className="text-sm text-muted-foreground">{t.onb_name_sub}</p>
             <div className="grid gap-2">
               <Label htmlFor="name">{t.auth_full_name}</Label>
@@ -144,7 +144,7 @@ export function CoachOnboarding({ onSubmitted }: { onSubmitted: () => void }) {
 
         {step === 2 && (
           <div className="space-y-4">
-            <h2 className="font-display text-2xl uppercase tracking-[0.08em]">{t.onb_sport_title}</h2>
+            <h2 className="font-display text-2xl uppercase tracking-[0.02em]">{t.onb_sport_title}</h2>
             <p className="text-sm text-muted-foreground">{t.onb_sport_sub}</p>
             <div className="grid grid-cols-2 gap-2">
               {SPORTS.map(s => (
@@ -164,7 +164,7 @@ export function CoachOnboarding({ onSubmitted }: { onSubmitted: () => void }) {
 
         {step === 3 && (
           <div className="space-y-4">
-            <h2 className="font-display text-2xl uppercase tracking-[0.08em]">{t.onb_loc_title}</h2>
+            <h2 className="font-display text-2xl uppercase tracking-[0.02em]">{t.onb_loc_title}</h2>
             <p className="text-sm text-muted-foreground">{t.onb_loc_sub}</p>
             <div className="grid gap-2">
               <Label htmlFor="city">{t.onb_city}</Label>
@@ -180,7 +180,7 @@ export function CoachOnboarding({ onSubmitted }: { onSubmitted: () => void }) {
 
         {step === 4 && (
           <div className="space-y-4">
-            <h2 className="font-display text-2xl uppercase tracking-[0.08em]">{t.onb_cert_title}</h2>
+            <h2 className="font-display text-2xl uppercase tracking-[0.02em]">{t.onb_cert_title}</h2>
             <p className="text-sm text-muted-foreground">{t.onb_cert_sub}</p>
             <CertificatesManager />
             <p className="text-xs text-muted-foreground">{t.onb_optional_note}</p>
@@ -189,7 +189,7 @@ export function CoachOnboarding({ onSubmitted }: { onSubmitted: () => void }) {
 
         {step === 5 && (
           <div className="space-y-4">
-            <h2 className="font-display text-2xl uppercase tracking-[0.08em]">{t.onb_social_title}</h2>
+            <h2 className="font-display text-2xl uppercase tracking-[0.02em]">{t.onb_social_title}</h2>
             <p className="text-sm text-muted-foreground">{t.onb_social_sub}</p>
             {([
               ['instagram', 'Instagram'],
@@ -212,7 +212,7 @@ export function CoachOnboarding({ onSubmitted }: { onSubmitted: () => void }) {
 
         {step === 6 && (
           <div className="space-y-4">
-            <h2 className="font-display text-2xl uppercase tracking-[0.08em]">{t.onb_price_title}</h2>
+            <h2 className="font-display text-2xl uppercase tracking-[0.02em]">{t.onb_price_title}</h2>
             <p className="text-sm text-muted-foreground">{t.onb_price_sub}</p>
             <div className="grid gap-2">
               <Label htmlFor="solo">{t.onb_price_solo}</Label>

@@ -27,7 +27,7 @@
 - [x] Trending page on live data, with waitlist, promoted places and a "why it is here" breakdown
 - [x] Studio Boost: places, price and visibility on group sessions, second group suggestion, promoted places
 - [x] Admin queue for promoted places
+- [x] Every page uses the new look: shared page header, flat cards, square chips, dark Studio and dashboard shells
 - [ ] Card payment for boosts (deliberately left out)
 - [ ] Email or push for waitlist offers
 - [ ] Close the `demo-login` backend function before publishing
-

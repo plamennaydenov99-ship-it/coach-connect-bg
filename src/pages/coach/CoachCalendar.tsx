@@ -79,7 +79,7 @@ export default function CoachCalendar() {
         : `${labelDate(range.start, loc, { day: 'numeric', month: 'short' })} – ${labelDate(addDays(range.start, 6), loc, { day: 'numeric', month: 'short', year: 'numeric' })}`;
 
   const viewBtn = (v: View, label: string) => (
-    <button onClick={() => setView(v)} className={`h-8 px-3 text-sm rounded-[4px] border ${view === v ? 'bg-portal-selected border-portal-selected-border text-portal-ink' : 'border-transparent text-portal-muted-strong'}`}>{label}</button>
+    <button onClick={() => setView(v)} className={`h-8 px-3 text-sm rounded-none border ${view === v ? 'bg-portal-selected border-portal-selected-border text-portal-ink' : 'border-transparent text-portal-muted-strong'}`}>{label}</button>
   );
 
   const form = book && (
@@ -90,7 +90,7 @@ export default function CoachCalendar() {
     <div className="flex gap-6">
       <div className="flex-1 min-w-0 space-y-4">
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="font-display text-3xl uppercase tracking-[0.08em]">{t.cal_title}</h1>
+          <h1 className="text-5xl md:text-6xl">{t.cal_title}</h1>
           <div className="flex-1" />
           {pending > 0 && (
             <button className={portalBtnGhost} onClick={() => setReqOpen(true)}><Inbox className="h-4 w-4" />{t.cal_requests} ({pending})</button>
@@ -103,9 +103,9 @@ export default function CoachCalendar() {
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
             <p className="text-sm text-portal-muted-strong">{t.cal_club_summary.replace('{n}', String(f.classes)).replace('{h}', String(f.hires)).replace('{fill}', String(f.fill))}</p>
             <div className="flex flex-wrap items-center gap-3 text-xs text-portal-muted-strong" aria-label={t.cal_legend}>
-              <span className="flex items-center gap-1"><span className="h-3 w-3 rounded-[2px] border bg-portal-selected border-portal-selected-border" />{t.group_type}</span>
-              <span className="flex items-center gap-1"><span className="h-3 w-3 rounded-[2px] border bg-portal-selected border-portal-selected-border" />1:1</span>
-              <span className="flex items-center gap-1"><span className="h-3 w-3 rounded-[2px] border bg-portal-bg border-portal-ink" />{t.hire_type}</span>
+              <span className="flex items-center gap-1"><span className="h-3 w-3 rounded-none border bg-portal-selected border-portal-selected-border" />{t.group_type}</span>
+              <span className="flex items-center gap-1"><span className="h-3 w-3 rounded-none border bg-portal-selected border-portal-selected-border" />1:1</span>
+              <span className="flex items-center gap-1"><span className="h-3 w-3 rounded-none border bg-portal-bg border-portal-ink" />{t.hire_type}</span>
               <span className="flex items-center gap-1 text-portal-blue font-medium">{t.group_trending_marker}</span>
             </div>
           </div>
@@ -118,7 +118,7 @@ export default function CoachCalendar() {
           </div>
           <span className="font-display text-lg tracking-[0.04em] capitalize">{title}</span>
           <div className="flex-1" />
-          <div className="flex gap-1 p-0.5 rounded-[4px] border border-portal-border bg-portal-card">
+          <div className="flex gap-1 p-0.5 rounded-none border border-portal-border bg-portal-card">
             {viewBtn('day', t.cal_day)}{viewBtn('week', t.cal_week)}{viewBtn('month', t.cal_month)}
           </div>
         </div>
@@ -141,7 +141,7 @@ export default function CoachCalendar() {
       </div>
 
       {book && !isMobile && (
-        <aside className="w-[340px] shrink-0 self-start sticky top-24 bg-portal-card border border-portal-border rounded-[4px] p-4 max-h-[calc(100vh-7rem)] overflow-y-auto">
+        <aside className="w-[340px] shrink-0 self-start sticky top-24 bg-portal-card border border-portal-border rounded-none p-4 max-h-[calc(100vh-7rem)] overflow-y-auto">
           {form}
         </aside>
       )}
@@ -158,13 +158,13 @@ export default function CoachCalendar() {
       <SessionSheet session={selected} onClose={() => setSelected(null)} />
 
       <Dialog open={availOpen} onOpenChange={(o) => { setAvailOpen(o); if (!o) qc.invalidateQueries({ queryKey: ['coach', user?.id] }); }}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto rounded-[4px]">
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto rounded-none">
           <DialogTitle className="sr-only">{t.cal_manage_availability}</DialogTitle>
           <Availability />
         </DialogContent>
       </Dialog>
       <Dialog open={reqOpen} onOpenChange={(o) => { setReqOpen(o); if (!o) qc.invalidateQueries({ queryKey: ['coach', user?.id] }); }}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto rounded-[4px]">
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto rounded-none">
           <DialogTitle className="sr-only">{t.cal_requests}</DialogTitle>
           <BookingRequests />
         </DialogContent>
