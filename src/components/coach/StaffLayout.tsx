@@ -5,7 +5,7 @@ import { QuickBookDialog } from '@/components/coach/calendar/QuickBookDialog';
 import { NavLink, Link, Outlet, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, CalendarDays, MessageSquare, UserCircle2, Settings, Building2,
-  Bell, Plus, LogOut, ExternalLink, Zap, Sun, Receipt,
+  Bell, Plus, LogOut, ExternalLink, Sun, Receipt, Megaphone,
 } from 'lucide-react';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
@@ -65,6 +65,7 @@ function StaffShell() {
     { to: people, label: t.portal_clients, icon: Users },
     { to: `${b}/calendar`, label: club ? t.portal_classes_calendar : t.portal_calendar, icon: CalendarDays },
     { to: `${b}/invoicing`, label: t.inv_section, icon: Receipt },
+    { to: `${b}/boost`, label: t.tn_boost, icon: Megaphone },
     ...(club ? [{ to: `${b}/facilities`, label: t.portal_facilities, icon: Building2 }] : []),
     { to: `${b}/messages`, label: t.portal_messages, icon: MessageSquare, badge: unread },
   ];
@@ -84,10 +85,7 @@ function StaffShell() {
       {/* Top bar */}
       <header className="sticky top-0 z-40 h-14 md:h-16 flex items-center gap-3 px-4 md:px-6 bg-portal-card border-b border-portal-border">
         <Link to={`${b}/dashboard`} className="flex items-center gap-2 shrink-0">
-          <span className="flex h-8 w-8 items-center justify-center rounded-[4px] bg-portal-ink text-portal-card">
-            <Zap className="h-4 w-4" strokeWidth={2.5} />
-          </span>
-          <span className="font-display text-xl tracking-[0.08em] text-portal-ink">LOKKA</span>
+          <span className="font-display text-2xl font-extrabold tracking-[0.04em] text-portal-ink">LOKKA</span>
           <span className="font-display text-[11px] tracking-[0.14em] uppercase px-1.5 py-0.5 rounded-[4px] border border-portal-copper text-portal-coral-text">
             {club ? t.portal_club_tag : t.portal_coach_tag}
           </span>

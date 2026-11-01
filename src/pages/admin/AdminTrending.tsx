@@ -15,13 +15,14 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
+import { AdminBoosts } from '@/components/admin/AdminBoosts';
 
 type Item = Database['public']['Tables']['trending_items']['Row'];
 type ItemType = 'sport' | 'session' | 'event';
 type PubSession = { id: string; title: string | null; sport: string | null; starts_at: string; spots_left: number | null };
 type Owner = { id: string; name: string };
 
-const CITIES = ['Sofia', 'Nice', 'Monaco'] as const;
+const CITIES = ['Sofia'] as const;
 const emptyForm = {
   type: 'sport' as ItemType, session_id: null as string | null, owner_id: null as string | null,
   title: '', blurb: '', sport: '', city: 'all', image_url: '', starts_on: '', ends_on: '',
@@ -165,7 +166,7 @@ export default function AdminTrending() {
             <h1 className="font-display text-4xl uppercase tracking-[0.08em] font-semibold">{t.tr_page_title}</h1>
             <p className="mt-2 text-portal-muted">{t.tr_page_sub}</p>
           </div>
-          <Button onClick={openNew} className="bg-portal-copper text-portal-ink hover:bg-portal-copper-hover">
+          <Button onClick={openNew} className="bg-portal-copper text-portal-on-copper hover:bg-portal-copper-hover">
             <Plus className="mr-1 h-4 w-4" /> {t.tr_add}
           </Button>
         </div>
@@ -201,6 +202,7 @@ export default function AdminTrending() {
             ))}
           </ul>
         )}
+              <AdminBoosts />
       </main>
 
       <Dialog open={open} onOpenChange={setOpen}>
@@ -282,7 +284,7 @@ export default function AdminTrending() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpen(false)}>{t.tr_cancel}</Button>
-            <Button onClick={save} disabled={saving} className="bg-portal-copper text-portal-ink hover:bg-portal-copper-hover">{t.tr_save}</Button>
+            <Button onClick={save} disabled={saving} className="bg-portal-copper text-portal-on-copper hover:bg-portal-copper-hover">{t.tr_save}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

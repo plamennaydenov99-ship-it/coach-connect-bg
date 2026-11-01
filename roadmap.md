@@ -19,3 +19,15 @@
 - [x] Club classes: Led by, class wording, Trending markers, weekly fill summary, roster Message all placeholder
 
 - [x] Step 7c: Discover, live athlete actions, Trending staff requests, club contact cleanup (typecheck only)
+
+# Lokka redesign (Sofia first)
+- [x] New look: sand, ink and harbour blue, square corners, Archivo with Bulgarian fallbacks
+- [x] Sofia only: city lists, sample events and camps, copy
+- [x] Home: say what you want, four ways in, why, for coaches
+- [x] Trending page on live data, with waitlist, promoted places and a "why it is here" breakdown
+- [x] Studio Boost: places, price and visibility on group sessions, second group suggestion, promoted places
+- [x] Admin queue for promoted places
+- [ ] Card payment for boosts (deliberately left out)
+- [ ] Email or push for waitlist offers
+- [ ] Close the `demo-login` backend function before publishing
+
