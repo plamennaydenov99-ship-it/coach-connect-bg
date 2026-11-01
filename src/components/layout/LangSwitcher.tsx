@@ -1,10 +1,6 @@
 import type { Lang } from '@/context/LanguageContext';
 
-const FLAGS: Record<Lang, { emoji: string; label: string }> = {
-  en: { emoji: '🇬🇧', label: 'English' },
-  bg: { emoji: '🇧🇬', label: 'Български' },
-  fr: { emoji: '🇫🇷', label: 'Français' },
-};
+const NAMES: Record<Lang, string> = { en: 'English', bg: 'Български', fr: 'Français' };
 
 interface Props {
   lang: Lang;
@@ -15,22 +11,19 @@ interface Props {
 export function LangSwitcher({ lang, setLang, compact = false }: Props) {
   const langs: Lang[] = ['en', 'bg', 'fr'];
   return (
-    <div className={`flex items-center ${compact ? 'gap-1 mr-1' : 'gap-1.5'}`}>
-      {langs.map((l, i) => (
-        <div key={l} className="flex items-center">
-          {i > 0 && <span className="h-3 w-px bg-border mx-1" />}
-          <button
-            type="button"
-            onClick={() => setLang(l)}
-            aria-label={FLAGS[l].label}
-            title={FLAGS[l].label}
-            className={`text-base leading-none transition-opacity ${
-              lang === l ? 'opacity-100' : 'opacity-50 hover:opacity-80'
-            }`}
-          >
-            <span aria-hidden="true">{FLAGS[l].emoji}</span>
-          </button>
-        </div>
+    <div className={`flex items-center ${compact ? 'gap-2 mr-1' : 'gap-3'}`} role="group" aria-label="Language">
+      {langs.map(l => (
+        <button
+          key={l}
+          type="button"
+          onClick={() => setLang(l)}
+          aria-label={NAMES[l]}
+          aria-pressed={lang === l}
+          title={NAMES[l]}
+          className={`font-display text-sm font-bold uppercase tracking-[0.04em] transition-opacity ${lang === l ? 'opacity-100 underline decoration-2 underline-offset-[6px]' : 'opacity-60 hover:opacity-100'}`}
+        >
+          {l}
+        </button>
       ))}
     </div>
   );

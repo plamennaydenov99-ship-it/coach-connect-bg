@@ -12,22 +12,17 @@ const DURATIONS = [
   { label: 'Week (5-7 days)', match: (d: number) => d >= 5 && d <= 7 },
   { label: '2 Weeks+', match: (d: number) => d >= 14 },
 ];
-const CITIES = ['All cities', 'Nice', 'Monaco', 'Sofia'];
 
 export default function Camps() {
   const { t } = useLanguage();
   const [sport, setSport] = useState('All');
   const [duration, setDuration] = useState(0);
-  const [city, setCity] = useState('All cities');
 
   const filtered = useMemo(() => CAMPS.filter(c => {
     if (sport !== 'All' && c.sport !== sport) return false;
     if (!DURATIONS[duration].match(c.durationDays)) return false;
-    if (city !== 'All cities' && c.city !== city) return false;
     return true;
-  }), [sport, duration, city]);
-
-  const uniqueCities = new Set(CAMPS.map(c => c.city)).size;
+  }), [sport, duration]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -41,11 +36,6 @@ export default function Camps() {
             <p className="mt-4 text-[13px] text-foreground-muted font-body normal-case border border-border bg-background-secondary/60 px-3 py-2 inline-block rounded-sm">
               {t.camps_demo_note}
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <span className="px-3 py-1.5 bg-background-tertiary text-gold font-display uppercase tracking-[0.12em] text-[12px] rounded-sm">
-                {uniqueCities} Cities
-              </span>
-            </div>
 
           </div>
         </section>
@@ -83,13 +73,6 @@ export default function Camps() {
                   </button>
                 ))}
               </div>
-              <select
-                value={city}
-                onChange={e => setCity(e.target.value)}
-                className="ml-auto bg-background border border-border text-foreground px-3 py-1.5 font-display uppercase tracking-[0.12em] text-[12px] rounded-sm focus:outline-none focus:border-copper"
-              >
-                {CITIES.map(c => <option key={c}>{c}</option>)}
-              </select>
             </div>
           </div>
         </section>

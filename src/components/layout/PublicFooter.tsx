@@ -1,47 +1,35 @@
 import { Link } from 'react-router-dom';
-import { Zap } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function PublicFooter() {
   const { t } = useLanguage();
+  const col = 'flex flex-col gap-3 text-base';
   return (
-    <footer className="border-t border-border bg-card/40 mt-20">
-      <div className="container py-12 grid gap-10 md:grid-cols-4">
-        <div className="md:col-span-2">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Zap className="h-4 w-4" strokeWidth={2.5} />
-            </div>
-            <span className="font-display text-lg">Lokka</span>
-          </Link>
-          <p className="mt-3 text-sm text-muted-foreground max-w-sm">
-            {t.footer_tagline}
-          </p>
+    <footer className="relative mt-24 overflow-hidden bg-foreground text-[#F3EDE2]">
+      <div className="container pt-20">
+        <div className="grid gap-12 md:grid-cols-12">
+          <div className="md:col-span-7">
+            <p className="font-display text-4xl font-extrabold uppercase leading-[0.92] md:text-6xl" style={{ maxWidth: '14ch' }}>{t.tn_footer_line}</p>
+            <p className="mt-6 max-w-md text-base text-[#F3EDE2]/80">{t.footer_tagline}</p>
+          </div>
+          <nav className={`md:col-span-2 ${col}`} aria-label={t.footer_explore}>
+            <Link to="/discover" className="hover:underline">{t.tn_nav_trending}</Link>
+            <Link to="/search" className="hover:underline">{t.footer_find_coach}</Link>
+            <Link to="/search?type=club" className="hover:underline">{t.footer_browse_clubs}</Link>
+            <Link to="/camps" className="hover:underline">{t.nav_camps}</Link>
+          </nav>
+          <nav className={`md:col-span-3 ${col}`} aria-label={t.footer_company}>
+            <Link to="/for-coaches" className="hover:underline">{t.footer_for_coaches}</Link>
+            <Link to="/start" className="hover:underline">{t.nav_login}</Link>
+            <Link to="/" className="hover:underline">{t.footer_help}</Link>
+            <Link to="/" className="hover:underline">{t.footer_privacy}</Link>
+          </nav>
         </div>
-
-        <div>
-          <p className="text-sm font-semibold mb-3">{t.footer_explore}</p>
-          <ul className="space-y-2 text-sm text-muted-foreground">
-            <li><Link to="/search" className="hover:text-foreground">{t.footer_find_coach}</Link></li>
-            <li><Link to="/search?type=club" className="hover:text-foreground">{t.footer_browse_clubs}</Link></li>
-            <li><Link to="/for-coaches" className="hover:text-foreground">{t.footer_for_coaches}</Link></li>
-          </ul>
-        </div>
-
-        <div>
-          <p className="text-sm font-semibold mb-3">{t.footer_company}</p>
-          <ul className="space-y-2 text-sm text-muted-foreground">
-            <li><Link to="/" className="hover:text-foreground">{t.footer_about}</Link></li>
-            <li><Link to="/" className="hover:text-foreground">{t.footer_help}</Link></li>
-            <li><Link to="/" className="hover:text-foreground">{t.footer_privacy}</Link></li>
-          </ul>
-        </div>
+        <p className="mt-16 max-w-[110ch] text-xs text-[#F3EDE2]/70">© {new Date().getFullYear()} Lokka. {t.footer_rights} {t.tn_credits}</p>
       </div>
-      <div className="border-t border-border">
-        <div className="container py-5 text-xs text-muted-foreground flex flex-wrap justify-between gap-2">
-          <span>© {new Date().getFullYear()} Lokka. {t.footer_rights}</span>
-          <span>{t.footer_made_for}</span>
-        </div>
+      <div className="h-[min(22vw,330px)]" aria-hidden="true" />
+      <div aria-hidden="true" className="pointer-events-none absolute -bottom-[7vw] left-3 select-none whitespace-nowrap font-display font-extrabold uppercase leading-[0.8] text-[#F3EDE2]" style={{ fontSize: 'clamp(160px, 30vw, 460px)' }}>
+        Lokka
       </div>
     </footer>
   );

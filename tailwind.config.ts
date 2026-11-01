@@ -12,10 +12,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Barlow', 'system-ui', 'sans-serif'],
-        body: ['Barlow', 'system-ui', 'sans-serif'],
-        display: ['Barlow Condensed', 'Impact', 'sans-serif'],
-        condensed: ['Barlow Condensed', 'sans-serif'],
+        sans: ['Archivo', 'Inter', 'system-ui', 'sans-serif'],
+        body: ['Archivo', 'Inter', 'system-ui', 'sans-serif'],
+        display: ['Archivo', 'Oswald', 'Roboto Condensed', 'sans-serif'],
+        condensed: ['Archivo', 'Oswald', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
       colors: {
@@ -61,21 +61,21 @@ export default {
           subtle: 'hsl(var(--background-secondary) / 0.5)',
         },
         crest: {
-          DEFAULT: '#201F1C',
-          hover: '#3A3833',
-          subtle: 'rgba(32, 31, 28, 0.07)',
+          DEFAULT: '#14202B',
+          hover: '#1D2D3B',
+          subtle: 'rgba(20, 32, 43, 0.07)',
         },
         // legacy aliases — all paint court blue now
         gold: {
-          DEFAULT: '#201F1C',
-          hover: '#3A3833',
-          subtle: 'rgba(32, 31, 28, 0.07)',
+          DEFAULT: '#14202B',
+          hover: '#1D2D3B',
+          subtle: 'rgba(20, 32, 43, 0.07)',
         },
-        verified: '#201F1C',
+        verified: '#14202B',
         copper: {
-          DEFAULT: '#201F1C',
-          hover: '#3A3833',
-          subtle: 'rgba(32, 31, 28, 0.07)',
+          DEFAULT: '#14202B',
+          hover: '#1D2D3B',
+          subtle: 'rgba(20, 32, 43, 0.07)',
         },
         cream: 'hsl(var(--foreground))',
 
@@ -131,11 +131,11 @@ export default {
         },
       },
       borderRadius: {
-        lg: "6px",
-        md: "4px",
-        sm: "2px",
-        xl: "6px",
-        "2xl": "6px",
+        lg: "0px",
+        md: "0px",
+        sm: "0px",
+        xl: "0px",
+        "2xl": "0px",
       },
       keyframes: {
         "accordion-down": { from: { height: "0" }, to: { height: "var(--radix-accordion-content-height)" } },
