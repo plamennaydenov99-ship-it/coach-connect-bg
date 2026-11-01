@@ -1,9 +1,13 @@
 import { useEffect, useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Loader2, Check } from 'lucide-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Loader2, Check, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { PublicNav } from '@/components/layout/PublicNav';
+import { AdminNav } from '@/components/admin/AdminNav';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { Input } from '@/components/ui/input';
+import { rpc } from '@/lib/trending';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 
@@ -31,7 +35,10 @@ export default function AdminUsers() {
   const { toast } = useToast();
   const [rows, setRows] = useState<AdminUserRow[]>([]);
   const [fetching, setFetching] = useState(true);
-  const [filter, setFilter] = useState<string>('all');
+  const [params] = useSearchParams();
+  const [filter, setFilter] = useState<string>(() => (['athlete', 'coach', 'club'].includes(params.get('role') ?? '') ? params.get('role')! : 'all'));
+  const [query, setQuery] = useState('');
+  const [toDelete, setToDelete] = useState<AdminUserRow | null>(null);
   const [actingId, setActingId] = useState<string | null>(null);
 
   const isAdmin = !!profile?.is_admin;
@@ -55,10 +62,28 @@ export default function AdminUsers() {
     load();
   }, [loading, profileLoading, user, isAdmin, navigate, toast]);
 
-  const visible = useMemo(
-    () => (filter === 'all' ? rows : rows.filter(r => r.role === filter)),
-    [rows, filter]
-  );
+  const visible = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return rows.filter(r =>
+      (filter === 'all' || r.role === filter) &&
+      (!q || (r.full_name ?? '').toLowerCase().includes(q) || (r.email ?? '').toLowerCase().includes(q))
+    );
+  }, [rows, filter, query]);
+
+  const deleteUser = async () => {
+    if (!toDelete) return;
+    const target = toDelete;
+    setActingId(target.id);
+    const { error } = await rpc('admin_delete_user', { _user_id: target.id });
+    setActingId(null);
+    setToDelete(null);
+    if (error) {
+      toast({ title: 'Could not delete', description: error.message, variant: 'destructive' });
+      return;
+    }
+    setRows(prev => prev.filter(r => r.id !== target.id));
+    toast({ title: 'Account deleted', description: target.email ?? target.full_name ?? '' });
+  };
 
   const confirmEmail = async (id: string) => {
     setActingId(id);
@@ -78,12 +103,14 @@ export default function AdminUsers() {
     <div className="min-h-screen bg-background">
       <PublicNav />
       <main className="container max-w-5xl py-12">
-        <h1 className="text-5xl md:text-6xl">All users</h1>
-        <p className="mt-2 text-foreground-muted">
-          Everyone registered, confirmed or not.
+        <h1 className="text-5xl md:text-6xl">People</h1>
+        <p className="mt-2 mb-8 text-foreground-muted">
+          Everyone registered, confirmed or not. {rows.length > 0 && `${rows.length} accounts.`}
         </p>
+        <AdminNav />
 
-        <div className="mt-8 flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <Input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search name or email" className="h-9 w-full max-w-xs rounded-none sm:mr-2" />
           {FILTERS.map(f => (
             <Button
               key={f.key}
@@ -115,6 +142,7 @@ export default function AdminUsers() {
                   <th className="px-4 py-3 font-display uppercase tracking-[0.02em] text-xs">Status</th>
                   <th className="px-4 py-3 font-display uppercase tracking-[0.02em] text-xs">Role</th>
                   <th className="px-4 py-3 font-display uppercase tracking-[0.02em] text-xs">Application</th>
+                  <th className="px-4 py-3 font-display uppercase tracking-[0.02em] text-xs">Joined</th>
                   <th className="px-4 py-3" />
                 </tr>
               </thead>
@@ -139,7 +167,8 @@ export default function AdminUsers() {
                     </td>
                     <td className="px-4 py-3 capitalize">{r.role}</td>
                     <td className="px-4 py-3 capitalize">{r.application_status || '—'}</td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-4 py-3 whitespace-nowrap text-foreground-muted">{new Date(r.created_at).toLocaleDateString()}</td>
+                    <td className="px-4 py-3 text-right whitespace-nowrap">
                       {!r.email_confirmed && (
                         <Button
                           size="sm"
@@ -147,6 +176,18 @@ export default function AdminUsers() {
                           disabled={actingId === r.id}
                         >
                           <Check className="mr-1 h-4 w-4" /> Confirm email
+                        </Button>
+                      )}
+                      {r.id !== user?.id && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="ml-2 text-destructive hover:text-destructive"
+                          onClick={() => setToDelete(r)}
+                          disabled={actingId === r.id}
+                          aria-label={`Delete ${r.email ?? r.full_name ?? 'account'}`}
+                        >
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       )}
                     </td>
@@ -157,6 +198,24 @@ export default function AdminUsers() {
           </div>
         )}
       </main>
+
+      <AlertDialog open={!!toDelete} onOpenChange={o => !o && setToDelete(null)}>
+        <AlertDialogContent className="rounded-none">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this account?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {toDelete?.email ?? toDelete?.full_name} ({toDelete?.role}) will be removed for good, together with their
+              bookings, clients, messages and sessions. This cannot be undone. The action is written to the audit log.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="rounded-none">Keep it</AlertDialogCancel>
+            <AlertDialogAction className="rounded-none bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={deleteUser}>
+              Delete account
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

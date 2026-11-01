@@ -86,8 +86,9 @@ export function PublicNav({ variant = 'solid' }: { variant?: 'solid' | 'overlay'
                 )}
                 {profile?.is_admin && (
                   <>
+                    <DropdownMenuItem onClick={() => navigate('/admin')}>Admin overview</DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate('/admin/review')}>Review applications</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/admin/users')}>All users</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/admin/users')}>People</DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate('/admin/trending')}>{t.tr_nav}</DropdownMenuItem>
                   </>
                 )}

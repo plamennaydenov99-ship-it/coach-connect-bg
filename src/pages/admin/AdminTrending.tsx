@@ -6,6 +6,7 @@ import type { Database } from '@/integrations/supabase/types';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/context/LanguageContext';
 import { PublicNav } from '@/components/layout/PublicNav';
+import { AdminNav } from '@/components/admin/AdminNav';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -170,6 +171,7 @@ export default function AdminTrending() {
             <Plus className="mr-1 h-4 w-4" /> {t.tr_add}
           </Button>
         </div>
+        <div className="mt-8 -mb-4"><AdminNav /></div>
 
         {fetching ? (
           <div className="flex justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-portal-muted" /></div>

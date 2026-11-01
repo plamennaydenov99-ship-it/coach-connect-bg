@@ -7,5 +7,5 @@ export const DEMO_HOME: Record<DemoRole, string> = {
   coach: '/coach',
   club: '/club',
   athlete: '/discover',
-  admin: '/admin/trending',
+  admin: '/admin',
 };

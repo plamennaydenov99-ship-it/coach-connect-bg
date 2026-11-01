@@ -4,6 +4,7 @@ import { Check, X, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { PublicNav } from '@/components/layout/PublicNav';
+import { AdminNav } from '@/components/admin/AdminNav';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
@@ -156,9 +157,10 @@ export default function AdminReview() {
         <h1 className="text-5xl md:text-6xl">
           Coach applications
         </h1>
-        <p className="mt-2 text-foreground-muted">
+        <p className="mt-2 mb-8 text-foreground-muted">
           Pending applications awaiting review.
         </p>
+        <AdminNav />
 
         {fetching ? (
           <div className="flex justify-center py-20">
