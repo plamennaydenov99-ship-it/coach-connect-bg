@@ -1,248 +1,121 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { PageHeader } from '@/components/layout/PageHeader';
-import { lift } from '@/lib/ui';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Slider } from '@/components/ui/slider';
-import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { SPORTS, findSport } from '@/lib/mockData';
-import { SlidersHorizontal, MapPin, BadgeCheck } from 'lucide-react';
-import { AvatarUpload, initialsOf } from '@/components/AvatarUpload';
+import { CoachTile, type CoachTileData } from '@/components/cards/CoachTile';
+import { SPORTS } from '@/lib/mockData';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/context/LanguageContext';
+import { chip } from '@/lib/ui';
 
 type SortKey = 'relevance' | 'price' | 'newest';
+type PriceBand = 'any' | 'low' | 'mid' | 'high';
 
 interface CoachRow {
   id: string;
-  bio: string | null;
   sport: string | null;
   sports: string[] | null;
   price_per_session: number | null;
-  years_experience: number | null;
-  gallery: string[];
   verified: boolean;
   created_at: string;
-  profiles: {
-    full_name: string | null;
-    avatar_url: string | null;
-    city: string | null;
-  } | null;
+  profiles: { full_name: string | null; avatar_url: string | null; city: string | null } | null;
 }
 
-function FilterPanel({
-  selectedSports, setSelectedSports,
-  city, setCity,
-  priceRange, setPriceRange,
-  verifiedOnly, setVerifiedOnly,
-}: any) {
-  const { t } = useLanguage();
-  return (
-    <div className="space-y-6">
-      <div>
-        <Label className="text-sm font-semibold mb-3 block">{t.search_sport}</Label>
-        <div className="space-y-2 max-h-56 overflow-y-auto pr-2">
-          {SPORTS.map(s => (
-            <label key={s.slug} className="flex items-center gap-2 text-sm cursor-pointer">
-              <Checkbox
-                checked={selectedSports.includes(s.slug)}
-                onCheckedChange={(v) => {
-                  setSelectedSports(v
-                    ? [...selectedSports, s.slug]
-                    : selectedSports.filter((x: string) => x !== s.slug));
-                }}
-              />
-              {s.label}
-            </label>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <Label className="text-sm font-semibold mb-2 block" htmlFor="city-filter">{t.search_city_label}</Label>
-        <Input
-          id="city-filter"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          placeholder={t.search_any_city}
-        />
-      </div>
-
-      <div>
-        <Label className="text-sm font-semibold mb-2 block">
-          {t.search_price_range}: €{priceRange[0]} – €{priceRange[1]}
-        </Label>
-        <Slider value={priceRange} min={0} max={200} step={5} onValueChange={setPriceRange} />
-      </div>
-
-      <div className="flex items-center justify-between surface-2 p-3">
-        <Label className="text-sm font-medium cursor-pointer" htmlFor="verified-only">{t.search_verified_only}</Label>
-        <Switch id="verified-only" checked={verifiedOnly} onCheckedChange={setVerifiedOnly} />
-      </div>
-    </div>
-  );
-}
-
-function CoachResultCard({ coach }: { coach: CoachRow }) {
-  const { t } = useLanguage();
-  const sportList = (coach.sports?.length ? coach.sports : coach.sport ? [coach.sport] : []).slice(0, 3).map(s => ({ slug: s, label: findSport(s as any)?.label ?? s }));
-  const name = coach.profiles?.full_name || 'Coach';
-  const avatar = coach.profiles?.avatar_url || null;
-  const cover = coach.gallery?.[0] || `https://picsum.photos/seed/${coach.id}/800/500`;
-  const price = coach.price_per_session ?? 0;
-
-  return (
-    <Link
-      to={`/coaches/${coach.id}`}
-      className={`group surface flex flex-col overflow-hidden ${lift}`}
-    >
-      <div className="relative aspect-[4/3] overflow-hidden bg-muted">
-        <img src={cover} alt={name} loading="lazy"
-          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
-        <div className="absolute top-3 left-3 right-3 flex flex-wrap gap-2">
-          {sportList.map(s => (
-            <span key={s.slug} className="bg-background px-2.5 py-1 text-sm font-semibold capitalize">
-              {s.label}
-            </span>
-          ))}
-          {coach.verified && <span className="badge-verified"><BadgeCheck className="h-3 w-3" /> {t.verified}</span>}
-        </div>
-      </div>
-      <div className="p-4 flex flex-col gap-3 flex-1">
-        <div className="flex items-start gap-3">
-          {avatar ? <img src={avatar} alt={name} className="h-10 w-10 rounded-full text-sm object-cover border border-border" /> : <div aria-label={name} className="h-10 w-10 rounded-full text-sm border border-border bg-secondary text-foreground flex items-center justify-center font-display shrink-0">{initialsOf(name)}</div>}
-          <div className="min-w-0 flex-1">
-            <h3 className="t-plain truncate text-lg">{name}</h3>
-            {coach.profiles?.city && (
-              <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-                <MapPin className="h-3 w-3" /> {coach.profiles.city}
-              </p>
-            )}
-          </div>
-        </div>
-        <div className="mt-auto flex items-end justify-between pt-2">
-          <div>
-            <p className="font-semibold">€{price}<span className="text-xs text-muted-foreground font-normal">{t.search_per_session}</span></p>
-          </div>
-          <span className="text-xs font-medium text-gold group-hover:underline">{t.search_view_profile} →</span>
-        </div>
-      </div>
-    </Link>
-  );
-}
+const BANDS: Record<PriceBand, (p: number) => boolean> = {
+  any: () => true,
+  low: p => p < 30,
+  mid: p => p >= 30 && p <= 60,
+  high: p => p > 60,
+};
+const sportsOf = (c: CoachRow) => (c.sports?.length ? c.sports : c.sport ? [c.sport] : []).map(s => s.toLowerCase());
 
 const Search = () => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [params] = useSearchParams();
-
-  const [selectedSports, setSelectedSports] = useState<string[]>(
-    params.get('sport') ? [params.get('sport')!] : []
-  );
-  const [city, setCity] = useState(params.get('city') ?? '');
-  const [priceRange, setPriceRange] = useState<number[]>([0, 200]);
+  const [sport, setSport] = useState((params.get('sport') ?? 'all').toLowerCase());
+  const [band, setBand] = useState<PriceBand>('any');
   const [verifiedOnly, setVerifiedOnly] = useState(false);
   const [sort, setSort] = useState<SortKey>('relevance');
-
   const [coaches, setCoaches] = useState<CoachRow[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
-      setLoading(true);
       const { data, error } = await supabase
         .from('coach_profiles')
-        .select('id, bio, sport, sports, price_per_session, years_experience, gallery, verified, created_at, profiles!coach_profiles_id_fkey(full_name, avatar_url, city)')
+        .select('id, sport, sports, price_per_session, verified, created_at, profiles!coach_profiles_id_fkey(full_name, avatar_url, city)')
         .eq('application_status', 'approved');
-      if (!error && data) setCoaches(data as any);
+      if (!error && data) setCoaches(data as unknown as CoachRow[]);
       setLoading(false);
     })();
   }, []);
 
+  // Sports that have at least one coach, with how many. The selected sport always stays visible.
+  const sportCounts = useMemo(() => {
+    const m = new Map<string, number>();
+    coaches.forEach(c => sportsOf(c).forEach(s => m.set(s, (m.get(s) ?? 0) + 1)));
+    return m;
+  }, [coaches]);
+  const sportLabel = (slug: string) => { const s = SPORTS.find(x => x.slug === slug); return s ? (lang === 'bg' ? s.labelBg : s.label) : slug.charAt(0).toUpperCase() + slug.slice(1); };
+  const sportChips = [...new Set([...sportCounts.keys(), ...(sport !== 'all' ? [sport] : [])])];
+
   const results = useMemo(() => {
-    let list = [...coaches];
-    if (selectedSports.length) list = list.filter(c => (c.sports?.length ? c.sports : c.sport ? [c.sport] : []).some(s => selectedSports.includes(s)));
-    if (city.trim()) list = list.filter(c => c.profiles?.city?.toLowerCase().includes(city.toLowerCase()));
-    list = list.filter(c => {
-      const p = c.price_per_session ?? 0;
-      return p >= priceRange[0] && p <= priceRange[1];
-    });
-    if (verifiedOnly) list = list.filter(c => c.verified);
-
-    if (sort === 'price') list.sort((a, b) => (a.price_per_session ?? 0) - (b.price_per_session ?? 0));
-    if (sort === 'newest') list.sort((a, b) => b.created_at.localeCompare(a.created_at));
+    let list = coaches.filter(c => (sport === 'all' || sportsOf(c).includes(sport)) && BANDS[band](c.price_per_session ?? 0) && (!verifiedOnly || c.verified));
+    if (sort === 'price') list = [...list].sort((a, b) => (a.price_per_session ?? 0) - (b.price_per_session ?? 0));
+    if (sort === 'newest') list = [...list].sort((a, b) => b.created_at.localeCompare(a.created_at));
     return list;
-  }, [coaches, selectedSports, city, priceRange, verifiedOnly, sort]);
+  }, [coaches, sport, band, verifiedOnly, sort]);
 
-  const filterProps = {
-    selectedSports, setSelectedSports,
-    city, setCity,
-    priceRange, setPriceRange,
-    verifiedOnly, setVerifiedOnly,
-  };
+  const tiles: CoachTileData[] = results.map(c => ({
+    id: c.id, name: c.profiles?.full_name || 'Coach', avatar: c.profiles?.avatar_url ?? null, city: c.profiles?.city ?? null,
+    sports: sportsOf(c), price: c.price_per_session ?? 0, verified: c.verified,
+  }));
+  const reset = () => { setSport('all'); setBand('any'); setVerifiedOnly(false); };
+  const filtered = sport !== 'all' || band !== 'any' || verifiedOnly;
+  const count = loading ? t.coach_loading : results.length === 1 ? t.tn_coach_one : t.tn_coach_count.replace('{n}', String(results.length));
+
+  const bands: [PriceBand, string][] = [['any', t.tn_price_any], ['low', t.tn_price_low], ['mid', t.tn_price_mid], ['high', t.tn_price_high]];
+  const sorts: [SortKey, string][] = [['relevance', t.tn_sort_relevance], ['price', t.tn_sort_price], ['newest', t.tn_sort_newest]];
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       <PublicNav />
-
       <main className="flex-1">
-        <PageHeader title={t.search_coaches} sub={loading ? t.coach_loading : `${results.length} ${t.search_results}`} tone="blue">
-          <div className="flex flex-wrap items-center gap-2">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="sm" className="md:hidden">
-                  <SlidersHorizontal className="h-4 w-4 mr-2" /> {t.search_filters}
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-[320px] overflow-y-auto">
-                <SheetHeader><SheetTitle>{t.search_filters}</SheetTitle></SheetHeader>
-                <div className="mt-6"><FilterPanel {...filterProps} /></div>
-              </SheetContent>
-            </Sheet>
+        <PageHeader title={t.search_coaches} sub={count} tone="blue" />
 
-            <Select value={sort} onValueChange={(v: SortKey) => setSort(v)}>
-              <SelectTrigger className="w-[190px] border-0 bg-background text-foreground"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="relevance">{t.search_sort_relevance}</SelectItem>
-                <SelectItem value="price">{t.search_sort_price}</SelectItem>
-                <SelectItem value="newest">{t.search_sort_newest}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </PageHeader>
-
-        <div className="container py-10 md:py-14">
-        <div className="grid gap-8 md:grid-cols-[260px_1fr]">
-          <aside className="surface sticky top-24 hidden h-fit p-6 md:block">
-            <FilterPanel {...filterProps} />
-          </aside>
-
-          <div>
-            {loading ? (
-              <div className="surface p-10 text-center text-muted-foreground">{t.search_loading_coaches}</div>
-            ) : results.length === 0 ? (
-              <div className="surface p-10 text-center">
-                <p className="font-display text-xl">{t.search_no_coaches}</p>
-                <p className="text-muted-foreground text-sm mt-2">
-                  {t.search_no_coaches_sub}
-                </p>
-              </div>
-            ) : (
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {results.map(c => <CoachResultCard key={c.id} coach={c} />)}
-              </div>
-            )}
+        <div className="sticky top-16 z-30 bg-background md:top-20">
+          <div className="container space-y-3 py-4">
+            <div className="no-scrollbar -mx-4 flex gap-1.5 overflow-x-auto px-4 md:mx-0 md:px-0" role="group" aria-label={t.search_sport}>
+              <button type="button" aria-pressed={sport === 'all'} onClick={() => setSport('all')} className={`h-14 shrink-0 px-5 font-display text-2xl font-extrabold uppercase transition-colors ${sport === 'all' ? 'bg-foreground text-background' : 'bg-background-secondary hover:bg-background-tertiary'}`}>{t.tn_sport_all}</button>
+              {sportChips.map(s => (
+                <button key={s} type="button" aria-pressed={sport === s} onClick={() => setSport(s)} className={`h-14 shrink-0 px-5 font-display text-2xl font-extrabold uppercase transition-all duration-300 hover:-translate-y-0.5 ${sport === s ? 'bg-foreground text-background' : 'bg-background-secondary hover:bg-background-tertiary'}`}>
+                  {sportLabel(s)}<span className="ml-2 align-top text-sm font-semibold opacity-60">{sportCounts.get(s) ?? 0}</span>
+                </button>
+              ))}
+            </div>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+              <div className="flex flex-wrap gap-1.5" role="group" aria-label={t.search_price_range}>{bands.map(([k, label]) => <button key={k} type="button" aria-pressed={band === k} onClick={() => setBand(k)} className={chip(band === k)}>{label}</button>)}</div>
+              <button type="button" aria-pressed={verifiedOnly} onClick={() => setVerifiedOnly(!verifiedOnly)} className={chip(verifiedOnly)}>{t.tn_verified_only}</button>
+              <div className="flex flex-wrap gap-1.5" role="group" aria-label={t.tn_sort}>{sorts.map(([k, label]) => <button key={k} type="button" aria-pressed={sort === k} onClick={() => setSort(k)} className={chip(sort === k)}>{label}</button>)}</div>
+              {filtered && <button type="button" onClick={reset} className="text-base font-semibold text-primary underline-offset-4 hover:underline">{t.tn_reset}</button>}
+            </div>
           </div>
         </div>
+
+        <div className="container py-8 md:py-12">
+          {!loading && tiles.length === 0 ? (
+            <div className="bg-background-secondary p-12 text-center">
+              <p className="mx-auto max-w-[32ch] text-2xl font-semibold">{t.tn_none_match}</p>
+              {filtered && <button type="button" onClick={reset} className="mt-6 h-12 bg-primary px-6 font-display text-base font-bold uppercase text-primary-foreground hover:bg-primary-hover">{t.tn_reset}</button>}
+            </div>
+          ) : (
+            <div key={`${sport}-${band}-${verifiedOnly}-${sort}`} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {tiles.map((c, i) => <CoachTile key={c.id} coach={c} index={i} />)}
+            </div>
+          )}
         </div>
       </main>
-
       <PublicFooter />
     </div>
   );

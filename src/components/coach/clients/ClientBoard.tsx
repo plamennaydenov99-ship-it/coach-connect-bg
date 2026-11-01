@@ -5,7 +5,7 @@ import {
 } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { CalendarClock, CheckSquare, MoreHorizontal, Activity } from 'lucide-react';
+import { CalendarClock, CheckSquare, MoreHorizontal } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCoachTz } from '@/hooks/coach/useCoachCalendar';
@@ -41,12 +41,12 @@ export function ClientCard({ c, onOpen, touch, dragging, columns = [] }: { c: Cl
   return (
     <div
       onClick={onOpen}
-      className={`group motion-card bg-portal-card border border-portal-border rounded-none p-3 space-y-2 cursor-pointer hover:border-portal-input ${dragging ? 'opacity-90 border-portal-selected-border' : ''}`}
+      className={`group motion-card cursor-pointer space-y-2.5 rounded-none bg-portal-card p-4 transition-transform duration-300 hover:-translate-y-1 ${dragging ? 'opacity-90' : ''}`}
     >
       <div className="flex items-start gap-2">
         <Avatar name={c.display_name} />
         <div className="min-w-0 flex-1">
-          <div className="text-sm font-medium text-portal-ink truncate">{c.display_name}</div>
+          <div className="truncate text-base font-semibold text-portal-ink">{c.display_name}</div>
           <div className="text-xs text-portal-muted truncate">{c.goal || '—'}</div>
         </div>
         {touch && (
@@ -69,15 +69,9 @@ export function ClientCard({ c, onOpen, touch, dragging, columns = [] }: { c: Cl
         <CalendarClock className="h-3.5 w-3.5" />
         {c.nextSession ? fmtDateTime(c.nextSession.starts_at, lang, tz) : t.crm_no_upcoming}
       </div>
-      <div className="flex items-center gap-3 text-xs text-portal-muted-strong">
-        <span className="inline-flex items-center gap-1" title={t.crm_attended}><Activity className="h-3.5 w-3.5" />{c.attendedCount}</span>
-        <span className="inline-flex items-center gap-1" title={t.crm_open_tasks}><CheckSquare className="h-3.5 w-3.5" />{c.openTasks}</span>
-        {c.athlete_id && (
-          <span className="ml-auto font-display uppercase tracking-[0.02em] text-[10px] px-1.5 py-0.5 rounded-none border border-portal-selected-border bg-portal-selected text-portal-ink">
-            {t.crm_member}
-          </span>
-        )}
-      </div>
+      {c.openTasks > 0 && (
+        <div className="inline-flex items-center gap-1 text-xs text-portal-muted-strong" title={t.crm_open_tasks}><CheckSquare className="h-3.5 w-3.5" />{c.openTasks}</div>
+      )}
     </div>
   );
 }
@@ -96,10 +90,10 @@ function Column({ col, columns, ids, byId, onOpen, touch }: { col: BoardColumn; 
   return (
     <div className="w-[272px] md:w-auto md:flex-1 md:min-w-[220px] shrink-0 flex flex-col">
       <div className="flex items-center justify-between px-1 pb-2">
-        <span className="font-display uppercase tracking-[0.02em] text-xs text-portal-muted-strong">{col.label}</span>
+        <span className="font-display text-base font-bold uppercase text-portal-ink">{col.label}</span>
         <span className="text-xs text-portal-muted">{ids.length}</span>
       </div>
-      <div ref={setNodeRef} className={`flex-1 min-h-[160px] space-y-2 p-2 rounded-none border ${isOver ? 'border-portal-selected-border bg-portal-selected/40' : 'border-portal-border bg-portal-bg'}`}>
+      <div ref={setNodeRef} className={`flex-1 min-h-[160px] space-y-2 p-2 rounded-none ${isOver ? 'bg-portal-selected' : 'bg-background-secondary'}`}>
         {touch ? (
           ids.map((id) => <ClientCard key={id} c={byId.get(id)!} touch columns={columns} onOpen={() => onOpen(id)} />)
         ) : (

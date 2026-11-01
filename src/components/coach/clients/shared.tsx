@@ -12,7 +12,7 @@ export function Avatar({ name, size = 32 }: { name: string; size?: number }) {
   return (
     <span
       style={{ width: size, height: size, fontSize: size * 0.4 }}
-      className="shrink-0 rounded-none bg-portal-selected text-portal-ink border border-portal-selected-border flex items-center justify-center font-display tracking-[0.04em]"
+      className="flex shrink-0 items-center justify-center rounded-none bg-portal-ink font-display font-bold text-portal-card"
     >
       {initials(name)}
     </span>
@@ -50,12 +50,12 @@ export function useCoarsePointer() {
 export const stageKey = (s: string) => `crm_stage_${s}` as const;
 
 export const portalInput =
-  'w-full h-10 px-3 rounded-none border border-portal-input bg-portal-card text-portal-ink placeholder:text-portal-muted focus:outline-none focus:border-portal-copper text-sm';
+  'w-full h-11 px-3 rounded-none border border-portal-input bg-portal-card text-portal-ink placeholder:text-portal-muted focus:outline-none focus:border-portal-ink text-base';
 
 export const portalBtnPrimary =
-  'inline-flex items-center justify-center gap-1.5 h-9 px-4 rounded-none bg-portal-copper hover:bg-portal-copper-hover text-portal-on-copper font-display uppercase tracking-[0.02em] text-sm transition-colors disabled:opacity-50';
+  'inline-flex items-center justify-center gap-1.5 h-10 px-5 rounded-none bg-portal-copper hover:bg-portal-copper-hover text-portal-on-copper font-display font-bold uppercase text-sm transition-colors disabled:opacity-50';
 
 export const portalBtnGhost =
-  'inline-flex items-center justify-center gap-1.5 h-9 px-3 rounded-none border border-portal-border text-portal-ink hover:border-portal-input bg-portal-card text-sm transition-colors disabled:opacity-50';
+  'inline-flex items-center justify-center gap-1.5 h-10 px-4 rounded-none bg-background-secondary hover:bg-background-tertiary text-portal-ink font-medium text-sm transition-colors disabled:opacity-50';
 
-export const portalLabel = 'font-display uppercase tracking-[0.02em] text-[11px] text-portal-muted';
+export const portalLabel = 'font-display uppercase text-xs font-bold text-portal-muted';

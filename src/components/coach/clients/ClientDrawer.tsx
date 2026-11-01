@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Lock, Phone, Mail, Send, Plus } from 'lucide-react';
-import { Sheet, SheetContent, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -35,19 +35,19 @@ export function ClientDrawer({ clientId, onClose }: { clientId: string | undefin
   const c = data?.client;
 
   return (
-    <Sheet open={!!clientId} onOpenChange={(o) => !o && onClose()}>
-      <SheetContent side="right" className="coach-portal w-full sm:max-w-[420px] p-0 bg-portal-card border-portal-border flex flex-col gap-0 overflow-hidden">
-        <SheetTitle className="sr-only">{c?.display_name ?? t.crm_clients}</SheetTitle>
-        <SheetDescription className="sr-only">{t.crm_clients}</SheetDescription>
+    <Dialog open={!!clientId} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="coach-portal flex h-[min(90vh,800px)] w-[calc(100vw-1.5rem)] max-w-5xl flex-col gap-0 overflow-hidden rounded-none border-0 bg-portal-card p-0 sm:rounded-none">
+        <DialogTitle className="sr-only">{c?.display_name ?? t.crm_clients}</DialogTitle>
+        <DialogDescription className="sr-only">{t.crm_clients}</DialogDescription>
         {isLoading ? (
-          <div className="p-5 space-y-3"><Skeleton className="h-12 w-2/3" /><Skeleton className="h-20 w-full" /><Skeleton className="h-40 w-full" /></div>
+          <div className="space-y-3 p-6"><Skeleton className="h-12 w-2/3" /><Skeleton className="h-20 w-full" /><Skeleton className="h-40 w-full" /></div>
         ) : !c || !data ? (
-          <div className="p-6 text-sm text-portal-muted">{t.crm_not_found}</div>
+          <div className="p-8 text-base text-portal-muted">{t.crm_not_found}</div>
         ) : (
           <DrawerBody key={c.id} data={data} onDeleted={onClose} />
         )}
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -87,74 +87,82 @@ function DrawerBody({ data, onDeleted }: { data: NonNullable<ReturnType<typeof u
   };
 
   return (
-    <>
-      <div className="p-5 pr-12 border-b border-portal-border space-y-3">
-        <div className="flex items-center gap-3">
-          <Avatar name={c.display_name} size={44} />
-          <div className="min-w-0 flex-1">
-            <div className="font-display text-xl uppercase tracking-[0.02em] text-portal-ink truncate">{c.display_name}</div>
-            <div className="text-xs text-portal-muted">{t.crm_since} {fmtDate(c.created_at, lang, tz)}</div>
+    <div className="grid h-full min-h-0 md:grid-cols-[340px_minmax(0,1fr)]">
+      <aside className="max-h-[38vh] space-y-5 overflow-y-auto bg-background-secondary p-6 md:max-h-none md:p-7">
+        <div className="flex items-center gap-4">
+          <Avatar name={c.display_name} size={64} />
+          <div className="min-w-0">
+            <div className="font-display text-3xl font-extrabold uppercase leading-[0.95] text-portal-ink [overflow-wrap:anywhere]">{c.display_name}</div>
+            <div className="mt-1 text-sm text-portal-muted">{t.crm_since} {fmtDate(c.created_at, lang, tz)}</div>
           </div>
-          <select value={c.stage_id} onChange={(e) => changeStage(e.target.value)} className="h-8 px-2 rounded-none border border-portal-selected-border bg-portal-selected text-portal-ink text-sm" aria-label={t.crm_stage}>
+        </div>
+        <label className="block space-y-1.5">
+          <span className={portalLabel}>{t.crm_stage}</span>
+          <select value={c.stage_id} onChange={(e) => changeStage(e.target.value)} className={portalInput} aria-label={t.crm_stage}>
             {(myPipeline?.stages ?? []).map((s) => <option key={s.id} value={s.id}>{stageLabel(s, t)}</option>)}
             {!myPipeline && <option value={c.stage_id}>{t[stageKey(c.stage) as 'crm_stage_active']}</option>}
           </select>
-        </div>
+        </label>
         {pipelines.length > 1 && (
-          <label className="flex items-center gap-2 text-xs text-portal-muted">
-            {t.crm_pipeline}
-            <select value={c.pipeline_id ?? ''} onChange={(e) => changePipeline(e.target.value)} className="h-8 px-2 rounded-none border border-portal-border bg-portal-card text-portal-ink text-sm" aria-label={t.crm_pipeline}>
+          <label className="block space-y-1.5">
+            <span className={portalLabel}>{t.crm_pipeline}</span>
+            <select value={c.pipeline_id ?? ''} onChange={(e) => changePipeline(e.target.value)} className={portalInput} aria-label={t.crm_pipeline}>
               {pipelines.map((p) => <option key={p.id} value={p.id}>{pipelineLabel(p, t)}</option>)}
             </select>
           </label>
         )}
-        <input
-          value={goal}
-          onChange={(e) => setGoal(e.target.value)}
-          onBlur={saveGoal}
-          onKeyDown={(e) => e.key === 'Enter' && (e.target as HTMLInputElement).blur()}
-          placeholder={t.crm_goal_ph}
-          aria-label={t.crm_goal}
-          className="w-full text-sm bg-transparent border border-transparent hover:border-portal-border focus:border-portal-copper focus:outline-none rounded-none px-2 py-1 -mx-2 text-portal-ink placeholder:text-portal-muted"
-        />
-        <div className="grid grid-cols-3 gap-2">
+        <label className="block space-y-1.5">
+          <span className={portalLabel}>{t.crm_goal}</span>
+          <input
+            value={goal}
+            onChange={(e) => setGoal(e.target.value)}
+            onBlur={saveGoal}
+            onKeyDown={(e) => e.key === 'Enter' && (e.target as HTMLInputElement).blur()}
+            placeholder={t.crm_goal_ph}
+            className={portalInput}
+          />
+        </label>
+        <div className="grid grid-cols-2 gap-2">
           <Stat label={t.crm_sessions} value={String(data.sessions.length)} />
           <Stat label={t.crm_attendance} value={attended + noShow ? `${attended}/${attended + noShow}` : '—'} />
-          <Stat label={t.crm_next_session} value={next ? fmtDateTime(next.starts_at, lang, tz) : '—'} small />
+        </div>
+        <div className="bg-portal-card p-4">
+          <div className={portalLabel}>{t.crm_next_session}</div>
+          <div className="mt-1 text-lg font-semibold text-portal-ink">{next ? fmtDateTime(next.starts_at, lang, tz) : '—'}</div>
         </div>
         {(c.phone || c.email) && (
-          <div className="rounded-none border border-portal-border bg-portal-bg p-3 space-y-1.5">
+          <div className="space-y-2 bg-portal-card p-4">
             <div className={`${portalLabel} inline-flex items-center gap-1`}><Lock className="h-3 w-3" />{t.crm_private_only_you}</div>
-            {c.phone && <a href={`tel:${c.phone}`} className="flex items-center gap-2 text-sm text-portal-ink"><Phone className="h-3.5 w-3.5 text-portal-muted" />{c.phone}</a>}
-            {c.email && <a href={`mailto:${c.email}`} className="flex items-center gap-2 text-sm text-portal-ink break-all"><Mail className="h-3.5 w-3.5 text-portal-muted" />{c.email}</a>}
+            {c.phone && <a href={`tel:${c.phone}`} className="flex items-center gap-2 text-base text-portal-ink"><Phone className="h-4 w-4 text-portal-muted" />{c.phone}</a>}
+            {c.email && <a href={`mailto:${c.email}`} className="flex items-center gap-2 break-all text-base text-portal-ink"><Mail className="h-4 w-4 text-portal-muted" />{c.email}</a>}
           </div>
         )}
-      </div>
+      </aside>
 
-      <Tabs defaultValue="timeline" className="flex-1 flex flex-col min-h-0">
-        <TabsList className="mx-5 mt-3 grid grid-cols-4 bg-portal-bg rounded-none h-9 p-0.5">
+      <Tabs defaultValue="timeline" className="flex min-h-0 flex-1 flex-col">
+        <TabsList className="mx-6 mb-0 mt-6 h-auto justify-start gap-1.5 rounded-none bg-transparent p-0 pr-10">
           {(['timeline', 'tasks', 'sessions', 'details'] as const).map((k) => (
-            <TabsTrigger key={k} value={k} className="rounded-none text-xs font-display uppercase tracking-[0.02em] text-portal-muted-strong data-[state=active]:bg-portal-card data-[state=active]:text-portal-ink data-[state=active]:shadow-none">
+            <TabsTrigger key={k} value={k} className="h-10 rounded-none bg-background-secondary px-4 font-display text-sm font-bold uppercase text-portal-ink shadow-none data-[state=active]:bg-portal-ink data-[state=active]:text-portal-card data-[state=active]:shadow-none">
               {t[`crm_tab_${k}` as const]}
             </TabsTrigger>
           ))}
         </TabsList>
-        <div className="flex-1 overflow-y-auto">
+        <div className="mt-2 flex-1 overflow-y-auto">
           <TabsContent value="timeline" className="m-0"><TimelineTab data={data} /></TabsContent>
-          <TabsContent value="tasks" className="m-0 p-5"><TasksTab clientId={c.id} tasks={data.tasks} /></TabsContent>
-          <TabsContent value="sessions" className="m-0 p-5"><SessionsTab clientId={c.id} sessions={data.sessions} /></TabsContent>
-          <TabsContent value="details" className="m-0 p-5"><DetailsTab client={c} onDeleted={onDeleted} /></TabsContent>
+          <TabsContent value="tasks" className="m-0 p-6"><TasksTab clientId={c.id} tasks={data.tasks} /></TabsContent>
+          <TabsContent value="sessions" className="m-0 p-6"><SessionsTab clientId={c.id} sessions={data.sessions} /></TabsContent>
+          <TabsContent value="details" className="m-0 p-6"><DetailsTab client={c} onDeleted={onDeleted} /></TabsContent>
         </div>
       </Tabs>
-    </>
+    </div>
   );
 }
 
-function Stat({ label, value, small }: { label: string; value: string; small?: boolean }) {
+function Stat({ label, value }: { label: string; value: string; small?: boolean }) {
   return (
-    <div className="rounded-none border border-portal-border p-2">
+    <div className="bg-portal-card p-4">
       <div className={portalLabel}>{label}</div>
-      <div className={`${small ? 'text-xs' : 'text-lg font-display'} text-portal-ink mt-0.5`}>{value}</div>
+      <div className="mt-1 font-display text-4xl font-extrabold leading-none text-portal-ink">{value}</div>
     </div>
   );
 }
@@ -192,22 +200,22 @@ function TimelineTab({ data }: { data: NonNullable<ReturnType<typeof useClientDe
 
   return (
     <div className="flex flex-col min-h-full">
-      <div className="flex-1 p-5 space-y-3">
+      <div className="flex-1 space-y-2 px-6 pb-4 pt-4">
         {items.length === 0 ? (
           <p className="text-sm text-portal-muted">{t.crm_no_timeline}</p>
         ) : (
           items.map((i) => (
-            <div key={i.id} className="border-l-2 border-portal-border pl-3">
+            <div key={i.id} className="bg-background-secondary p-4">
               <div className="flex items-center gap-2">
                 <span className={portalLabel}>{i.label}</span>
                 <span className="text-[11px] text-portal-muted">{fmtDate(i.at, lang, tz)}</span>
               </div>
-              <p className="text-sm text-portal-ink whitespace-pre-wrap break-words">{i.text}</p>
+              <p className="mt-1 whitespace-pre-wrap break-words text-base text-portal-ink">{i.text}</p>
             </div>
           ))
         )}
       </div>
-      <form onSubmit={submit} className="sticky bottom-0 p-3 border-t border-portal-border bg-portal-card flex gap-2">
+      <form onSubmit={submit} className="sticky bottom-0 flex gap-2 bg-portal-card p-4">
         <input value={note} onChange={(e) => setNote(e.target.value)} placeholder={t.crm_add_note_ph} className={portalInput} maxLength={2000} />
         <button type="submit" className={portalBtnPrimary} disabled={!note.trim() || addNote.isPending} aria-label={t.crm_add}><Send className="h-4 w-4" /></button>
       </form>

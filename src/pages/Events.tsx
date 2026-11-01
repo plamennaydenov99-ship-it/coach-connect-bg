@@ -1,13 +1,10 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Calendar, MapPin } from 'lucide-react';
 
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { PageHeader } from '@/components/layout/PageHeader';
-import { chip, lift } from '@/lib/ui';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Poster } from '@/components/cards/Poster';
 import { EVENTS } from '@/lib/events';
 import { BookmarkButton } from '@/components/BookmarkButton';
 import { useLanguage } from '@/context/LanguageContext';
@@ -41,65 +38,25 @@ export default function Events() {
         <PageHeader title={t.events_page_title} sub={t.events_page_sub} tone="clay" />
         <div className="container py-12 md:py-16">
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {EVENTS.map(ev => (
-            <article
-              key={ev.id}
-              className={`surface overflow-hidden ${lift}`}
-            >
-              <div className="relative aspect-[16/9] overflow-hidden">
-                <img
-                  src={ev.image}
-                  alt={ev.name}
-                  className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
-                  loading="lazy"
-                />
-              </div>
-              <div className="p-5">
-                <div className="flex items-start justify-between gap-2">
-                  <Badge className="bg-primary text-primary-foreground hover:bg-primary">
-                    {ev.sport}
-                  </Badge>
-                  <BookmarkButton targetType="event" targetId={String(ev.id)} variant="icon" />
-                </div>
-                <h2 className="t-plain mt-3 text-xl">{ev.name}</h2>
-                <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                  <span className="inline-flex items-center gap-1.5">
-                    <Calendar className="h-4 w-4" /> {ev.date}
-                  </span>
-                  <span className="inline-flex items-center gap-1.5">
-                    <MapPin className="h-4 w-4" /> {ev.city}
-                  </span>
-                </div>
-                <p className="mt-3 text-sm text-muted-foreground">{ev.description}</p>
-                <Button variant="outline" size="sm" className="mt-4 w-full">
-                  {t.events_view_event}
-                </Button>
-              </div>
-            </article>
-          ))}
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {EVENTS.map((ev, i) => {
+            const [day, ...month] = ev.date.split(' ');
+            return (
+              <Poster key={ev.id} index={i} big={day} small={month.join(' ')} chips={[ev.sport]} title={ev.name} place={ev.city}
+                foot={<div className="space-y-3"><p className="line-clamp-2 max-w-[34ch] opacity-90">{ev.description}</p><span className="inline-flex bg-[#F3EDE2] text-foreground"><BookmarkButton targetType="event" targetId={String(ev.id)} variant="icon" /></span></div>} />
+            );
+          })}
         </div>
 
         {coachEvents.length > 0 && (
-          <section className="mt-14">
-            <h2 className="mb-6 text-4xl md:text-5xl">{t.events_by_coaches}</h2>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {coachEvents.map(ev => (
-                <article key={ev.id} className="surface p-5">
-                  <h3 className="t-plain text-xl">{ev.title}</h3>
-                  <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                    <span className="inline-flex items-center gap-1.5">
-                      <Calendar className="h-4 w-4" /> {new Date(ev.event_date).toLocaleDateString()}
-                    </span>
-                    {ev.location && (
-                      <span className="inline-flex items-center gap-1.5">
-                        <MapPin className="h-4 w-4" /> {ev.location}
-                      </span>
-                    )}
-                  </div>
-                  {ev.description && <p className="mt-3 text-sm text-muted-foreground">{ev.description}</p>}
-                </article>
-              ))}
+          <section className="mt-16">
+            <h2 className="mb-6 text-4xl md:text-6xl">{t.events_by_coaches}</h2>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {coachEvents.map((ev, i) => {
+                const d = new Date(ev.event_date);
+                return <Poster key={ev.id} index={i + 1} big={String(d.getDate())} small={d.toLocaleDateString(undefined, { month: 'long' })} title={ev.title} place={ev.location ?? undefined}
+                  foot={ev.description ? <p className="line-clamp-2 max-w-[34ch] opacity-90">{ev.description}</p> : null} />;
+              })}
             </div>
           </section>
         )}

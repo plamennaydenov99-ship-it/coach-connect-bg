@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { Button } from '@/components/ui/button';
@@ -41,8 +41,11 @@ const Start = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const { user, profile, loading, refreshProfile } = useAuth();
-  const [role, setRole] = useState<Role | null>(null);
-  const [mode, setMode] = useState<Mode>('login');
+  const [params] = useSearchParams();
+  const paramRole = params.get('role');
+  // The For coaches page links here with ?role=coach&mode=signup so nobody is asked twice.
+  const [role, setRole] = useState<Role | null>(paramRole === 'athlete' || paramRole === 'coach' || paramRole === 'club' ? paramRole : null);
+  const [mode, setMode] = useState<Mode>(params.get('mode') === 'signup' ? 'signup' : 'login');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -177,8 +180,7 @@ const Start = () => {
       <PublicNav />
       <main className="grid flex-1 lg:grid-cols-2">
         <div className="relative hidden overflow-hidden bg-foreground text-[#F3EDE2] lg:block">
-          <img src="/images/sofia-borisova.jpg" alt="" className="absolute inset-0 h-full w-full animate-[kb_34s_ease-in-out_infinite_alternate] object-cover" />
-          <div className="absolute inset-0 bg-foreground/50" />
+          <p aria-hidden="true" className="absolute -left-4 top-6 select-none font-display font-extrabold uppercase leading-[0.8] text-[#F3EDE2]/[0.07]" style={{ fontSize: 'clamp(260px, 28vw, 460px)' }}>Lokka</p>
           <p className="absolute bottom-10 left-10 right-10 font-display font-extrabold uppercase leading-[0.9]" style={{ fontSize: 'clamp(48px, 5vw, 84px)', color: '#F3EDE2' }}>{t.tn_footer_line}</p>
         </div>
         <div className="flex items-center justify-center px-4 py-16">

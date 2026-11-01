@@ -22,8 +22,8 @@ import { SessionSheet } from '@/components/coach/calendar/SessionSheet';
 import { Avatar, LOCALES, portalInput, portalLabel, stageKey } from '@/components/coach/clients/shared';
 import { labelDate, todayStr, toTimeStr, zonedParts } from '@/lib/tz';
 
-const card = 'animate-fade-up-in bg-portal-card border border-portal-border rounded-none p-5';
-const title = 'font-display uppercase tracking-[0.02em] text-base text-portal-ink';
+const card = 'animate-fade-up-in bg-background-secondary rounded-none p-6';
+const title = 'font-display uppercase text-3xl font-extrabold leading-none text-portal-ink';
 const link = 'text-sm text-portal-blue hover:underline';
 
 export default function CoachDashboard() {
@@ -184,10 +184,10 @@ export default function CoachDashboard() {
 
 function Kpi({ label, value, sub }: { label: string; value: string; sub: string }) {
   return (
-    <div className="motion-card bg-portal-card border border-portal-border rounded-none p-4">
+    <div className="motion-card rounded-none bg-background-secondary p-5">
       <p className={portalLabel}>{label}</p>
-      <p className="font-display text-4xl text-portal-ink mt-1 leading-none"><CountUp value={value} /></p>
-      <p className="text-xs text-portal-muted mt-2">{sub}</p>
+      <p className="mt-3 font-display text-6xl font-extrabold leading-none text-portal-ink"><CountUp value={value} /></p>
+      <p className="mt-3 text-sm text-portal-muted-strong">{sub}</p>
     </div>
   );
 }

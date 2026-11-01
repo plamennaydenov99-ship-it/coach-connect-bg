@@ -3,7 +3,7 @@ import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { chip, lift } from '@/lib/ui';
-import { CampCard } from '@/components/camps/CampCard';
+import { Poster } from '@/components/cards/Poster';
 import { CAMPS } from '@/lib/camps';
 import { useLanguage } from '@/context/LanguageContext';
 
@@ -66,11 +66,15 @@ export default function Camps() {
 
         <section className="container py-12 md:py-16">
           {filtered.length ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {filtered.map(c => <CampCard key={c.id} camp={c} />)}
+            <div key={`${sport}-${duration}`} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {filtered.map((c, i) => (
+                <Poster key={c.id} index={i} to={`/camps/${c.id}`} cta={t.tn_camp_view} big={c.price} small={c.dates}
+                  chips={[c.sport, c.duration]} title={c.name} place={`${c.city} · ${c.coach}`}
+                  foot={<div className="w-40"><div className="h-2.5 bg-[#F3EDE2]/30"><div className="h-full bg-[#F3EDE2]" style={{ width: `${Math.max(8, Math.min(100, 100 - c.spotsLeft * 5))}%` }} /></div><p className="mt-1.5 text-sm tabular-nums">{c.spotsLeft} {t.spots_left}</p></div>} />
+              ))}
             </div>
           ) : (
-            <div className="border border-border bg-card p-12 text-center">
+            <div className="bg-background-secondary p-12 text-center">
               <p className="text-foreground-muted font-body">No camps match your filters.</p>
             </div>
           )}
