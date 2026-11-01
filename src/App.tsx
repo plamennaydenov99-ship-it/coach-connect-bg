@@ -10,7 +10,7 @@ import { DemoSwitcher } from "@/components/DemoSwitcher";
 
 import Index from "./pages/Index";
 import Search from "./pages/Search";
-import Discover from "./pages/Discover";
+import Trending from "./pages/Trending";
 import CoachProfile from "./pages/CoachProfile";
 import ClubProfile from "./pages/ClubProfile";
 import ForCoaches from "./pages/ForCoaches";
@@ -34,6 +34,7 @@ import CoachClients from "./pages/coach/CoachClients";
 import CoachDashboard from "./pages/coach/CoachDashboard";
 import CoachMessages from "./pages/coach/CoachMessages";
 import CoachSettings from "./pages/coach/CoachSettings";
+import CoachBoost from "./pages/coach/CoachBoost";
 import { DashboardLayout } from "./components/dashboard/DashboardLayout";
 import { AccountLayout } from "./components/account/AccountLayout";
 import Account from "./pages/Account";
@@ -72,7 +73,8 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/athlete" element={<Index />} />
               <Route path="/search" element={<Search />} />
-              <Route path="/discover" element={<Discover />} />
+              <Route path="/discover" element={<Trending />} />
+              <Route path="/trending" element={<Navigate to="/discover" replace />} />
               <Route path="/coaches/:id" element={<CoachProfile />} />
               <Route path="/coach" element={<RequireAuth area="coach"><CoachLayout /></RequireAuth>}>
                 <Route index element={<Navigate to="/coach/dashboard" replace />} />
@@ -81,6 +83,7 @@ const App = () => (
                 <Route path="clients/:id" element={<CoachClients />} />
                 <Route path="calendar" element={<CoachCalendar />} />
                 <Route path="invoicing" element={<CoachInvoicing />} />
+                <Route path="boost" element={<CoachBoost />} />
                 <Route path="messages" element={<CoachMessages />} />
                 <Route path="profile" element={<div className="portal-skin"><ProfileEditor /></div>} />
                 <Route path="settings" element={<CoachSettings />} />
@@ -96,6 +99,7 @@ const App = () => (
                 <Route path="clients" element={<Navigate to="/club/members" replace />} />
                 <Route path="calendar" element={<CoachCalendar />} />
                 <Route path="invoicing" element={<CoachInvoicing />} />
+                <Route path="boost" element={<CoachBoost />} />
                 <Route path="facilities" element={<ClubFacilities />} />
                 <Route path="messages" element={<CoachMessages />} />
                 <Route path="profile" element={<div className="portal-skin"><ProfileEditor /></div>} />

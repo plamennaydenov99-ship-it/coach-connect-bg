@@ -1,25 +1,16 @@
-import { PublicNav } from '@/components/layout/PublicNav';
 import { PublicFooter } from '@/components/layout/PublicFooter';
-import { HeroSection } from '@/components/home/HeroSection';
-import { ManifestoSection } from '@/components/home/ManifestoSection';
-import { CitiesSection } from '@/components/home/CitiesSection';
-import { PillarsSection } from '@/components/home/PillarsSection';
-import { FeaturedCoaches } from '@/components/home/FeaturedCoaches';
-import { ClosingCTA } from '@/components/home/ClosingCTA';
+import { Concierge, Doors, ForCoachesBand, JoinBand, Why } from '@/components/home/HomeSections';
 
 const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <PublicNav />
       <main className="flex-1">
-        <HeroSection />
-        <ManifestoSection />
-        <CitiesSection />
-        <PillarsSection />
-        <FeaturedCoaches />
-        <ClosingCTA />
+        <Concierge />
+        <Doors />
+        <Why />
+        <ForCoachesBand />
+        <JoinBand />
       </main>
-
       <PublicFooter />
     </div>
   );
