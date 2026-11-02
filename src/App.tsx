@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { CanonicalTag } from "@/components/CanonicalTag";
+import { ScrollToTop } from "@/components/ScrollToTop";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { AuthProvider } from "@/hooks/useAuth";
 import { DemoSwitcher } from "@/components/DemoSwitcher";
@@ -71,6 +72,7 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <CanonicalTag />
+            <ScrollToTop />
             <DemoSwitcher />
             <Routes>
               <Route path="/" element={<Index />} />

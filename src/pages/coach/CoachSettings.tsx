@@ -8,11 +8,12 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLanguage, type Lang } from '@/context/LanguageContext';
 import { portalBtnPrimary, portalInput, portalLabel } from '@/components/coach/clients/shared';
 
-export const TIMEZONES = [
-  { value: 'Europe/Sofia', label: 'Sofia' },
-  { value: 'Europe/Paris', label: 'Nice' },
-  { value: 'Europe/Monaco', label: 'Monaco' },
-] as const;
+export const TIMEZONES: { value: string; label: Record<Lang, string> }[] = [
+  { value: 'Europe/Sofia', label: { en: 'Sofia', bg: 'София', fr: 'Sofia' } },
+  { value: 'Europe/Paris', label: { en: 'French Riviera', bg: 'Френска Ривиера', fr: "Côte d'Azur" } },
+];
+/** Older profiles saved the Riviera as Europe/Monaco; it keeps the same clock as Europe/Paris. */
+const normalizeTz = (tz: string) => (tz === 'Europe/Monaco' ? 'Europe/Paris' : tz);
 
 const LANGS: { value: Lang; label: string }[] = [
   { value: 'en', label: 'English' },
@@ -30,7 +31,7 @@ export default function CoachSettings() {
   const { t, lang, setLang } = useLanguage();
   const { user, profile, refreshProfile } = useAuth();
   const qc = useQueryClient();
-  const [tz, setTz] = useState<string>((profile as any)?.timezone || 'Europe/Sofia');
+  const [tz, setTz] = useState<string>(normalizeTz((profile as any)?.timezone || 'Europe/Sofia'));
   const [saving, setSaving] = useState(false);
 
   const billingKey = ['coach', user?.id, 'billing_settings'];
@@ -80,7 +81,7 @@ export default function CoachSettings() {
         <p className="text-sm text-portal-muted">{t.cset_timezone_sub}</p>
         <div className="flex flex-wrap gap-2">
           <select value={tz} onChange={(e) => setTz(e.target.value)} className={`${portalInput} w-60`} aria-label={t.cset_timezone}>
-            {TIMEZONES.map((z) => <option key={z.value} value={z.value}>{z.label} ({z.value})</option>)}
+            {TIMEZONES.map((z) => <option key={z.value} value={z.value}>{z.label[lang]}</option>)}
           </select>
           <button onClick={saveTz} disabled={saving} className={portalBtnPrimary}>{t.dashsettings_save}</button>
         </div>
