@@ -40,6 +40,17 @@ To correct something, import the row again with the same `slug`. A blank `status
 - When a club or organiser asks for removal, set the row to `removed` (listings) or `cancelled`/delete (events) the same day, then mark the report as handled.
 - Use the tick button on a row to mark "checked today". Rows not checked for 30 days (events) or 90 days (clubs) show as stale.
 
+## Making the first clubs draft (OpenStreetMap)
+
+```bash
+python3 scripts/osm_fetch.py          # downloads sports venues in Sofia into data/drafts/ (public servers are often busy; it retries)
+python3 scripts/build_clubs_draft.py  # filters, removes duplicates and non-clubs, looks up districts, writes data/drafts/clubs_sofia_draft.csv
+```
+
+Rules the script applies: named venues only; needs a website or a street address; no pitches, shops, stadiums, malls or event sites; one row per business (branches kept only when each has its own address); phone numbers are never copied. Rows are ranked A (website, address and sport all present) or B. `data/drafts/` is not committed.
+
+Events are not drafted this way: official organisers rarely publish next year's dates until winter or spring, so unconfirmed events are tracked in a watch-list and added only when the organiser's own page shows the date.
+
 ## Migration
 
 `supabase/migrations/20261103100000_events_and_club_listings.sql`. Applied to the live database through the Lovable DB tool with a rolled-back test first (dry run, upsert without duplicates, anon sees only published upcoming rows, non-admins refused, claim flow, reports).

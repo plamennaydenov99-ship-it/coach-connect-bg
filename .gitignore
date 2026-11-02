@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Draft spreadsheets of real data, worked on by hand before import (see docs/real-data.md)
+data/drafts/
