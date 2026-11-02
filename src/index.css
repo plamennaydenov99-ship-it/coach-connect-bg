@@ -320,6 +320,16 @@
 /* Slow push-in on photographs */
 @keyframes kb { from { transform: scale(1); } to { transform: scale(1.1); } }
 
+/* Sign-in stage: a photo panning inside giant letters, tickers, a turning badge */
+@keyframes pan { from { background-position: 0% 50%; } to { background-position: 100% 68%; } }
+@keyframes sweep { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+@keyframes marquee-rev { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+.anim-pan { animation: pan 38s ease-in-out infinite alternate; }
+.anim-sweep { animation: sweep 1s linear infinite; }
+.anim-marquee-rev { animation: marquee-rev 46s linear infinite; }
+.anim-spin-slow { animation: spin-slow 26s linear infinite; }
+
 /* Shared motion and feedback; movement never changes layout dimensions. */
 @keyframes fade-up-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes grow-in { from { transform: scaleX(0); } to { transform: scaleX(1); } }

@@ -46,7 +46,7 @@ export default function AdminUsers() {
   useEffect(() => {
     if (loading || profileLoading) return;
     if (!user || !isAdmin) {
-      navigate('/', { replace: true });
+      navigate(user ? '/' : `/start?next=${encodeURIComponent(window.location.pathname)}`, { replace: true });
       return;
     }
     const load = async () => {

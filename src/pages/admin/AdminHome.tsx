@@ -52,7 +52,7 @@ export default function AdminHome() {
 
   useEffect(() => {
     if (loading || profileLoading) return;
-    if (!user || !isAdmin) { navigate('/', { replace: true }); return; }
+    if (!user || !isAdmin) { navigate(user ? '/' : `/start?next=${encodeURIComponent(window.location.pathname)}`, { replace: true }); return; }
     (async () => {
       const { data: d, error: e } = await rpc<Overview>('admin_overview');
       if (e) setError(e.message); else setData(d);

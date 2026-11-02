@@ -57,7 +57,7 @@ export default function AdminTrending() {
 
   useEffect(() => {
     if (loading || profileLoading) return;
-    if (!user || !isAdmin) { navigate('/', { replace: true }); return; }
+    if (!user || !isAdmin) { navigate(user ? '/' : `/start?next=${encodeURIComponent(window.location.pathname)}`, { replace: true }); return; }
     load();
   }, [loading, profileLoading, user, isAdmin, navigate]);
 

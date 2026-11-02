@@ -5,7 +5,7 @@ import { QuickBookDialog } from '@/components/coach/calendar/QuickBookDialog';
 import { NavLink, Link, Outlet, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, CalendarDays, MessageSquare, UserCircle2, Settings, Building2,
-  Bell, Plus, LogOut, ExternalLink, Sun, Receipt, Megaphone,
+  Bell, Plus, LogOut, ExternalLink, Sun, Receipt, Megaphone, ShieldCheck,
 } from 'lucide-react';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
@@ -161,6 +161,11 @@ function StaffShell() {
             <DropdownMenuItem onClick={() => navigate(`${b}/settings`)}>
               <Settings className="h-4 w-4 mr-2" /> {t.portal_settings}
             </DropdownMenuItem>
+            {profile?.is_admin && (
+              <DropdownMenuItem onClick={() => navigate('/admin')}>
+                <ShieldCheck className="h-4 w-4 mr-2" /> {t.st_admin}
+              </DropdownMenuItem>
+            )}
             <DropdownMenuSeparator className="bg-portal-border" />
             <DropdownMenuLabel className="font-display uppercase tracking-[0.02em] text-xs text-portal-muted">
               {t.portal_language}

@@ -53,6 +53,7 @@ import MyProgram from "./pages/account/MyProgram";
 import MyBookings from "./pages/dashboard/MyBookings";
 import PersonalInfo from "./pages/dashboard/PersonalInfo";
 import BookmarksPage from "./pages/dashboard/Bookmarks";
+import ResetPassword from "./pages/ResetPassword";
 import AdminHome from "./pages/admin/AdminHome";
 import AdminReview from "./pages/admin/AdminReview";
 import AdminUsers from "./pages/admin/AdminUsers";
@@ -118,6 +119,7 @@ const App = () => (
               <Route path="/community" element={<Community />} />
               <Route path="/match" element={<Match />} />
               <Route path="/start" element={<Start />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
 
               <Route path="/dashboard" element={<RequireAuth area="staff"><DashboardLayout /></RequireAuth>}>
                 <Route index element={<DashboardHome />} />
