@@ -13,17 +13,33 @@ const LanguageContext = createContext<LanguageContextValue | undefined>(undefine
 
 const STORAGE_KEY = 'atleta_lang';
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>('en');
+/** Default language from the device time zone: France → French, Bulgaria → Bulgarian, anywhere else → English. */
+export function detectLang(): Lang {
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (tz === 'Europe/Paris') return 'fr';
+    if (tz === 'Europe/Sofia') return 'bg';
+  } catch { /* no Intl time zone support */ }
+  return 'en';
+}
 
-  useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY) as Lang | null;
-    if (saved === 'en' || saved === 'bg' || saved === 'fr') setLangState(saved);
-  }, []);
+/** A language picked with the switcher wins; otherwise follow the device (not saved, so travelling updates it). */
+function initialLang(): Lang {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved === 'en' || saved === 'bg' || saved === 'fr') return saved;
+  } catch { /* storage blocked */ }
+  return detectLang();
+}
+
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [lang, setLangState] = useState<Lang>(initialLang);
+
+  useEffect(() => { document.documentElement.lang = lang; }, [lang]);
 
   const setLang = (l: Lang) => {
     setLangState(l);
-    localStorage.setItem(STORAGE_KEY, l);
+    try { localStorage.setItem(STORAGE_KEY, l); } catch { /* storage blocked */ }
   };
 
   return (

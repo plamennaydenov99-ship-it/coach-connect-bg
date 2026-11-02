@@ -4,8 +4,11 @@ import { supabase } from '@/integrations/supabase/client';
 export const CITIES = ['Sofia'] as const;
 export type City = (typeof CITIES)[number];
 export const DEFAULT_CITY: City = 'Sofia';
-export const CITY_TZ: Record<string, string> = { Sofia: 'Europe/Sofia' };
-const CITY_LABEL: Record<string, Record<string, string>> = { Sofia: { en: 'Sofia', bg: 'София', fr: 'Sofia' } };
+export const CITY_TZ: Record<string, string> = { Sofia: 'Europe/Sofia', 'French Riviera': 'Europe/Paris' };
+const CITY_LABEL: Record<string, Record<string, string>> = {
+  Sofia: { en: 'Sofia', bg: 'София', fr: 'Sofia' },
+  'French Riviera': { en: 'French Riviera', bg: 'Френска Ривиера', fr: "Côte d'Azur" },
+};
 export const cityLabel = (city: string, lang: string) => CITY_LABEL[city]?.[lang] ?? city;
 
 export type TrendRow = {
