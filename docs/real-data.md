@@ -49,7 +49,7 @@ python3 scripts/build_clubs_draft.py  # filters, removes duplicates and non-club
 
 Rules the script applies: named venues only; needs a website or a street address; no pitches, shops, stadiums, malls or event sites; one row per business (branches kept only when each has its own address); phone numbers are never copied. Rows are ranked A (website, address and sport all present) or B. `data/drafts/` is not committed.
 
-Events are not drafted this way: official organisers rarely publish next year's dates until winter or spring, so unconfirmed events are tracked in a watch-list and added only when the organiser's own page shows the date.
+Events are drafted by hand. Listing sites such as racecalendar.bg (about 2,600 Bulgarian races) are used only to find races and their organisers. They say themselves that their dates are not official, and one disagreed with the organiser (Plovdiv Run: 17 April on the list, 16-18 April on the organiser's site). So a date goes in only when the organiser's own page shows it, and `source_url` is that page, never the listing. Races whose organiser has only a Facebook page, or whose page cannot be read, stay in the watch-list. Do not copy a listing site's pages or automate against them without reading their terms.
 
 ## Migration
 

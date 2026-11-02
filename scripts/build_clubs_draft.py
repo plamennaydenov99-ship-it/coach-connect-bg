@@ -138,6 +138,12 @@ def main():
     rows.append({'name': 'Padel Club Sofia', 'sports': 'padel', 'city': 'Sofia', 'district': '', 'address': 'Okolovrasten put 72', 'lat': '', 'lng': '', 'website': '',
                  'source_name': 'FIP calendar listing', 'source_url': 'https://www.padelfip.com/?p=261662', 'osm_id': '', 'status': 'draft', 'slug': 'padel-club-sofia', 'priority': 'B',
                  'check_note': 'Added by hand: host of the FIP Bronze Sofia padel tournament (Oct 2025), indoor, 5 match courts per FIP. Find the club\'s own website and district, then publish.'})
+    rows.append({'name': 'Run and Become athletics club', 'sports': 'running', 'city': 'Sofia', 'district': '', 'address': '', 'lat': '', 'lng': '', 'website': 'https://runandbecome.bg/',
+                 'source_name': 'Club website', 'source_url': 'https://runandbecome.bg/marathon/', 'osm_id': '', 'status': 'draft', 'slug': 'run-and-become-athletics-club', 'priority': 'B',
+                 'check_note': 'Added by hand: organiser of the Sri Chinmoy Run and Become Marathon (named on its page). Add the club\'s address if it has one.'})
+    rows.append({'name': 'Begach Running Club', 'sports': 'running', 'city': 'Sofia', 'district': '', 'address': '', 'lat': '', 'lng': '', 'website': '',
+                 'source_name': 'Sofia Half Marathon site', 'source_url': 'https://sofiahalfmarathon.com/en/', 'osm_id': '', 'status': 'draft', 'slug': 'begach-running-club', 'priority': 'B',
+                 'check_note': 'Added by hand: named as organiser of the Sofia Half Marathon. Find the club\'s own website before publishing.'})
     rows.sort(key=lambda r: (r['priority'], r['sports'].split(';')[0] if r['sports'] else '~', r['name'].lower()))
     with OUT.open('w', newline='', encoding='utf-8-sig') as f:
         w = csv.DictWriter(f, fieldnames=COLUMNS); w.writeheader(); w.writerows(rows)
