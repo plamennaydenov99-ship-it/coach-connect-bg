@@ -15,10 +15,9 @@ import CoachProfile from "./pages/CoachProfile";
 import ClubProfile from "./pages/ClubProfile";
 import ForCoaches from "./pages/ForCoaches";
 import Events from "./pages/Events";
-import Marketplace from "./pages/Marketplace";
+import EventDetail from "./pages/EventDetail";
+import Clubs from "./pages/Clubs";
 import Camps from "./pages/Camps";
-import CampDetail from "./pages/CampDetail";
-import Community from "./pages/Community";
 import Match from "./pages/Match";
 import Start from "./pages/Start";
 import NotFound from "./pages/NotFound";
@@ -56,6 +55,8 @@ import BookmarksPage from "./pages/dashboard/Bookmarks";
 import ResetPassword from "./pages/ResetPassword";
 import AdminHome from "./pages/admin/AdminHome";
 import AdminReview from "./pages/admin/AdminReview";
+import AdminEvents from "./pages/admin/AdminEvents";
+import AdminClubs from "./pages/admin/AdminClubs";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminTrending from "./pages/admin/AdminTrending";
 
@@ -113,10 +114,12 @@ const App = () => (
               <Route path="/register" element={<Navigate to="/start" replace />} />
               <Route path="/for-coaches" element={<ForCoaches />} />
               <Route path="/events" element={<Events />} />
-              <Route path="/marketplace" element={<Marketplace />} />
+              <Route path="/events/:slug" element={<EventDetail />} />
+              <Route path="/clubs" element={<Clubs />} />
               <Route path="/camps" element={<Camps />} />
-              <Route path="/camps/:id" element={<CampDetail />} />
-              <Route path="/community" element={<Community />} />
+              <Route path="/camps/:id" element={<Navigate to="/camps" replace />} />
+              <Route path="/marketplace" element={<Navigate to="/" replace />} />
+              <Route path="/community" element={<Navigate to="/" replace />} />
               <Route path="/match" element={<Match />} />
               <Route path="/start" element={<Start />} />
               <Route path="/reset-password" element={<ResetPassword />} />
@@ -149,6 +152,8 @@ const App = () => (
               <Route path="/admin" element={<AdminHome />} />
               <Route path="/admin/review" element={<AdminReview />} />
               <Route path="/admin/users" element={<AdminUsers />} />
+              <Route path="/admin/events" element={<AdminEvents />} />
+              <Route path="/admin/clubs" element={<AdminClubs />} />
               <Route path="/admin/trending" element={<AdminTrending />} />
 
               <Route path="*" element={<NotFound />} />

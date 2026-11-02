@@ -67,7 +67,7 @@ export default function Trending() {
   const ctx = { userId: uid, role: profile?.role, navigate, signInText: t.coach_sign_in_required, athleteOnlyText: t.disc_only_athletes, unavailableText: t.disc_unavailable };
   const actionsLocked = loading || profileLoading || (!!uid && athlete && (saves.isLoading || requested.isLoading));
   const labels = { today: t.tn_today, tomorrow: t.tn_tomorrow };
-  const rows = useMemo(() => (kind === 'event' ? [] : data?.rows ?? []), [data, kind]);
+  const rows = useMemo(() => data?.rows ?? [], [data]);
   const comingAll = useMemo(() => (kind === 'event' ? [] : data?.coming ?? []), [data, kind]);
   const promoted = useMemo(() => (kind === 'event' ? [] : data?.promoted ?? []), [data, kind]);
   const events = kind === 'session' ? [] : data?.events ?? [];
@@ -214,6 +214,13 @@ export default function Trending() {
               </div>
             </div>
           </section>
+
+          {/* In "events only" view the chart is hidden, so the kind chips stay here to get back */}
+          {kind === 'event' && (
+            <section className="container pt-12 md:pt-16" aria-label={t.tn_filter}>
+              <div className="flex flex-wrap gap-1.5" role="group" aria-label={t.tn_filter}>{kinds.map(([k, label]) => <button key={k} type="button" aria-pressed={kind === k} onClick={() => setKind(k)} className={`${chip} ${kind === k ? 'bg-foreground text-background' : 'bg-background-secondary hover:bg-background-tertiary'}`}>{label}</button>)}</div>
+            </section>
+          )}
 
           {/* The chart */}
           {kind !== 'event' && (

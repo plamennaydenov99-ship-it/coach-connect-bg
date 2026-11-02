@@ -4,11 +4,12 @@ import { ArrowRight } from 'lucide-react';
 import { PublicNav } from '@/components/layout/PublicNav';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCityCoaches, useTrending } from '@/hooks/useTrending';
-import { CAMPS } from '@/lib/camps';
-import { PRODUCTS } from '@/lib/products';
+import { useUpcomingEvents } from '@/hooks/useEvents';
+import { useClubs } from '@/hooks/useClubs';
+import { posterDate } from '@/lib/events';
 import { DEFAULT_CITY, cityLabel, sportLabel, whenLabel } from '@/lib/trending';
 
-type Kind = 'coach' | 'event' | 'camp' | 'gear';
+type Kind = 'coach' | 'event' | 'camp' | 'club';
 const SPORTS = ['all', 'padel', 'tennis', 'yoga', 'football', 'boxing', 'running'];
 const pill = 'h-11 px-4 text-base font-medium transition-colors';
 const pillOn = 'bg-[#F3EDE2] text-foreground';
@@ -36,6 +37,8 @@ export function Concierge() {
   const cityName = cityLabel(city, lang);
   const coaches = useCityCoaches(city, 12);
   const trending = useTrending(city, sport, 'all', 'week', false);
+  const events = useUpcomingEvents();
+  const clubs = useClubs();
 
   const results: Result[] = useMemo(() => {
     const okSport = (s?: string | null) => sport === 'all' || (s ?? '').toLowerCase().includes(sport);
@@ -43,20 +46,26 @@ export function Concierge() {
       return (coaches.data ?? []).filter(c => sport === 'all' || okSport(c.sport) || (c.sports ?? []).some(x => okSport(x))).slice(0, 4)
         .map(c => ({ key: c.id, title: c.profiles?.full_name ?? '', sub: `${sportLabel(c.sport, lang)} · ${cityName}${c.verified ? ` · ${t.tn_verified}` : ''}`, cta: t.tn_see_profile, to: `/coaches/${c.id}` }));
     }
+    const when = (e: { starts_on: string; ends_on: string | null }) => { const d = posterDate(e.starts_on, e.ends_on, lang); return `${d.big} ${d.small}`; };
+    const fromTable = (camps: boolean): Result[] => (events.data ?? [])
+      .filter(e => (e.kind === 'camp') === camps && okSport(e.sport)).slice(0, 4)
+      .map(e => ({ key: e.id, title: e.title, sub: [when(e), e.venue ?? e.district].filter(Boolean).join(' · '), cta: t.tn_see_it, to: `/events/${e.slug}` }));
     if (kind === 'event') {
       const d = trending.data;
       const labels = { today: t.tn_today, tomorrow: t.tn_tomorrow };
-      return [...(d?.rows ?? []), ...(d?.coming ?? [])].slice(0, 4).map(r => ({ key: r.id, title: r.title, sub: `${whenLabel(r.starts_at, lang, labels)} · ${r.host}`, cta: t.tn_see_it, to: '/discover' }));
+      const sessions: Result[] = [...(d?.rows ?? []), ...(d?.coming ?? [])].map(r => ({ key: r.id, title: r.title, sub: `${whenLabel(r.starts_at, lang, labels)} · ${r.host}`, cta: t.tn_see_it, to: '/discover' }));
+      return [...fromTable(false), ...sessions].slice(0, 4);
     }
-    if (kind === 'camp') return CAMPS.filter(c => okSport(c.sport)).slice(0, 4).map(c => ({ key: String(c.id), title: c.name, sub: `${c.dates} · ${c.coach}`, cta: t.tn_see_it, to: `/camps/${c.id}` }));
-    return PRODUCTS.slice(0, 4).map(p => ({ key: String(p.id), title: p.name, sub: `${p.club} · €${p.price}`, cta: t.tn_see_it, to: '/marketplace' }));
-  }, [kind, sport, coaches.data, trending.data, lang, t, cityName]);
+    if (kind === 'camp') return fromTable(true);
+    return (clubs.data ?? []).filter(c => sport === 'all' || c.sports.includes(sport)).slice(0, 4)
+      .map(c => ({ key: c.key, title: c.name, sub: [c.district ?? c.address, c.sports.slice(0, 2).map(x => sportLabel(x, lang)).join(', ')].filter(Boolean).join(' · '), cta: t.rd_see_club, to: c.to }));
+  }, [kind, sport, coaches.data, trending.data, events.data, clubs.data, lang, t, cityName]);
 
-  const kinds: [Kind, string][] = [['coach', t.tn_c_k_coach], ['event', t.tn_c_k_event], ['camp', t.tn_c_k_camp], ['gear', t.tn_c_k_gear]];
+  const kinds: [Kind, string][] = [['coach', t.tn_c_k_coach], ['event', t.tn_c_k_event], ['camp', t.tn_c_k_camp], ['club', t.rd_k_club]];
   const sentence = sport === 'all' ? t.tn_c_sentence_any : t.tn_c_sentence_sport;
-  const resTitle = { coach: t.tn_r_coaches, event: t.tn_r_events, camp: t.tn_r_camps, gear: t.tn_r_gear }[kind];
-  const seeAll = { coach: '/search', event: '/discover', camp: '/camps', gear: '/marketplace' }[kind];
-  const loading = (kind === 'coach' && coaches.isLoading) || (kind === 'event' && trending.isLoading);
+  const resTitle = { coach: t.tn_r_coaches, event: t.tn_r_events, camp: t.tn_r_camps, club: t.rd_r_clubs }[kind];
+  const seeAll = { coach: '/search', event: '/events', camp: '/camps', club: '/clubs' }[kind];
+  const loading = (kind === 'coach' && coaches.isLoading) || (kind === 'event' && (events.isLoading || trending.isLoading)) || (kind === 'camp' && events.isLoading) || (kind === 'club' && clubs.isLoading);
   const emptyText = kind === 'coach' ? t.tn_no_coaches : t.tn_none_yet;
 
   return (
@@ -101,9 +110,9 @@ export function Doors() {
   const { t } = useLanguage();
   const doors = [
     { to: '/search', title: t.tn_d_coaches, sub: t.tn_d_coaches_sub, bg: 'bg-foreground text-[#F3EDE2]' },
-    { to: '/discover', title: t.tn_d_events, sub: t.tn_d_events_sub, bg: 'bg-primary text-primary-foreground' },
+    { to: '/events', title: t.tn_d_events, sub: t.tn_d_events_sub, bg: 'bg-primary text-primary-foreground' },
     { to: '/camps', title: t.tn_d_camps, sub: t.tn_d_camps_sub, bg: 'bg-accent text-white' },
-    { to: '/marketplace', title: t.tn_d_shop, sub: t.tn_d_shop_sub, bg: 'bg-background-tertiary text-foreground' },
+    { to: '/clubs', title: t.rd_d_clubs, sub: t.rd_d_clubs_sub, bg: 'bg-background-tertiary text-foreground' },
   ];
   return (
     <section aria-labelledby="h-doors" className="container py-20 md:py-28">

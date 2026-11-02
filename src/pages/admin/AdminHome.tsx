@@ -10,13 +10,14 @@ import { CountUp } from '@/components/CountUp';
 
 type Overview = {
   people: { total: number; athletes: number; coaches: number; clubs: number; new_7d: number; unconfirmed: number };
-  waiting: { coach_apps: number; club_apps: number; certificates: number; boosts: number };
+  waiting: { coach_apps: number; club_apps: number; certificates: number; boosts: number; events_pending?: number; club_claims?: number; reports?: number };
+  content?: { events_live: number; events_draft: number; events_stale: number; clubs_live: number; clubs_draft: number };
   activity: { upcoming_sessions: number; bookings_7d: number; spot_requests_7d: number; messages_7d: number; profile_views_7d: number };
   signups_14d: { d: string; n: number }[];
 };
 type AuditRow = { id: string; action: string; target_label: string | null; created_at: string };
 
-const ACTION_LABEL: Record<string, string> = { delete_user: 'Deleted account' };
+const ACTION_LABEL: Record<string, string> = { delete_user: 'Deleted account', import_events: 'Imported events', import_clubs: 'Imported clubs', review_club: 'Reviewed a club', approve_claim: 'Approved a club claim', reject_claim: 'Rejected a club claim' };
 const fmtDay = (d?: string) => (d ? new Date(`${d}T00:00:00`).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }) : '');
 
 function Big({ value, label }: { value: number; label: string }) {
@@ -87,8 +88,24 @@ export default function AdminHome() {
                 <Todo to="/admin/users?role=club" value={data.waiting.club_apps} label="Club applications" />
                 <Todo to="/admin/review" value={data.waiting.certificates} label="Documents to check" />
                 <Todo to="/admin/trending" value={data.waiting.boosts} label="Boosts to review" />
+                <Todo to="/admin/events" value={data.waiting.events_pending ?? 0} label="Events to review" />
+                <Todo to="/admin/clubs" value={data.waiting.club_claims ?? 0} label="Club claims" />
+                <Todo to="/admin/events" value={data.waiting.reports ?? 0} label="Reports from visitors" />
               </div>
             </section>
+
+            {data.content && (
+              <section>
+                <h2 className="mb-4 text-2xl">On the site</h2>
+                <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
+                  <Link to="/admin/events" className="block transition-transform duration-500 hover:-translate-y-1"><Big value={data.content.events_live} label="Events live" /></Link>
+                  <Link to="/admin/events" className="block transition-transform duration-500 hover:-translate-y-1"><Big value={data.content.events_draft} label="Events in draft" /></Link>
+                  <Link to="/admin/events" className="block transition-transform duration-500 hover:-translate-y-1"><Big value={data.content.events_stale} label="Events not checked for 30 days" /></Link>
+                  <Link to="/admin/clubs" className="block transition-transform duration-500 hover:-translate-y-1"><Big value={data.content.clubs_live} label="Clubs live" /></Link>
+                  <Link to="/admin/clubs" className="block transition-transform duration-500 hover:-translate-y-1"><Big value={data.content.clubs_draft} label="Clubs in draft" /></Link>
+                </div>
+              </section>
+            )}
 
             <section>
               <h2 className="mb-4 text-2xl">People</h2>

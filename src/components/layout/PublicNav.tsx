@@ -1,4 +1,3 @@
-// Cart removed from nav intentionally — appears contextually on /marketplace and coach booking only
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
@@ -41,6 +40,7 @@ export function PublicNav({ variant = 'solid' }: { variant?: 'solid' | 'overlay'
     { to: '/search', label: t.nav_search },
     { to: '/events', label: t.nav_events },
     { to: '/camps', label: t.nav_camps },
+    { to: '/clubs', label: t.rd_nav_clubs },
     { to: '/for-coaches', label: t.footer_for_coaches },
   ];
 

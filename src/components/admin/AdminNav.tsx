@@ -4,6 +4,8 @@ const TABS = [
   { to: '/admin', label: 'Overview', end: true },
   { to: '/admin/users', label: 'People' },
   { to: '/admin/review', label: 'Applications' },
+  { to: '/admin/events', label: 'Events' },
+  { to: '/admin/clubs', label: 'Clubs' },
   { to: '/admin/trending', label: 'Trending & boosts' },
 ];
 

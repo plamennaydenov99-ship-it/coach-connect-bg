@@ -15,7 +15,8 @@ export function PublicFooter() {
           <nav className={`md:col-span-2 ${col}`} aria-label={t.footer_explore}>
             <Link to="/discover" className="hover:underline">{t.tn_nav_trending}</Link>
             <Link to="/search" className="hover:underline">{t.footer_find_coach}</Link>
-            <Link to="/search?type=club" className="hover:underline">{t.footer_browse_clubs}</Link>
+            <Link to="/clubs" className="hover:underline">{t.footer_browse_clubs}</Link>
+            <Link to="/events" className="hover:underline">{t.nav_events}</Link>
             <Link to="/camps" className="hover:underline">{t.nav_camps}</Link>
           </nav>
           <nav className={`md:col-span-3 ${col}`} aria-label={t.footer_company}>

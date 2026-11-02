@@ -85,6 +85,15 @@ export default function AdminUsers() {
     toast({ title: 'Account deleted', description: target.email ?? target.full_name ?? '' });
   };
 
+  const reviewClub = async (id: string, status: 'approved' | 'rejected') => {
+    setActingId(id);
+    const { error } = await rpc('admin_review_club', { _id: id, _status: status });
+    setActingId(null);
+    if (error) { toast({ title: 'Something went wrong', description: error.message, variant: 'destructive' }); return; }
+    setRows(prev => prev.map(r => (r.id === id ? { ...r, application_status: status } : r)));
+    toast({ title: status === 'approved' ? 'Club approved' : 'Club rejected' });
+  };
+
   const confirmEmail = async (id: string) => {
     setActingId(id);
     const { error } = await supabase.rpc('admin_confirm_email', { _user_id: id });
@@ -177,6 +186,12 @@ export default function AdminUsers() {
                         >
                           <Check className="mr-1 h-4 w-4" /> Confirm email
                         </Button>
+                      )}
+                      {r.role === 'club' && r.application_status === 'pending' && (
+                        <>
+                          <Button size="sm" className="ml-2" onClick={() => reviewClub(r.id, 'approved')} disabled={actingId === r.id}>Approve</Button>
+                          <Button size="sm" variant="outline" className="ml-1" onClick={() => reviewClub(r.id, 'rejected')} disabled={actingId === r.id}>Reject</Button>
+                        </>
                       )}
                       {r.id !== user?.id && (
                         <Button

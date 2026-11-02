@@ -10,6 +10,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/context/LanguageContext';
 import { messageOwner } from '@/lib/athleteActions';
 import { useAuth } from '@/hooks/useAuth';
+import { ListingView } from '@/components/clubs/ListingView';
+import { useClubListing } from '@/hooks/useClubs';
+import { isUuid } from '@/lib/slug';
 
 interface ClubData {
   id: string;
@@ -28,11 +31,14 @@ const ClubProfile = () => {
   const { t } = useLanguage();
   const { user, profile } = useAuth();
   const navigate = useNavigate();
+  // A uuid is a club that has joined Lokka. Anything else is the slug of a listing that has not been claimed yet.
+  const isId = !!id && isUuid(id);
+  const listingQ = useClubListing(id, !isId);
   const [club, setClub] = useState<ClubData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(isId);
 
   useEffect(() => {
-    if (!id) return;
+    if (!id || !isId) return;
     (async () => {
       setLoading(true);
       const { data } = await supabase
@@ -44,9 +50,11 @@ const ClubProfile = () => {
       setClub(data as any);
       setLoading(false);
     })();
-  }, [id]);
+  }, [id, isId]);
 
-  if (loading) {
+  if (!isId && listingQ.data) return <ListingView listing={listingQ.data} />;
+
+  if (loading || (!isId && listingQ.isLoading)) {
     return (
       <div className="min-h-screen flex flex-col">
         <PublicNav />

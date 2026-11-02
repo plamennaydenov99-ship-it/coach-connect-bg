@@ -18,7 +18,7 @@ export function Poster({ index, to, big, small, chips, title, place, foot, cta }
     <>
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="font-display text-[120px] font-extrabold leading-[0.8] tabular-nums transition-transform duration-500 group-hover:-translate-y-1 md:text-[140px]">{big}</p>
+          <p className={`whitespace-nowrap font-display font-extrabold leading-[0.8] tabular-nums transition-transform duration-500 group-hover:-translate-y-1 ${big.length > 3 ? 'text-[84px] md:text-[96px]' : 'text-[120px] md:text-[140px]'}`}>{big}</p>
           <p className="mt-2 font-display text-2xl font-extrabold uppercase">{small}</p>
         </div>
         <div className="flex flex-wrap justify-end gap-1.5">{(chips ?? []).map(c => <span key={c} className="bg-[#F3EDE2] px-2.5 py-1 text-sm font-semibold text-foreground">{c}</span>)}</div>

@@ -5,7 +5,9 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { EVENTS } from '@/lib/events';
+import { db } from '@/lib/db';
+import { isUuid } from '@/lib/slug';
+import { longDate } from '@/lib/events';
 import { useLanguage } from '@/context/LanguageContext';
 
 
@@ -16,6 +18,8 @@ type BookmarkRow = {
   created_at: string;
 };
 
+type EventMini = { id: string; slug: string; title: string; starts_on: string; ends_on: string | null; venue: string | null; district: string | null };
+
 type CoachRow = {
   id: string;
   sport: string | null;
@@ -24,7 +28,8 @@ type CoachRow = {
 
 const Bookmarks = () => {
   const { user, profile, loading } = useAuth();
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const [events, setEvents] = useState<Record<string, EventMini>>({});
   const [bookmarks, setBookmarks] = useState<BookmarkRow[]>([]);
   const [coaches, setCoaches] = useState<Record<string, CoachRow>>({});
   const [busy, setBusy] = useState(false);
@@ -38,6 +43,14 @@ const Bookmarks = () => {
       .order('created_at', { ascending: false });
     const rows = (bms ?? []) as BookmarkRow[];
     setBookmarks(rows);
+
+    const eventIds = rows.filter(b => b.target_type === 'event' && isUuid(b.target_id)).map(b => b.target_id);
+    if (eventIds.length) {
+      const { data } = await db.from('events').select('id, slug, title, starts_on, ends_on, venue, district').in('id', eventIds);
+      setEvents(Object.fromEntries(((data ?? []) as EventMini[]).map(e => [e.id, e])));
+    } else {
+      setEvents({});
+    }
 
     const coachIds = rows.filter(b => b.target_type === 'coach').map(b => b.target_id);
     if (coachIds.length) {
@@ -90,7 +103,7 @@ const Bookmarks = () => {
               return (
                 <div key={b.id} className="surface p-4 flex items-center gap-4">
                   <img
-                    src={c?.profiles?.avatar_url || `https://i.pravatar.cc/100?u=${b.target_id}`}
+                    src={c?.profiles?.avatar_url || '/placeholder.svg'}
                     alt={`Profile photo of ${c?.profiles?.full_name || t.dashbookmarks_coach}`}
                     className="h-14 w-14 object-cover"
                   />
@@ -119,16 +132,16 @@ const Bookmarks = () => {
         ) : (
           <div className="grid gap-3 sm:grid-cols-2">
             {eventBookmarks.map(b => {
-              const ev = EVENTS.find(e => String(e.id) === b.target_id);
+              const ev = events[b.target_id];
               return (
                 <div key={b.id} className="surface p-4 flex items-center gap-4">
                   <div className="flex-1 min-w-0">
-                    <Link to={ev ? "/events" : "/discover"} className="font-display text-lg hover:text-primary transition-colors block truncate">
-                      {ev?.name ?? t.dashbookmarks_event}
+                    <Link to={ev ? `/events/${ev.slug}` : '/events'} className="font-display text-lg hover:text-primary transition-colors block truncate">
+                      {ev?.title ?? t.dashbookmarks_event}
                     </Link>
                     <div className="mt-1 flex flex-wrap gap-3 text-sm text-muted-foreground">
-                      {ev?.date && <span className="inline-flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" /> {ev.date}</span>}
-                      {ev?.city && <span className="inline-flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" /> {ev.city}</span>}
+                      {ev?.starts_on && <span className="inline-flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" /> {longDate(ev.starts_on, ev.ends_on, lang)}</span>}
+                      {(ev?.venue || ev?.district) && <span className="inline-flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" /> {[ev.venue, ev.district].filter(Boolean).join(' · ')}</span>}
                     </div>
                   </div>
                   <Button variant="ghost" size="icon" onClick={() => remove(b)} aria-label={t.dashbookmarks_remove_aria}>
