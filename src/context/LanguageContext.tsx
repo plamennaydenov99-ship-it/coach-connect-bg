@@ -35,8 +35,6 @@ function initialLang(): Lang {
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(initialLang);
 
-  useEffect(() => { document.documentElement.lang = lang; }, [lang]);
-
   // Screen readers and translators read the page language from <html lang>.
   useEffect(() => { document.documentElement.lang = lang; }, [lang]);
 
