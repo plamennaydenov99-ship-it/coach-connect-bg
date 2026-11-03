@@ -8,6 +8,7 @@ import { SPORTS } from '@/lib/mockData';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/context/LanguageContext';
 import { chip } from '@/lib/ui';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 type SortKey = 'relevance' | 'price' | 'newest';
 type PriceBand = 'any' | 'low' | 'mid' | 'high';
@@ -32,6 +33,7 @@ const sportsOf = (c: CoachRow) => (c.sports?.length ? c.sports : c.sport ? [c.sp
 
 const Search = () => {
   const { t, lang } = useLanguage();
+  usePageMeta(t.meta_search_t, t.meta_search_d);
   const [params] = useSearchParams();
   const [sport, setSport] = useState((params.get('sport') ?? 'all').toLowerCase());
   const [band, setBand] = useState<PriceBand>('any');

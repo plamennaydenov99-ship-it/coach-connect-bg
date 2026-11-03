@@ -25,3 +25,9 @@ dist-ssr
 
 # Draft spreadsheets of real data, worked on by hand before import (see docs/real-data.md)
 data/drafts/
+
+# Environment files. Real secrets never go in the repo: server secrets live in the Supabase/Lovable
+# project settings. ".env" itself stays tracked on purpose: Lovable writes it and it holds only the
+# public Supabase URL and publishable key, which ship in every browser bundle anyway.
+.env.*
+!.env.example

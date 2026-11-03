@@ -13,6 +13,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { ListingView } from '@/components/clubs/ListingView';
 import { useClubListing } from '@/hooks/useClubs';
 import { isUuid } from '@/lib/slug';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 interface ClubData {
   id: string;
@@ -36,6 +37,8 @@ const ClubProfile = () => {
   const listingQ = useClubListing(id, !isId);
   const [club, setClub] = useState<ClubData | null>(null);
   const [loading, setLoading] = useState(isId);
+  // Unclaimed listings set their own title in ListingView.
+  usePageMeta(isId ? club?.name || t.meta_clubs_t : undefined, club?.name ? t.meta_club_d.replace('{name}', club.name) : t.meta_clubs_d);
 
   useEffect(() => {
     if (!id || !isId) return;

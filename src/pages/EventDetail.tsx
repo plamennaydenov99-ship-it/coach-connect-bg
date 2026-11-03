@@ -8,6 +8,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useEvent } from '@/hooks/useEvents';
 import { hostOf, localeOf, longDate, posterDate } from '@/lib/events';
 import { sportLabel } from '@/lib/trending';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 const cream = '#F3EDE2';
 
@@ -15,6 +16,7 @@ export default function EventDetail() {
   const { slug } = useParams<{ slug: string }>();
   const { t, lang } = useLanguage();
   const { data: ev, isLoading } = useEvent(slug);
+  usePageMeta(ev?.title ?? t.meta_events_t, ev?.summary || t.meta_events_d, ev?.image_url);
 
   const shell = (children: React.ReactNode) => (
     <div className="flex min-h-screen flex-col bg-background text-foreground"><PublicNav /><main className="flex-1">{children}</main><PublicFooter /></div>

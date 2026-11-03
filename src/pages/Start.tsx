@@ -11,6 +11,8 @@ import { homeFor } from '@/lib/routes';
 import { SPORTS } from '@/lib/mockData';
 import { DEMO_MODE } from '@/lib/demo';
 import { DemoRolePicker } from '@/components/DemoSwitcher';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { Picture, photoBackground } from '@/components/Picture';
 
 type Mode = 'login' | 'signup';
 type Role = 'athlete' | 'coach' | 'club';
@@ -47,9 +49,9 @@ export async function ensureRole(userId: string, role: Role, currentRole?: strin
 /* ─────────────────────────── the stage (left / top) ─────────────────────────── */
 
 const LAYERS = [
-  { id: 'cathedral', src: '/images/sofia-cathedral.jpg', pos: '50% 40%', flip: false },
-  { id: 'borisova', src: '/images/sofia-borisova.jpg', pos: '50% 50%', flip: false },
-  { id: 'cathedral-r', src: '/images/sofia-cathedral.jpg', pos: '85% 30%', flip: true },
+  { id: 'cathedral', photo: 'sofia-cathedral', pos: '50% 40%', flip: false },
+  { id: 'borisova', photo: 'sofia-borisova', pos: '50% 50%', flip: false },
+  { id: 'cathedral-r', photo: 'sofia-cathedral', pos: '85% 30%', flip: true },
 ] as const;
 
 const SCENE: Record<Pick | 'none', { layer: number; tint: string }> = {
@@ -87,7 +89,7 @@ function Stage({ scene }: { scene: Pick | null }) {
     : scene === 'admin' ? t.st_stage_admin
     : t.tn_footer_line;
   // the letters show the photo that is NOT the background, so they always pop
-  const fill = LAYERS[s.layer].id === 'borisova' ? LAYERS[0].src : LAYERS[1].src;
+  const fill = LAYERS[s.layer].id === 'borisova' ? LAYERS[0].photo : LAYERS[1].photo;
 
   const tape = (key: string) => (
     <div className="flex w-max items-center whitespace-nowrap font-display text-3xl font-extrabold leading-none lg:text-4xl" key={key}>
@@ -107,7 +109,7 @@ function Stage({ scene }: { scene: Pick | null }) {
         <div key={l.id} className={`absolute -inset-8 transition-opacity duration-1000 ${i === s.layer ? 'opacity-100' : 'opacity-0'}`} aria-hidden="true">
           <div className="h-full w-full" style={par(-14)}>
             <div className="h-full w-full" style={{ transform: l.flip ? 'scaleX(-1)' : undefined }}>
-              <img src={l.src} alt="" loading={i === 0 ? 'eager' : 'lazy'} className="h-full w-full animate-[kb_40s_ease-in-out_infinite_alternate] object-cover grayscale contrast-125" style={{ objectPosition: l.pos }} />
+              <Picture name={l.photo} alt="" eager={i === 0} sizes="(min-width: 1024px) 55vw, 100vw" className="h-full w-full animate-[kb_40s_ease-in-out_infinite_alternate] object-cover grayscale contrast-125" style={{ objectPosition: l.pos }} />
             </div>
           </div>
         </div>
@@ -127,7 +129,7 @@ function Stage({ scene }: { scene: Pick | null }) {
               className="anim-pan select-none font-display font-extrabold leading-[0.8]"
               style={{
                 fontSize: lang === 'bg' ? 'clamp(96px, 14.5vw, 250px)' : 'clamp(104px, 17vw, 300px)',
-                backgroundImage: `url(${fill})`,
+                backgroundImage: photoBackground(fill),
                 backgroundSize: '135% auto',
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
@@ -165,9 +167,9 @@ function Stage({ scene }: { scene: Pick | null }) {
       {/* the line that changes with the role */}
       <div className="relative hidden px-10 pb-12 lg:block">
         <div key={scene ?? 'none'} className="animate-fade-up-in">
-          <h2 className="max-w-[14ch] font-display font-extrabold leading-[0.92]" style={{ fontSize: 'clamp(42px, 4.4vw, 80px)', color: cream }}>
+          <p className="max-w-[14ch] font-display font-extrabold leading-[0.92]" style={{ fontSize: 'clamp(42px, 4.4vw, 80px)', color: cream }}>
             {line}
-          </h2>
+          </p>
         </div>
       </div>
     </div>
@@ -176,10 +178,13 @@ function Stage({ scene }: { scene: Pick | null }) {
 
 /* ─────────────────────────── small form pieces ─────────────────────────── */
 
-export function Field({ id, label, type = 'text', value, onChange, autoComplete, required, tabIndex, right, hint }: {
+export function Field({ id, label, type = 'text', value, onChange, autoComplete, required, tabIndex, right, hint, invalid, errorId }: {
   id: string; label: string; type?: string; value: string; onChange: (v: string) => void; autoComplete?: string;
   required?: boolean; tabIndex?: number; right?: ReactNode; hint?: string;
+  /** Marks the input invalid and points screen readers at the error message with this id. */
+  invalid?: boolean; errorId?: string;
 }) {
+  const describedBy = [hint ? `${id}-hint` : '', invalid && errorId ? errorId : ''].filter(Boolean).join(' ') || undefined;
   return (
     <div className="group">
       <label htmlFor={id} className="block font-display text-xs font-bold uppercase tracking-[0.08em] text-foreground-muted transition-colors group-focus-within:text-primary">{label}</label>
@@ -192,12 +197,14 @@ export function Field({ id, label, type = 'text', value, onChange, autoComplete,
           autoComplete={autoComplete}
           required={required}
           tabIndex={tabIndex}
+          aria-invalid={invalid || undefined}
+          aria-describedby={describedBy}
           className="h-12 w-full rounded-none border-0 border-b-2 border-foreground/25 bg-transparent pr-20 text-xl text-foreground outline-none transition-colors placeholder:text-foreground-muted/60"
         />
         <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-[3px] origin-left scale-x-0 bg-primary transition-transform duration-300 group-focus-within:scale-x-100" />
         {right && <div className="absolute inset-y-0 right-0 flex items-center">{right}</div>}
       </div>
-      {hint && <p className="mt-1.5 text-xs text-foreground-muted">{hint}</p>}
+      {hint && <p id={`${id}-hint`} className="mt-1.5 text-xs text-foreground-muted">{hint}</p>}
     </div>
   );
 }
@@ -231,6 +238,7 @@ const GoogleG = () => (
 const Start = () => {
   const navigate = useNavigate();
   const { t, lang, setLang } = useLanguage();
+  usePageMeta(t.meta_start_t, t.meta_start_d);
   const { user, profile, loading, refreshProfile } = useAuth();
   const [params] = useSearchParams();
   const paramRole = params.get('role');
@@ -252,6 +260,8 @@ const Start = () => {
   const [forgot, setForgot] = useState(false);
   const [resetSent, setResetSent] = useState(false);
   const [signedInChooser, setSignedInChooser] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [trap, setTrap] = useState(''); // honeypot: people never see this field, bots fill it in
   const handled = useRef(false);
   const lastRole = readLS(LAST_ROLE_KEY);
 
@@ -326,8 +336,9 @@ const Start = () => {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!role) return;
+    setFormError(null);
     if (!email || !password) {
-      toast.error(t.auth_email_pw_required);
+      setFormError(t.auth_email_pw_required);
       return;
     }
     setBusy(true);
@@ -335,7 +346,7 @@ const Start = () => {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error || !data.user) {
         setBusy(false);
-        return toast.error(error?.message ?? t.auth_email_pw_required);
+        return setFormError(error?.message ?? t.auth_email_pw_required);
       }
       toast.success(t.auth_welcome_back_toast);
       await finishAuth(data.user.id, role);
@@ -345,7 +356,13 @@ const Start = () => {
 
     if (password.length < 8) {
       setBusy(false);
-      return toast.error(t.auth_password_min_error);
+      return setFormError(t.auth_password_min_error);
+    }
+    if (trap) {
+      // A bot filled the hidden field: look successful, create nothing.
+      setBusy(false);
+      setSent(true);
+      return;
     }
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -357,7 +374,7 @@ const Start = () => {
     });
     if (error) {
       setBusy(false);
-      return toast.error(error.message);
+      return setFormError(error.message);
     }
 
     // Auto-confirm on → a session comes back immediately; otherwise the user must confirm by email.
@@ -500,7 +517,7 @@ const Start = () => {
                         type="button"
                         role="tab"
                         aria-selected={mode === m}
-                        onClick={() => setMode(m)}
+                        onClick={() => { setMode(m); setFormError(null); }}
                         className={`relative z-10 h-11 font-display text-base font-bold uppercase transition-colors duration-300 ${mode === m ? 'text-background' : 'text-foreground'}`}
                       >
                         {m === 'login' ? t.auth_tab_login : t.auth_tab_signup}
@@ -518,15 +535,17 @@ const Start = () => {
                     </div>
                   </div>
 
-                  <Field id="email" label={t.auth_email} type="email" value={email} onChange={setEmail} autoComplete="email" required />
+                  <Field id="email" label={t.auth_email} type="email" value={email} onChange={v => { setEmail(v); setFormError(null); }} autoComplete="email" required invalid={!!formError} errorId="start-error" />
                   <Field
                     id="password"
                     label={t.auth_password}
                     type={showPw ? 'text' : 'password'}
                     value={password}
-                    onChange={setPassword}
+                    onChange={v => { setPassword(v); setFormError(null); }}
                     autoComplete={signup ? 'new-password' : 'current-password'}
                     required
+                    invalid={!!formError}
+                    errorId="start-error"
                     hint={signup ? t.auth_password_min : undefined}
                     right={
                       <button type="button" onClick={() => setShowPw(v => !v)} className="inline-flex items-center gap-1.5 px-1 text-xs font-bold uppercase tracking-[0.06em] text-foreground-muted hover:text-foreground" aria-pressed={showPw}>
@@ -536,6 +555,21 @@ const Start = () => {
                   />
                   {!signup && (
                     <button type="button" onClick={() => setForgot(true)} className="-mt-2 text-sm font-medium underline underline-offset-4 hover:text-primary">{t.st_forgot}</button>
+                  )}
+
+                  {signup && (
+                    <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+                      <label htmlFor="start-website">Website</label>
+                      <input id="start-website" name="website" type="text" tabIndex={-1} autoComplete="off" value={trap} onChange={e => setTrap(e.target.value)} />
+                    </div>
+                  )}
+
+                  {formError && <p id="start-error" role="alert" className="border-l-4 border-destructive bg-background-secondary px-4 py-3 text-sm font-medium text-destructive">{formError}</p>}
+
+                  {signup && (
+                    <p className="text-xs text-foreground-muted">
+                      {t.form_notice_signup} <Link to="/privacy" className="font-semibold text-foreground underline underline-offset-4">{t.footer_privacy}</Link> · <Link to="/terms" className="font-semibold text-foreground underline underline-offset-4">{t.footer_terms}</Link>
+                    </p>
                   )}
 
                   <BigButton busy={busy}>

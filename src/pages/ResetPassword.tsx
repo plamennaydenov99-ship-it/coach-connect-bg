@@ -6,10 +6,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { LangSwitcher } from '@/components/layout/LangSwitcher';
 import { useLanguage } from '@/context/LanguageContext';
 import { BigButton, Field } from '@/pages/Start';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 /** Where the link in the "forgot password" email lands: pick a new password, then carry on signed in. */
 export default function ResetPassword() {
   const { t, lang, setLang } = useLanguage();
+  usePageMeta(t.meta_reset_t, t.meta_reset_d);
   const navigate = useNavigate();
   const [state, setState] = useState<'wait' | 'ready' | 'expired'>('wait');
   const [password, setPassword] = useState('');

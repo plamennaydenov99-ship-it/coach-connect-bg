@@ -1,0 +1,3 @@
+# Netlify / Cloudflare Pages: send every path to the single-page app so deep links and the
+# custom 404 page work. HTTP -> HTTPS is forced by the host itself (see docs/launch-hosting.md).
+/*    /index.html   200

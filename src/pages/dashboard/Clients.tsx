@@ -82,7 +82,7 @@ const Clients = () => {
               className="flex items-center gap-4 p-4 hover:bg-muted/40 transition-colors"
             >
               {r.athlete?.avatar_url ? (
-                <img
+                <img width={40} height={40} loading="lazy" decoding="async"
                   src={r.athlete.avatar_url}
                   alt={r.athlete.full_name ?? t.clients_unnamed}
                   className="h-10 w-10 rounded-full object-cover"

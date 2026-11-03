@@ -97,7 +97,7 @@ export function AvatarUpload() {
   return (
     <div className="flex items-center gap-4">
       {current ? (
-        <img src={current} alt={profile.full_name ?? ''} className="h-20 w-20 rounded-full object-cover border border-border" />
+        <img width={80} height={80} loading="lazy" decoding="async" src={current} alt={profile.full_name ?? ''} className="h-20 w-20 rounded-full object-cover border border-border" />
       ) : (
         <div className="h-20 w-20 rounded-full border border-border bg-secondary text-foreground flex items-center justify-center font-display text-2xl">
           {initialsOf(profile.full_name)}

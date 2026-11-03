@@ -67,7 +67,7 @@ const MyBookings = () => {
           {rows.map(r => (
             <li key={r.id} className="surface p-5 flex items-center gap-4 justify-between">
               <div className="flex items-center gap-4 min-w-0">
-                <img
+                <img width={44} height={44} loading="lazy" decoding="async"
                   src={r.coach?.avatar_url || '/placeholder.svg'}
                   alt={`Profile photo of ${r.coach?.full_name || 'coach'}`}
                   className="h-11 w-11 rounded-full object-cover shrink-0"

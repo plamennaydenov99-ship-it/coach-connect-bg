@@ -15,6 +15,8 @@ import { claimWaitlist, joinWaitlist, useCityCoaches, useMyWaitlist, useTrending
 import { guardAthlete, messageOwner, toggleAthleteBookmark } from '@/lib/athleteActions';
 import { supabase } from '@/integrations/supabase/client';
 import { CITIES, DEFAULT_CITY, cityLabel, countdown, localeOf, sportLabel, track, whenLabel, type TrendLite, type TrendPromo, type TrendRow } from '@/lib/trending';
+import { usePageMeta } from '@/hooks/usePageMeta';
+import { Picture } from '@/components/Picture';
 
 type Period = 'tonight' | 'weekend' | 'week';
 type Kind = 'all' | 'session' | 'event';
@@ -23,6 +25,7 @@ const chip = 'h-11 px-4 text-base font-medium transition-colors';
 
 export default function Trending() {
   const { t, lang } = useLanguage();
+  usePageMeta(t.meta_discover_t, t.meta_discover_d);
   const { user, profile, loading, profileLoading } = useAuth();
   const navigate = useNavigate();
   const cache = useQueryClient();
@@ -130,9 +133,10 @@ export default function Trending() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <main id="main">
       {/* Hero */}
       <section className="relative h-[620px] overflow-hidden bg-foreground text-[#F3EDE2] md:h-[740px]">
-        <img src="/images/sofia-cathedral.jpg" alt={t.tn_hero_alt} className="absolute inset-0 h-full w-full animate-[kb_34s_ease-in-out_infinite_alternate] object-cover" />
+        <Picture name="sofia-cathedral" alt={t.tn_hero_alt} eager className="absolute inset-0 h-full w-full animate-[kb_34s_ease-in-out_infinite_alternate] object-cover" />
         <div className="absolute inset-0 bg-foreground/45" />
         <PublicNav variant="overlay" />
         <div className="container absolute inset-x-0 bottom-0 pb-10 md:pb-14">
@@ -168,7 +172,7 @@ export default function Trending() {
               <div className="lg:col-span-7">
                 {top ? (
                   <article className="relative flex min-h-[480px] flex-col justify-end overflow-hidden bg-foreground p-6 text-[#F3EDE2] md:min-h-[600px] md:p-9">
-                    <img src="/images/sofia-borisova.jpg" alt="" className="absolute inset-0 h-full w-full object-cover" />
+                    <Picture name="sofia-borisova" alt="" sizes="(min-width: 1024px) 58vw, 100vw" className="absolute inset-0 h-full w-full object-cover" />
                     <div className="absolute inset-0 bg-foreground/55" />
                     <span aria-hidden="true" className="absolute right-6 top-0 font-display text-[200px] font-extrabold leading-[0.82] text-[#F3EDE2] md:text-[300px]">1</span>
                     <div className="relative">
@@ -286,7 +290,7 @@ export default function Trending() {
                   <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {events.map(e => (
                       <article key={e.id} className="flex flex-col bg-background transition-transform duration-500 hover:-translate-y-2">
-                        {e.image_url && <img src={e.image_url} alt={e.title} loading="lazy" className="aspect-[16/9] w-full object-cover" />}
+                        {e.image_url && <img decoding="async" src={e.image_url} alt={e.title} loading="lazy" className="aspect-[16/9] w-full object-cover" />}
                         <div className="flex flex-1 flex-col gap-3 p-6">
                           {(e.starts_on || e.ends_on) && <p className="text-sm font-semibold text-primary">{[e.starts_on, e.ends_on].filter(Boolean).map(d => new Intl.DateTimeFormat(localeOf(lang), { day: 'numeric', month: 'short' }).format(new Date(`${d}T12:00:00`))).join(' – ')}</p>}
                           <h3 className="t-plain text-2xl">{e.title}</h3>
@@ -319,7 +323,7 @@ export default function Trending() {
               {(coaches.data ?? []).map(c => (
                 <Link key={c.id} to={`/coaches/${c.id}`} className="group flex flex-col gap-4 bg-background-secondary p-6 transition-transform duration-500 hover:-translate-y-2">
                   <div className="flex items-center gap-4">
-                    {c.profiles?.avatar_url ? <img src={c.profiles.avatar_url} alt="" className="h-14 w-14 rounded-full object-cover" /> : <span className="grid h-14 w-14 place-items-center rounded-full bg-primary font-display text-2xl font-bold text-primary-foreground">{(c.profiles?.full_name ?? '?')[0]}</span>}
+                    {c.profiles?.avatar_url ? <img width={56} height={56} loading="lazy" decoding="async" src={c.profiles.avatar_url} alt="" className="h-14 w-14 rounded-full object-cover" /> : <span className="grid h-14 w-14 place-items-center rounded-full bg-primary font-display text-2xl font-bold text-primary-foreground">{(c.profiles?.full_name ?? '?')[0]}</span>}
                     <div className="min-w-0"><p className="flex items-center gap-1.5 text-lg font-semibold leading-tight">{c.profiles?.full_name}{c.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-primary" aria-label={t.tn_verified} />}</p><p className="text-sm text-foreground-muted">{sportLabel(c.sport, lang)} · {cityName}</p></div>
                   </div>
                   <span className="inline-flex items-center gap-2 text-base font-semibold text-primary">{t.tn_see_profile}<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1.5" /></span>
@@ -331,7 +335,7 @@ export default function Trending() {
           {/* Presenting place */}
           {data.pick && (
             <section className="grid bg-primary text-primary-foreground lg:grid-cols-[1.15fr_1fr]" aria-label={t.tn_promoted}>
-              <div className="relative min-h-[320px] overflow-hidden"><img src="/images/sofia-borisova.jpg" alt="" className="absolute inset-0 h-full w-full object-cover" /></div>
+              <div className="relative min-h-[320px] overflow-hidden"><Picture name="sofia-borisova" alt="" sizes="(min-width: 1024px) 54vw, 100vw" className="absolute inset-0 h-full w-full object-cover" /></div>
               <div className="flex flex-col justify-between gap-8 p-8 md:p-14">
                 <div>
                   <span className="inline-flex h-7 items-center bg-[#F3EDE2] px-3 text-sm font-bold text-foreground">{t.tn_promoted}</span>
@@ -356,14 +360,17 @@ export default function Trending() {
             <p className="mb-9 mt-6 max-w-[34ch] text-xl">{t.tn_adv_sub}</p>
             <Link to={profile?.role === 'coach' || profile?.role === 'club' ? `/${profile.role}/boost` : '/for-coaches'} className="inline-flex h-14 items-center gap-3 bg-[#F3EDE2] px-7 font-display text-lg font-bold uppercase text-foreground hover:bg-white">{t.tn_adv_cta}<ArrowRight className="h-5 w-5" /></Link>
           </div>
-          <dl className="lg:col-span-5 lg:col-start-8">
-            {[[t.tn_adv_row, t.tn_adv_row_p], [t.tn_adv_pick, t.tn_adv_pick_p]].map(([a, b]) => (
-              <div key={a} className="flex items-baseline justify-between gap-6 py-5"><dt className="font-display text-4xl font-extrabold uppercase" style={{ color: '#F3EDE2' }}>{a}</dt><dd className="text-xl">{b}</dd></div>
-            ))}
+          <div className="lg:col-span-5 lg:col-start-8">
+            <dl>
+              {[[t.tn_adv_row, t.tn_adv_row_p], [t.tn_adv_pick, t.tn_adv_pick_p]].map(([a, b]) => (
+                <div key={a} className="flex items-baseline justify-between gap-6 py-5"><dt className="font-display text-4xl font-extrabold uppercase" style={{ color: '#F3EDE2' }}>{a}</dt><dd className="text-xl">{b}</dd></div>
+              ))}
+            </dl>
             <p className="pt-3 text-sm text-[#F3EDE2]/75">{t.tn_adv_note}</p>
-          </dl>
+          </div>
         </div>
       </section>
+      </main>
 
       <PublicFooter />
       {request && <SpotRequestDialog key={request.id} session={request} ctx={ctx} onClose={() => setRequest(null)} onRequested={id => { void claimWaitlist(id); cache.invalidateQueries({ queryKey: ['trending'] }); cache.invalidateQueries({ queryKey: ['waitlist'] }); }} />}

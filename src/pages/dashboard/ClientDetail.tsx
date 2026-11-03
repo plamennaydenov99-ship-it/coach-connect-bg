@@ -112,7 +112,7 @@ const ClientDetail = () => {
         </Link>
         <div className="flex items-center gap-4">
           {athlete?.avatar_url ? (
-            <img src={athlete.avatar_url} alt={athlete.full_name ?? t.clients_unnamed} className="h-14 w-14 rounded-full object-cover" />
+            <img width={56} height={56} loading="lazy" decoding="async" src={athlete.avatar_url} alt={athlete.full_name ?? t.clients_unnamed} className="h-14 w-14 rounded-full object-cover" />
           ) : (
             <div className="h-14 w-14 rounded-full bg-muted flex items-center justify-center text-lg">
               {(athlete?.full_name ?? '?').charAt(0).toUpperCase()}

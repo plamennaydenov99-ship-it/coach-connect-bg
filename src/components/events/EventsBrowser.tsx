@@ -8,6 +8,7 @@ import { useUpcomingEvents } from '@/hooks/useEvents';
 import { EVENT_KINDS, monthEndIso, overlapsUntil, weekEndIso, type EventKind } from '@/lib/events';
 import { sportLabel } from '@/lib/trending';
 import { chip } from '@/lib/ui';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 type When = 'all' | 'week' | 'month';
 
@@ -16,6 +17,7 @@ export function EventsBrowser({ mode }: { mode: 'events' | 'camps' }) {
   const { t, lang } = useLanguage();
   const q = useUpcomingEvents();
   const camps = mode === 'camps';
+  usePageMeta(camps ? t.meta_camps_t : t.meta_events_t, camps ? t.meta_camps_d : t.meta_events_d);
   const [sport, setSport] = useState('all');
   const [kind, setKind] = useState<'all' | EventKind>('all');
   const [when, setWhen] = useState<When>('all');

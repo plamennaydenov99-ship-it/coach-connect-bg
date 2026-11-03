@@ -35,7 +35,7 @@ export function ClubTile({ club, index = 0 }: { club: ClubCardData; index?: numb
         {!club.claimed && <span className="border border-current px-2.5 py-1 text-sm font-semibold opacity-90">{t.rd_unclaimed}</span>}
       </div>
       <div className="relative p-5">
-        <h3 className="font-display text-4xl font-extrabold uppercase leading-[0.92] [overflow-wrap:anywhere] md:text-[2.6rem]">{club.name}</h3>
+        <h2 className="font-display text-4xl font-extrabold uppercase leading-[0.92] [overflow-wrap:anywhere] md:text-[2.6rem]">{club.name}</h2>
         {where && <p className="mt-2 flex items-start gap-1.5 text-base opacity-90"><MapPin className="mt-1 h-4 w-4 shrink-0" aria-hidden="true" /><span className="line-clamp-2">{where}</span></p>}
         <div className="mt-5 flex items-end justify-end">
           <span className="grid h-12 w-12 shrink-0 place-items-center bg-[#F3EDE2] text-foreground transition-transform duration-500 group-hover:-translate-y-1 group-hover:translate-x-1" aria-hidden="true"><ArrowUpRight className="h-5 w-5" /></span>

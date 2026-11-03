@@ -1,14 +1,13 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
+# Everything public can be indexed, legal pages included.
+# Only the signed-in staff, account and admin areas are kept out: they have nothing to index.
+# ("/coach/" and "/club/" do not block the public "/coaches/..." and "/clubs/..." pages.)
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /coach/
+Disallow: /club/
+Disallow: /dashboard
+Disallow: /account
+
+# [TO CONFIRM] replace with the final domain.
+Sitemap: https://lokka1.lovable.app/sitemap.xml

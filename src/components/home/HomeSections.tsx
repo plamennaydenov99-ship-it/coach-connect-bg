@@ -8,6 +8,7 @@ import { useUpcomingEvents } from '@/hooks/useEvents';
 import { useClubs } from '@/hooks/useClubs';
 import { posterDate } from '@/lib/events';
 import { DEFAULT_CITY, cityLabel, sportLabel, whenLabel } from '@/lib/trending';
+import { Picture } from '@/components/Picture';
 
 type Kind = 'coach' | 'event' | 'camp' | 'club';
 const SPORTS = ['all', 'padel', 'tennis', 'yoga', 'football', 'boxing', 'running'];
@@ -70,7 +71,7 @@ export function Concierge() {
 
   return (
     <section className="relative overflow-hidden bg-foreground text-[#F3EDE2]" id="top">
-      <img src="/images/sofia-cathedral.jpg" alt={t.tn_hero_alt} className="absolute inset-0 h-full w-full animate-[kb_34s_ease-in-out_infinite_alternate] object-cover" />
+      <Picture name="sofia-cathedral" alt={t.tn_hero_alt} eager sizes="(min-width: 1024px) 42vw, 100vw" className="absolute inset-0 h-full w-full animate-[kb_34s_ease-in-out_infinite_alternate] object-cover" />
       <div className="absolute inset-0 bg-foreground/50" />
       <PublicNav variant="overlay" />
       <div className="container relative grid gap-10 pb-14 pt-32 md:pb-20 md:pt-44 lg:grid-cols-12">
@@ -165,7 +166,7 @@ export function ForCoachesBand() {
 export function JoinBand() {
   const { t } = useLanguage();
   return (
-    <Link to="/start" aria-label={t.tn_join_aria} className="group relative block h-[420px] overflow-hidden bg-primary text-primary-foreground transition-colors hover:bg-background hover:text-primary md:h-[560px]">
+    <Link to="/start" className="group relative block h-[420px] overflow-hidden bg-primary text-primary-foreground transition-colors hover:bg-background hover:text-primary md:h-[560px]">
       <p className="absolute left-5 top-5 max-w-[28ch] text-lg font-medium">{t.tn_join_line}</p>
       <ArrowRight className="absolute right-5 top-5 h-12 w-12 -rotate-45" aria-hidden="true" />
       <span aria-hidden="true" className="absolute inset-x-0 bottom-3 text-center font-display font-extrabold uppercase leading-[0.78]" style={{ fontSize: 'clamp(180px, 30vw, 460px)', color: 'inherit' }}>{t.tn_join_word}</span>

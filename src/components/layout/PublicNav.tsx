@@ -1,5 +1,5 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { LangSwitcher } from '@/components/layout/LangSwitcher';
@@ -25,6 +25,12 @@ export function PublicNav({ variant = 'solid' }: { variant?: 'solid' | 'overlay'
   const navigate = useNavigate();
   const overlay = variant === 'overlay';
 
+  // Give the page's <main> the id the skip link points to.
+  useEffect(() => {
+    const main = document.querySelector('main');
+    if (main && !main.id) main.id = 'main';
+  });
+
   const displayName = profile?.full_name?.trim() || user?.email?.split('@')[0] || '';
   const initials = displayName ? initialsOf(displayName) : '?';
   const homePath = homeFor(profile?.role);
@@ -47,13 +53,26 @@ export function PublicNav({ variant = 'solid' }: { variant?: 'solid' | 'overlay'
   const shell = overlay
     ? 'absolute inset-x-0 top-0 z-50 text-[#F3EDE2]'
     : 'sticky top-0 z-50 border-b border-border bg-background text-foreground';
-  const link = 'relative font-display uppercase tracking-[0.02em] text-base font-bold transition-opacity after:absolute after:left-0 after:-bottom-1.5 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform hover:after:scale-x-100';
+  const link = 'relative py-2.5 font-display uppercase tracking-[0.02em] text-base font-bold transition-opacity after:absolute after:left-0 after:bottom-1 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform hover:after:scale-x-100';
   const pill = overlay ? 'bg-[#F3EDE2]/15 hover:bg-[#F3EDE2]/25 text-[#F3EDE2]' : 'bg-background-secondary hover:bg-background-tertiary text-foreground';
 
   return (
     <header className={shell}>
+      <a
+        href="#main"
+        onClick={e => {
+          const main = document.querySelector('main');
+          if (!main) return;
+          e.preventDefault();
+          main.setAttribute('tabindex', '-1');
+          main.focus();
+        }}
+        className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[100] focus:bg-foreground focus:px-5 focus:py-3 focus:font-display focus:font-bold focus:uppercase focus:text-background"
+      >
+        {t.skip_to_content}
+      </a>
       <div className="container flex h-16 md:h-20 items-center justify-between gap-6">
-        <Link to="/" className="shrink-0 font-display text-3xl md:text-4xl font-extrabold tracking-[0.04em] text-current" style={{ color: 'inherit' }}>
+        <Link to="/" className="inline-flex min-h-11 shrink-0 items-center font-display text-3xl md:text-4xl font-extrabold tracking-[0.04em] text-current" style={{ color: 'inherit' }}>
           LOKKA
         </Link>
 

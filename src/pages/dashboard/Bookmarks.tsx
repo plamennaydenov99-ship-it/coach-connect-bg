@@ -102,7 +102,7 @@ const Bookmarks = () => {
               const c = coaches[b.target_id];
               return (
                 <div key={b.id} className="surface p-4 flex items-center gap-4">
-                  <img
+                  <img width={56} height={56} loading="lazy" decoding="async"
                     src={c?.profiles?.avatar_url || '/placeholder.svg'}
                     alt={`Profile photo of ${c?.profiles?.full_name || t.dashbookmarks_coach}`}
                     className="h-14 w-14 object-cover"

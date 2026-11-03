@@ -7,9 +7,11 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useClubs } from '@/hooks/useClubs';
 import { sportLabel } from '@/lib/trending';
 import { chip } from '@/lib/ui';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 export default function Clubs() {
   const { t, lang } = useLanguage();
+  usePageMeta(t.meta_clubs_t, t.meta_clubs_d);
   const q = useClubs();
   const [sport, setSport] = useState('all');
   const [district, setDistrict] = useState('all');

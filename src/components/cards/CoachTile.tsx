@@ -26,7 +26,7 @@ export function CoachTile({ coach, index = 0 }: { coach: CoachTileData; index?: 
     >
       {coach.avatar ? (
         <>
-          <img src={coach.avatar} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.07]" />
+          <img decoding="async" src={coach.avatar} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.07]" />
           <div className="absolute inset-0 bg-foreground/45 transition-colors duration-500 group-hover:bg-foreground/25" />
         </>
       ) : (

@@ -54,6 +54,8 @@ import MyBookings from "./pages/dashboard/MyBookings";
 import PersonalInfo from "./pages/dashboard/PersonalInfo";
 import BookmarksPage from "./pages/dashboard/Bookmarks";
 import ResetPassword from "./pages/ResetPassword";
+import LegalPage from "./pages/legal/LegalPage";
+import { CookieBanner } from "@/components/CookieBanner";
 import AdminHome from "./pages/admin/AdminHome";
 import AdminReview from "./pages/admin/AdminReview";
 import AdminEvents from "./pages/admin/AdminEvents";
@@ -73,6 +75,7 @@ const App = () => (
           <BrowserRouter>
             <CanonicalTag />
             <ScrollToTop />
+            <CookieBanner />
             <DemoSwitcher />
             <Routes>
               <Route path="/" element={<Index />} />
@@ -125,6 +128,11 @@ const App = () => (
               <Route path="/match" element={<Match />} />
               <Route path="/start" element={<Start />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/privacy" element={<LegalPage doc="privacy" />} />
+              <Route path="/terms" element={<LegalPage doc="terms" />} />
+              <Route path="/legal" element={<LegalPage doc="legal" />} />
+              <Route path="/cookies" element={<LegalPage doc="cookies" />} />
+              <Route path="/accessibility" element={<LegalPage doc="accessibility" />} />
 
               <Route path="/dashboard" element={<RequireAuth area="staff"><DashboardLayout /></RequireAuth>}>
                 <Route index element={<DashboardHome />} />

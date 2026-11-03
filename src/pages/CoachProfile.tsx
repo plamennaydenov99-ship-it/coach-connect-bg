@@ -17,6 +17,7 @@ import { guardAthlete, messageOwner } from '@/lib/athleteActions';
 import { getOrCreateConversation } from '@/lib/messaging';
 import { BookmarkButton } from '@/components/BookmarkButton';
 import { useLanguage } from '@/context/LanguageContext';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 interface CoachData {
   id: string;
@@ -46,6 +47,8 @@ const CoachProfile = () => {
   const navigate = useNavigate();
   const [coach, setCoach] = useState<CoachData | null>(null);
   const [loading, setLoading] = useState(true);
+  const coachName = coach?.profiles?.full_name || '';
+  usePageMeta(coachName || t.meta_coach_t, coachName ? t.meta_coach_d.replace('{name}', coachName) : t.meta_search_d, coach?.profiles?.avatar_url);
   const [slots, setSlots] = useState<Slot[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [note, setNote] = useState('');
@@ -170,7 +173,7 @@ const CoachProfile = () => {
       <main className="flex-1">
         <PageHeader title={name} tone="ink" image={coach.gallery?.[0]}>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-            {avatar ? <img src={avatar} alt={name} className="h-16 w-16 object-cover" /> : <div aria-label={name} className="grid h-16 w-16 shrink-0 place-items-center bg-[#F3EDE2] font-display text-2xl font-extrabold text-foreground">{initialsOf(name)}</div>}
+            {avatar ? <img width={64} height={64} decoding="async" src={avatar} alt={name} className="h-16 w-16 object-cover" /> : <div aria-label={name} className="grid h-16 w-16 shrink-0 place-items-center bg-[#F3EDE2] font-display text-2xl font-extrabold text-foreground">{initialsOf(name)}</div>}
             <div className="flex flex-wrap items-center gap-1.5">
               {sportList.map(s => <span key={s.slug} className="bg-[#F3EDE2] px-2.5 py-1 text-sm font-semibold capitalize text-foreground">{s.label}</span>)}
               {coach.verified && <span className="inline-flex items-center gap-1 bg-[#F3EDE2] px-2.5 py-1 text-sm font-semibold text-foreground"><BadgeCheck className="h-4 w-4 text-primary" /> {t.verified}</span>}
@@ -251,7 +254,7 @@ const CoachProfile = () => {
                 <h2 className="mb-4 text-4xl">{t.coach_gallery}</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {coach.gallery.map((g, i) => (
-                    <img key={i} src={g} alt={`${name} session ${i + 1}`} loading="lazy"
+                    <img decoding="async" key={i} src={g} alt={`${name} session ${i + 1}`} loading="lazy"
                       className="aspect-[4/3] object-cover" />
                   ))}
                 </div>

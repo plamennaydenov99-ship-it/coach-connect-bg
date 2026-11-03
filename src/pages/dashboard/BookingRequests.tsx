@@ -99,7 +99,7 @@ const BookingRequests = () => {
           {filtered.map(r => (
             <li key={r.id} className="surface p-5 flex flex-col md:flex-row md:items-center gap-4 justify-between">
               <div className="flex items-center gap-4 min-w-0">
-                <img
+                <img width={44} height={44} loading="lazy" decoding="async"
                   src={r.athlete?.avatar_url || '/placeholder.svg'}
                   alt={`Profile photo of ${r.athlete?.full_name || t.requests_athlete}`}
                   className="h-11 w-11 rounded-full object-cover shrink-0"

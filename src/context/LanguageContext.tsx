@@ -37,6 +37,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => { document.documentElement.lang = lang; }, [lang]);
 
+  // Screen readers and translators read the page language from <html lang>.
+  useEffect(() => { document.documentElement.lang = lang; }, [lang]);
+
   const setLang = (l: Lang) => {
     setLangState(l);
     try { localStorage.setItem(STORAGE_KEY, l); } catch { /* storage blocked */ }

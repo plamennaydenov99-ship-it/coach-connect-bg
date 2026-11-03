@@ -7,6 +7,7 @@ import { PublicFooter } from '@/components/layout/PublicFooter';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { ReportForm } from '@/components/ReportForm';
 import { useAuth } from '@/hooks/useAuth';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { useLanguage } from '@/context/LanguageContext';
 import { db } from '@/lib/db';
 import { hostOf } from '@/lib/events';
@@ -52,6 +53,7 @@ function ClaimPanel({ listing }: { listing: ClubListing }) {
             <label className="block text-sm font-semibold">{t.rd_claim_msg}
               <textarea value={message} onChange={e => setMessage(e.target.value)} maxLength={1000} rows={3} className={`${line} mt-1 py-2`} />
             </label>
+            <p className="text-xs text-white/90">{t.form_notice_claim} <Link to="/privacy" className="font-semibold underline underline-offset-4">{t.footer_privacy}</Link></p>
             <button type="submit" disabled={busy} className="h-12 bg-[#F3EDE2] px-6 font-display text-base font-bold uppercase text-foreground transition-colors hover:bg-white disabled:opacity-70">{t.rd_claim_send}</button>
           </form>
         ) : (
@@ -65,6 +67,7 @@ function ClaimPanel({ listing }: { listing: ClubListing }) {
 /** A club that has not joined yet, shown from public facts only. */
 export function ListingView({ listing }: { listing: ClubListing }) {
   const { t, lang } = useLanguage();
+  usePageMeta(listing.name, t.meta_club_d.replace('{name}', listing.name));
   const mapHref = listing.lat != null && listing.lng != null
     ? `https://www.openstreetmap.org/?mlat=${listing.lat}&mlon=${listing.lng}#map=17/${listing.lat}/${listing.lng}`
     : listing.address ? `https://www.openstreetmap.org/search?query=${encodeURIComponent(`${listing.name}, ${listing.address}, ${listing.city}`)}` : null;

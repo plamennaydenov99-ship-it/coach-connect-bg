@@ -7,12 +7,14 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/hooks/useAuth';
 import { SPORTS } from '@/lib/mockData';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 const btnLight = 'inline-flex h-14 items-center gap-3 bg-[#F3EDE2] px-7 font-display text-lg font-bold uppercase text-foreground transition-colors hover:bg-white';
 const btnGhost = 'inline-flex h-14 items-center gap-3 bg-[#F3EDE2]/15 px-7 font-display text-lg font-bold uppercase text-[#F3EDE2] transition-colors hover:bg-[#F3EDE2]/28';
 
 export default function ForCoaches() {
   const { t, lang } = useLanguage();
+  usePageMeta(t.meta_forcoaches_t, t.meta_forcoaches_d);
   const { profile } = useAuth();
   const staff = profile?.role === 'coach' || profile?.role === 'club';
   const words = SPORTS.map(s => (lang === 'bg' ? s.labelBg : s.label));

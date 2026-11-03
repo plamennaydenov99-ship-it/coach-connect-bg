@@ -149,7 +149,7 @@ const Messages = () => {
                 c.id === activeId ? 'bg-gold/10' : 'hover:bg-secondary/50'
               }`}
             >
-              <img
+              <img width={40} height={40} loading="lazy" decoding="async"
                 src={c.other?.avatar_url || '/placeholder.svg'}
                 alt={`Profile photo of ${c.other?.full_name || t.dashmsg_user}`}
                 className="h-10 w-10 rounded-full object-cover shrink-0"
@@ -172,7 +172,7 @@ const Messages = () => {
           ) : (
             <>
               <div className="p-4 border-b border-border flex items-center gap-3">
-                <img
+                <img width={36} height={36} loading="lazy" decoding="async"
                   src={active.other?.avatar_url || '/placeholder.svg'}
                   alt={`Profile photo of ${active.other?.full_name || t.dashmsg_user}`}
                   className="h-9 w-9 rounded-full object-cover"

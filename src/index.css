@@ -80,6 +80,9 @@
 @layer base {
   * { @apply border-border; }
 
+  /* Keyboard focus is always visible (WCAG 2.4.7). currentColor keeps the ring readable on sand and on ink. */
+  :focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+
   body {
     @apply bg-background text-foreground antialiased;
     font-family: var(--font-body);
